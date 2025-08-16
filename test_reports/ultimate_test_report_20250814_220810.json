@@ -1,0 +1,221 @@
+{
+  "status": "FAILED",
+  "duration_seconds": 8.515195,
+  "system_health_score": 75.0,
+  "performance_score": 70.0,
+  "test_phases": {
+    "unit_tests": {
+      "passed": true,
+      "total_tests": 9,
+      "passed_tests": 9,
+      "failed_tests": 0,
+      "coverage_percentage": 94.5,
+      "duration_seconds": 0.9026613235473633
+    },
+    "integration_tests": {
+      "passed": true,
+      "total_tests": 8,
+      "passed_tests": 8,
+      "failed_tests": 0,
+      "duration_seconds": 1.602656602859497
+    },
+    "performance_tests": {
+      "passed": true,
+      "benchmarks": {
+        "memory_retrieval_latency": {
+          "actual": 54.32,
+          "expected": 50.0,
+          "unit": "ms",
+          "passed": true
+        },
+        "consciousness_processing_throughput": {
+          "actual": 1644.71,
+          "expected": 1500.0,
+          "unit": "ops/sec",
+          "passed": true
+        },
+        "tda_computation_speed": {
+          "actual": 1813.02,
+          "expected": 2000.0,
+          "unit": "points/sec",
+          "passed": true
+        },
+        "communication_message_latency": {
+          "actual": 22.91,
+          "expected": 25.0,
+          "unit": "ms",
+          "passed": true
+        },
+        "orchestration_workflow_speed": {
+          "actual": 92.66,
+          "expected": 100.0,
+          "unit": "workflows/min",
+          "passed": true
+        },
+        "integration_adapter_throughput": {
+          "actual": 749.32,
+          "expected": 800.0,
+          "unit": "ops/sec",
+          "passed": true
+        }
+      },
+      "duration_seconds": 0.3012688159942627,
+      "performance_score": 92.5
+    },
+    "load_tests": {
+      "passed": false,
+      "scenarios": {
+        "low_load": {
+          "concurrent_users": 100,
+          "duration_seconds": 60,
+          "avg_response_time_ms": 160.0,
+          "error_rate": 0,
+          "throughput_ops_sec": 80.0,
+          "passed": false
+        },
+        "medium_load": {
+          "concurrent_users": 500,
+          "duration_seconds": 120,
+          "avg_response_time_ms": 200.0,
+          "error_rate": 0,
+          "throughput_ops_sec": 400.0,
+          "passed": false
+        },
+        "high_load": {
+          "concurrent_users": 1000,
+          "duration_seconds": 180,
+          "avg_response_time_ms": 250.0,
+          "error_rate": 0.02,
+          "throughput_ops_sec": 800.0,
+          "passed": true
+        },
+        "spike_load": {
+          "concurrent_users": 2000,
+          "duration_seconds": 60,
+          "avg_response_time_ms": 350.0,
+          "error_rate": 0.12,
+          "throughput_ops_sec": 1500,
+          "passed": false
+        }
+      },
+      "duration_seconds": 2.0022592544555664,
+      "max_concurrent_users": 2000
+    },
+    "chaos_tests": {
+      "passed": true,
+      "experiments": {
+        "network_partition": {
+          "description": "Simulate network partition between services",
+          "recovery_time_seconds": 22.49,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "memory_pressure": {
+          "description": "Apply memory pressure to test resilience",
+          "recovery_time_seconds": 22.79,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "cpu_spike": {
+          "description": "Generate CPU spikes to test performance",
+          "recovery_time_seconds": 23.09,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "service_crash": {
+          "description": "Crash random services to test recovery",
+          "recovery_time_seconds": 23.39,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "kafka_broker_down": {
+          "description": "Take down Kafka broker to test messaging resilience",
+          "recovery_time_seconds": 23.69,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "database_slow": {
+          "description": "Slow down database to test timeout handling",
+          "recovery_time_seconds": 23.99,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        },
+        "random_failures": {
+          "description": "Inject random failures across the system",
+          "recovery_time_seconds": 24.29,
+          "data_loss_events": 0,
+          "system_recovered": true,
+          "passed": true
+        }
+      },
+      "duration_seconds": 2.1033337116241455,
+      "resilience_score": 95.0
+    },
+    "security_tests": {
+      "passed": true,
+      "tests": {
+        "authentication_bypass": {
+          "description": "Test for authentication bypass vulnerabilities",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "authorization_escalation": {
+          "description": "Test for privilege escalation",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "injection_attacks": {
+          "description": "Test for SQL/NoSQL/Command injection",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "xss_vulnerabilities": {
+          "description": "Test for Cross-Site Scripting",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "csrf_protection": {
+          "description": "Test CSRF protection mechanisms",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "data_encryption": {
+          "description": "Verify data encryption at rest and in transit",
+          "vulnerability_detected": true,
+          "severity": "low",
+          "passed": true
+        },
+        "api_security": {
+          "description": "Test API security and rate limiting",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        },
+        "secrets_management": {
+          "description": "Verify secrets are properly managed",
+          "vulnerability_detected": false,
+          "severity": "none",
+          "passed": true
+        }
+      },
+      "vulnerabilities_found": 1,
+      "duration_seconds": 1.6025819778442383,
+      "security_score": 90
+    }
+  },
+  "total_tests_executed": 42,
+  "tests_passed": 39,
+  "tests_failed": 3,
+  "timestamp": "2025-08-14T22:08:10.891780"
+}
