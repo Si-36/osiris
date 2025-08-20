@@ -1,0 +1,73 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "AURA Intelligence System 2025",
+    "tags": ["aura", "ai", "production"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Health",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aura_enhancement_active",
+            "legendFormat": "{{enhancement_name}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Liquid Neural Adaptations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(aura_liquid_adaptations_total[5m])",
+            "legendFormat": "{{component_id}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Mamba-2 Context Length",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aura_mamba_context_length"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Constitutional Corrections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(aura_constitutional_corrections_total[5m])",
+            "legendFormat": "{{correction_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Component Health Distribution",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "aura_component_health_score"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}

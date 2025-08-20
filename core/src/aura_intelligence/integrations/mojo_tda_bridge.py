@@ -12,7 +12,10 @@ import time
 from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 
-from aura_intelligence.utils.logger import get_logger
+import structlog
+
+def get_logger(name):
+    return structlog.get_logger(name)
 
 
 class MojoTDABridge:

@@ -137,7 +137,7 @@ class ConfigLoader:
                     source=ConfigSource.ENVIRONMENT,
                     last_updated=time.time(),
                     version="1.0",
-                    checksum=hashlib.md5(str(value).encode()).hexdigest(),
+                    checksum=hashlib.sha256(str(value).encode()).hexdigest(),
                     sensitive=self._is_sensitive_key(config_key)
                 )
         
@@ -163,7 +163,7 @@ class ConfigLoader:
             
             # Create metadata for all keys
             file_content = file_path.read_text()
-            checksum = hashlib.md5(file_content.encode()).hexdigest()
+            checksum = hashlib.sha256(file_content.encode()).hexdigest()
             
             for key in config.keys():
                 self.metadata_cache[key] = ConfigMetadata(
@@ -498,7 +498,7 @@ class ConfigurationManager:
         
         # Calculate configuration hash for change detection
         config_str = json.dumps(self._config.dict(), sort_keys=True, default=str)
-        new_hash = hashlib.md5(config_str.encode()).hexdigest()
+        new_hash = hashlib.sha256(config_str.encode()).hexdigest()
         
         # Notify watchers if configuration changed
         if self._config_hash and self._config_hash != new_hash:

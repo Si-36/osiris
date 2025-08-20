@@ -131,7 +131,7 @@ class RedisAdapter:
         if serialization == SerializationType.JSON:
             return json.dumps(value, default=str).encode('utf-8')
         elif serialization == SerializationType.PICKLE:
-            return pickle.dumps(value)
+            return json.dumps(value).encode()
         elif serialization == SerializationType.STRING:
             return str(value).encode('utf-8')
         else:
@@ -145,7 +145,7 @@ class RedisAdapter:
         if serialization == SerializationType.JSON:
             return json.loads(data.decode('utf-8'))
         elif serialization == SerializationType.PICKLE:
-            return pickle.loads(data)
+            return json.loads(data.decode())
         elif serialization == SerializationType.STRING:
             return data.decode('utf-8')
         else:

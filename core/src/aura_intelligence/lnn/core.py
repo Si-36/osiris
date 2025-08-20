@@ -257,14 +257,32 @@ class LiquidNeuron(nn.Module):
             # Direct input
             dynamics = decay + recurrent + input_current
         else:
-            # Project input using existing input projection layer
+            # Project input to match output size
             if not hasattr(self, 'input_projection'):
                 self.input_projection = nn.Linear(
                     input_current.shape[-1], 
                     self.output_size,
                     bias=False
                 ).to(input_current.device)
+            
+            # Ensure input projection parameters are on same device and dtype as input
+            if self.input_projection.weight.device != input_current.device:
+                self.input_projection = self.input_projection.to(input_current.device, input_current.dtype)
+                
             projected_input = self.input_projection(input_current)
+            
+            # Ensure all tensors have matching dimensions before addition
+            if decay.shape != recurrent.shape:
+                min_size = min(decay.shape[-1], recurrent.shape[-1])
+                decay = decay[..., :min_size]
+                recurrent = recurrent[..., :min_size]
+            
+            if projected_input.shape != decay.shape:
+                min_size = min(projected_input.shape[-1], decay.shape[-1])
+                projected_input = projected_input[..., :min_size]
+                decay = decay[..., :min_size]
+                recurrent = recurrent[..., :min_size]
+                
             dynamics = decay + recurrent + projected_input
         
         # Update state using ODE solver
@@ -299,6 +317,15 @@ class LiquidNeuron(nn.Module):
                     # Reshape bias to match recurrent dimensions
                     bias_expanded = self.bias[:recurrent.shape[-1]] if self.bias.shape[0] > recurrent.shape[-1] else self.bias
                     recurrent = recurrent + bias_expanded
+            # Ensure dimension compatibility
+            if i.shape[-1] != decay.shape[-1]:
+                if not hasattr(self, 'input_projection'):
+                    self.input_projection = nn.Linear(
+                        i.shape[-1], 
+                        decay.shape[-1],
+                        bias=False
+                    ).to(i.device)
+                i = self.input_projection(i)
             return decay + recurrent + i
         
         k1 = dynamics(state, input_current)
@@ -425,12 +452,21 @@ class LiquidNeuralNetwork(nn.Module):
         # Input projection
         self.input_proj = nn.Linear(input_size, self.config.hidden_sizes[0])
         
-        # Liquid layers - fix the sizing issue
+        # Liquid layers - properly handle layer connections
         prev_size = self.config.hidden_sizes[0]
-        for i, hidden_size in enumerate(self.config.hidden_sizes):
-            if i == 0:
-                # First layer already handled by input_proj
-                continue
+        
+        # First liquid layer processes the projected input
+        first_layer = LiquidLayer(
+            prev_size,  # Input from input_proj
+            prev_size,  # Keep same size for first layer
+            self.config,
+            return_sequences=True
+        )
+        self.layers.append(first_layer)
+        
+        # Additional layers if specified
+        for i in range(1, len(self.config.hidden_sizes)):
+            hidden_size = self.config.hidden_sizes[i]
             layer = LiquidLayer(
                 prev_size,
                 hidden_size,
@@ -475,13 +511,18 @@ class LiquidNeuralNetwork(nn.Module):
         Forward pass through liquid network.
         
         Args:
-            inputs: Input tensor (batch, seq_len, input_size)
+            inputs: Input tensor (batch, seq_len, input_size) or (batch, input_size)
             return_dynamics: Whether to return intermediate dynamics
             
         Returns:
             output: Network output
             dynamics: Dictionary of intermediate values (if requested)
         """
+        # Handle both 2D and 3D inputs
+        if inputs.dim() == 2:
+            # Add sequence dimension: (batch, input_size) -> (batch, 1, input_size)
+            inputs = inputs.unsqueeze(1)
+        
         batch_size = inputs.shape[0]
         
         # Project input

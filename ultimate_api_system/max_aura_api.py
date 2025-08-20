@@ -31,6 +31,7 @@ from core.src.aura_intelligence.core.unified_system import get_unified_system
 from core.src.aura_intelligence.core.unified_interfaces import register_component
 from ultimate_api_system.max_model_manager import MAXModelManager
 from ultimate_api_system.max_config import MAXConfig
+from ultimate_api_system.aura_integration import aura_router, initialize_aura_integration
 
 # Use uvloop for maximum async performance
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -104,6 +105,9 @@ register_component(lnn_component, "neural")
 register_component(tda_component, "tda")
 register_component(memory_component, "memory")
 register_component(consciousness_component, "consciousness")
+
+# Include AURA router
+app.include_router(aura_router)
 
 
 # Performance metrics
@@ -305,9 +309,12 @@ async def startup_event():
     print("🚀 AURA Intelligence MAX API Starting...")
     await unified_system.initialize()
     await unified_system.start()
+    # Initialize AURA integration
+    await initialize_aura_integration()
     print(f"📊 Device: {MAXConfig.device}")
     print(f"💾 Footprint: 1.5GB (reduced from 6.5GB)")
     print(f"⚡ Optimizations: Kernel Fusion + Graph Optimization")
+    print("✅ AURA Intelligence integrated!")
     print("✅ Ready for 100-1000x faster inference!")
 
 @app.on_event("shutdown")

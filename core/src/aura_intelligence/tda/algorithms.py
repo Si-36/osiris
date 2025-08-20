@@ -591,3 +591,45 @@ class NeuralSurveillance(BaseTDAAlgorithm):
             anomaly_scores.append(float(anomaly_score))
         
         return anomaly_scores
+
+
+# Convenience function for direct access
+def compute_persistence_diagram(
+    data: Any,
+    max_dimension: int = 2,
+    algorithm: str = "SpecSeq++",
+    max_edge_length: Optional[float] = None
+) -> Dict[str, Any]:
+    """
+    Compute persistence diagram using specified algorithm.
+    
+    Args:
+        data: Input data (points, distance matrix, etc.)
+        max_dimension: Maximum homology dimension to compute
+        algorithm: Algorithm to use ("SpecSeq++", "SimBa", "Neural")
+        max_edge_length: Maximum edge length for filtration
+        
+    Returns:
+        Dictionary containing persistence diagrams and metadata
+    """
+    # Initialize algorithm based on name
+    if algorithm == "SpecSeq++":
+        algo = SpecSeqPlusPlus()
+    elif algorithm == "SimBa":
+        try:
+            from .cuda_kernels import CUDAAccelerator
+            cuda_accel = CUDAAccelerator()
+            algo = SimBaGPU(cuda_accel)
+        except:
+            # Fallback to SpecSeq++
+            algo = SpecSeqPlusPlus()
+    elif algorithm == "Neural":
+        algo = NeuralSurveillance()
+    else:
+        raise ValueError(f"Unknown algorithm: {algorithm}")
+    
+    return algo.compute_persistence(
+        data=data,
+        max_dimension=max_dimension,
+        max_edge_length=max_edge_length
+    )

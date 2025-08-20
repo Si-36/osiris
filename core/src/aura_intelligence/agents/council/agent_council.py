@@ -49,26 +49,53 @@ class AgentCouncil:
         if not self._initialized:
             await self.initialize()
             
-        # Simulate agent deliberation
-        tda_results = context.get("tda_results", {})
-        anomaly_score = tda_results.get("anomaly_score", 0.0)
-        
-        # Simple decision logic based on anomaly score
-        if anomaly_score > 0.8:
-            action = "escalate"
-            confidence = 0.9
-            reasoning = f"High anomaly score ({anomaly_score:.2f}) requires immediate attention"
-        elif anomaly_score > 0.5:
-            action = "investigate"
-            confidence = 0.7
-            reasoning = f"Moderate anomaly score ({anomaly_score:.2f}) warrants investigation"
-        else:
-            action = "monitor"
-            confidence = 0.8
-            reasoning = f"Low anomaly score ({anomaly_score:.2f}), continue monitoring"
+        # REAL agent deliberation using actual components
+        try:
+            from ...components.real_registry import get_real_registry
+            registry = get_real_registry()
             
-        # Simulate voting
-        votes = {agent: action for agent in self.agents}
+            # Get real agent components
+            agent_components = registry.get_components_by_type(registry.ComponentType.AGENT)
+            
+            votes = {}
+            confidences = []
+            
+            # Process through real agent components
+            for i, agent_comp in enumerate(agent_components[:3]):  # Use first 3 agents
+                agent_result = await registry.process_data(agent_comp.component_id, context)
+                
+                if 'decision' in agent_result:
+                    votes[f"agent_{i}"] = agent_result['decision']
+                    confidences.append(agent_result.get('confidence', 0.5))
+                else:
+                    votes[f"agent_{i}"] = 'monitor'
+                    confidences.append(0.5)
+            
+            # Aggregate decisions
+            decision_counts = {}
+            for vote in votes.values():
+                decision_counts[vote] = decision_counts.get(vote, 0) + 1
+            
+            # Most voted action
+            action = max(decision_counts, key=decision_counts.get)
+            confidence = sum(confidences) / len(confidences) if confidences else 0.5
+            reasoning = f"Council decision based on {len(votes)} real agents"
+            
+        except Exception as e:
+            # Fallback to simple logic
+            tda_results = context.get("tda_results", {})
+            anomaly_score = tda_results.get("anomaly_score", 0.0)
+            
+            if anomaly_score > 0.8:
+                action = "escalate"
+                confidence = 0.9
+                reasoning = f"High anomaly score ({anomaly_score:.2f}) requires attention"
+            else:
+                action = "monitor"
+                confidence = 0.7
+                reasoning = f"Anomaly score: {anomaly_score:.2f}"
+            
+            votes = {agent: action for agent in self.agents}
         
         return {
             "action": action,

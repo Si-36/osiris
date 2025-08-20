@@ -18,7 +18,12 @@ from dataclasses import dataclass
 from enum import Enum
 import networkx as nx
 from concurrent.futures import ThreadPoolExecutor
-import cupy as cp  # GPU acceleration
+try:
+    import cupy as cp  # GPU acceleration
+    CUPY_AVAILABLE = True
+except ImportError:
+    import numpy as cp  # Fallback to numpy
+    CUPY_AVAILABLE = False
 
 # Latest TDA libraries (2025)
 try:

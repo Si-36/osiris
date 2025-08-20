@@ -226,3 +226,7 @@ class MultiScaleWindows:
     def get_total_memory_usage(self) -> int:
         """Get total memory usage across all windows"""
         return sum(window.stats.memory_bytes for window in self.windows.values())
+
+
+# Alias for compatibility
+StreamingWindow = SlidingWindow

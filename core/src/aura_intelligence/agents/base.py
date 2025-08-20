@@ -20,12 +20,21 @@ from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry.metrics import CallbackOptions, Observation
 
-from aura_common.atomic import AtomicComponent, ComponentError
-
 # Type variables for generic agent implementation
 TInput = TypeVar('TInput')
 TOutput = TypeVar('TOutput')
 TState = TypeVar('TState', bound='AgentState')
+TConfig = TypeVar('TConfig')
+
+# Simple replacements for missing aura_common components
+class ComponentError(Exception):
+    """Component operation error."""
+    pass
+
+class AtomicComponent(Generic[TInput, TOutput, TConfig]):
+    """Base atomic component."""
+    def __init__(self, component_id: str):
+        self.component_id = component_id
 
 # Get tracer and meter
 tracer = trace.get_tracer(__name__)

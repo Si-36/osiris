@@ -25,8 +25,8 @@ from .types import (
     RaftVoteRequest, RaftVoteResponse,
     AppendEntriesRequest, AppendEntriesResponse
 )
-from ..events import EventProducer
-from ..agents.temporal import execute_workflow
+from ...events import EventProducer
+from ...agents.temporal import execute_workflow
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

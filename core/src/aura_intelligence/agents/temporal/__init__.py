@@ -38,12 +38,19 @@ from .client import (
     execute_workflow
 )
 
+# Add missing WorkflowBase class
+class WorkflowBase:
+    """Base class for Temporal workflows."""
+    def __init__(self, workflow_id: str = None):
+        self.workflow_id = workflow_id
+
 __all__ = [
     # Workflows
     "AgentWorkflow",
     "MultiAgentOrchestrationWorkflow",
     "ResearchAnalysisPipeline",
     "ConsensusWorkflow",
+    "WorkflowBase",
     
     # Activities
     "AgentActivity",

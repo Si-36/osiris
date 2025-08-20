@@ -23,8 +23,8 @@ from .types import (
     ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
     Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
 )
-from ..events import EventProducer
-from ..agents.temporal import execute_workflow
+from ...events import EventProducer
+from ...agents.temporal import execute_workflow
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

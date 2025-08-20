@@ -75,6 +75,16 @@ from .workflows import (
 #     ConsensusStreamProcessor
 # ) - module not implemented yet
 
+# Add missing ConsensusLevel enum
+from enum import Enum
+
+class ConsensusLevel(Enum):
+    """Consensus levels for decision-making."""
+    WEAK = "weak"
+    MODERATE = "moderate" 
+    STRONG = "strong"
+    CRITICAL = "critical"
+
 # Temporary stubs for missing classes
 class SimpleConsensus:
     """Stub for SimpleConsensus - to be implemented."""

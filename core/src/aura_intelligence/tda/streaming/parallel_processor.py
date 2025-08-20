@@ -21,7 +21,7 @@ from .windows import StreamingWindow, WindowStats
 from .incremental_persistence import VineyardAlgorithm, DiagramUpdate
 from ..models import PersistenceDiagram, PersistenceFeature
 from ...observability.tracing import get_tracer
-from ...common.circuit_breaker import CircuitBreaker
+from ...resilience.circuit_breaker import AdaptiveCircuitBreaker as CircuitBreaker
 
 logger = structlog.get_logger(__name__)
 
@@ -373,3 +373,7 @@ if __name__ == "__main__":
         
     # Run simulation
     asyncio.run(simulate_stream())
+
+
+# Alias for compatibility
+ParallelTDAProcessor = MultiScaleProcessor

@@ -1,0 +1,18 @@
+# REAL Research Libraries - 2025 Best Practices
+# MIT Liquid Neural Networks
+ncps>=0.0.12
+torchdiffeq>=0.2.3
+
+# Real Topological Data Analysis  
+gudhi>=3.8.0
+ripser>=0.6.4
+persim>=0.3.2
+
+# Real Switch Transformer MoE
+transformers>=4.30.0
+torch>=2.0.0
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.3.0

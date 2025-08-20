@@ -20,6 +20,82 @@ U = TypeVar('U')
 V = TypeVar('V')
 
 
+# Core operational types that components depend on
+class ComponentStatus(Enum):
+    """Status of AURA components."""
+    INITIALIZING = "initializing"
+    RUNNING = "running"
+    STOPPED = "stopped"
+    ERROR = "error"
+    DEGRADED = "degraded"
+
+
+class AgentType(Enum):
+    """Types of AURA agents."""
+    SUPERVISOR = "supervisor"
+    ANALYST = "analyst"
+    EXECUTOR = "executor"
+    OBSERVER = "observer"
+    COORDINATOR = "coordinator"
+
+
+class ComponentType(Enum):
+    """Types of AURA components."""
+    NEURAL = "neural"
+    MEMORY = "memory"
+    OBSERVABILITY = "observability"
+    TDA = "tda"
+    EMBEDDING = "embedding"
+    VAE = "vae"
+    REDIS = "redis"
+    VECTOR_STORE = "vector_store"
+    API = "api"
+    WORKFLOW = "workflow"
+    CONSENSUS = "consensus"
+
+
+class MessageType(Enum):
+    """Types of inter-component messages."""
+    REQUEST = "request"
+    RESPONSE = "response"
+    EVENT = "event"
+    COMMAND = "command"
+    NOTIFICATION = "notification"
+
+
+@dataclass
+class ComponentMetrics:
+    """Metrics for component performance."""
+    cpu_usage: float = 0.0
+    memory_usage: float = 0.0
+    request_count: int = 0
+    error_count: int = 0
+    uptime_seconds: float = 0.0
+    last_update: Optional[str] = None
+
+
+@dataclass
+class AgentConfig:
+    """Configuration for AURA agents."""
+    agent_id: str
+    agent_type: AgentType
+    max_concurrent_tasks: int = 10
+    timeout_seconds: int = 30
+    retry_attempts: int = 3
+    enable_logging: bool = True
+
+
+@dataclass 
+class Message:
+    """Inter-component message."""
+    message_id: str
+    message_type: MessageType
+    sender: str
+    recipient: str
+    payload: Dict[str, Any]
+    timestamp: Optional[str] = None
+
+
 class UniverseLevel(Enum):
     """Universe levels in the type hierarchy."""
     TYPE_0 = 0  # Basic types

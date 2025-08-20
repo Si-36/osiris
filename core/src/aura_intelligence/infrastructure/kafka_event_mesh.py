@@ -14,9 +14,9 @@ from aiokafka.errors import KafkaError
 import structlog
 from prometheus_client import Counter, Histogram, Gauge
 
-from ..common.circuit_breaker import CircuitBreaker
-from ..common.config import get_config
-from ..common.errors import AuraError
+from ..resilience.circuit_breaker import AdaptiveCircuitBreaker as CircuitBreaker
+from ..core.config import get_config
+from ..core.exceptions import AuraError
 
 logger = structlog.get_logger(__name__)
 
@@ -60,6 +60,17 @@ class Event:
     timestamp: datetime
     data: Dict[str, Any]
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class EventMessage:
+    """Kafka message wrapper for events"""
+    key: str
+    value: bytes
+    headers: Dict[str, str] = field(default_factory=dict)
+    topic: Optional[str] = None
+    partition: Optional[int] = None
+    offset: Optional[int] = None
 
 
 class EventMesh(Protocol):

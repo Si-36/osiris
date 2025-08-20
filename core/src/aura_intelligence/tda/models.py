@@ -501,3 +501,51 @@ class TDABenchmarkResult(BaseModel):
         default_factory=dict,
         description="Hardware information for reproducibility"
     )
+
+
+class PersistenceFeature(BaseModel):
+    """Feature extracted from persistence diagrams for ML/streaming."""
+    
+    dimension: int = Field(
+        ...,
+        ge=0,
+        description="Homology dimension"
+    )
+    
+    birth: float = Field(
+        ...,
+        description="Birth time of the feature"
+    )
+    
+    death: float = Field(
+        ...,
+        description="Death time of the feature"
+    )
+    
+    persistence: float = Field(
+        ...,
+        description="Persistence value (death - birth)"
+    )
+    
+    confidence: Optional[float] = Field(
+        None,
+        ge=0.0,
+        le=1.0,
+        description="Confidence score for the feature"
+    )
+    
+    metadata: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional feature metadata"
+    )
+    
+    @model_validator(mode='before')
+    def compute_persistence(cls, values):
+        """Compute persistence from birth and death times."""
+        birth = values.get('birth')
+        death = values.get('death')
+        
+        if birth is not None and death is not None:
+            values['persistence'] = death - birth
+        
+        return values

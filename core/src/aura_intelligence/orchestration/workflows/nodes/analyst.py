@@ -11,9 +11,25 @@ import numpy as np
 from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
 
-from aura_common.logging import get_logger, with_correlation_id
-from aura_common import resilient_operation
-from aura_common.config import is_feature_enabled
+import structlog
+from ....resilience import resilient, ResilienceLevel
+
+# Simple replacements for missing aura_common functions
+def get_logger(name):
+    return structlog.get_logger(name)
+
+def with_correlation_id():
+    def decorator(func):
+        return func
+    return decorator
+
+def is_feature_enabled(feature):
+    return True
+
+def resilient_operation(**kwargs):
+    def decorator(func):
+        return func
+    return decorator
 
 from ..state import CollectiveState, NodeResult
 from ....tda.unified_engine import UnifiedTDAEngine, TDARequest

@@ -30,6 +30,11 @@ from aura_intelligence.lnn.core import LiquidNeuralNetwork
 from aura_intelligence.consciousness.global_workspace import GlobalWorkspace
 from aura_intelligence.memory.shape_memory_v2_prod import ShapeMemoryV2
 
+# Import integrations
+from aura_intelligence.streaming.kafka_integration import get_event_streaming, EventType
+from aura_intelligence.graph.neo4j_integration import get_neo4j_integration
+from aura_intelligence.distributed.ray_serve_deployment import get_ray_serve_manager
+
 # ============================================================================
 # API MODELS
 # ============================================================================
@@ -68,10 +73,16 @@ lnn_model = None
 consciousness = None
 memory_system = None
 
+# Real integrations
+event_streaming = None
+neo4j_integration = None
+ray_serve_manager = None
+
 @app.on_event("startup")
 async def startup():
     """Initialize working AURA components"""
     global unified_system, unified_brain, lnn_model, consciousness, memory_system
+    global event_streaming, neo4j_integration, ray_serve_manager
     
     print("🧠 Initializing AURA Intelligence components...")
     
@@ -107,6 +118,21 @@ async def startup():
     except Exception as e:
         print(f"❌ Initialization error: {e}")
         # Continue with partial initialization
+    
+    # Initialize real integrations
+    try:
+        event_streaming = get_event_streaming()
+        await event_streaming.start_streaming()
+        print("✅ Event streaming initialized")
+        
+        neo4j_integration = get_neo4j_integration()
+        print("✅ Neo4j integration initialized")
+        
+        ray_serve_manager = get_ray_serve_manager()
+        print("✅ Ray Serve manager initialized")
+        
+    except Exception as e:
+        print(f"⚠️  Integration error: {e}")
 
 @app.get("/")
 async def root():
@@ -122,6 +148,11 @@ async def root():
             "consciousness": consciousness is not None,
             "memory_system": memory_system is not None
         },
+        "integrations": {
+            "event_streaming": event_streaming is not None,
+            "neo4j": neo4j_integration is not None,
+            "ray_serve": ray_serve_manager is not None
+        },
         "timestamp": datetime.now().isoformat()
     }
 
@@ -136,16 +167,29 @@ async def health():
         memory_system is not None
     ])
     
+    integration_count = sum([
+        event_streaming is not None,
+        neo4j_integration is not None,
+        ray_serve_manager is not None
+    ])
+    
     return {
         "status": "healthy" if working_components >= 3 else "degraded",
         "working_components": working_components,
         "total_components": 5,
+        "integrations": integration_count,
+        "total_integrations": 3,
         "details": {
             "unified_system": "working" if unified_system else "failed",
             "unified_brain": "working" if unified_brain else "failed",
             "lnn_model": "working" if lnn_model else "failed",
             "consciousness": "working" if consciousness else "failed",
             "memory_system": "working" if memory_system else "failed"
+        },
+        "integration_details": {
+            "event_streaming": "working" if event_streaming else "failed",
+            "neo4j": "working" if neo4j_integration else "failed",
+            "ray_serve": "working" if ray_serve_manager else "failed"
         }
     }
 
@@ -238,6 +282,64 @@ async def memory_store(request: Dict[str, Any]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Memory storage failed: {str(e)}")
 
+@app.post("/events/publish")
+async def publish_event(event_data: Dict[str, Any]):
+    """Publish event through real Kafka"""
+    if not event_streaming:
+        raise HTTPException(status_code=503, detail="Event streaming not available")
+    
+    try:
+        event_type = EventType(event_data.get('type', 'component_health'))
+        source = event_data.get('source', 'api')
+        data = event_data.get('data', {})
+        
+        success = await event_streaming.publish_system_event(event_type, source, data)
+        stats = event_streaming.get_streaming_stats()
+        
+        return {
+            "success": success,
+            "event_published": success,
+            "streaming_stats": stats
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Event publishing failed: {str(e)}")
+
+@app.post("/graph/store_decision")
+async def store_decision(decision_data: Dict[str, Any]):
+    """Store decision in Neo4j graph"""
+    if not neo4j_integration:
+        raise HTTPException(status_code=503, detail="Neo4j integration not available")
+    
+    try:
+        success = await neo4j_integration.store_council_decision(decision_data)
+        status = neo4j_integration.get_connection_status()
+        
+        return {
+            "success": success,
+            "decision_stored": success,
+            "connection_status": status
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Decision storage failed: {str(e)}")
+
+@app.get("/distributed/status")
+async def distributed_status():
+    """Get Ray Serve cluster status"""
+    if not ray_serve_manager:
+        raise HTTPException(status_code=503, detail="Ray Serve manager not available")
+    
+    try:
+        status = await ray_serve_manager.get_cluster_status()
+        return {
+            "success": True,
+            "cluster_status": status
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Cluster status failed: {str(e)}")
+
 @app.get("/system/status")
 async def system_status():
     """Get detailed system status"""
@@ -245,7 +347,8 @@ async def system_status():
         "system": "AURA Intelligence",
         "version": "2.0.0",
         "status": "operational",
-        "components": {}
+        "components": {},
+        "integrations": {}
     }
     
     # Check each component
@@ -276,6 +379,29 @@ async def system_status():
         status["components"]["memory_system"] = {
             "status": "working",
             "type": "ShapeMemoryV2"
+        }
+    
+    # Add integration status
+    if event_streaming:
+        streaming_stats = event_streaming.get_streaming_stats()
+        status["integrations"]["event_streaming"] = {
+            "status": "working",
+            "type": "kafka",
+            "stats": streaming_stats
+        }
+    
+    if neo4j_integration:
+        connection_status = neo4j_integration.get_connection_status()
+        status["integrations"]["neo4j"] = {
+            "status": "working",
+            "type": "graph_database",
+            "connection": connection_status
+        }
+    
+    if ray_serve_manager:
+        status["integrations"]["ray_serve"] = {
+            "status": "working",
+            "type": "distributed_computing"
         }
     
     return status

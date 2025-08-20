@@ -33,6 +33,7 @@ class OrchestrationStrategy(Enum):
     HIERARCHICAL = "hierarchical"
     CONSENSUS = "consensus"
     EVENT_DRIVEN = "event_driven"
+    SEMANTIC = "semantic"
 
 class UrgencyLevel(Enum):
     """Urgency levels for orchestration prioritization"""

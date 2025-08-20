@@ -250,8 +250,7 @@ class CollectiveMemoryManager:
         return patterns
     
     def _fallback_context(self) -> Dict[str, Any]:
-        """Fallback context when LangMem is unavailable."""
-        
+        """Fallback context when LangMem is unavailable"""
         return {
             "insight": "LangMem unavailable - using default context",
             "confidence": 0.5,

@@ -6,7 +6,7 @@ with all abstract methods implemented and full integration with Neo4j,
 Mem0, and Kafka event streaming.
 """
 
-from typing import Dict, Any, Optional, List, Union, cast
+from typing import Dict, Any, Optional, List, Union, cast, Tuple
 from datetime import datetime, timezone
 import asyncio
 import uuid
@@ -63,22 +63,60 @@ class CouncilState(AgentState):
         arbitrary_types_allowed = True
 
 
-class LiquidTimeStep(nn.Module):
-    """Liquid time step module for continuous-time dynamics."""
+class RealLiquidTimeStep(nn.Module):
+    """REAL Liquid time step with ODE solver and adaptation."""
     
     def __init__(self, input_size: int, hidden_size: int):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.W_in = nn.Linear(input_size, hidden_size)
-        self.W_h = nn.Linear(hidden_size, hidden_size)
-        self.tau = nn.Parameter(torch.ones(hidden_size))
         
-    def forward(self, x: torch.Tensor, h: torch.Tensor) -> torch.Tensor:
-        """Forward pass with liquid dynamics."""
-        dx = torch.tanh(self.W_in(x) + self.W_h(h))
-        h_new = h + (dx - h) / self.tau
-        return h_new
+        # Learnable liquid parameters
+        self.W_in = nn.Linear(input_size, hidden_size)
+        self.W_rec = nn.Linear(hidden_size, hidden_size, bias=False)
+        self.tau = nn.Parameter(torch.rand(hidden_size) * 0.5 + 0.5)  # 0.5-1.0
+        self.A = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.1)
+        
+        # Adaptation tracking
+        self.register_buffer('usage_stats', torch.zeros(hidden_size))
+        self.adaptation_threshold = 0.8
+        
+    def forward(self, x: torch.Tensor, h: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, Any]]:
+        """Forward with real liquid dynamics and adaptation."""
+        # Liquid state equation: dh/dt = -h/tau + tanh(W_in*x + A*h)
+        input_current = self.W_in(x)
+        recurrent_current = torch.matmul(h, self.A.T)
+        
+        # Liquid dynamics with learnable time constants
+        dh_dt = (-h + torch.tanh(input_current + recurrent_current)) / self.tau.unsqueeze(0)
+        
+        # Euler integration (can be replaced with RK4 for accuracy)
+        dt = 0.1
+        h_new = h + dt * dh_dt
+        
+        # Update usage statistics for adaptation
+        self.usage_stats += torch.mean(torch.abs(h_new), dim=0).detach()
+        
+        # Calculate complexity for adaptation
+        complexity = torch.std(h_new).item()
+        
+        info = {
+            'complexity': complexity,
+            'tau_mean': torch.mean(self.tau).item(),
+            'activation_sparsity': (torch.abs(h_new) < 0.1).float().mean().item()
+        }
+        
+        return h_new, info
+    
+    def adapt_structure(self) -> bool:
+        """Adapt liquid structure based on usage patterns."""
+        if torch.max(self.usage_stats) > self.adaptation_threshold:
+            # Increase time constants for highly used neurons
+            high_usage = self.usage_stats > torch.mean(self.usage_stats) + torch.std(self.usage_stats)
+            self.tau.data[high_usage] *= 1.1
+            self.usage_stats.zero_()
+            return True
+        return False
 
 
 class ProductionLNNCouncilAgent(LNNCouncilAgent):
@@ -168,11 +206,15 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             feature_flags=self.config.get("feature_flags", {})
         )
         
-        # Create liquid layers
-        self.liquid_layer = LiquidTimeStep(
+        # Create REAL liquid layers with adaptation
+        self.liquid_layer = RealLiquidTimeStep(
             input_size=self.lnn_config.input_size,
             hidden_size=self.lnn_config.hidden_size
         )
+        
+        # Track liquid adaptation
+        self.liquid_adaptations = 0
+        self.complexity_history = []
         
         # Output layer for vote types
         self.output_layer = nn.Linear(
@@ -454,15 +496,31 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
                 # Initialize hidden state
                 h = torch.zeros(batch_size, self.lnn_config.hidden_size)
                 
-                # Process through liquid time steps
+                # Process through REAL liquid time steps with adaptation
+                liquid_info_list = []
                 for t in range(seq_len):
-                    h = self.liquid_layer(x[:, t, :], h)
-                    
+                    h, liquid_info = self.liquid_layer(x[:, t, :], h)
+                    liquid_info_list.append(liquid_info)
+                
+                # Adapt liquid structure if needed
+                if self.liquid_layer.adapt_structure():
+                    self.liquid_adaptations += 1
+                
+                # Track complexity
+                avg_complexity = np.mean([info['complexity'] for info in liquid_info_list])
+                self.complexity_history.append(avg_complexity)
+                
                 # Generate output
                 output = self.output_layer(h)
                 output_probs = torch.softmax(output, dim=-1)
                 
                 state.lnn_output = output_probs
+                state.context['liquid_info'] = {
+                    'complexity': avg_complexity,
+                    'adaptations': self.liquid_adaptations,
+                    'tau_mean': liquid_info_list[-1]['tau_mean'],
+                    'sparsity': liquid_info_list[-1]['activation_sparsity']
+                }
                 
                 # Log metrics
                 inference_time = span.end_time - span.start_time if hasattr(span, 'end_time') else 0
@@ -518,6 +576,13 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             
             span.set_attribute("vote.type", vote_type.value)
             span.set_attribute("vote.confidence", confidence)
+            
+            # Add liquid network metrics
+            if 'liquid_info' in state.context:
+                liquid_info = state.context['liquid_info']
+                span.set_attribute("liquid.complexity", liquid_info['complexity'])
+                span.set_attribute("liquid.adaptations", liquid_info['adaptations'])
+                span.set_attribute("liquid.sparsity", liquid_info['sparsity'])
             
             state.next_step = "store_decision"
             return state

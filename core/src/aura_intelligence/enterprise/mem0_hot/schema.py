@@ -130,27 +130,27 @@ def get_table_info(conn: duckdb.DuckDBPyConnection) -> dict:
     
     try:
         # Get table schema
-        schema_result = conn.execute(f"DESCRIBE {RECENT_ACTIVITY_TABLE}").fetchall()
+        schema_result = conn.execute("DESCRIBE recent_activity").fetchall()
         
         # Get row count
-        count_result = conn.execute(f"SELECT COUNT(*) FROM {RECENT_ACTIVITY_TABLE}").fetchone()
+        count_result = conn.execute("SELECT COUNT(*) FROM recent_activity").fetchone()
         row_count = count_result[0] if count_result else 0
         
         # Get partition info (hour buckets)
-        partition_result = conn.execute(f"""
+        partition_result = conn.execute("""
             SELECT hour_bucket, COUNT(*) as row_count
-            FROM {RECENT_ACTIVITY_TABLE}
+            FROM recent_activity
             GROUP BY hour_bucket
             ORDER BY hour_bucket DESC
             LIMIT 10
         """).fetchall()
         
         # Get index info
-        index_result = conn.execute(f"""
+        index_result = conn.execute("""
             SELECT index_name, is_unique, is_primary
             FROM duckdb_indexes()
-            WHERE table_name = '{RECENT_ACTIVITY_TABLE}'
-        """).fetchall()
+            WHERE table_name = ?
+        """, [RECENT_ACTIVITY_TABLE]).fetchall()
         
         return {
             "table_name": RECENT_ACTIVITY_TABLE,

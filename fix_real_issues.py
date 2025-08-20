@@ -22,7 +22,7 @@ def run_command(cmd, description):
     print(f"\n🔧 {description}")
     print(f"Command: {cmd}")
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(cmd.split(), capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
             print(f"✅ Success: {result.stdout.strip()}")
             return True
@@ -39,7 +39,7 @@ def run_command(cmd, description):
 def check_service(service, port):
     """Check if service is actually running"""
     print(f"\n🔍 Checking {service} on port {port}")
-    result = subprocess.run(f"nc -z localhost {port}", shell=True, capture_output=True)
+    result = subprocess.run(["nc", "-z", "localhost", str(port)], capture_output=True)
     if result.returncode == 0:
         print(f"✅ {service} is running on port {port}")
         return True

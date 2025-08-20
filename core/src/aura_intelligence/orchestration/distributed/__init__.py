@@ -25,12 +25,23 @@ from .ray_orchestrator import (
     DistributedAgentConfig
 )
 
-from .crewai_orchestrator import (
-    CrewAIFlowOrchestrator,
-    AuraDistributedFlow,
-    HierarchicalFlowConfig,
-    FlowExecutionResult
-)
+from .crewai.orchestrator import CrewAIOrchestrator
+
+# Create aliases for expected class names
+CrewAIFlowOrchestrator = CrewAIOrchestrator
+
+# Create placeholder classes for missing exports
+class AuraDistributedFlow:
+    """Placeholder for distributed flow coordination."""
+    pass
+
+class HierarchicalFlowConfig:
+    """Placeholder for hierarchical flow configuration."""
+    pass
+
+class FlowExecutionResult:
+    """Placeholder for flow execution results."""
+    pass
 
 from .distributed_coordinator import (
     DistributedCoordinator,

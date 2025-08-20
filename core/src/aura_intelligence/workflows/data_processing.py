@@ -173,7 +173,7 @@ class DataValidationActivity:
             validation_rules.append(
                 ValidationRule(
                     name=rule_dict["name"],
-                    validator=eval(rule_dict["validator"]),  # In prod, use safe eval
+                    validator=None,  # TODO: Implement safe validator
                     error_message=rule_dict["error_message"],
                     required=rule_dict.get("required", True)
                 )

@@ -18,14 +18,16 @@ from .types import (
     ConsensusResult,
     ConsensusState,
     ConsensusConfig,
-    Vote
+    Vote,
+    VoteType
 )
 from .raft import RaftConsensus, RaftConfig
 from .byzantine import ByzantineConsensus, BFTConfig
 # from .multi_raft import MultiRaftConsensus, MultiRaftConfig  # Temporarily commented out - module not available
 # from .validation import NeuroSymbolicValidator, ValidatorConfig  # Temporarily commented out - module not available
-from ..events import EventProducer, ProducerConfig  # ConsensusDecisionEvent not available
-from ..agents.temporal import TemporalClient
+from ...events import EventProducer, ProducerConfig
+from ...events.schemas import ConsensusDecisionEvent
+from ...agents.temporal import TemporalClient
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

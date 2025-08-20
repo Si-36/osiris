@@ -1,29 +1,25 @@
-# AURA Intelligence - Core Dependencies
-
-# Web Framework & API
-fastapi>=0.116.1
-uvicorn[standard]>=0.35.0
-pydantic>=2.11.7
-httpx>=0.28.1
-websockets>=15.0.1
-
-# Core AI & ML
+# Core dependencies
 torch>=2.0.0
-numpy>=2.3.2
-scipy>=1.11.0
-
-# Development & Testing
-pytest>=8.4.1
-pytest-asyncio>=1.1.0
-
-# Configuration & Logging
-pyyaml>=6.0
-python-dotenv>=1.0.0
+numpy>=1.24.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.0.0
 structlog>=23.0.0
 
-# Optional: Uncomment as needed
-# redis>=5.0.0              # For caching
-# neo4j>=5.0.0              # For graph database
-# transformers>=4.30.0      # For transformer models
-# langchain>=0.1.0          # For LLM chains
-# openai>=1.0.0             # For OpenAI integration
+# Real integrations (not mocks)
+kafka-python==2.0.2
+neo4j==5.15.0
+redis==5.0.1
+ray[serve]>=2.45.0
+
+# Optional advanced features
+transformers>=4.30.0
+spikingjelly==0.0.0.0.14
+
+# Observability
+prometheus-client>=0.17.0
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+
+# Production
+gunicorn>=21.0.0

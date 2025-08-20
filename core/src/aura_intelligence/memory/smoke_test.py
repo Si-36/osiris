@@ -65,7 +65,7 @@ class SmokeTest:
     def generate_deterministic_tda(self, item_id: str, category: str) -> TDAResult:
         """Generate deterministic TDA result based on item ID and category."""
         # Use hash of ID for deterministic but varied values
-        hash_val = int(hashlib.md5(f"{item_id}_{category}".encode()).hexdigest()[:8], 16)
+        hash_val = int(hashlib.sha256(f"{item_id}_{category}".encode()).hexdigest()[:8], 16)
         
         # Use modulo to get deterministic values in range
         if category == "normal":

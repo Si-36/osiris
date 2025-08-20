@@ -398,12 +398,32 @@ class SystemEvent(EventSchema):
         )
 
 
+class ConsensusDecisionEvent(EventSchema):
+    """Event for consensus decisions."""
+    
+    proposal_id: str = Field(..., description="ID of the consensus proposal")
+    decision: Optional[Dict[str, Any]] = Field(None, description="The consensus decision")
+    status: str = Field(..., description="Consensus status (accepted/rejected/failed)")
+    consensus_type: Optional[str] = Field(None, description="Type of consensus protocol used")
+    votes: List[Dict[str, Any]] = Field(default_factory=list, description="Votes cast")
+    explanation: Optional[str] = Field(None, description="Decision explanation")
+    duration_ms: Optional[float] = Field(None, description="Decision duration in milliseconds")
+    participation_rate: Optional[float] = Field(None, description="Voter participation rate")
+    
+    def __init__(self, **kwargs):
+        # Set default event type for consensus decisions
+        if 'event_type' not in kwargs:
+            kwargs['event_type'] = EventType.CONSENSUS_ACHIEVED
+        super().__init__(**kwargs)
+
+
 # Schema registry for managing event schemas
 SCHEMA_REGISTRY = {
     "EventSchema": EventSchema,
     "AgentEvent": AgentEvent,
     "WorkflowEvent": WorkflowEvent,
-    "SystemEvent": SystemEvent
+    "SystemEvent": SystemEvent,
+    "ConsensusDecisionEvent": ConsensusDecisionEvent
 }
 
 
@@ -416,6 +436,8 @@ def get_event_schema(event_type: str) -> type[EventSchema]:
         return WorkflowEvent
     elif event_type.startswith("system."):
         return SystemEvent
+    elif event_type.startswith("consensus."):
+        return ConsensusDecisionEvent
     else:
         return EventSchema
 

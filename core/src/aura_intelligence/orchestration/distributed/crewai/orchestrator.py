@@ -9,14 +9,14 @@ import logging
 
 from .geometric_space import HyperbolicSpace, GeometricRouter
 from .flow_engine import FlowEngine
-from ...observability.hybrid import HybridObservabilityStack
+from ...observability.hybrid import HybridObservability
 
 logger = logging.getLogger(__name__)
 
 class CrewAIOrchestrator:
     """Main CrewAI orchestrator with geometric intelligence (30 lines)"""
     
-    def __init__(self, observability: Optional[HybridObservabilityStack] = None):
+    def __init__(self, observability: Optional[HybridObservability] = None):
         self.observability = observability
         self.space = HyperbolicSpace()
         self.router = GeometricRouter(self.space)

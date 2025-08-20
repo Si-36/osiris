@@ -439,3 +439,11 @@ class StreamingRipsPersistence:
             FEATURES_TRACKED.labels(algorithm="streaming_rips", dimension=str(dim)).set(count)
         
         return PersistenceDiagram(features=features)
+
+
+# Import DiagramUpdate from parent module
+from . import DiagramUpdate
+
+# Aliases for compatibility
+IncrementalPersistence = StreamingRipsPersistence
+VineyardAlgorithm = IncrementalVineyardProcessor

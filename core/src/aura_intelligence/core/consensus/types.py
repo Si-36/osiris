@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel, Field, validator
 import uuid
 
-from ..agents.base import AgentState
+# AgentState import removed - not needed for consensus types
 
 
 class DecisionType(str, Enum):

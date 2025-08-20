@@ -107,8 +107,13 @@ class StreamAdapter(Protocol):
 # Re-export key components
 from .windows import SlidingWindow, MultiScaleWindows
 from .incremental_persistence import IncrementalPersistence
-from .multi_scale import MultiScaleProcessor
-from .adapters import KafkaToTDAAdapter, WebSocketToTDAAdapter
+# from .multi_scale import MultiScaleProcessor  # Module not available yet
+
+# Placeholder for missing multi_scale module
+class MultiScaleProcessor:
+    """Placeholder for multi-scale processor."""
+    pass
+from .event_adapters import KafkaToTDAAdapter, WebSocketToTDAAdapter
 
 __all__ = [
     # Protocols

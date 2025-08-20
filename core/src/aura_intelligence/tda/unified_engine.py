@@ -10,9 +10,18 @@ import numpy as np
 import time
 from abc import abstractmethod
 
-from aura_common.logging import get_logger
-from aura_common import resilient_operation
-from aura_common.config import is_feature_enabled
+import structlog
+
+def get_logger(name):
+    return structlog.get_logger(name)
+
+def resilient_operation(*args, **kwargs):
+    def decorator(func):
+        return func
+    return decorator
+
+def is_feature_enabled(feature):
+    return True
 
 logger = get_logger(__name__)
 

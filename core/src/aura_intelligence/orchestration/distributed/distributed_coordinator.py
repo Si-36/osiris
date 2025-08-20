@@ -37,13 +37,23 @@ from .ray_orchestrator import (
     DistributedAgentConfig
 )
 
-from .crewai_orchestrator import (
-    CrewAIFlowOrchestrator,
-    AuraDistributedFlow,
-    HierarchicalFlowConfig,
-    FlowExecutionResult,
-    FlowLevel
-)
+# Import CrewAI components from correct location
+from .crewai.orchestrator import CrewAIOrchestrator
+
+# Create aliases and placeholders
+CrewAIFlowOrchestrator = CrewAIOrchestrator
+
+class AuraDistributedFlow:
+    pass
+
+class HierarchicalFlowConfig:
+    pass
+
+class FlowExecutionResult:
+    pass
+
+class FlowLevel:
+    pass
 
 from ..durable.hybrid_checkpointer import (
     HybridCheckpointManager,

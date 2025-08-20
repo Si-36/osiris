@@ -17,10 +17,19 @@ from contextlib import asynccontextmanager
 
 from aiokafka import AIOKafkaProducer
 from aiokafka.errors import KafkaError, KafkaTimeoutError
-from confluent_kafka import SerializingProducer
+try:
+    from confluent_kafka import SerializingProducer
+except ImportError:
+    SerializingProducer = None
 from confluent_kafka.serialization import StringSerializer
-from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
+try:
+    from confluent_kafka.schema_registry import SchemaRegistryClient
+except ImportError:
+    SchemaRegistryClient = None
+try:
+    from confluent_kafka.schema_registry.avro import AvroSerializer
+except ImportError:
+    AvroSerializer = None
 import structlog
 from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
