@@ -1,0 +1,112 @@
+{
+  "sequential": {
+    "test_type": "sequential_processing",
+    "operations_completed": 500,
+    "total_time_seconds": 0.5390286330002709,
+    "operations_per_second": 927.5945086942138,
+    "avg_operation_time_ms": 1.0776465259987162,
+    "min_operation_time_ms": 1.021022000713856,
+    "max_operation_time_ms": 1.2667840001086006
+  },
+  "batch": {
+    "test_type": "batch_processing",
+    "operations_requested": 1000,
+    "operations_completed": 1000,
+    "errors": 0,
+    "total_time_seconds": 0.24436613299985765,
+    "operations_per_second": 4092.2200950022093,
+    "avg_operation_time_ms": 0.24436613299985763
+  },
+  "mixed": {
+    "test_type": "mixed_batch_types",
+    "total_operations": 1000,
+    "total_completed": 1000,
+    "total_errors": 0,
+    "total_time_seconds": 0.08562698300011107,
+    "operations_per_second": 11678.561651514721,
+    "type_stats": {
+      "neural_forward": {
+        "completed": 200,
+        "errors": 0
+      },
+      "bert_attention": {
+        "completed": 200,
+        "errors": 0
+      },
+      "lnn_processing": {
+        "completed": 200,
+        "errors": 0
+      },
+      "neural_ode": {
+        "completed": 200,
+        "errors": 0
+      },
+      "general_compute": {
+        "completed": 200,
+        "errors": 0
+      }
+    }
+  },
+  "adaptive": {
+    "test_type": "adaptive_batching",
+    "operations_completed": 500,
+    "errors": 0,
+    "total_time_seconds": 0.06542415600051754,
+    "operations_per_second": 7642.437145020942,
+    "initial_batch_sizes": {
+      "neural_forward": 32,
+      "bert_attention": 11,
+      "lnn_processing": 32,
+      "neural_ode": 9,
+      "general_compute": 32
+    },
+    "final_batch_sizes": {
+      "neural_forward": 32,
+      "bert_attention": 4,
+      "lnn_processing": 32,
+      "neural_ode": 31,
+      "general_compute": 32
+    },
+    "metrics_improvement": {
+      "operations_per_second": 0.0,
+      "avg_batch_size": -2.168835502168836,
+      "batch_efficiency": 0.0
+    }
+  },
+  "final_metrics": {
+    "total_operations": 2500,
+    "total_batches": 111,
+    "avg_batch_size": 22.52252252252252,
+    "avg_processing_time": 0.01012598621514335,
+    "gpu_utilization": 0.0,
+    "operations_per_second": 0.0,
+    "batch_efficiency": 0.0,
+    "adaptive_batch_sizes": {
+      "neural_forward": 32,
+      "bert_attention": 4,
+      "lnn_processing": 32,
+      "neural_ode": 31,
+      "general_compute": 32
+    },
+    "active_batches": {
+      "neural_forward": 0,
+      "bert_attention": 0,
+      "lnn_processing": 0,
+      "neural_ode": 0,
+      "general_compute": 0
+    },
+    "queue_sizes": {
+      "neural_forward": 0,
+      "bert_attention": 0,
+      "lnn_processing": 0,
+      "neural_ode": 0,
+      "general_compute": 0
+    },
+    "gpu_available": true,
+    "config": {
+      "max_batch_size": 32,
+      "batch_timeout_ms": 10.0,
+      "max_concurrent_batches": 8
+    }
+  }
+}

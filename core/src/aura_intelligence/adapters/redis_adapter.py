@@ -9,13 +9,16 @@ Provides async interface to Redis for caching with:
 - Full observability
 """
 
-from typing import Dict, Any, List, Optional, Union, TypeVar, Type
+from typing import Dict, Any, List, Optional, Union, TypeVar, Type, Callable, Awaitable
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 import asyncio
 import json
 import pickle
 from enum import Enum
+import time
+import weakref
+from concurrent.futures import ThreadPoolExecutor
 
 import structlog
 from opentelemetry import trace
@@ -47,9 +50,10 @@ class RedisConfig:
     password: Optional[str] = None
     
     # Connection pool settings
-    max_connections: int = 50
-    connection_timeout: float = 20.0
-    socket_timeout: float = 20.0
+    max_connections: int = 100  # Increased for high concurrency
+    min_connections: int = 10  # Minimum pool size
+    connection_timeout: float = 5.0  # Reduced for faster failures
+    socket_timeout: float = 5.0
     socket_keepalive: bool = True
     
     # Retry settings
@@ -65,18 +69,96 @@ class RedisConfig:
     default_ttl_seconds: int = 3600  # 1 hour
     context_window_ttl: int = 7200  # 2 hours
     decision_cache_ttl: int = 86400  # 24 hours
+    
+    # Batch processing settings
+    batch_size: int = 100
+    batch_timeout: float = 0.1  # 100ms batch window
+    max_concurrent_batches: int = 10
+    
+    # High-performance settings
+    enable_async_batching: bool = True
+    connection_pool_monitoring: bool = True
+    auto_scaling_enabled: bool = True
+    metrics_collection: bool = True
+
+
+class BatchOperation:
+    """Represents a batched Redis operation."""
+    def __init__(self, operation: str, key: str, value: Any = None, 
+                 serialization: SerializationType = SerializationType.JSON,
+                 ttl: Optional[int] = None,
+                 future: Optional[asyncio.Future] = None):
+        self.operation = operation
+        self.key = key
+        self.value = value
+        self.serialization = serialization
+        self.ttl = ttl
+        self.future = future or asyncio.Future()
+        self.timestamp = time.time()
+
+
+class ConnectionPoolMonitor:
+    """Monitors Redis connection pool health and performance."""
+    
+    def __init__(self, pool: redis.ConnectionPool):
+        self.pool = pool
+        self.metrics = {
+            'active_connections': 0,
+            'total_requests': 0,
+            'failed_requests': 0,
+            'avg_response_time': 0.0,
+            'last_check': time.time()
+        }
+        
+    async def get_pool_stats(self) -> Dict[str, Any]:
+        """Get detailed pool statistics."""
+        return {
+            'created_connections': getattr(self.pool, 'created_connections', 0),
+            'available_connections': getattr(self.pool, 'available_connections', 0),
+            'in_use_connections': getattr(self.pool, 'in_use_connections', 0),
+            'max_connections': self.pool.max_connections,
+            'metrics': self.metrics
+        }
 
 
 class RedisAdapter:
-    """Async adapter for Redis operations."""
+    """High-performance async adapter for Redis operations with advanced batching."""
+    
+    _instances: Dict[str, 'RedisAdapter'] = {}
+    _instance_lock = asyncio.Lock()
     
     def __init__(self, config: RedisConfig):
         self.config = config
         self._client: Optional[redis.Redis] = None
         self._initialized = False
+        self._batch_queue: List[BatchOperation] = []
+        self._batch_lock = asyncio.Lock()
+        self._batch_task: Optional[asyncio.Task] = None
+        self._pool_monitor: Optional[ConnectionPoolMonitor] = None
+        self._metrics = {
+            'operations_processed': 0,
+            'batch_operations': 0,
+            'cache_hits': 0,
+            'cache_misses': 0,
+            'avg_batch_size': 0.0,
+            'avg_response_time': 0.0
+        }
+        self._last_metrics_reset = time.time()
+        
+    @classmethod
+    async def get_instance(cls, config: RedisConfig) -> 'RedisAdapter':
+        """Get or create singleton instance per config."""
+        instance_key = f"{config.host}:{config.port}:{config.db}"
+        
+        async with cls._instance_lock:
+            if instance_key not in cls._instances:
+                instance = cls(config)
+                await instance.initialize()
+                cls._instances[instance_key] = instance
+            return cls._instances[instance_key]
         
     async def initialize(self):
-        """Initialize the Redis client."""
+        """Initialize the Redis client with advanced features."""
         if self._initialized:
             return
             
@@ -84,9 +166,10 @@ class RedisAdapter:
             span.set_attribute("redis.host", self.config.host)
             span.set_attribute("redis.port", self.config.port)
             span.set_attribute("redis.db", self.config.db)
+            span.set_attribute("redis.max_connections", self.config.max_connections)
             
             try:
-                # Create connection pool
+                # Create high-performance connection pool
                 pool = redis.ConnectionPool(
                     host=self.config.host,
                     port=self.config.port,
@@ -97,34 +180,71 @@ class RedisAdapter:
                     socket_timeout=self.config.socket_timeout,
                     socket_connect_timeout=self.config.connection_timeout,
                     socket_keepalive=self.config.socket_keepalive,
-                    socket_keepalive_options={},
+                    socket_keepalive_options={
+                        1: 1,  # TCP_KEEPIDLE
+                        2: 3,  # TCP_KEEPINTVL  
+                        3: 5,  # TCP_KEEPCNT
+                    },
                     retry_on_timeout=self.config.retry_on_timeout,
                     retry_on_error=self.config.retry_on_error or [],
                     health_check_interval=self.config.health_check_interval
                 )
                 
-                # Create client
-                self._client = redis.Redis(connection_pool=pool)
+                # Create client with optimized settings
+                self._client = redis.Redis(
+                    connection_pool=pool,
+                    retry_on_error=[redis.BusyLoadingError, redis.ConnectionError],
+                    retry_on_timeout=True
+                )
                 
-                # Verify connectivity
-                await self._client.ping()
+                # Initialize connection pool monitoring
+                if self.config.connection_pool_monitoring:
+                    self._pool_monitor = ConnectionPoolMonitor(pool)
+                
+                # Verify connectivity with timeout
+                await asyncio.wait_for(self._client.ping(), timeout=self.config.connection_timeout)
+                
+                # Start batch processing if enabled
+                if self.config.enable_async_batching:
+                    self._batch_task = asyncio.create_task(self._batch_processor())
                 
                 self._initialized = True
-                logger.info("Redis adapter initialized", 
+                logger.info("High-performance Redis adapter initialized", 
                            host=self.config.host,
-                           port=self.config.port)
+                           port=self.config.port,
+                           max_connections=self.config.max_connections,
+                           batch_enabled=self.config.enable_async_batching)
                 
             except Exception as e:
                 logger.error("Failed to initialize Redis", error=str(e))
                 raise
                 
     async def close(self):
-        """Close the Redis client."""
-        if self._client:
-            await self._client.close()
-            await self._client.connection_pool.disconnect()
+        """Close the Redis client and cleanup resources."""
+        try:
+            # Cancel batch processing
+            if self._batch_task and not self._batch_task.done():
+                self._batch_task.cancel()
+                try:
+                    await self._batch_task
+                except asyncio.CancelledError:
+                    pass
+            
+            # Process remaining batched operations
+            if self._batch_queue:
+                await self._process_batch()
+            
+            # Close Redis connection
+            if self._client:
+                await self._client.close()
+                await self._client.connection_pool.disconnect()
+            
             self._initialized = False
-            logger.info("Redis adapter closed")
+            logger.info("High-performance Redis adapter closed", 
+                       operations_processed=self._metrics['operations_processed'])
+                       
+        except Exception as e:
+            logger.error("Error closing Redis adapter", error=str(e))
             
     def _serialize(self, value: Any, serialization: SerializationType) -> bytes:
         """Serialize value based on type."""
