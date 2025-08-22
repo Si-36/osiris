@@ -1,98 +1,67 @@
 {
   "dashboard": {
     "id": null,
-    "title": "AURA Intelligence Production Dashboard",
-    "tags": ["aura", "production", "ai"],
+    "title": "AURA Intelligence System 2025",
+    "tags": ["aura", "ai", "production"],
     "timezone": "browser",
     "panels": [
       {
         "id": 1,
-        "title": "System Overview",
+        "title": "System Health",
         "type": "stat",
         "targets": [
           {
-            "expr": "aura_system_health",
-            "refId": "A"
+            "expr": "aura_enhancement_active",
+            "legendFormat": "{{enhancement_name}}"
           }
         ],
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "thresholds": {
-              "steps": [
-                {"color": "red", "value": 0},
-                {"color": "yellow", "value": 0.8},
-                {"color": "green", "value": 0.95}
-              ]
-            }
-          }
-        },
         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
       },
       {
         "id": 2,
-        "title": "GPU Performance",
+        "title": "Liquid Neural Adaptations",
         "type": "graph",
         "targets": [
           {
-            "expr": "aura_gpu_processing_time_ms",
-            "refId": "A"
+            "expr": "rate(aura_liquid_adaptations_total[5m])",
+            "legendFormat": "{{component_id}}"
           }
-        ],
-        "yAxes": [
-          {"label": "Milliseconds", "min": 0}
         ],
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
       },
       {
         "id": 3,
-        "title": "Request Throughput",
+        "title": "Mamba-2 Context Length",
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(aura_requests_total[5m])",
-            "refId": "A"
+            "expr": "aura_mamba_context_length"
           }
-        ],
-        "yAxes": [
-          {"label": "Requests/sec", "min": 0}
         ],
         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
       },
       {
         "id": 4,
-        "title": "Memory Usage",
+        "title": "Constitutional Corrections",
         "type": "graph",
         "targets": [
           {
-            "expr": "aura_memory_usage_bytes",
-            "refId": "A"
+            "expr": "rate(aura_constitutional_corrections_total[5m])",
+            "legendFormat": "{{correction_type}}"
           }
-        ],
-        "yAxes": [
-          {"label": "Bytes", "min": 0}
         ],
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
       },
       {
         "id": 5,
-        "title": "Neural Architecture Performance",
-        "type": "table",
+        "title": "Component Health Distribution",
+        "type": "piechart",
         "targets": [
           {
-            "expr": "aura_neural_architecture_score",
-            "refId": "A"
+            "expr": "aura_component_health_score"
           }
         ],
         "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
-      },
-      {
-        "id": 6,
-        "title": "System Alerts",
-        "type": "alertlist",
-        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24}
       }
     ],
     "time": {
