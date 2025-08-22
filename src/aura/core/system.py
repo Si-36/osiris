@@ -310,12 +310,12 @@ class AURASystem:
     def get_all_components(self):
         """Get all registered components for testing"""
         components = {
-            "tda_algorithms": list(self.tda_algorithms.keys()),
+            "tda": list(self.tda_algorithms.keys()),
             "neural_networks": list(self.neural_networks.keys()),
-            "memory_components": list(self.memory_components.keys()),
+            "memory": list(self.memory_components.keys()),
             "agents": list(self.agents.keys()),
-            "consensus_protocols": list(self.consensus_protocols.keys()),
-            "neuromorphic_components": list(self.neuromorphic_components.keys()),
+            "consensus": list(self.consensus_protocols.keys()),
+            "neuromorphic": list(self.neuromorphic_components.keys()),
             "infrastructure": list(self.infrastructure.keys())
         }
         return components
@@ -357,10 +357,10 @@ class AURASystem:
             Failure prediction with confidence scores
         """
         # Use adaptive LNN for prediction
-        prediction = await self.neural_networks["adaptive_lnn"].predict(topology)
+        prediction = self.neural_networks["adaptive_lnn"].predict(topology)
         
         # Cross-validate with edge LNN
-        edge_prediction = await self.neural_networks["edge_lnn"].predict(topology)
+        edge_prediction = self.neural_networks["edge_lnn"].predict(topology)
         
         # Combine predictions
         combined_confidence = (prediction["confidence"] + edge_prediction["confidence"]) / 2

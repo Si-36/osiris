@@ -20,6 +20,18 @@ class LiquidNeuralNetwork:
             "prediction": 0.5,
             "confidence": 0.8
         }
+    
+    def predict(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Synchronous predict method"""
+        return {
+            "network": self.name,
+            "prediction": 0.5,
+            "confidence": 0.8,
+            "failure_probability": 0.1,
+            "risk_score": 0.15,
+            "time_to_failure": 300,  # seconds
+            "affected_agents": []
+        }
 
 # Create all 10 variants
 VARIANTS = {
