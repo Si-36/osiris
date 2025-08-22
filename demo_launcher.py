@@ -41,7 +41,7 @@ def print_demos():
         🧪 Test GPU capabilities
         🎯 Perfect for: Quick testing and validation
         
-    5️⃣  🚀 ULTIMATE AURA Demo (demo_aura_ultimate.py) ⭐ NEW!
+            5️⃣  🚀 ULTIMATE AURA Demo (demo_aura_ultimate.py) ⭐ NEW!
         🧠 ALL innovations in one unified system:
         - Liquid Neural Networks 2025 (self-modifying)
         - Spiking GNN (1000x energy efficiency)
@@ -49,6 +49,14 @@ def print_demos():
         - Shape-Aware Memory V2 (8-tier CXL)
         - Byzantine Consensus (HotStuff)
         🎯 Perfect for: Showcasing EVERYTHING!
+        
+    6️⃣  🛡️ Agent Failure Prevention (demo_agent_failure_prevention.py) ⭐ CORE VISION!
+        🧠 Your core hypothesis in action:
+        - Multi-agent system with real-time topology visualization
+        - Cascading failure prediction BEFORE it happens
+        - Automatic intervention to prevent failures
+        - Toggle AURA on/off to see the difference
+        🎯 Perfect for: Demonstrating your CORE VALUE PROPOSITION!
     """)
 
 def run_demo(demo_file):
@@ -77,7 +85,7 @@ def main():
         print_demos()
         
         try:
-            choice = input("\nEnter your choice (1-5) or 'q' to quit: ").strip().lower()
+            choice = input("\nEnter your choice (1-6) or 'q' to quit: ").strip().lower()
             
             if choice == 'q':
                 print("\n👋 Thanks for using AURA Intelligence!")
@@ -88,7 +96,8 @@ def main():
                 '2': 'demo_pattern_detection.py', 
                 '3': 'demo_edge_intelligence.py',
                 '4': 'simple_demo.py',
-                '5': 'demo_aura_ultimate.py'
+                '5': 'demo_aura_ultimate.py',
+                '6': 'demo_agent_failure_prevention.py'
             }
             
             if choice in demos:
@@ -96,7 +105,7 @@ def main():
                 print("\n" + "=" * 60)
                 input("\nPress Enter to continue...")
             else:
-                print("\n❌ Invalid choice! Please enter 1-5 or 'q'")
+                print("\n❌ Invalid choice! Please enter 1-6 or 'q'")
                 
         except KeyboardInterrupt:
             print("\n\n👋 Goodbye!")
