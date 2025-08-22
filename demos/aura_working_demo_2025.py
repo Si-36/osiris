@@ -722,6 +722,7 @@ class AURARequestHandler(BaseHTTPRequestHandler):
         <div class="main-grid">
             <div class="visualization">
                 <h3>Multi-Agent System Topology</h3>
+                <div style="font-size: 14px; color: #888; margin-bottom: 10px;">Agent Network - 30 Agents Connected</div>
                 <canvas id="network-canvas" width="840" height="600"></canvas>
                 
                 <div class="metrics">
