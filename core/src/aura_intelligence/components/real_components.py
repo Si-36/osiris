@@ -273,9 +273,134 @@ class AsyncBatchProcessor:
             "max_batch_wait_ms": self.max_batch_wait_ms
         }
 
+# Global Model Manager for Production Performance
+class GlobalModelManager:
+    """Production-grade model management with pre-loading and caching"""
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
+    def __init__(self):
+        if self._initialized:
+            return
+        
+        self.models = {}
+        self.tokenizers = {}
+        self.model_locks = {}
+        self._initialized = True
+        self.logger = logging.getLogger(__name__)
+        
+        # Pre-loading configuration
+        self.preload_enabled = True
+        self.warmup_enabled = True
+        
+    async def initialize(self):
+        """Initialize and pre-load all models for zero-latency inference"""
+        if not self.preload_enabled:
+            return
+        
+        self.logger.info("Pre-loading models for production performance...")
+        
+        # Pre-load BERT model
+        await self._preload_bert_model()
+        
+        self.logger.info(f"Model pre-loading complete: {len(self.models)} models ready")
+    
+    async def _preload_bert_model(self):
+        """Pre-load BERT model with GPU optimization"""
+        model_key = "distilbert-base-uncased"
+        
+        try:
+            import asyncio
+            from transformers import AutoModel, AutoTokenizer
+            
+            # Load model and tokenizer in background thread to avoid blocking
+            def load_model():
+                return AutoModel.from_pretrained(model_key)
+            
+            def load_tokenizer():
+                return AutoTokenizer.from_pretrained(model_key)
+            
+            # Load concurrently
+            model_task = asyncio.get_event_loop().run_in_executor(None, load_model)
+            tokenizer_task = asyncio.get_event_loop().run_in_executor(None, load_tokenizer)
+            
+            model, tokenizer = await asyncio.gather(model_task, tokenizer_task)
+            
+            # Move to GPU if available
+            device = gpu_manager.get_device()
+            if str(device) != 'cpu':
+                model = model.to(device)
+                self.logger.info(f"Model moved to GPU: {device}")
+            
+            model.eval()  # Set to eval mode
+            
+            # Store in cache
+            self.models[model_key] = model
+            self.tokenizers[model_key] = tokenizer
+            self.model_locks[model_key] = asyncio.Lock()
+            
+            # Warmup the model
+            if self.warmup_enabled:
+                await self._warmup_bert_model(model_key)
+            
+            self.logger.info(f"BERT model pre-loaded successfully: {model_key}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to pre-load BERT model: {e}")
+    
+    async def _warmup_bert_model(self, model_key: str):
+        """Warmup BERT model with dummy inference"""
+        try:
+            model = self.models[model_key]
+            tokenizer = self.tokenizers[model_key]
+            device = next(model.parameters()).device
+            
+            # Dummy inference for warmup
+            dummy_text = "warmup inference to optimize GPU context"
+            inputs = tokenizer(dummy_text, return_tensors='pt', truncation=True, max_length=512)
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+            
+            # Perform warmup inferences
+            with torch.no_grad():
+                for _ in range(3):  # Multiple warmups for GPU optimization
+                    _ = model(**inputs)
+            
+            self.logger.info(f"Model warmup completed: {model_key}")
+            
+        except Exception as e:
+            self.logger.warning(f"Model warmup failed: {e}")
+    
+    async def get_bert_model(self, model_key: str = "distilbert-base-uncased"):
+        """Get pre-loaded BERT model with lock protection"""
+        if model_key not in self.models:
+            # Fallback: load on-demand if not pre-loaded
+            await self._preload_bert_model()
+        
+        if model_key in self.models:
+            return self.models[model_key], self.tokenizers[model_key], self.model_locks[model_key]
+        
+        return None, None, None
+    
+    def get_model_stats(self) -> Dict[str, Any]:
+        """Get model manager statistics"""
+        return {
+            "preloaded_models": len(self.models),
+            "available_models": list(self.models.keys()),
+            "preload_enabled": self.preload_enabled,
+            "warmup_enabled": self.warmup_enabled,
+            "gpu_models": len([k for k, v in self.models.items() 
+                              if next(v.parameters()).device.type == 'cuda'])
+        }
+
 # Initialize global managers
 redis_pool = RedisConnectionPool()
 batch_processor = AsyncBatchProcessor()
+model_manager = GlobalModelManager()
 
 # GPU Manager for Production Performance
 class GPUManager:
@@ -589,27 +714,28 @@ class RealLNNComponent(RealComponent):
         
         return {'error': 'Invalid input format'}
 
-# REAL BERT Attention Component - GPU Accelerated
+# REAL BERT Attention Component - Optimized with Pre-loaded Models
 class RealAttentionComponent(RealComponent):
     def __init__(self, component_id: str):
         super().__init__(component_id)
-        try:
-            from transformers import AutoModel, AutoTokenizer
-            self.model = AutoModel.from_pretrained('distilbert-base-uncased')
-            self.tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
-            
-            # Move model to GPU for acceleration
-            if self.gpu_enabled:
-                self.model = self.model.to(self.device)
-                self.model.eval()  # Set to eval mode for inference
-            
-            self.real_implementation = True
-        except ImportError:
-            self.real_implementation = False
+        self.model = None
+        self.tokenizer = None
+        self.model_lock = None
+        self.real_implementation = True
+        
+        # Model will be retrieved from global manager on first use
+        self.model_key = "distilbert-base-uncased"
     
     async def process(self, data: Any) -> Dict[str, Any]:
         if not self.real_implementation:
             return {'error': 'Install transformers for real attention'}
+        
+        # Get pre-loaded model from global manager (eliminates loading time)
+        if self.model is None:
+            self.model, self.tokenizer, self.model_lock = await model_manager.get_bert_model(self.model_key)
+            
+            if self.model is None:
+                return {'error': 'Failed to load pre-trained model'}
         
         # Handle different input formats
         text_input = None
@@ -623,34 +749,41 @@ class RealAttentionComponent(RealComponent):
         else:
             text_input = str(data)
         
-        inputs = self.tokenizer(text_input, return_tensors='pt', truncation=True, max_length=512)
-        
-        # Move inputs to GPU for acceleration
-        if self.gpu_enabled:
-            inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        
-        start_time = time.perf_counter()
-        with torch.no_grad():
-            outputs = self.model(**inputs, output_attentions=True)
-        gpu_processing_time = (time.perf_counter() - start_time) * 1000
-        
-        # Move results back to CPU for JSON serialization
-        attention_weights = outputs.attentions[0][0].mean(dim=0).cpu().numpy().tolist()
-        hidden_states = outputs.last_hidden_state[0].mean(dim=0).cpu().numpy().tolist()
-        
-        # Clear GPU cache to prevent memory buildup
-        if self.gpu_enabled:
-            self.clear_gpu_cache()
+        # Use model lock to prevent concurrent access issues
+        async with self.model_lock:
+            # Tokenize input (this is fast, no GPU needed)
+            inputs = self.tokenizer(text_input, return_tensors='pt', truncation=True, max_length=512)
+            
+            # Get model device (should already be on GPU if available)
+            device = next(self.model.parameters()).device
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+            
+            # GPU inference with optimized timing
+            start_time = time.perf_counter()
+            
+            with torch.no_grad():
+                outputs = self.model(**inputs, output_attentions=True)
+            
+            # Synchronize GPU for accurate timing
+            if device.type == 'cuda':
+                torch.cuda.synchronize()
+            
+            gpu_processing_time = (time.perf_counter() - start_time) * 1000
+            
+            # Process outputs efficiently
+            attention_weights = outputs.attentions[0][0].mean(dim=0).cpu().numpy().tolist()
+            hidden_states = outputs.last_hidden_state[0].mean(dim=0).cpu().numpy().tolist()
         
         return {
             'attention_output': attention_weights,
             'attention_weights': attention_weights,
             'hidden_states': hidden_states,
-            'model': 'distilbert-base-uncased',
+            'model': self.model_key,
             'real_transformer': True,
-            'gpu_accelerated': self.gpu_enabled,
-            'device': str(self.device),
-            'processing_time_ms': gpu_processing_time
+            'gpu_accelerated': device.type == 'cuda',
+            'device': str(device),
+            'processing_time_ms': gpu_processing_time,
+            'preloaded_model': True
         }
 
 # REAL Switch MoE Component using 2025 production patterns
