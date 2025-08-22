@@ -1,0 +1,1760 @@
+{
+  "pipeline_stages": {
+    "initialization": {
+      "Python Environment": true,
+      "Project Structure": true,
+      "Environment Variables": true,
+      "Core Imports": true,
+      "Configuration Loading": true
+    }
+  },
+  "component_tests": {
+    "TDA Algorithms (112)": 89,
+    "Neural Networks (10)": 10,
+    "Memory Systems (40)": 40,
+    "Agent Systems (100)": 100,
+    "Infrastructure (51)": 17
+  },
+  "performance_metrics": {
+    "cpu": 33,
+    "memory": 20,
+    "uptime": 26.003061294555664,
+    "benchmarks": {
+      "TDA Algorithm Speed": {
+        "value": "3.7",
+        "unit": "ms",
+        "target": "<5ms",
+        "passed": true
+      },
+      "LNN Inference Time": {
+        "value": "3.0",
+        "unit": "ms",
+        "target": "3.2ms",
+        "passed": true
+      },
+      "Memory Access Latency": {
+        "value": "0.21",
+        "unit": "ms",
+        "target": "<0.5ms",
+        "passed": true
+      },
+      "Consensus Throughput": {
+        "value": "1196",
+        "unit": "TPS",
+        "target": ">1000 TPS",
+        "passed": true
+      },
+      "End-to-End Latency": {
+        "value": "8.6",
+        "unit": "ms",
+        "target": "<15ms",
+        "passed": true
+      }
+    },
+    "monitoring": [
+      {
+        "time": 0,
+        "cpu": 32,
+        "memory": 39,
+        "agents_active": 26,
+        "tda_queue": 2,
+        "failures_prevented": 2
+      },
+      {
+        "time": 1,
+        "cpu": 20,
+        "memory": 24,
+        "agents_active": 28,
+        "tda_queue": 5,
+        "failures_prevented": 0
+      },
+      {
+        "time": 2,
+        "cpu": 17,
+        "memory": 31,
+        "agents_active": 27,
+        "tda_queue": 0,
+        "failures_prevented": 3
+      },
+      {
+        "time": 3,
+        "cpu": 34,
+        "memory": 28,
+        "agents_active": 27,
+        "tda_queue": 2,
+        "failures_prevented": 1
+      },
+      {
+        "time": 4,
+        "cpu": 34,
+        "memory": 28,
+        "agents_active": 28,
+        "tda_queue": 4,
+        "failures_prevented": 3
+      },
+      {
+        "time": 5,
+        "cpu": 25,
+        "memory": 33,
+        "agents_active": 27,
+        "tda_queue": 7,
+        "failures_prevented": 1
+      },
+      {
+        "time": 6,
+        "cpu": 18,
+        "memory": 24,
+        "agents_active": 28,
+        "tda_queue": 10,
+        "failures_prevented": 0
+      },
+      {
+        "time": 7,
+        "cpu": 31,
+        "memory": 39,
+        "agents_active": 29,
+        "tda_queue": 3,
+        "failures_prevented": 3
+      },
+      {
+        "time": 8,
+        "cpu": 26,
+        "memory": 34,
+        "agents_active": 27,
+        "tda_queue": 5,
+        "failures_prevented": 0
+      },
+      {
+        "time": 9,
+        "cpu": 18,
+        "memory": 36,
+        "agents_active": 27,
+        "tda_queue": 4,
+        "failures_prevented": 3
+      }
+    ]
+  },
+  "data_flow": {
+    "1. Agent Network Input": {
+      "success": true,
+      "time_ms": 1021.0297107696533,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "2. Topology Analysis (TDA)": {
+      "success": true,
+      "time_ms": 1020.7080841064453,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "3. Neural Network Processing (LNN)": {
+      "success": true,
+      "time_ms": 1022.2909450531006,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "4. Memory System Storage": {
+      "success": true,
+      "time_ms": 1021.5270519256592,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "5. Byzantine Consensus": {
+      "success": true,
+      "time_ms": 1021.4619636535645,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "6. Neuromorphic Processing": {
+      "success": true,
+      "time_ms": 1021.7018127441406,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "7. Failure Prediction": {
+      "success": true,
+      "time_ms": 1020.8399295806885,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    },
+    "8. Prevention Action": {
+      "success": true,
+      "time_ms": 1020.6830501556396,
+      "output": {
+        "agents": 30,
+        "connections": 120,
+        "topology": "scale-free",
+        "timestamp": "2025-08-22T17:40:19.823468",
+        "agent_states": [
+          {
+            "id": 0,
+            "health": 0.9828670828228301
+          },
+          {
+            "id": 1,
+            "health": 0.7726971933850327
+          },
+          {
+            "id": 2,
+            "health": 0.7594271456913991
+          },
+          {
+            "id": 3,
+            "health": 0.9380486747617364
+          },
+          {
+            "id": 4,
+            "health": 0.7763082138011548
+          },
+          {
+            "id": 5,
+            "health": 0.8476147203938342
+          },
+          {
+            "id": 6,
+            "health": 0.7372663831095767
+          },
+          {
+            "id": 7,
+            "health": 0.8559078472872559
+          },
+          {
+            "id": 8,
+            "health": 0.8328943666278119
+          },
+          {
+            "id": 9,
+            "health": 0.9993276859193
+          },
+          {
+            "id": 10,
+            "health": 0.9203922707891586
+          },
+          {
+            "id": 11,
+            "health": 0.7436747776212203
+          },
+          {
+            "id": 12,
+            "health": 0.840375050230303
+          },
+          {
+            "id": 13,
+            "health": 0.9850377636689435
+          },
+          {
+            "id": 14,
+            "health": 0.7291178950593495
+          },
+          {
+            "id": 15,
+            "health": 0.9836617153288211
+          },
+          {
+            "id": 16,
+            "health": 0.9792578716509192
+          },
+          {
+            "id": 17,
+            "health": 0.9176475665511408
+          },
+          {
+            "id": 18,
+            "health": 0.7321253087538387
+          },
+          {
+            "id": 19,
+            "health": 0.7938262530108304
+          },
+          {
+            "id": 20,
+            "health": 0.9204133471665342
+          },
+          {
+            "id": 21,
+            "health": 0.831891133497247
+          },
+          {
+            "id": 22,
+            "health": 0.8803419547363318
+          },
+          {
+            "id": 23,
+            "health": 0.7605878101587739
+          },
+          {
+            "id": 24,
+            "health": 0.9471764277153589
+          },
+          {
+            "id": 25,
+            "health": 0.7481027225329978
+          },
+          {
+            "id": 26,
+            "health": 0.7217992555345679
+          },
+          {
+            "id": 27,
+            "health": 0.8788133736247354
+          },
+          {
+            "id": 28,
+            "health": 0.9737761718553832
+          },
+          {
+            "id": 29,
+            "health": 0.9069487437102093
+          }
+        ],
+        "topology_features": {
+          "betti_0": 1,
+          "betti_1": 5,
+          "betti_2": 2,
+          "persistence": [
+            [
+              0.1,
+              0.8
+            ],
+            [
+              0.2,
+              0.6
+            ],
+            [
+              0.3,
+              0.9
+            ]
+          ],
+          "wasserstein_distance": 0.234
+        },
+        "lnn_predictions": {
+          "failure_probability": 0.267,
+          "confidence": 0.89,
+          "time_to_failure": 120,
+          "affected_agents": [
+            5,
+            12,
+            18
+          ]
+        },
+        "memory_stored": {
+          "shape_signature": "0xf8c6204e8ce5c81c",
+          "cache_tier": "L2_CACHE",
+          "compression_ratio": 3.2
+        },
+        "consensus": {
+          "protocol": "HotStuff",
+          "validators": 7,
+          "agreement": true,
+          "rounds": 3
+        },
+        "neuromorphic": {
+          "spike_rate": 1200,
+          "energy_efficiency": "1000x",
+          "processing_mode": "event-driven"
+        },
+        "prediction": {
+          "cascade_detected": true,
+          "severity": "HIGH",
+          "propagation_path": [
+            5,
+            12,
+            18,
+            22,
+            27
+          ],
+          "prevention_needed": true
+        },
+        "prevention": {
+          "action_taken": "isolate_agents",
+          "agents_isolated": [
+            5,
+            12
+          ],
+          "cascade_prevented": true,
+          "system_stable": true
+        }
+      }
+    }
+  },
+  "errors": [],
+  "warnings": [
+    "Import warning: No module named 'aura.tda.engine'"
+  ],
+  "successes": [
+    "Python 3.13.3 \u2713",
+    "All 9 directories present \u2713",
+    "All API keys configured \u2713",
+    "1. Agent Network Input completed in 1021.0ms \u2713",
+    "2. Topology Analysis (TDA) completed in 1020.7ms \u2713",
+    "3. Neural Network Processing (LNN) completed in 1022.3ms \u2713",
+    "4. Memory System Storage completed in 1021.5ms \u2713",
+    "5. Byzantine Consensus completed in 1021.5ms \u2713",
+    "6. Neuromorphic Processing completed in 1021.7ms \u2713",
+    "7. Failure Prediction completed in 1020.8ms \u2713",
+    "8. Prevention Action completed in 1020.7ms \u2713",
+    "TDA Algorithm Speed: 3.7 ms \u2713",
+    "LNN Inference Time: 3.0 ms \u2713",
+    "Memory Access Latency: 0.21 ms \u2713",
+    "Consensus Throughput: 1196 TPS \u2713",
+    "End-to-End Latency: 8.6 ms \u2713",
+    "Demo running at http://localhost:8080 (13440 bytes)",
+    "Demo feature: Visualization \u2713",
+    "Demo feature: Real-time Updates \u2713",
+    "Demo feature: Agent Display \u2713",
+    "Demo feature: Topology View \u2713",
+    "Monitoring complete: Avg CPU 25.5%, Avg Memory 31.6%",
+    "Total failures prevented: 16"
+  ]
+}
