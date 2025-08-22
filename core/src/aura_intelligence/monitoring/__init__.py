@@ -3,11 +3,8 @@
 Real-time performance monitoring and observability
 """
 
-from .realtime_dashboard import RealTimeDashboard, get_global_dashboard, start_dashboard_monitoring, stop_dashboard_monitoring
+from .real_time_dashboard import RealTimeDashboard
 
 __all__ = [
-    'RealTimeDashboard',
-    'get_global_dashboard',
-    'start_dashboard_monitoring',
-    'stop_dashboard_monitoring'
+    'RealTimeDashboard'
 ]

@@ -1,0 +1,207 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "AURA Intelligence - Neural Performance",
+    "tags": ["aura", "neural", "performance"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "BERT Processing Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aura_bert_processing_duration_seconds * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 25},
+                {"color": "red", "value": 50}
+              ]
+            },
+            "unit": "ms"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Attention Processing Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aura_attention_processing_duration_seconds * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 10},
+                {"color": "red", "value": 20}
+              ]
+            },
+            "unit": "ms"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "LNN Processing Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aura_lnn_processing_duration_seconds * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 15},
+                {"color": "red", "value": 30}
+              ]
+            },
+            "unit": "ms"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Total Pipeline Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aura_total_processing_duration_seconds * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 0.5},
+                {"color": "red", "value": 1}
+              ]
+            },
+            "unit": "ms"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Neural Component Throughput",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(aura_bert_requests_total[5m])",
+            "refId": "A",
+            "legendFormat": "BERT"
+          },
+          {
+            "expr": "rate(aura_attention_requests_total[5m])",
+            "refId": "B",
+            "legendFormat": "Attention"
+          },
+          {
+            "expr": "rate(aura_lnn_requests_total[5m])",
+            "refId": "C",
+            "legendFormat": "LNN"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "requests/sec",
+            "show": true
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Model Cache Hit Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(aura_model_cache_hits_total[5m]) / (rate(aura_model_cache_hits_total[5m]) + rate(aura_model_cache_misses_total[5m])) * 100",
+            "refId": "A",
+            "legendFormat": "Cache Hit Rate %"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "%",
+            "max": 100,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "GPU Memory Efficiency",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aura_gpu_memory_used_bytes / aura_gpu_memory_total_bytes * 100",
+            "refId": "A",
+            "legendFormat": "GPU Memory Usage %"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "%",
+            "max": 100,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Processing Time Heatmap",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "rate(aura_processing_duration_seconds_bucket[5m])",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}
