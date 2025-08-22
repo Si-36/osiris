@@ -1,300 +1,258 @@
 {
-  "timestamp": "2025-08-22T20:34:10.128784",
+  "timestamp": "2025-08-23T03:04:53.221372",
   "tests": [
-    {
-      "name": "Component Count - tda",
-      "status": "PASS",
-      "details": "112/112 components",
-      "timestamp": "2025-08-22T20:34:10.143466"
-    },
-    {
-      "name": "Component Count - nn",
-      "status": "PASS",
-      "details": "10/10 components",
-      "timestamp": "2025-08-22T20:34:10.143479"
-    },
-    {
-      "name": "Component Count - memory",
-      "status": "PASS",
-      "details": "40/40 components",
-      "timestamp": "2025-08-22T20:34:10.143484"
-    },
-    {
-      "name": "Component Count - agents",
-      "status": "PASS",
-      "details": "100/100 components",
-      "timestamp": "2025-08-22T20:34:10.143488"
-    },
-    {
-      "name": "Component Count - consensus",
-      "status": "PASS",
-      "details": "5/5 components",
-      "timestamp": "2025-08-22T20:34:10.143492"
-    },
-    {
-      "name": "Component Count - neuromorphic",
-      "status": "PASS",
-      "details": "8/8 components",
-      "timestamp": "2025-08-22T20:34:10.143495"
-    },
-    {
-      "name": "Component Count - infrastructure",
-      "status": "PASS",
-      "details": "51/51 components",
-      "timestamp": "2025-08-22T20:34:10.143498"
-    },
     {
       "name": "Core AURA System",
       "status": "FAIL",
-      "details": "'dict' object has no attribute 'store'",
-      "timestamp": "2025-08-22T20:34:10.143541"
+      "details": "type 'LiquidNeuralNetwork' is not subscriptable",
+      "timestamp": "2025-08-23T03:04:53.233977"
     },
     {
       "name": "K8s manifest - aura-deployment.yaml",
       "status": "PASS",
       "details": "Valid YAML structure",
-      "timestamp": "2025-08-22T20:34:10.143612"
+      "timestamp": "2025-08-23T03:04:53.234040"
     },
     {
       "name": "K8s manifest - monitoring-stack.yaml",
       "status": "PASS",
       "details": "Valid YAML structure",
-      "timestamp": "2025-08-22T20:34:10.143642"
+      "timestamp": "2025-08-23T03:04:53.234075"
     },
     {
-      "name": "Ray Integration",
-      "status": "FAIL",
-      "details": "No module named 'ray'",
-      "timestamp": "2025-08-22T20:34:10.146942"
+      "name": "Ray TDA Worker",
+      "status": "PASS",
+      "details": "Module imported",
+      "timestamp": "2025-08-23T03:04:54.384506"
+    },
+    {
+      "name": "Ray LNN Worker",
+      "status": "PASS",
+      "details": "Module imported",
+      "timestamp": "2025-08-23T03:04:54.384520"
+    },
+    {
+      "name": "Ray Orchestrator",
+      "status": "PASS",
+      "details": "Module imported",
+      "timestamp": "2025-08-23T03:04:54.384523"
+    },
+    {
+      "name": "Ray Serve Deployment",
+      "status": "PASS",
+      "details": "Module imported",
+      "timestamp": "2025-08-23T03:04:54.384525"
     },
     {
       "name": "Knowledge Graph Script",
       "status": "PASS",
       "details": "Script exists",
-      "timestamp": "2025-08-22T20:34:10.146996"
+      "timestamp": "2025-08-23T03:04:54.384545"
     },
     {
       "name": "Enhanced KG Module",
       "status": "PASS",
       "details": "Module exists",
-      "timestamp": "2025-08-22T20:34:10.147003"
+      "timestamp": "2025-08-23T03:04:54.384553"
     },
     {
       "name": "GDS 2.19 Support",
       "status": "PASS",
       "details": "Neo4j integration ready",
-      "timestamp": "2025-08-22T20:34:10.147007"
+      "timestamp": "2025-08-23T03:04:54.384556"
     },
     {
-      "name": "A2A Protocol Import",
-      "status": "PASS",
-      "details": "All classes imported",
-      "timestamp": "2025-08-22T20:34:10.228371"
-    },
-    {
-      "name": "A2A Message Creation",
-      "status": "PASS",
-      "details": "Message ID: 38f805e1-4513-4558-91ba-c1228549f5ca",
-      "timestamp": "2025-08-22T20:34:10.228401"
-    },
-    {
-      "name": "MCP Context Creation",
-      "status": "PASS",
-      "details": "Context ID: 0ab8c4d1-bbad-40b4-9833-4dcf6c155574",
-      "timestamp": "2025-08-22T20:34:10.228416"
-    },
-    {
-      "name": "Message Serialization",
-      "status": "PASS",
-      "details": "Message: 366 bytes, Context: 378 bytes",
-      "timestamp": "2025-08-22T20:34:10.228485"
+      "name": "A2A + MCP Protocol",
+      "status": "FAIL",
+      "details": "cannot import name 'A2AMessage' from 'src.aura.a2a' (/home/sina/projects/osiris-2/src/aura/a2a/__init__.py)",
+      "timestamp": "2025-08-23T03:04:54.384699"
     },
     {
       "name": "Monitoring - advanced_monitor.py",
       "status": "PASS",
       "details": "File exists",
-      "timestamp": "2025-08-22T20:34:10.228513"
+      "timestamp": "2025-08-23T03:04:54.384715"
     },
     {
       "name": "Monitoring - start_monitoring_v2.py",
       "status": "PASS",
       "details": "File exists",
-      "timestamp": "2025-08-22T20:34:10.228521"
+      "timestamp": "2025-08-23T03:04:54.384723"
     },
     {
       "name": "Monitoring - monitoring-stack.yaml",
       "status": "PASS",
       "details": "File exists",
-      "timestamp": "2025-08-22T20:34:10.228529"
+      "timestamp": "2025-08-23T03:04:54.384731"
     },
     {
       "name": "Monitoring Stack",
       "status": "FAIL",
-      "details": "cannot import name 'AdvancedMonitor' from 'src.aura.monitoring.advanced_monitor' (/workspace/src/aura/monitoring/advanced_monitor.py)",
-      "timestamp": "2025-08-22T20:34:10.310773"
+      "details": "cannot import name 'AdvancedMonitor' from 'src.aura.monitoring.advanced_monitor' (/home/sina/projects/osiris-2/src/aura/monitoring/advanced_monitor.py)",
+      "timestamp": "2025-08-23T03:04:54.488750"
     },
     {
       "name": "Unified API File",
       "status": "PASS",
       "details": "File exists",
-      "timestamp": "2025-08-22T20:34:10.310823"
+      "timestamp": "2025-08-23T03:04:54.488787"
     },
     {
       "name": "API - Root Endpoint",
       "status": "FAIL",
       "details": "Endpoint missing",
-      "timestamp": "2025-08-22T20:34:10.310913"
+      "timestamp": "2025-08-23T03:04:54.488866"
     },
     {
       "name": "API - Health Check",
       "status": "FAIL",
       "details": "Endpoint missing",
-      "timestamp": "2025-08-22T20:34:10.310928"
+      "timestamp": "2025-08-23T03:04:54.488876"
     },
     {
       "name": "API - Analyze Endpoint",
       "status": "PASS",
       "details": "Endpoint defined",
-      "timestamp": "2025-08-22T20:34:10.310938"
+      "timestamp": "2025-08-23T03:04:54.488881"
     },
     {
       "name": "API - Predict Endpoint",
       "status": "PASS",
       "details": "Endpoint defined",
-      "timestamp": "2025-08-22T20:34:10.310947"
+      "timestamp": "2025-08-23T03:04:54.488887"
     },
     {
       "name": "API - WebSocket",
       "status": "PASS",
       "details": "Endpoint defined",
-      "timestamp": "2025-08-22T20:34:10.310957"
+      "timestamp": "2025-08-23T03:04:54.488893"
     },
     {
       "name": "API - Metrics",
       "status": "PASS",
       "details": "Endpoint defined",
-      "timestamp": "2025-08-22T20:34:10.310969"
+      "timestamp": "2025-08-23T03:04:54.488901"
     },
     {
       "name": "Demo File",
       "status": "PASS",
       "details": "File exists",
-      "timestamp": "2025-08-22T20:34:10.310994"
+      "timestamp": "2025-08-23T03:04:54.488913"
     },
     {
       "name": "Demo - WebSocket Support",
       "status": "FAIL",
       "details": "Feature missing",
-      "timestamp": "2025-08-22T20:34:10.311171"
+      "timestamp": "2025-08-23T03:04:54.489042"
     },
     {
       "name": "Demo - Real-time Updates",
       "status": "FAIL",
       "details": "Feature missing",
-      "timestamp": "2025-08-22T20:34:10.311199"
+      "timestamp": "2025-08-23T03:04:54.489058"
     },
     {
       "name": "Demo - Agent Network",
       "status": "PASS",
       "details": "Feature present",
-      "timestamp": "2025-08-22T20:34:10.311218"
+      "timestamp": "2025-08-23T03:04:54.489068"
     },
     {
       "name": "Demo - AURA Protection",
       "status": "FAIL",
       "details": "Feature missing",
-      "timestamp": "2025-08-22T20:34:10.311242"
+      "timestamp": "2025-08-23T03:04:54.489084"
     },
     {
       "name": "Performance - TDA Computation",
       "status": "PASS",
       "details": "3.2ms (target: 5.0ms)",
-      "timestamp": "2025-08-22T20:34:10.311274"
+      "timestamp": "2025-08-23T03:04:54.489097"
     },
     {
       "name": "Performance - LNN Inference",
       "status": "PASS",
       "details": "3.5ms (target: 10.0ms)",
-      "timestamp": "2025-08-22T20:34:10.311283"
+      "timestamp": "2025-08-23T03:04:54.489101"
     },
     {
       "name": "Performance - Cascade Detection",
       "status": "PASS",
       "details": "15.3ms (target: 50.0ms)",
-      "timestamp": "2025-08-22T20:34:10.311291"
+      "timestamp": "2025-08-23T03:04:54.489104"
     },
     {
       "name": "Performance - A2A Message Latency",
       "status": "PASS",
       "details": "0.45ms (target: 1.0ms)",
-      "timestamp": "2025-08-22T20:34:10.311298"
+      "timestamp": "2025-08-23T03:04:54.489107"
     },
     {
       "name": "Performance - Knowledge Graph Query",
       "status": "PASS",
       "details": "25.7ms (target: 100.0ms)",
-      "timestamp": "2025-08-22T20:34:10.311304"
+      "timestamp": "2025-08-23T03:04:54.489110"
     },
     {
       "name": "Production - Environment Configuration",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311341"
+      "timestamp": "2025-08-23T03:04:54.489138"
     },
     {
       "name": "Production - Docker Compose",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311348"
+      "timestamp": "2025-08-23T03:04:54.489141"
     },
     {
       "name": "Production - Kubernetes Manifests",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311355"
+      "timestamp": "2025-08-23T03:04:54.489144"
     },
     {
       "name": "Production - Documentation",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311361"
+      "timestamp": "2025-08-23T03:04:54.489146"
     },
     {
       "name": "Production - Test Suite",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311367"
+      "timestamp": "2025-08-23T03:04:54.489148"
     },
     {
       "name": "Production - Monitoring",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311373"
+      "timestamp": "2025-08-23T03:04:54.489150"
     },
     {
       "name": "Production - API Documentation",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311379"
+      "timestamp": "2025-08-23T03:04:54.489153"
     },
     {
       "name": "Production - Security",
       "status": "PASS",
       "details": "Ready",
-      "timestamp": "2025-08-22T20:34:10.311385"
+      "timestamp": "2025-08-23T03:04:54.489155"
     }
   ],
   "summary": {
-    "total_tests": 47,
-    "passed": 39,
+    "total_tests": 40,
+    "passed": 32,
     "failed": 8,
-    "pass_rate": 82.97872340425532,
+    "pass_rate": 80.0,
     "categories": {
       "Core AURA System": false,
       "Kubernetes Deployment": true,
-      "Ray Integration": false,
+      "Ray Integration": true,
       "Knowledge Graph": true,
-      "A2A + MCP Protocol": true,
+      "A2A + MCP Protocol": false,
       "Monitoring Stack": false,
       "Unified API": false,
       "Demo Functionality": false,
