@@ -1,0 +1,305 @@
+{
+  "timestamp": "2025-08-22T20:34:10.128784",
+  "tests": [
+    {
+      "name": "Component Count - tda",
+      "status": "PASS",
+      "details": "112/112 components",
+      "timestamp": "2025-08-22T20:34:10.143466"
+    },
+    {
+      "name": "Component Count - nn",
+      "status": "PASS",
+      "details": "10/10 components",
+      "timestamp": "2025-08-22T20:34:10.143479"
+    },
+    {
+      "name": "Component Count - memory",
+      "status": "PASS",
+      "details": "40/40 components",
+      "timestamp": "2025-08-22T20:34:10.143484"
+    },
+    {
+      "name": "Component Count - agents",
+      "status": "PASS",
+      "details": "100/100 components",
+      "timestamp": "2025-08-22T20:34:10.143488"
+    },
+    {
+      "name": "Component Count - consensus",
+      "status": "PASS",
+      "details": "5/5 components",
+      "timestamp": "2025-08-22T20:34:10.143492"
+    },
+    {
+      "name": "Component Count - neuromorphic",
+      "status": "PASS",
+      "details": "8/8 components",
+      "timestamp": "2025-08-22T20:34:10.143495"
+    },
+    {
+      "name": "Component Count - infrastructure",
+      "status": "PASS",
+      "details": "51/51 components",
+      "timestamp": "2025-08-22T20:34:10.143498"
+    },
+    {
+      "name": "Core AURA System",
+      "status": "FAIL",
+      "details": "'dict' object has no attribute 'store'",
+      "timestamp": "2025-08-22T20:34:10.143541"
+    },
+    {
+      "name": "K8s manifest - aura-deployment.yaml",
+      "status": "PASS",
+      "details": "Valid YAML structure",
+      "timestamp": "2025-08-22T20:34:10.143612"
+    },
+    {
+      "name": "K8s manifest - monitoring-stack.yaml",
+      "status": "PASS",
+      "details": "Valid YAML structure",
+      "timestamp": "2025-08-22T20:34:10.143642"
+    },
+    {
+      "name": "Ray Integration",
+      "status": "FAIL",
+      "details": "No module named 'ray'",
+      "timestamp": "2025-08-22T20:34:10.146942"
+    },
+    {
+      "name": "Knowledge Graph Script",
+      "status": "PASS",
+      "details": "Script exists",
+      "timestamp": "2025-08-22T20:34:10.146996"
+    },
+    {
+      "name": "Enhanced KG Module",
+      "status": "PASS",
+      "details": "Module exists",
+      "timestamp": "2025-08-22T20:34:10.147003"
+    },
+    {
+      "name": "GDS 2.19 Support",
+      "status": "PASS",
+      "details": "Neo4j integration ready",
+      "timestamp": "2025-08-22T20:34:10.147007"
+    },
+    {
+      "name": "A2A Protocol Import",
+      "status": "PASS",
+      "details": "All classes imported",
+      "timestamp": "2025-08-22T20:34:10.228371"
+    },
+    {
+      "name": "A2A Message Creation",
+      "status": "PASS",
+      "details": "Message ID: 38f805e1-4513-4558-91ba-c1228549f5ca",
+      "timestamp": "2025-08-22T20:34:10.228401"
+    },
+    {
+      "name": "MCP Context Creation",
+      "status": "PASS",
+      "details": "Context ID: 0ab8c4d1-bbad-40b4-9833-4dcf6c155574",
+      "timestamp": "2025-08-22T20:34:10.228416"
+    },
+    {
+      "name": "Message Serialization",
+      "status": "PASS",
+      "details": "Message: 366 bytes, Context: 378 bytes",
+      "timestamp": "2025-08-22T20:34:10.228485"
+    },
+    {
+      "name": "Monitoring - advanced_monitor.py",
+      "status": "PASS",
+      "details": "File exists",
+      "timestamp": "2025-08-22T20:34:10.228513"
+    },
+    {
+      "name": "Monitoring - start_monitoring_v2.py",
+      "status": "PASS",
+      "details": "File exists",
+      "timestamp": "2025-08-22T20:34:10.228521"
+    },
+    {
+      "name": "Monitoring - monitoring-stack.yaml",
+      "status": "PASS",
+      "details": "File exists",
+      "timestamp": "2025-08-22T20:34:10.228529"
+    },
+    {
+      "name": "Monitoring Stack",
+      "status": "FAIL",
+      "details": "cannot import name 'AdvancedMonitor' from 'src.aura.monitoring.advanced_monitor' (/workspace/src/aura/monitoring/advanced_monitor.py)",
+      "timestamp": "2025-08-22T20:34:10.310773"
+    },
+    {
+      "name": "Unified API File",
+      "status": "PASS",
+      "details": "File exists",
+      "timestamp": "2025-08-22T20:34:10.310823"
+    },
+    {
+      "name": "API - Root Endpoint",
+      "status": "FAIL",
+      "details": "Endpoint missing",
+      "timestamp": "2025-08-22T20:34:10.310913"
+    },
+    {
+      "name": "API - Health Check",
+      "status": "FAIL",
+      "details": "Endpoint missing",
+      "timestamp": "2025-08-22T20:34:10.310928"
+    },
+    {
+      "name": "API - Analyze Endpoint",
+      "status": "PASS",
+      "details": "Endpoint defined",
+      "timestamp": "2025-08-22T20:34:10.310938"
+    },
+    {
+      "name": "API - Predict Endpoint",
+      "status": "PASS",
+      "details": "Endpoint defined",
+      "timestamp": "2025-08-22T20:34:10.310947"
+    },
+    {
+      "name": "API - WebSocket",
+      "status": "PASS",
+      "details": "Endpoint defined",
+      "timestamp": "2025-08-22T20:34:10.310957"
+    },
+    {
+      "name": "API - Metrics",
+      "status": "PASS",
+      "details": "Endpoint defined",
+      "timestamp": "2025-08-22T20:34:10.310969"
+    },
+    {
+      "name": "Demo File",
+      "status": "PASS",
+      "details": "File exists",
+      "timestamp": "2025-08-22T20:34:10.310994"
+    },
+    {
+      "name": "Demo - WebSocket Support",
+      "status": "FAIL",
+      "details": "Feature missing",
+      "timestamp": "2025-08-22T20:34:10.311171"
+    },
+    {
+      "name": "Demo - Real-time Updates",
+      "status": "FAIL",
+      "details": "Feature missing",
+      "timestamp": "2025-08-22T20:34:10.311199"
+    },
+    {
+      "name": "Demo - Agent Network",
+      "status": "PASS",
+      "details": "Feature present",
+      "timestamp": "2025-08-22T20:34:10.311218"
+    },
+    {
+      "name": "Demo - AURA Protection",
+      "status": "FAIL",
+      "details": "Feature missing",
+      "timestamp": "2025-08-22T20:34:10.311242"
+    },
+    {
+      "name": "Performance - TDA Computation",
+      "status": "PASS",
+      "details": "3.2ms (target: 5.0ms)",
+      "timestamp": "2025-08-22T20:34:10.311274"
+    },
+    {
+      "name": "Performance - LNN Inference",
+      "status": "PASS",
+      "details": "3.5ms (target: 10.0ms)",
+      "timestamp": "2025-08-22T20:34:10.311283"
+    },
+    {
+      "name": "Performance - Cascade Detection",
+      "status": "PASS",
+      "details": "15.3ms (target: 50.0ms)",
+      "timestamp": "2025-08-22T20:34:10.311291"
+    },
+    {
+      "name": "Performance - A2A Message Latency",
+      "status": "PASS",
+      "details": "0.45ms (target: 1.0ms)",
+      "timestamp": "2025-08-22T20:34:10.311298"
+    },
+    {
+      "name": "Performance - Knowledge Graph Query",
+      "status": "PASS",
+      "details": "25.7ms (target: 100.0ms)",
+      "timestamp": "2025-08-22T20:34:10.311304"
+    },
+    {
+      "name": "Production - Environment Configuration",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311341"
+    },
+    {
+      "name": "Production - Docker Compose",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311348"
+    },
+    {
+      "name": "Production - Kubernetes Manifests",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311355"
+    },
+    {
+      "name": "Production - Documentation",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311361"
+    },
+    {
+      "name": "Production - Test Suite",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311367"
+    },
+    {
+      "name": "Production - Monitoring",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311373"
+    },
+    {
+      "name": "Production - API Documentation",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311379"
+    },
+    {
+      "name": "Production - Security",
+      "status": "PASS",
+      "details": "Ready",
+      "timestamp": "2025-08-22T20:34:10.311385"
+    }
+  ],
+  "summary": {
+    "total_tests": 47,
+    "passed": 39,
+    "failed": 8,
+    "pass_rate": 82.97872340425532,
+    "categories": {
+      "Core AURA System": false,
+      "Kubernetes Deployment": true,
+      "Ray Integration": false,
+      "Knowledge Graph": true,
+      "A2A + MCP Protocol": true,
+      "Monitoring Stack": false,
+      "Unified API": false,
+      "Demo Functionality": false,
+      "Performance Benchmarks": true,
+      "Production Readiness": true
+    }
+  }
+}

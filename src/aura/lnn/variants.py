@@ -46,3 +46,6 @@ VARIANTS = {
     "federated_lnn": LiquidNeuralNetwork,
     "secure_lnn": LiquidNeuralNetwork,
 }
+
+# Pre-initialize all variants for easy access
+nn_instances = {name: cls(name) for name, cls in VARIANTS.items()}

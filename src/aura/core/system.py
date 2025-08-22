@@ -311,7 +311,7 @@ class AURASystem:
         """Get all registered components for testing"""
         components = {
             "tda": list(self.tda_algorithms.keys()),
-            "neural_networks": list(self.neural_networks.keys()),
+            "nn": list(self.neural_networks.keys()),
             "memory": list(self.memory_components.keys()),
             "agents": list(self.agents.keys()),
             "consensus": list(self.consensus_protocols.keys()),
