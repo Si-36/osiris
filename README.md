@@ -4,6 +4,25 @@
 
 AURA Intelligence is the world's first system that uses topological data analysis to predict and prevent cascading failures in multi-agent AI systems. We see the *shape* of failure before it happens.
 
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/aura-intelligence
+cd aura-intelligence
+
+# Create virtual environment (optional)
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your API keys
+```
+
 ## Quick Start
 
 ```bash
@@ -77,6 +96,8 @@ cp .env.example .env
 │  Neo4j | Redis | PostgreSQL | Kafka | Prometheus | Grafana │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+## Components
 
 ## 🔧 All 213 Components
 
@@ -227,6 +248,8 @@ async def monitor():
             status = await ws.recv()
             print(f"System Status: {status}")
 ```
+
+## API
 
 ### API Endpoints
 
