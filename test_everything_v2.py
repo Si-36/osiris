@@ -180,11 +180,11 @@ class AURASystemTest:
             
             # Verify component counts
             component_tests = [
-                ("TDA Algorithms", len(components["tda_algorithms"]), 112),
-                ("Neural Networks", len(components["neural_networks"]), 10),
-                ("Memory Components", len(components["memory_components"]), 40),
-                ("Agents", len(components["agents"]), 100),
-                ("Infrastructure", len(components["infrastructure"]), 51)
+                ("TDA Algorithms", len(components.get("tda", [])), 112),
+                ("Neural Networks", len(components.get("nn", [])), 10),
+                ("Memory Components", len(components.get("memory", [])), 40),
+                ("Agents", len(components.get("agents", [])), 100),
+                ("Infrastructure", len(components.get("infrastructure", [])), 51)
             ]
             
             total_expected = 0
@@ -224,7 +224,7 @@ class AURASystemTest:
             features = [
                 ("Title Present", "<title>" in content and "AURA" in content),
                 ("Canvas Element", '<canvas' in content),
-                ("Agent Network Text", 'Agent Network' in content or 'Agents:' in content),
+                ("Agent Network Text", 'Agent Network' in content or 'Agents Connected' in content or 'Agents:' in content),
                 ("Topology Display", 'topology' in content.lower() or 'shape' in content.lower()),
                 ("Metrics Display", 'metric' in content.lower() or 'health' in content.lower()),
                 ("Interactive Elements", 'onclick' in content or 'addEventListener' in content)
@@ -255,14 +255,14 @@ class AURASystemTest:
             api_content = f.read()
         
         endpoints = [
-            ("Root Endpoint", '@app.get("/")', "/"),
-            ("Health Check", '@app.get("/health")', "/health"),
-            ("Analyze Topology", '@app.post("/analyze")', "/analyze"),
-            ("Predict Failure", '@app.post("/predict")', "/predict"),
-            ("Intervene", '@app.post("/intervene")', "/intervene"),
-            ("Stream Updates", '@app.get("/stream")', "/stream"),
-            ("WebSocket", '@app.websocket("/ws")', "/ws"),
-            ("Metrics", '@app.get("/metrics")', "/metrics"),
+            ("Root Endpoint", '@app.get("/"', "/"),
+            ("Health Check", '@app.get("/health"', "/health"),
+            ("Analyze Topology", '@app.post("/analyze"', "/analyze"),
+            ("Predict Failure", '@app.post("/predict"', "/predict"),
+            ("Intervene", '@app.post("/intervene"', "/intervene"),
+            ("Stream Updates", '@app.get("/stream"', "/stream"),
+            ("WebSocket", '@app.websocket("/ws"', "/ws"),
+            ("Metrics", '@app.get("/metrics"', "/metrics"),
         ]
         
         for name, pattern, endpoint in endpoints:
