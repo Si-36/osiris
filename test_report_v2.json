@@ -1,5 +1,5 @@
 {
-  "test_run": "2025-08-22T18:32:07.218112",
+  "test_run": "2025-08-22T19:24:13.269186",
   "project_id": "bc-a397ac41-47c3-4620-a5ec-c56fb1f50fd0",
   "statistics": {
     "total": 75,
@@ -51,526 +51,526 @@
       "test": "Python Version",
       "status": "PASS",
       "details": "3.13.3",
-      "timestamp": "2025-08-22T18:32:07.173903"
+      "timestamp": "2025-08-22T19:24:13.234768"
     },
     {
       "category": "env",
       "test": ".env file",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.173977"
+      "timestamp": "2025-08-22T19:24:13.234817"
     },
     {
       "category": "env",
       "test": "LangSmith API",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.174112"
+      "timestamp": "2025-08-22T19:24:13.234930"
     },
     {
       "category": "env",
       "test": "Gemini API",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.174122"
+      "timestamp": "2025-08-22T19:24:13.234939"
     },
     {
       "category": "env",
       "test": "Neo4j URI",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.174127"
+      "timestamp": "2025-08-22T19:24:13.234945"
     },
     {
       "category": "env",
       "test": "Redis Host",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.174131"
+      "timestamp": "2025-08-22T19:24:13.234949"
     },
     {
       "category": "dirs",
       "test": "src/aura",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174150"
+      "timestamp": "2025-08-22T19:24:13.234968"
     },
     {
       "category": "dirs",
       "test": "src/aura/core",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174161"
+      "timestamp": "2025-08-22T19:24:13.234977"
     },
     {
       "category": "dirs",
       "test": "src/aura/tda",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174167"
+      "timestamp": "2025-08-22T19:24:13.234983"
     },
     {
       "category": "dirs",
       "test": "src/aura/lnn",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174173"
+      "timestamp": "2025-08-22T19:24:13.234989"
     },
     {
       "category": "dirs",
       "test": "src/aura/memory",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174178"
+      "timestamp": "2025-08-22T19:24:13.234994"
     },
     {
       "category": "dirs",
       "test": "src/aura/agents",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174183"
+      "timestamp": "2025-08-22T19:24:13.235000"
     },
     {
       "category": "dirs",
       "test": "src/aura/consensus",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174189"
+      "timestamp": "2025-08-22T19:24:13.235006"
     },
     {
       "category": "dirs",
       "test": "src/aura/neuromorphic",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174194"
+      "timestamp": "2025-08-22T19:24:13.235011"
     },
     {
       "category": "dirs",
       "test": "src/aura/api",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174199"
+      "timestamp": "2025-08-22T19:24:13.235017"
     },
     {
       "category": "dirs",
       "test": "src/aura/monitoring",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174204"
+      "timestamp": "2025-08-22T19:24:13.235022"
     },
     {
       "category": "dirs",
       "test": "demos",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174209"
+      "timestamp": "2025-08-22T19:24:13.235028"
     },
     {
       "category": "dirs",
       "test": "benchmarks",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174214"
+      "timestamp": "2025-08-22T19:24:13.235034"
     },
     {
       "category": "dirs",
       "test": "utilities",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174219"
+      "timestamp": "2025-08-22T19:24:13.235039"
     },
     {
       "category": "dirs",
       "test": "infrastructure",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174224"
+      "timestamp": "2025-08-22T19:24:13.235044"
     },
     {
       "category": "dirs",
       "test": "documentation",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174228"
+      "timestamp": "2025-08-22T19:24:13.235049"
     },
     {
       "category": "dirs",
       "test": "tests",
       "status": "PASS",
       "details": "Directory exists",
-      "timestamp": "2025-08-22T18:32:07.174233"
+      "timestamp": "2025-08-22T19:24:13.235055"
     },
     {
       "category": "files",
       "test": ".env",
       "status": "PASS",
       "details": "Environment configuration",
-      "timestamp": "2025-08-22T18:32:07.174242"
+      "timestamp": "2025-08-22T19:24:13.235066"
     },
     {
       "category": "files",
       "test": "requirements.txt",
       "status": "PASS",
       "details": "Python dependencies",
-      "timestamp": "2025-08-22T18:32:07.174248"
+      "timestamp": "2025-08-22T19:24:13.235077"
     },
     {
       "category": "files",
       "test": "README.md",
       "status": "PASS",
       "details": "Main documentation",
-      "timestamp": "2025-08-22T18:32:07.174254"
+      "timestamp": "2025-08-22T19:24:13.235084"
     },
     {
       "category": "files",
       "test": "src/aura/__init__.py",
       "status": "PASS",
       "details": "Package init",
-      "timestamp": "2025-08-22T18:32:07.174262"
+      "timestamp": "2025-08-22T19:24:13.235092"
     },
     {
       "category": "files",
       "test": "src/aura/__init__.py syntax",
       "status": "PASS",
       "details": "Valid Python",
-      "timestamp": "2025-08-22T18:32:07.174386"
+      "timestamp": "2025-08-22T19:24:13.235178"
     },
     {
       "category": "files",
       "test": "src/aura/core/system.py",
       "status": "PASS",
       "details": "Main system",
-      "timestamp": "2025-08-22T18:32:07.174395"
+      "timestamp": "2025-08-22T19:24:13.235184"
     },
     {
       "category": "files",
       "test": "src/aura/core/system.py syntax",
       "status": "PASS",
       "details": "Valid Python",
-      "timestamp": "2025-08-22T18:32:07.178780"
+      "timestamp": "2025-08-22T19:24:13.237445"
     },
     {
       "category": "files",
       "test": "src/aura/core/config.py",
       "status": "PASS",
       "details": "Configuration",
-      "timestamp": "2025-08-22T18:32:07.178804"
+      "timestamp": "2025-08-22T19:24:13.237465"
     },
     {
       "category": "files",
       "test": "src/aura/core/config.py syntax",
       "status": "PASS",
       "details": "Valid Python",
-      "timestamp": "2025-08-22T18:32:07.179516"
+      "timestamp": "2025-08-22T19:24:13.238099"
     },
     {
       "category": "files",
       "test": "src/aura/api/unified_api.py",
       "status": "PASS",
       "details": "Unified API",
-      "timestamp": "2025-08-22T18:32:07.179537"
+      "timestamp": "2025-08-22T19:24:13.238112"
     },
     {
       "category": "files",
       "test": "src/aura/api/unified_api.py syntax",
       "status": "PASS",
       "details": "Valid Python",
-      "timestamp": "2025-08-22T18:32:07.181104"
+      "timestamp": "2025-08-22T19:24:13.239678"
     },
     {
       "category": "files",
       "test": "src/aura/monitoring/advanced_monitor.py",
       "status": "PASS",
       "details": "Advanced monitoring",
-      "timestamp": "2025-08-22T18:32:07.181127"
+      "timestamp": "2025-08-22T19:24:13.239707"
     },
     {
       "category": "files",
       "test": "src/aura/monitoring/advanced_monitor.py syntax",
       "status": "PASS",
       "details": "Valid Python",
-      "timestamp": "2025-08-22T18:32:07.182630"
+      "timestamp": "2025-08-22T19:24:13.241106"
     },
     {
       "category": "files",
       "test": "infrastructure/docker-compose.yml",
       "status": "PASS",
       "details": "Docker setup",
-      "timestamp": "2025-08-22T18:32:07.182656"
+      "timestamp": "2025-08-22T19:24:13.241121"
     },
     {
       "category": "integration",
       "test": "Import AURASystem",
       "status": "PASS",
       "details": "Success",
-      "timestamp": "2025-08-22T18:32:07.203635"
+      "timestamp": "2025-08-22T19:24:13.257532"
     },
     {
       "category": "integration",
       "test": "Create AURASystem",
       "status": "PASS",
       "details": "Instance created",
-      "timestamp": "2025-08-22T18:32:07.203924"
+      "timestamp": "2025-08-22T19:24:13.257774"
     },
     {
       "category": "integration",
       "test": "TDA Algorithms",
       "status": "PASS",
       "details": "112/112",
-      "timestamp": "2025-08-22T18:32:07.203936"
+      "timestamp": "2025-08-22T19:24:13.257784"
     },
     {
       "category": "integration",
       "test": "Neural Networks",
       "status": "PASS",
       "details": "10/10",
-      "timestamp": "2025-08-22T18:32:07.203940"
+      "timestamp": "2025-08-22T19:24:13.257788"
     },
     {
       "category": "integration",
       "test": "Memory Components",
       "status": "PASS",
       "details": "40/40",
-      "timestamp": "2025-08-22T18:32:07.203943"
+      "timestamp": "2025-08-22T19:24:13.257791"
     },
     {
       "category": "integration",
       "test": "Agents",
       "status": "PASS",
       "details": "100/100",
-      "timestamp": "2025-08-22T18:32:07.203947"
+      "timestamp": "2025-08-22T19:24:13.257795"
     },
     {
       "category": "integration",
       "test": "Infrastructure",
       "status": "PASS",
       "details": "51/51",
-      "timestamp": "2025-08-22T18:32:07.203950"
+      "timestamp": "2025-08-22T19:24:13.257798"
     },
     {
       "category": "integration",
       "test": "Total Components",
       "status": "PASS",
       "details": "313 components verified",
-      "timestamp": "2025-08-22T18:32:07.203954"
+      "timestamp": "2025-08-22T19:24:13.257802"
     },
     {
       "category": "demo",
       "test": "Demo Accessible",
       "status": "PASS",
       "details": "13440 bytes received",
-      "timestamp": "2025-08-22T18:32:07.216983"
+      "timestamp": "2025-08-22T19:24:13.268238"
     },
     {
       "category": "demo",
       "test": "Title Present",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.217259"
+      "timestamp": "2025-08-22T19:24:13.268470"
     },
     {
       "category": "demo",
       "test": "Canvas Element",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.217264"
+      "timestamp": "2025-08-22T19:24:13.268475"
     },
     {
       "category": "demo",
       "test": "Agent Network Text",
       "status": "FAIL",
       "details": "Not found",
-      "timestamp": "2025-08-22T18:32:07.217268"
+      "timestamp": "2025-08-22T19:24:13.268479"
     },
     {
       "category": "demo",
       "test": "Topology Display",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.217271"
+      "timestamp": "2025-08-22T19:24:13.268482"
     },
     {
       "category": "demo",
       "test": "Metrics Display",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.217274"
+      "timestamp": "2025-08-22T19:24:13.268484"
     },
     {
       "category": "demo",
       "test": "Interactive Elements",
       "status": "PASS",
       "details": "Found",
-      "timestamp": "2025-08-22T18:32:07.217276"
+      "timestamp": "2025-08-22T19:24:13.268487"
     },
     {
       "category": "api",
       "test": "Root Endpoint",
       "status": "FAIL",
       "details": "Not implemented",
-      "timestamp": "2025-08-22T18:32:07.217361"
+      "timestamp": "2025-08-22T19:24:13.268557"
     },
     {
       "category": "api",
       "test": "Health Check",
       "status": "FAIL",
       "details": "Not implemented",
-      "timestamp": "2025-08-22T18:32:07.217381"
+      "timestamp": "2025-08-22T19:24:13.268567"
     },
     {
       "category": "api",
       "test": "Analyze Topology",
       "status": "PASS",
       "details": "Endpoint /analyze",
-      "timestamp": "2025-08-22T18:32:07.217391"
+      "timestamp": "2025-08-22T19:24:13.268573"
     },
     {
       "category": "api",
       "test": "Predict Failure",
       "status": "PASS",
       "details": "Endpoint /predict",
-      "timestamp": "2025-08-22T18:32:07.217400"
+      "timestamp": "2025-08-22T19:24:13.268579"
     },
     {
       "category": "api",
       "test": "Intervene",
       "status": "PASS",
       "details": "Endpoint /intervene",
-      "timestamp": "2025-08-22T18:32:07.217407"
+      "timestamp": "2025-08-22T19:24:13.268590"
     },
     {
       "category": "api",
       "test": "Stream Updates",
       "status": "PASS",
       "details": "Endpoint /stream",
-      "timestamp": "2025-08-22T18:32:07.217416"
+      "timestamp": "2025-08-22T19:24:13.268598"
     },
     {
       "category": "api",
       "test": "WebSocket",
       "status": "PASS",
       "details": "Endpoint /ws",
-      "timestamp": "2025-08-22T18:32:07.217425"
+      "timestamp": "2025-08-22T19:24:13.268607"
     },
     {
       "category": "api",
       "test": "Metrics",
       "status": "PASS",
       "details": "Endpoint /metrics",
-      "timestamp": "2025-08-22T18:32:07.217438"
+      "timestamp": "2025-08-22T19:24:13.268616"
     },
     {
       "category": "monitoring",
       "test": "Advanced Monitor",
       "status": "PASS",
       "details": "Module exists",
-      "timestamp": "2025-08-22T18:32:07.217473"
+      "timestamp": "2025-08-22T19:24:13.268631"
     },
     {
       "category": "monitoring",
       "test": "Real-time Dashboard",
       "status": "PASS",
       "details": "Implemented",
-      "timestamp": "2025-08-22T18:32:07.217520"
+      "timestamp": "2025-08-22T19:24:13.268668"
     },
     {
       "category": "monitoring",
       "test": "Metrics Collection",
       "status": "PASS",
       "details": "Implemented",
-      "timestamp": "2025-08-22T18:32:07.217524"
+      "timestamp": "2025-08-22T19:24:13.268671"
     },
     {
       "category": "monitoring",
       "test": "Alert Management",
       "status": "PASS",
       "details": "Implemented",
-      "timestamp": "2025-08-22T18:32:07.217527"
+      "timestamp": "2025-08-22T19:24:13.268674"
     },
     {
       "category": "monitoring",
       "test": "Performance Charts",
       "status": "PASS",
       "details": "Implemented",
-      "timestamp": "2025-08-22T18:32:07.217529"
+      "timestamp": "2025-08-22T19:24:13.268676"
     },
     {
       "category": "monitoring",
       "test": "Risk Analysis",
       "status": "PASS",
       "details": "Implemented",
-      "timestamp": "2025-08-22T18:32:07.217531"
+      "timestamp": "2025-08-22T19:24:13.268678"
     },
     {
       "category": "infra",
       "test": "Docker Compose",
       "status": "PASS",
       "details": "Configuration exists",
-      "timestamp": "2025-08-22T18:32:07.217546"
+      "timestamp": "2025-08-22T19:24:13.268690"
     },
     {
       "category": "infra",
       "test": "Neo4j Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217579"
+      "timestamp": "2025-08-22T19:24:13.268717"
     },
     {
       "category": "infra",
       "test": "Redis Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217583"
+      "timestamp": "2025-08-22T19:24:13.268720"
     },
     {
       "category": "infra",
       "test": "PostgreSQL Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217585"
+      "timestamp": "2025-08-22T19:24:13.268724"
     },
     {
       "category": "infra",
       "test": "Prometheus Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217588"
+      "timestamp": "2025-08-22T19:24:13.268727"
     },
     {
       "category": "infra",
       "test": "Grafana Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217590"
+      "timestamp": "2025-08-22T19:24:13.268730"
     },
     {
       "category": "infra",
       "test": "Jaeger Service",
       "status": "PASS",
       "details": "Configured",
-      "timestamp": "2025-08-22T18:32:07.217592"
+      "timestamp": "2025-08-22T19:24:13.268735"
     },
     {
       "category": "performance",
       "test": "Component Init Time",
       "status": "PASS",
       "details": "0.01ms",
-      "timestamp": "2025-08-22T18:32:07.217851"
+      "timestamp": "2025-08-22T19:24:13.268977"
     },
     {
       "category": "performance",
       "test": "Topology Analysis",
       "status": "PASS",
-      "details": "0.83ms",
-      "timestamp": "2025-08-22T18:32:07.217895"
+      "details": "0.81ms",
+      "timestamp": "2025-08-22T19:24:13.268990"
     },
     {
       "category": "performance",
       "test": "Performance Tests",
       "status": "FAIL",
       "details": "No module named 'psutil'",
-      "timestamp": "2025-08-22T18:32:07.218005"
+      "timestamp": "2025-08-22T19:24:13.269083"
     }
   ],
-  "duration": 0.04808855056762695
+  "duration": 0.037398576736450195
 }
