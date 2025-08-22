@@ -5,10 +5,14 @@ AURA Configuration Management
 import os
 from typing import Dict, Any, Optional
 from dataclasses import dataclass, field
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Try to load dotenv, but don't fail if not installed
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # If dotenv not installed, just use environment variables
+    pass
 
 
 @dataclass
