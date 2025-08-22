@@ -4,6 +4,24 @@
 
 AURA Intelligence is the world's first system that uses topological data analysis to predict and prevent cascading failures in multi-agent AI systems. We see the *shape* of failure before it happens.
 
+## Quick Start
+
+```bash
+# 1. Install dependencies (local user install)
+python3 install_deps.py
+
+# 2. Run the demo
+python3 demos/aura_working_demo_2025.py
+
+# 3. Open browser to http://localhost:8080
+
+# 4. Run tests
+python3 test_everything.py
+
+# 5. Run benchmarks
+python3 benchmarks/aura_benchmark_100_agents.py
+```
+
 ## 🚀 Quick Start
 
 ```bash

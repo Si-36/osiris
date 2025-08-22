@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-08-22T17:31:30.269813",
+  "timestamp": "2025-08-22T18:09:34.667084",
   "summary": {
-    "total_tests": 76,
-    "passed": 68,
-    "failed": 8,
+    "total_tests": 79,
+    "passed": 70,
+    "failed": 9,
     "warnings": 0,
-    "success_rate": 89.47368421052632
+    "success_rate": 88.60759493670885
   },
   "details": {
     "environment": {
@@ -29,7 +29,7 @@
       "demos/aura_working_demo_2025.py": true,
       "demos/aura_working_demo_2025.py syntax": true,
       "benchmarks/aura_benchmark_100_agents.py": true,
-      "benchmarks/aura_benchmark_100_agents.py syntax": true,
+      "benchmarks/aura_benchmark_100_agents.py syntax": false,
       "utilities/ULTIMATE_AURA_API_2025.py": true,
       "utilities/ULTIMATE_AURA_API_2025.py syntax": true,
       "infrastructure/docker-compose.yml": true,
@@ -59,11 +59,11 @@
     },
     "components": {
       "TDA Algorithms Defined": true,
-      "Neural Networks Defined": true,
-      "Memory Systems Defined": true,
+      "Neural Networks Defined": false,
+      "Memory Systems Defined": false,
       "Information Agents": false,
       "Control Agents": false,
-      "Infrastructure Components": false,
+      "Infrastructure Components": true,
       "Total Components": true
     },
     "demo": {
@@ -89,7 +89,10 @@
       "qdrant configured": true
     },
     "imports": {
-      "import aura": false
+      "import aura": true,
+      "AURA version": true,
+      "AURAConfig": true,
+      "AURAConfig instantiation": true
     },
     "api_keys": {
       "LANGSMITH_API_KEY": true,
@@ -106,9 +109,9 @@
     "performance": {
       "Response Time": true
     },
-    "total_tests": 76,
-    "passed": 68,
-    "failed": 8,
+    "total_tests": 79,
+    "passed": 70,
+    "failed": 9,
     "warnings": 0
   }
 }

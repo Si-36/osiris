@@ -319,7 +319,42 @@ class ScalableAURASystem:
             "response_time_ms": step_time
         }
     
-    async def run_benchmark(self, max_steps: int = 1000) -> BenchmarkResults:
+    def apply_aura_protection(self, network, step):
+            """Apply AURA protection to prevent cascades"""
+            if not self.aura_enabled:
+                return 0
+            
+            interventions = 0
+            
+            # Analyze topology for risks
+            at_risk_agents = []
+            for agent_id, agent in network.agents.items():
+                if agent['health'] < 0.5 and agent['health'] > 0:
+                    # Check neighbors
+                    neighbor_health = [
+                        network.agents[n]['health'] 
+                        for n in network.topology.neighbors(agent_id)
+                        if n in network.agents
+                    ]
+                    if neighbor_health and sum(neighbor_health) / len(neighbor_health) > 0.7:
+                        at_risk_agents.append(agent_id)
+            
+            # Intervene on at-risk agents
+            for agent_id in at_risk_agents[:5]:  # Limit interventions
+                if agent_id in network.agents:
+                    # Isolate or heal agent
+                    network.agents[agent_id]['health'] = min(1.0, network.agents[agent_id]['health'] + 0.3)
+                    interventions += 1
+                    
+                    # Reduce cascade probability
+                    for neighbor in network.topology.neighbors(agent_id):
+                        if neighbor in network.agents and network.agents[neighbor]['health'] > 0.5:
+                            network.agents[neighbor]['health'] = min(1.0, network.agents[neighbor]['health'] + 0.1)
+            
+            return interventions
+    
+
+def run_benchmark(self, max_steps: int = 1000) -> BenchmarkResults:
         """Run the benchmark simulation"""
         logger.info(f"Starting benchmark: {self.num_agents} agents, AURA={'ON' if self.aura_enabled else 'OFF'}")
         

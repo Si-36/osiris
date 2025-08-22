@@ -26,11 +26,11 @@ __license__ = "MIT"
 # Core exports
 from .core.system import AURASystem
 from .core.config import AURAConfig
-from .api.main import AURAMainAPI
+# from .api.main import AURAMainAPI  # TODO: Create API module
 
 __all__ = [
     "AURASystem",
     "AURAConfig", 
-    "AURAMainAPI",
+    # "AURAMainAPI",
     "__version__"
 ]

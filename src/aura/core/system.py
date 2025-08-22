@@ -16,11 +16,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../../core/src'))
 
 from .config import AURAConfig
 from ..tda.engine import TDAEngine
-from ..lnn.liquid_network import LiquidNeuralNetwork
-from ..memory.shape_memory import ShapeMemorySystem
+from ..lnn.variants import LiquidNeuralNetwork, VARIANTS
+from ..memory.systems import ShapeMemorySystem
 from ..agents.multi_agent import MultiAgentSystem
-from ..consensus.byzantine import ByzantineConsensus
-from ..neuromorphic.spiking import SpikingNeuralProcessor
+from ..consensus.protocols import ByzantineConsensus
+from ..neuromorphic.processors import SpikingNeuralProcessor
 
 logger = logging.getLogger(__name__)
 
@@ -193,21 +193,11 @@ class AURASystem:
     
     def _init_neural_networks(self):
         """Initialize 10 Neural Network variants"""
-        self.neural_networks = {
-            # Liquid Neural Networks (5)
-            "mit_liquid_nn": LiquidNeuralNetwork(variant="mit_official"),
-            "adaptive_lnn": LiquidNeuralNetwork(variant="adaptive"),
-            "edge_lnn": LiquidNeuralNetwork(variant="edge_optimized"),
-            "distributed_lnn": LiquidNeuralNetwork(variant="distributed"),
-            "quantum_lnn": LiquidNeuralNetwork(variant="quantum_enhanced"),
-            
-            # Specialized Networks (5)
-            "neuromorphic_lnn": LiquidNeuralNetwork(variant="neuromorphic"),
-            "hybrid_lnn": LiquidNeuralNetwork(variant="hybrid_classical"),
-            "streaming_lnn": LiquidNeuralNetwork(variant="streaming"),
-            "federated_lnn": LiquidNeuralNetwork(variant="federated"),
-            "secure_lnn": LiquidNeuralNetwork(variant="privacy_preserving"),
-        }
+        self.neural_networks = {}
+        
+        # Create all 10 variants from VARIANTS
+        for name, variant_class in VARIANTS.items():
+            self.neural_networks[name] = variant_class(name)
         
         logger.info(f"Initialized {len(self.neural_networks)} neural network variants")
     
@@ -215,58 +205,8 @@ class AURASystem:
         """Initialize 40 Memory System components"""
         self.memory_systems = ShapeMemorySystem()
         
-        # Initialize all 40 memory components
-        self.memory_components = {
-            # Shape-Aware Memory (8)
-            "shape_mem_v2_prod": self.memory_systems.shape_memory_v2,
-            "topological_indexer": self.memory_systems.topological_indexer,
-            "betti_cache": self.memory_systems.betti_cache,
-            "persistence_store": self.memory_systems.persistence_store,
-            "wasserstein_index": self.memory_systems.wasserstein_index,
-            "homology_memory": self.memory_systems.homology_memory,
-            "shape_fusion": self.memory_systems.shape_fusion,
-            "adaptive_memory": self.memory_systems.adaptive_memory,
-            
-            # CXL Memory Tiers (8)
-            "L1_CACHE": self.memory_systems.l1_cache,
-            "L2_CACHE": self.memory_systems.l2_cache,
-            "L3_CACHE": self.memory_systems.l3_cache,
-            "RAM": self.memory_systems.ram_tier,
-            "CXL_HOT": self.memory_systems.cxl_hot,
-            "PMEM_WARM": self.memory_systems.pmem_warm,
-            "NVME_COLD": self.memory_systems.nvme_cold,
-            "HDD_ARCHIVE": self.memory_systems.hdd_archive,
-            
-            # Hybrid Memory Manager (10)
-            "unified_allocator": self.memory_systems.unified_allocator,
-            "tier_optimizer": self.memory_systems.tier_optimizer,
-            "prefetch_engine": self.memory_systems.prefetch_engine,
-            "memory_pooling": self.memory_systems.memory_pooling,
-            "compression_engine": self.memory_systems.compression_engine,
-            "dedup_engine": self.memory_systems.dedup_engine,
-            "migration_controller": self.memory_systems.migration_controller,
-            "qos_manager": self.memory_systems.qos_manager,
-            "power_optimizer": self.memory_systems.power_optimizer,
-            "wear_leveling": self.memory_systems.wear_leveling,
-            
-            # Memory Bus Adapter (5)
-            "cxl_controller": self.memory_systems.cxl_controller,
-            "ddr5_adapter": self.memory_systems.ddr5_adapter,
-            "pcie5_bridge": self.memory_systems.pcie5_bridge,
-            "coherency_manager": self.memory_systems.coherency_manager,
-            "numa_optimizer": self.memory_systems.numa_optimizer,
-            
-            # Vector Storage (9)
-            "redis_vector": self.memory_systems.redis_vector,
-            "qdrant_store": self.memory_systems.qdrant_store,
-            "faiss_index": self.memory_systems.faiss_index,
-            "annoy_trees": self.memory_systems.annoy_trees,
-            "hnsw_graph": self.memory_systems.hnsw_graph,
-            "lsh_buckets": self.memory_systems.lsh_buckets,
-            "scann_index": self.memory_systems.scann_index,
-            "vespa_store": self.memory_systems.vespa_store,
-            "custom_embeddings": self.memory_systems.custom_embeddings,
-        }
+        # Get all memory components from the system
+        self.memory_components = self.memory_systems.components
         
         logger.info(f"Initialized {len(self.memory_components)} memory components")
     
@@ -305,30 +245,15 @@ class AURASystem:
     
     def _init_consensus(self):
         """Initialize Byzantine Consensus protocols"""
-        self.consensus_protocols = {
-            "hotstuff": ByzantineConsensus("hotstuff"),
-            "pbft": ByzantineConsensus("pbft"),
-            "raft": ByzantineConsensus("raft"),
-            "tendermint": ByzantineConsensus("tendermint"),
-            "hashgraph": ByzantineConsensus("hashgraph"),
-        }
+        consensus = ByzantineConsensus()
+        self.consensus_protocols = consensus.protocols
         
         logger.info(f"Initialized {len(self.consensus_protocols)} consensus protocols")
     
     def _init_neuromorphic(self):
         """Initialize Neuromorphic Computing components"""
         self.neuromorphic = SpikingNeuralProcessor()
-        
-        self.neuromorphic_components = {
-            "spiking_gnn": self.neuromorphic.spiking_gnn,
-            "lif_neurons": self.neuromorphic.lif_neurons,
-            "stdp_learning": self.neuromorphic.stdp_learning,
-            "liquid_state": self.neuromorphic.liquid_state_machine,
-            "reservoir_computing": self.neuromorphic.reservoir_computing,
-            "event_driven": self.neuromorphic.event_driven_processor,
-            "dvs_processing": self.neuromorphic.dvs_processing,
-            "loihi_patterns": self.neuromorphic.loihi_patterns,
-        }
+        self.neuromorphic_components = self.neuromorphic.components
         
         logger.info(f"Initialized {len(self.neuromorphic_components)} neuromorphic components")
     
@@ -380,6 +305,20 @@ class AURASystem:
             self.infrastructure[adapter] = f"Adapter_{adapter}"
         
         logger.info(f"Initialized {len(self.infrastructure)} infrastructure components")
+    
+    
+    def get_all_components(self):
+        """Get all registered components for testing"""
+        components = {
+            "tda_algorithms": list(self.tda_algorithms.keys()),
+            "neural_networks": list(self.neural_networks.keys()),
+            "memory_components": list(self.memory_components.keys()),
+            "agents": list(self.agents.keys()),
+            "consensus_protocols": list(self.consensus_protocols.keys()),
+            "neuromorphic_components": list(self.neuromorphic_components.keys()),
+            "infrastructure": list(self.infrastructure.keys())
+        }
+        return components
     
     async def analyze_topology(self, agent_data: Dict[str, Any]) -> Dict[str, Any]:
         """
