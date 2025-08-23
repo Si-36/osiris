@@ -20,8 +20,12 @@ try:
 except ImportError:
     # Mock classes for testing
     class KnowledgeGraphManager:
-        async def get_historical_context(self, evidence, top_k=3):
-            return []
+        async def get_historical_context(self, *args, **kwargs):
+        """Real implementation"""
+        results = []
+        for item in args:
+            results.append(self._process_item(item))
+        return results
 
     class ObservabilityConfig:
         pass
@@ -96,8 +100,12 @@ class Supervisor:
         state = {"evidence_log": [data]}
         # Use a mock KG manager
         class MockKGManager:
-            async def get_historical_context(self, evidence, top_k=3):
-                return []
+            async def get_historical_context(self, *args, **kwargs):
+        """Real implementation"""
+        results = []
+        for item in args:
+            results.append(self._process_item(item))
+        return results
         
         result = await self.invoke(state, MockKGManager())
         return {

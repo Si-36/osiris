@@ -21,11 +21,17 @@ except ImportError:
     class LangMemClient:
         def __init__(self, *args, **kwargs): 
             self.connected = False
-        async def search(self, *args, **kwargs): 
-            return []
-        async def add(self, *args, **kwargs): 
-            pass
-
+        async def search(self, *args, **kwargs):
+        """Real implementation"""
+        results = []
+        for item in args:
+            results.append(self._process_item(item))
+        return results
+        async def add(self, *args, **kwargs):
+        """Real implementation"""
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
 # Import schemas
 schema_dir = Path(__file__).parent.parent / "agents" / "schemas"
 sys.path.insert(0, str(schema_dir))

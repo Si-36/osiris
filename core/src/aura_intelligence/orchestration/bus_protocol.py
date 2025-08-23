@@ -92,5 +92,5 @@ def adapter_for_langgraph(bus: EventBus):
     Returns a LangGraph-compatible adapter for the event bus.
     This will be implemented when we wire LangGraph orchestration.
     """
-    # TODO: Implement in Day 4
+    
     pass

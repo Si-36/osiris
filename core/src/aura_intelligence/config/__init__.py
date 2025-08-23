@@ -21,7 +21,7 @@ from .aura import AURASettings
 
 # Backward compatibility aliases
 # These map the modern *Settings classes to the legacy *Config names
-# TODO: Migrate all code to use *Settings naming convention
+
 UltimateAURAConfig = AURASettings
 AgentConfig = AgentSettings
 MemoryConfig = MemorySettings

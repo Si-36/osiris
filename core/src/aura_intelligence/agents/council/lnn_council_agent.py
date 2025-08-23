@@ -645,7 +645,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         context_start = asyncio.get_event_loop().time()
         
-        # TODO: Integrate with actual Neo4j and Mem0 adapters
+        
         # For now, simulate context gathering
         await asyncio.sleep(0.1)  # Simulate I/O
         

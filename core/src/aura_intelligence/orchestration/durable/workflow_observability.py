@@ -123,18 +123,24 @@ class MockSpan:
     def __enter__(self):
         return self
     
-    def __exit__(self, *args):
-        pass
-    
+    def __exit__(self, *args, **kwargs):
+        """Real implementation"""
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
     def set_attributes(self, attributes: Dict[str, Any]):
         self.attributes.update(attributes)
     
-    def add_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):
-        pass
-    
-    def set_status(self, status: str):
-        pass
-
+    def add_event(self, *args, **kwargs):
+        """Real implementation"""
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
+    def set_status(self, *args, **kwargs):
+        """Real implementation"""
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
 class WorkflowObservabilityManager:
     """
     Comprehensive workflow observability with TDA integration

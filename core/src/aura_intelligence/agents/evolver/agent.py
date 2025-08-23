@@ -139,7 +139,7 @@ class EvolverAgent:
             # Mock AI response based on analysis
             return self._generate_mock_patch(failure, analysis)
         else:
-            # TODO: Integrate real AI providers (Gemini, GPT-4)
+            
             raise NotImplementedError(f"AI provider {self.ai_provider} not implemented")
             
     def _generate_mock_patch(

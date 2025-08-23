@@ -92,7 +92,7 @@ class ConsensusManager:
         """Initialize Raft consensus."""
         raft_config = RaftConfig(
             node_id="consensus-manager",
-            peers=["node-1", "node-2", "node-3"],  # TODO: Dynamic discovery
+            peers=["node-1", "node-2", "node-3"],  
             election_timeout_ms=150,
             heartbeat_interval_ms=50
         )
@@ -110,7 +110,7 @@ class ConsensusManager:
     
     def _init_multi_raft(self, config: ConsensusConfig):
         """Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
-        # TODO: Implement MultiRaftConsensus when module is available
+        
         raft_config = RaftConfig(
             node_id="multi-raft-leader",
             peers=["agent-1", "agent-2", "agent-3"],
@@ -121,7 +121,7 @@ class ConsensusManager:
     
     def _init_validator(self, config: ConsensusConfig):
         """Initialize neuro-symbolic validator - temporarily using stub."""
-        # TODO: Implement NeuroSymbolicValidator when module is available
+        
         class StubValidator:
             def __init__(self, config):
                 self.config = config

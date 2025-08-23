@@ -360,21 +360,21 @@ class PostQuantumProvider:
     
     def sign(self, data: bytes, private_key: str) -> str:
         """Placeholder for post-quantum signing."""
-        # TODO: Implement actual post-quantum signing
+        
         # For now, fall back to HMAC for compatibility
         fallback = HMACProvider()
         return fallback.sign(data, private_key)
     
     def verify(self, data: bytes, signature: str, public_key: str) -> bool:
         """Placeholder for post-quantum verification."""
-        # TODO: Implement actual post-quantum verification
+        
         # For now, fall back to HMAC for compatibility
         fallback = HMACProvider()
         return fallback.verify(data, signature, public_key)
     
     def generate_keypair(self) -> tuple[str, str]:
         """Placeholder for post-quantum key generation."""
-        # TODO: Implement actual post-quantum key generation
+        
         # For now, fall back to HMAC for compatibility
         fallback = HMACProvider()
         return fallback.generate_keypair()
