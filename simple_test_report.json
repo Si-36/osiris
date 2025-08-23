@@ -1,0 +1,7 @@
+{
+  "timestamp": "2025-08-22T16:44:14.019679",
+  "demo_running": true,
+  "all_features_ok": false,
+  "avg_response_ms": 0.7,
+  "url": "http://localhost:8080"
+}

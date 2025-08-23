@@ -1,0 +1,58 @@
+# Core Dependencies
+fastapi==0.115.5
+uvicorn[standard]==0.34.0
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# Async HTTP
+httpx==0.28.1
+aiofiles==24.1.0
+
+# PyTorch and ML
+torch==2.5.1
+numpy==1.26.4
+scipy==1.14.1
+
+# Transformers (for Switch Transformer)
+transformers==4.38.0  # HuggingFace transformers
+
+# Observability
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+opentelemetry-exporter-otlp==1.29.0
+opentelemetry-exporter-prometheus==0.50b0
+prometheus-client==0.21.1
+structlog==24.4.0
+python-json-logger==3.2.0
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.18
+
+# Utilities
+python-dotenv==1.0.1
+tenacity==9.0.0
+psutil==6.1.1
+
+# WebSocket Support
+websockets==14.1
+
+# Circuit Breaker
+pybreaker==1.2.0
+
+# Consistent Hashing
+xxhash==3.5.0  # Fast hashing
+
+# Testing (optional)
+pytest==8.3.4
+pytest-asyncio==0.25.0
+pytest-cov==6.0.0
+
+# Performance
+orjson==3.10.12  # Fast JSON
+uvloop==0.21.0  # Fast event loop
+
+# Production Server
+gunicorn==23.0.0

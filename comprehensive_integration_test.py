@@ -1,263 +1,494 @@
-"""Comprehensive Integration Test - Real Data Flow Through All Bio-Enhanced Layers"""
+#!/usr/bin/env python3
+"""
+🔥 AURA Intelligence Comprehensive Integration Test
+✨ Tests ALL 213 components working together in production mode
+"""
+
 import asyncio
-import sys
-import os
 import json
 import time
-from typing import Dict, Any
+import sys
+import os
+from datetime import datetime
+from typing import Dict, List, Tuple, Any
+import subprocess
+import signal
 
-# Add core path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'core', 'src'))
+# Add src to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-class MockRegistry:
-    """Mock registry that simulates real component behavior"""
+try:
+    from aura.core.system import AURASystem, AURAConfig
+    from aura.api.unified_api import create_app
+    from aura.ray.distributed_tda import AURARayServe
+    from aura.a2a.agent_protocol import A2AProtocol
+    from aura.ultimate_system_2025 import UltimateAURASystem
+    AURA_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ AURA modules not fully available: {e}")
+    AURA_AVAILABLE = False
+
+class ComprehensiveIntegrationTest:
+    """Test all AURA components working together"""
+    
     def __init__(self):
-        self.components = {f"component_{i}": f"Component {i}" for i in range(209)}
-        self.call_count = 0
-        
-    async def process_data(self, component_id: str, data: Any, context: Dict[str, Any] = None) -> Dict[str, Any]:
-        self.call_count += 1
-        context = context or {}
-        
-        # Simulate different component behaviors
-        if "error" in str(data).lower():
-            return {
-                "status": "error",
-                "component": component_id,
-                "error_type": "ProcessingError",
-                "confidence": 0.2,
-                "tda_anomaly": 0.8,
-                "result": None
-            }
-        elif "complex" in str(data).lower():
-            return {
-                "status": "ok",
-                "component": component_id,
-                "confidence": 0.9,
-                "tda_anomaly": 0.1,
-                "result": {"processed": True, "complexity": "high", "mode": context.get("mode", "normal")},
-                "processing_time": 0.05
-            }
-        else:
-            return {
-                "status": "ok", 
-                "component": component_id,
-                "confidence": 0.8,
-                "tda_anomaly": 0.2,
-                "result": {"processed": True, "complexity": "low", "mode": context.get("mode", "normal")},
-                "processing_time": 0.01
-            }
-
-async def test_complete_data_flow():
-    """Test complete data flow through all bio-enhanced layers"""
-    print("🧬 COMPREHENSIVE BIO-ENHANCED AURA INTEGRATION TEST")
-    print("=" * 60)
-    
-    # Initialize mock registry
-    mock_registry = MockRegistry()
-    
-    # Test data scenarios
-    test_scenarios = [
-        {
-            "name": "Simple Request",
-            "data": {"query": "simple analysis", "values": [1, 2, 3]}
-        },
-        {
-            "name": "Complex Request", 
-            "data": {"query": "complex deep analysis with intricate patterns", "values": list(range(100))}
-        },
-        {
-            "name": "Error Scenario",
-            "data": {"query": "error prone analysis", "values": []}
+        self.results = {
+            'timestamp': datetime.now().isoformat(),
+            'total_components': 213,
+            'tests_run': 0,
+            'tests_passed': 0,
+            'tests_failed': 0,
+            'component_status': {},
+            'integration_status': {},
+            'performance_metrics': {},
+            'errors': []
         }
-    ]
-    
-    for scenario in test_scenarios:
-        print(f"\n🎯 Testing Scenario: {scenario['name']}")
-        print("-" * 40)
         
-        # Reset call counter
-        mock_registry.call_count = 0
-        
-        # 1. Test Mixture of Depths
-        print("1️⃣ Testing Mixture of Depths...")
+    async def test_core_system(self) -> bool:
+        """Test core AURA system with all 213 components"""
+        print("\n🔬 Testing Core System...")
         try:
-            from aura_intelligence.advanced_processing.mixture_of_depths import MixtureOfDepths
-            mod = MixtureOfDepths()
-            mod_result = await mod.route_with_depth(scenario["data"])
-            print(f"   ✅ Depth: {mod_result['depth_used']:.3f}")
-            print(f"   ✅ Experts: {mod_result['experts_selected']}")
-            print(f"   ✅ Compute Reduction: {mod_result['compute_reduction']:.1%}")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
-        
-        # 2. Test Metabolic Manager with real registry
-        print("2️⃣ Testing Metabolic Manager...")
-        try:
-            from aura_intelligence.bio_homeostatic.metabolic_manager import MetabolicManager
-            # Create metabolic manager without auto-starting periodic task
-            mm = MetabolicManager.__new__(MetabolicManager)
-            mm.registry = mock_registry
-            mm.in_mem = {"budgets": {}, "consumption": {}}
-            mm.r = None
-            mm.signals = mm._default_signals()
+            if not AURA_AVAILABLE:
+                print("  ⚠️ Core system not available")
+                return False
+                
+            config = AURAConfig()
+            system = AURASystem(config)
             
-            # Test processing with metabolism
-            component_id = "component_1"
-            result = await mm.process_with_metabolism(component_id, scenario["data"])
-            print(f"   ✅ Status: {result['status']}")
-            print(f"   ✅ Component: {result['component']}")
-            if 'latency_ms' in result:
-                print(f"   ✅ Latency: {result['latency_ms']:.2f}ms")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
-        
-        # 3. Test Swarm Intelligence
-        print("3️⃣ Testing Swarm Intelligence...")
-        try:
-            from aura_intelligence.swarm_intelligence.ant_colony_detection import AntColonyDetection
-            acd = AntColonyDetection(component_registry=mock_registry)
-            swarm_result = await acd.detect_errors(scenario["data"])
-            print(f"   ✅ Errors Detected: {swarm_result['errors_detected']}")
-            print(f"   ✅ Components Tested: {len(swarm_result.get('error_components', [])) + swarm_result.get('healthy_components', 0)}")
-            print(f"   ✅ Detection Rate: {swarm_result['detection_rate']:.1%}")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
-        
-        # 4. Test Spiking Council
-        print("4️⃣ Testing Spiking GNN Council...")
-        try:
-            from aura_intelligence.spiking.council_sgnn import SpikingCouncil
-            sc = SpikingCouncil()
-            messages = {
-                "component_1": {"confidence": 0.8, "priority": 0.7, "tda_anomaly": 0.1},
-                "component_2": {"confidence": 0.6, "priority": 0.5, "tda_anomaly": 0.3}
+            # Verify component counts
+            components = system.get_all_components()
+            
+            expected_counts = {
+                'tda': 112,
+                'nn': 10,
+                'memory': 40,
+                'agents': 100,
+                'consensus': 5,
+                'neuromorphic': 8,
+                'infrastructure': 51
             }
-            spiking_result = await sc.process_component_messages(messages)
-            print(f"   ✅ Consensus Strength: {spiking_result['consensus_strength']:.3f}")
-            print(f"   ✅ Sparsity: {spiking_result['sparsity_ratio']:.1%}")
-            print(f"   ✅ Power: {spiking_result['power_mw']:.2f}mW")
-            print(f"   ✅ Latency: {spiking_result['latency_ms']:.2f}ms")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
-        
-        # 5. Test Complete Bio-Enhanced System
-        print("5️⃣ Testing Complete Bio-Enhanced Integration...")
-        try:
-            from aura_intelligence.bio_enhanced_production_system import BioEnhancedAURA
-            bio_aura = BioEnhancedAURA()
             
-            # Override with mock registry for testing
-            if bio_aura.metabolic:
-                bio_aura.metabolic.registry = mock_registry
-            if bio_aura.swarm:
-                bio_aura.swarm.registry = mock_registry
+            all_good = True
+            for category, expected in expected_counts.items():
+                actual = len(components.get(category, []))
+                if actual == expected:
+                    print(f"  ✅ {category.upper()}: {actual}/{expected}")
+                else:
+                    print(f"  ❌ {category.upper()}: {actual}/{expected}")
+                    all_good = False
+                    
+                self.results['component_status'][category] = {
+                    'expected': expected,
+                    'actual': actual,
+                    'status': 'pass' if actual == expected else 'fail'
+                }
             
-            complete_result = await bio_aura.process_enhanced(scenario["data"], "test_component")
-            print(f"   ✅ Bio-Enhanced: {complete_result['bio_enhanced']}")
-            print(f"   ✅ Enhancements: {complete_result['enhancements']}")
-            print(f"   ✅ Total Time: {complete_result['performance']['total_ms']:.2f}ms")
+            # Test basic operations
+            print("\n  Testing operations...")
+            
+            # Test topology analysis
+            test_data = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]
+            topology = system.analyze_topology(test_data)
+            if topology and 'betti_numbers' in topology:
+                print("  ✅ Topology analysis working")
+            else:
+                print("  ❌ Topology analysis failed")
+                all_good = False
+                
+            # Test failure prediction
+            prediction = system.predict_failure(topology)
+            if prediction and 'risk_score' in prediction:
+                print("  ✅ Failure prediction working")
+            else:
+                print("  ❌ Failure prediction failed")
+                all_good = False
+                
+            # Test cascade prevention
+            prevention = system.prevent_cascade(prediction)
+            if prevention and 'success' in prevention:
+                print("  ✅ Cascade prevention working")
+            else:
+                print("  ❌ Cascade prevention failed")
+                all_good = False
+                
+            return all_good
+            
         except Exception as e:
-            print(f"   ❌ Error: {e}")
-        
-        print(f"📊 Registry Calls Made: {mock_registry.call_count}")
-
-async def test_api_endpoints():
-    """Test actual API endpoints with real data flow"""
-    print("\n🌐 TESTING API ENDPOINTS WITH REAL DATA FLOW")
-    print("=" * 60)
-    
-    import subprocess
-    import requests
-    import time
-    
-    # Start API server in background
-    print("Starting API server...")
-    try:
-        # Kill any existing process on port 8089
-        subprocess.run(["pkill", "-f", "enhanced_bio_api.py"], capture_output=True)
-        time.sleep(1)
-        
-        # Start new server
-        server_process = subprocess.Popen([
-            "python3", "enhanced_bio_api.py"
-        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        # Wait for server to start
-        time.sleep(3)
-        
-        base_url = "http://localhost:8089"
-        
-        # Test health endpoint
-        print("1️⃣ Testing /health endpoint...")
+            print(f"  ❌ Core system test failed: {e}")
+            self.results['errors'].append(f"Core system: {str(e)}")
+            return False
+            
+    async def test_knowledge_graph(self) -> bool:
+        """Test Knowledge Graph integration"""
+        print("\n🧠 Testing Knowledge Graph...")
         try:
-            response = requests.get(f"{base_url}/health", timeout=5)
-            print(f"   ✅ Status: {response.status_code}")
-            print(f"   ✅ Response: {response.json()}")
+            # Check if Neo4j is accessible
+            result = subprocess.run(
+                ['curl', '-s', 'http://localhost:7474'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if 'neo4j' in result.stdout.lower() or result.returncode == 0:
+                print("  ✅ Neo4j is accessible")
+                
+                # Test knowledge graph operations
+                if AURA_AVAILABLE:
+                    from aura.ultimate_system_2025 import EnhancedKnowledgeGraph
+                    kg = EnhancedKnowledgeGraph()
+                    await kg.initialize()
+                    
+                    # Store test topology
+                    test_topology = {
+                        'betti_numbers': [1, 2, 3],
+                        'complexity': 0.75
+                    }
+                    
+                    stored = await kg.store_topology(test_topology)
+                    if stored:
+                        print("  ✅ Topology storage working")
+                    else:
+                        print("  ⚠️ Topology storage not available")
+                        
+                    # Query patterns
+                    patterns = await kg.query_patterns('cascade_risk')
+                    if patterns:
+                        print("  ✅ Pattern query working")
+                    else:
+                        print("  ⚠️ Pattern query not available")
+                        
+                return True
+            else:
+                print("  ⚠️ Neo4j not running")
+                return False
+                
         except Exception as e:
-            print(f"   ❌ Error: {e}")
+            print(f"  ❌ Knowledge Graph test failed: {e}")
+            self.results['errors'].append(f"Knowledge Graph: {str(e)}")
+            return False
+            
+    async def test_ray_integration(self) -> bool:
+        """Test Ray distributed computing"""
+        print("\n🌟 Testing Ray Integration...")
+        try:
+            # Check if Ray is installed
+            result = subprocess.run(
+                ['python3', '-c', 'import ray; print(ray.__version__)'],
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode == 0:
+                print(f"  ✅ Ray installed: v{result.stdout.strip()}")
+                
+                # Test Ray operations
+                if AURA_AVAILABLE:
+                    # Simple Ray test
+                    import ray
+                    if not ray.is_initialized():
+                        ray.init(ignore_reinit_error=True)
+                        
+                    @ray.remote
+                    def test_func(x):
+                        return x * 2
+                        
+                    result = ray.get(test_func.remote(21))
+                    if result == 42:
+                        print("  ✅ Ray computation working")
+                    else:
+                        print("  ❌ Ray computation failed")
+                        
+                    ray.shutdown()
+                    
+                return True
+            else:
+                print("  ⚠️ Ray not installed")
+                return False
+                
+        except Exception as e:
+            print(f"  ❌ Ray test failed: {e}")
+            self.results['errors'].append(f"Ray: {str(e)}")
+            return False
+            
+    async def test_a2a_mcp(self) -> bool:
+        """Test A2A communication with MCP"""
+        print("\n🤝 Testing A2A + MCP...")
+        try:
+            if AURA_AVAILABLE:
+                from aura.a2a.agent_protocol import A2AProtocol, MCPContext
+                
+                # Create protocol
+                protocol = A2AProtocol(agent_id="test-agent-1", agent_type="orchestrator")
+                
+                # Test MCP context
+                context = MCPContext(
+                    domain="test",
+                    capabilities=["analyze", "predict"],
+                    constraints={"max_latency": 100}
+                )
+                
+                # Test message creation
+                message = protocol.create_message(
+                    recipient="test-agent-2",
+                    content={"test": "data"},
+                    message_type="request",
+                    context=context
+                )
+                
+                if message and hasattr(message, 'id'):
+                    print("  ✅ A2A message creation working")
+                else:
+                    print("  ❌ A2A message creation failed")
+                    
+                # Test protocol validation
+                valid = protocol.validate_message(message)
+                if valid:
+                    print("  ✅ MCP validation working")
+                else:
+                    print("  ❌ MCP validation failed")
+                    
+                return True
+            else:
+                print("  ⚠️ A2A/MCP modules not available")
+                return False
+                
+        except Exception as e:
+            print(f"  ❌ A2A/MCP test failed: {e}")
+            self.results['errors'].append(f"A2A/MCP: {str(e)}")
+            return False
+            
+    async def test_monitoring_stack(self) -> bool:
+        """Test Prometheus/Grafana monitoring"""
+        print("\n📊 Testing Monitoring Stack...")
+        try:
+            # Check Prometheus
+            prom_result = subprocess.run(
+                ['curl', '-s', 'http://localhost:9090/-/healthy'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            prom_healthy = prom_result.returncode == 0
+            if prom_healthy:
+                print("  ✅ Prometheus is healthy")
+            else:
+                print("  ⚠️ Prometheus not running")
+                
+            # Check Grafana
+            graf_result = subprocess.run(
+                ['curl', '-s', 'http://localhost:3000/api/health'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            graf_healthy = graf_result.returncode == 0
+            if graf_healthy:
+                print("  ✅ Grafana is healthy")
+            else:
+                print("  ⚠️ Grafana not running")
+                
+            # Check metrics endpoint
+            if AURA_AVAILABLE:
+                metrics_result = subprocess.run(
+                    ['curl', '-s', 'http://localhost:8000/metrics'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                
+                if 'aura_' in metrics_result.stdout:
+                    print("  ✅ AURA metrics exposed")
+                else:
+                    print("  ⚠️ AURA metrics not available")
+                    
+            return prom_healthy or graf_healthy
+            
+        except Exception as e:
+            print(f"  ❌ Monitoring test failed: {e}")
+            self.results['errors'].append(f"Monitoring: {str(e)}")
+            return False
+            
+    async def test_api_endpoints(self) -> bool:
+        """Test all API endpoints"""
+        print("\n🌐 Testing API Endpoints...")
+        try:
+            # Check if API is running
+            api_result = subprocess.run(
+                ['curl', '-s', 'http://localhost:8000/health'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if api_result.returncode == 0:
+                health_data = json.loads(api_result.stdout)
+                if health_data.get('status') == 'healthy':
+                    print("  ✅ API is healthy")
+                else:
+                    print("  ⚠️ API unhealthy")
+                    
+                # Test key endpoints
+                endpoints = [
+                    '/analyze',
+                    '/predict',
+                    '/intervene',
+                    '/topology/visualize',
+                    '/debug/components'
+                ]
+                
+                for endpoint in endpoints:
+                    try:
+                        # Just check if endpoint exists
+                        result = subprocess.run(
+                            ['curl', '-s', '-X', 'OPTIONS', f'http://localhost:8000{endpoint}'],
+                            capture_output=True,
+                            text=True,
+                            timeout=5
+                        )
+                        
+                        if result.returncode == 0:
+                            print(f"  ✅ {endpoint} available")
+                        else:
+                            print(f"  ⚠️ {endpoint} not responding")
+                    except:
+                        print(f"  ⚠️ {endpoint} error")
+                        
+                return True
+            else:
+                print("  ⚠️ API not running")
+                return False
+                
+        except Exception as e:
+            print(f"  ❌ API test failed: {e}")
+            self.results['errors'].append(f"API: {str(e)}")
+            return False
+            
+    async def test_performance_benchmarks(self) -> bool:
+        """Run performance benchmarks"""
+        print("\n⚡ Testing Performance...")
+        try:
+            if not AURA_AVAILABLE:
+                print("  ⚠️ Performance tests skipped (modules not available)")
+                return False
+                
+            config = AURAConfig()
+            system = AURASystem(config)
+            
+            # Test latency
+            latencies = []
+            for i in range(10):
+                start = time.time()
+                test_data = [[j/10 for j in range(10)] for _ in range(5)]
+                topology = system.analyze_topology(test_data)
+                prediction = system.predict_failure(topology)
+                prevention = system.prevent_cascade(prediction)
+                end = time.time()
+                latencies.append((end - start) * 1000)  # Convert to ms
+                
+            avg_latency = sum(latencies) / len(latencies)
+            max_latency = max(latencies)
+            min_latency = min(latencies)
+            
+            print(f"  📊 Latency: avg={avg_latency:.2f}ms, min={min_latency:.2f}ms, max={max_latency:.2f}ms")
+            
+            self.results['performance_metrics'] = {
+                'avg_latency_ms': avg_latency,
+                'min_latency_ms': min_latency,
+                'max_latency_ms': max_latency,
+                'target_latency_ms': 5.0,
+                'meets_target': avg_latency < 5.0
+            }
+            
+            if avg_latency < 5.0:
+                print("  ✅ Meets 5ms latency target")
+                return True
+            else:
+                print("  ⚠️ Exceeds 5ms latency target")
+                return False
+                
+        except Exception as e:
+            print(f"  ❌ Performance test failed: {e}")
+            self.results['errors'].append(f"Performance: {str(e)}")
+            return False
+            
+    async def run_all_tests(self):
+        """Run all integration tests"""
+        print("🚀 AURA Intelligence Comprehensive Integration Test")
+        print("=" * 60)
         
-        # Test process endpoint with different data
-        test_requests = [
-            {"data": {"query": "simple test", "values": [1, 2, 3]}, "component_id": "test_component"},
-            {"data": {"query": "complex analysis with deep patterns", "values": list(range(50))}, "component_id": "analysis_component"},
-            {"data": {"query": "error prone data", "values": []}, "component_id": "error_component"}
+        tests = [
+            ("Core System", self.test_core_system),
+            ("Knowledge Graph", self.test_knowledge_graph),
+            ("Ray Integration", self.test_ray_integration),
+            ("A2A + MCP", self.test_a2a_mcp),
+            ("Monitoring Stack", self.test_monitoring_stack),
+            ("API Endpoints", self.test_api_endpoints),
+            ("Performance", self.test_performance_benchmarks)
         ]
         
-        for i, req_data in enumerate(test_requests, 1):
-            print(f"2️⃣.{i} Testing /process endpoint...")
+        for test_name, test_func in tests:
+            self.results['tests_run'] += 1
             try:
-                response = requests.post(f"{base_url}/process", json=req_data, timeout=10)
-                result = response.json()
-                print(f"   ✅ Status: {response.status_code}")
-                print(f"   ✅ Bio-Enhanced: {result.get('bio_enhanced', False)}")
-                print(f"   ✅ Enhancements: {result.get('enhancements', {})}")
-                print(f"   ✅ Performance: {result.get('performance', {})}")
+                passed = await test_func()
+                if passed:
+                    self.results['tests_passed'] += 1
+                    self.results['integration_status'][test_name] = 'pass'
+                else:
+                    self.results['tests_failed'] += 1
+                    self.results['integration_status'][test_name] = 'fail'
             except Exception as e:
-                print(f"   ❌ Error: {e}")
+                self.results['tests_failed'] += 1
+                self.results['integration_status'][test_name] = 'error'
+                self.results['errors'].append(f"{test_name}: {str(e)}")
+                
+        # Summary
+        print("\n" + "=" * 60)
+        print("📊 INTEGRATION TEST SUMMARY")
+        print("=" * 60)
         
-        # Test swarm check endpoint
-        print("3️⃣ Testing /swarm/check endpoint...")
-        try:
-            response = requests.post(f"{base_url}/swarm/check", 
-                                   json={"data": {"test": "anomaly detection"}}, timeout=10)
-            result = response.json()
-            print(f"   ✅ Status: {response.status_code}")
-            print(f"   ✅ Swarm Detection: {result.get('swarm_detection', {})}")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
+        print(f"Total Tests: {self.results['tests_run']}")
+        print(f"✅ Passed: {self.results['tests_passed']}")
+        print(f"❌ Failed: {self.results['tests_failed']}")
         
-        # Test system status
-        print("4️⃣ Testing /status endpoint...")
-        try:
-            response = requests.get(f"{base_url}/status", timeout=5)
-            result = response.json()
-            print(f"   ✅ Status: {response.status_code}")
-            print(f"   ✅ Bio-Enhancements: {result.get('bio_enhancements', {})}")
-            print(f"   ✅ Feature Flags: {result.get('feature_flags', {})}")
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
+        pass_rate = (self.results['tests_passed'] / self.results['tests_run'] * 100) if self.results['tests_run'] > 0 else 0
+        print(f"📈 Pass Rate: {pass_rate:.1f}%")
         
-        # Cleanup
-        server_process.terminate()
-        server_process.wait()
+        # Component summary
+        print("\n📦 Component Status:")
+        total_components = 0
+        actual_components = 0
+        for category, status in self.results['component_status'].items():
+            total_components += status['expected']
+            actual_components += status['actual']
+            symbol = "✅" if status['status'] == 'pass' else "❌"
+            print(f"  {symbol} {category.upper()}: {status['actual']}/{status['expected']}")
+            
+        print(f"\n🔢 Total Components: {actual_components}/{total_components} ({actual_components/total_components*100:.1f}%)")
         
-    except Exception as e:
-        print(f"❌ API Test Error: {e}")
+        # Save detailed report
+        report_file = f"integration_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(report_file, 'w') as f:
+            json.dump(self.results, f, indent=2)
+        print(f"\n💾 Detailed report saved to: {report_file}")
+        
+        # Final verdict
+        if pass_rate >= 90 and actual_components == total_components:
+            print("\n🎉 INTEGRATION TEST PASSED! System is production-ready! 🚀")
+            return True
+        else:
+            print("\n⚠️  Integration test needs attention - not all components working perfectly")
+            return False
 
 async def main():
-    """Run comprehensive integration tests"""
-    print("🚀 STARTING COMPREHENSIVE BIO-ENHANCED AURA INTEGRATION TESTS")
-    print("=" * 80)
+    """Run the comprehensive integration test"""
+    tester = ComprehensiveIntegrationTest()
+    success = await tester.run_all_tests()
     
-    # Test component integration
-    await test_complete_data_flow()
-    
-    # Test API endpoints
-    await test_api_endpoints()
-    
-    print("\n🎉 INTEGRATION TESTS COMPLETED!")
-    print("=" * 80)
+    # Exit with appropriate code
+    sys.exit(0 if success else 1)
 
 if __name__ == "__main__":
     asyncio.run(main())

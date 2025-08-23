@@ -1,0 +1,117 @@
+{
+  "timestamp": "2025-08-22T18:09:34.667084",
+  "summary": {
+    "total_tests": 79,
+    "passed": 70,
+    "failed": 9,
+    "warnings": 0,
+    "success_rate": 88.60759493670885
+  },
+  "details": {
+    "environment": {
+      "Python Version": true,
+      ".env file": true,
+      "Working Directory": true
+    },
+    "files": {
+      ".env": true,
+      ".env.example": true,
+      "requirements.txt": true,
+      "README.md": true,
+      "AURA_FINAL_INDEX.md": true,
+      "NEXT_STEPS.md": true,
+      "src/aura/__init__.py": true,
+      "src/aura/__init__.py syntax": true,
+      "src/aura/core/system.py": true,
+      "src/aura/core/system.py syntax": true,
+      "src/aura/core/config.py": true,
+      "src/aura/core/config.py syntax": true,
+      "demos/aura_working_demo_2025.py": true,
+      "demos/aura_working_demo_2025.py syntax": true,
+      "benchmarks/aura_benchmark_100_agents.py": true,
+      "benchmarks/aura_benchmark_100_agents.py syntax": false,
+      "utilities/ULTIMATE_AURA_API_2025.py": true,
+      "utilities/ULTIMATE_AURA_API_2025.py syntax": true,
+      "infrastructure/docker-compose.yml": true,
+      "infrastructure/prometheus.yml": true
+    },
+    "directories": {
+      "src/aura": true,
+      "src/aura/core": true,
+      "src/aura/tda": true,
+      "src/aura/lnn": true,
+      "src/aura/memory": true,
+      "src/aura/agents": true,
+      "src/aura/consensus": true,
+      "src/aura/neuromorphic": true,
+      "src/aura/api": true,
+      "src/aura/integrations": true,
+      "demos": true,
+      "benchmarks": true,
+      "utilities": true,
+      "infrastructure": true,
+      "documentation": true,
+      "tests": true,
+      "models": true,
+      "cache": true,
+      "logs": true,
+      "data": true
+    },
+    "components": {
+      "TDA Algorithms Defined": true,
+      "Neural Networks Defined": false,
+      "Memory Systems Defined": false,
+      "Information Agents": false,
+      "Control Agents": false,
+      "Infrastructure Components": true,
+      "Total Components": true
+    },
+    "demo": {
+      "Demo Running": true,
+      "Title Present": true,
+      "Canvas Visualization": true,
+      "Agent Network": false,
+      "Topology Analysis": true,
+      "AURA Protection Toggle": false,
+      "Metrics Display": true,
+      "WebSocket Support": false,
+      "30 Agents": true
+    },
+    "infrastructure": {
+      "Docker": false,
+      "neo4j configured": true,
+      "redis configured": true,
+      "postgres configured": true,
+      "prometheus configured": true,
+      "grafana configured": true,
+      "jaeger configured": true,
+      "minio configured": true,
+      "qdrant configured": true
+    },
+    "imports": {
+      "import aura": true,
+      "AURA version": true,
+      "AURAConfig": true,
+      "AURAConfig instantiation": true
+    },
+    "api_keys": {
+      "LANGSMITH_API_KEY": true,
+      "GEMINI_API_KEY": true,
+      "NEO4J_URI": true,
+      "REDIS_HOST": true
+    },
+    "processes": {
+      "Demo Process": true
+    },
+    "network": {
+      "Port 8080": true
+    },
+    "performance": {
+      "Response Time": true
+    },
+    "total_tests": 79,
+    "passed": 70,
+    "failed": 9,
+    "warnings": 0
+  }
+}
