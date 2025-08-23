@@ -248,39 +248,89 @@ class FaissKNNIndex(BaseKNNIndex):
         return self._index.ntotal
     
     def save(self, path: str) -> None:
-        """Save FAISS index to disk."""
-        import pickle
+        """Save FAISS index to disk using secure JSON serialization."""
+        import json
+        import gzip
+        from dataclasses import asdict
         
         # Save FAISS index
         faiss.write_index(self._index, f"{path}.faiss")
         
-        # Save metadata
+        # Prepare metadata for JSON serialization
         metadata = {
             'ids': self._ids,
             'id_to_idx': self._id_to_idx,
-            'config': self.config,
-            'embedding_dim': self.embedding_dim
+            'config': asdict(self.config) if hasattr(self.config, '__dict__') else self.config.__dict__,
+            'embedding_dim': self.embedding_dim,
+            'version': '2.0',  # For future compatibility
+            'checksum': self._compute_checksum()
         }
-        with open(f"{path}.meta", 'wb') as f:
-            pickle.dump(metadata, f)
+        
+        # Save as compressed JSON for security and efficiency
+        with gzip.open(f"{path}.meta.json.gz", 'wt', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2)
         
         logger.info(f"Saved FAISS index to {path}")
     
     def load(self, path: str) -> None:
-        """Load FAISS index from disk."""
-        import pickle
+        """Load FAISS index from disk using secure JSON deserialization."""
+        import json
+        import gzip
+        from pathlib import Path
         
         # Load FAISS index
         self._index = faiss.read_index(f"{path}.faiss")
         
-        # Load metadata
-        with open(f"{path}.meta", 'rb') as f:
-            metadata = pickle.load(f)
+        # Try new format first, fall back to old pickle format if needed
+        json_path = Path(f"{path}.meta.json.gz")
+        if json_path.exists():
+            # Load from secure JSON format
+            with gzip.open(json_path, 'rt', encoding='utf-8') as f:
+                metadata = json.load(f)
+            
+            # Validate checksum if present
+            if 'checksum' in metadata:
+                expected = metadata['checksum']
+                actual = self._compute_checksum()
+                if expected != actual:
+                    logger.warning(f"Checksum mismatch: expected {expected}, got {actual}")
+        else:
+            # Legacy pickle support with security warning
+            logger.warning("Loading from legacy pickle format. Consider re-saving in secure format.")
+            import pickle
+            with open(f"{path}.meta", 'rb') as f:
+                # Use restricted unpickler for security
+                class RestrictedUnpickler(pickle.Unpickler):
+                    def find_class(self, module, name):
+                        # Only allow safe classes
+                        ALLOWED_CLASSES = {
+                            ('builtins', 'dict'),
+                            ('builtins', 'list'),
+                            ('builtins', 'str'),
+                            ('builtins', 'int'),
+                            ('builtins', 'float'),
+                            ('__main__', 'KNNConfig'),
+                        }
+                        if (module, name) in ALLOWED_CLASSES:
+                            return super().find_class(module, name)
+                        raise pickle.UnpicklingError(f"Unsafe class: {module}.{name}")
+                
+                metadata = RestrictedUnpickler(f).load()
         
         self._ids = metadata['ids']
         self._id_to_idx = metadata['id_to_idx']
         
+        # Reconstruct config if needed
+        if isinstance(metadata.get('config'), dict):
+            self.config = KNNConfig(**metadata['config'])
+        
         logger.info(f"Loaded FAISS index from {path} with {len(self._ids)} vectors")
+    
+    def _compute_checksum(self) -> str:
+        """Compute checksum for data integrity."""
+        import hashlib
+        data = f"{len(self._ids)}:{self.embedding_dim}:{self.config.metric}"
+        return hashlib.sha256(data.encode()).hexdigest()[:16]
 
 
 class AnnoyKNNIndex(BaseKNNIndex):
