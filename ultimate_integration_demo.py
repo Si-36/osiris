@@ -29,7 +29,8 @@ import importlib.util
 spec = importlib.util.spec_from_file_location("knn_index", "/workspace/core/src/aura_intelligence/memory/knn_index_real.py")
 knn_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(knn_module)
-KNNIndex = knn_module.KNNIndex
+KNNIndex = knn_module.HybridKNNIndex
+KNNConfig = knn_module.KNNConfig
 
 # Load consensus directly  
 spec = importlib.util.spec_from_file_location("consensus", "/workspace/core/src/aura_intelligence/consensus/simple.py")
@@ -92,7 +93,8 @@ class UltimateIntegrationDemo:
         print("✓ LNN: MIT Liquid Neural Networks")
         
         # 3. Memory System
-        self.components['memory'] = KNNIndex(backend='faiss', dimension=128)
+        config = KNNConfig(backend='faiss')
+        self.components['memory'] = KNNIndex(dimension=128, config=config)
         # Add some vectors
         for i in range(100):
             vec = np.random.rand(128).astype(np.float32)

@@ -73,21 +73,21 @@ if not OPENTELEMETRY_AVAILABLE:
             start_time = time.time()
             
             # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
         def should_sample(self, *args, **kwargs):
             return None
@@ -131,128 +131,128 @@ if not OPENTELEMETRY_AVAILABLE:
             return self
         
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-            """REAL processing implementation"""
-            import time
-            import numpy as np
+        """REAL processing implementation"""
+        import time
+        import numpy as np
         
-            start_time = time.time()
+        start_time = time.time()
         
-            # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-            """REAL processing implementation"""
-            import time
-            import numpy as np
+        """REAL processing implementation"""
+        import time
+        import numpy as np
         
-            start_time = time.time()
+        start_time = time.time()
         
-            # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-            """REAL processing implementation"""
-            import time
-            import numpy as np
+        """REAL processing implementation"""
+        import time
+        import numpy as np
         
-            start_time = time.time()
+        start_time = time.time()
         
-            # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-            """REAL processing implementation"""
-            import time
-            import numpy as np
+        """REAL processing implementation"""
+        import time
+        import numpy as np
         
-            start_time = time.time()
+        start_time = time.time()
         
-            # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-            """REAL processing implementation"""
-            import time
-            import numpy as np
+        """REAL processing implementation"""
+        import time
+        import numpy as np
         
-            start_time = time.time()
+        start_time = time.time()
         
-            # Validate input
-            if not data:
-                return {'error': 'No input data provided', 'status': 'failed'}
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
         
-            # Process data
-            processed_data = self._process_data(data)
+        # Process data
+        processed_data = self._process_data(data)
         
-            # Generate result
-            result = {
+        # Generate result
+        result = {
             'status': 'success',
             'processed_count': len(processed_data),
             'processing_time': time.time() - start_time,
             'data': processed_data
-            }
+        }
         
-            return result
+        return result
     
-            # Set fallback base classes
-            sampling = type('sampling', (), {'Sampler': MockSampler})()
-            trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
+    # Set fallback base classes
+    sampling = type('sampling', (), {'Sampler': MockSampler})()
+    trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
 
 
 class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampler):

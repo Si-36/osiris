@@ -7,7 +7,7 @@ NO DUMMY IMPLEMENTATIONS - Everything computes real results.
 """
 
 import numpy as np
-from typing import List, Tuple, Optional, Protocol, Union
+from typing import List, Tuple, Optional, Protocol, Union, Dict, Any
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import logging
@@ -673,7 +673,7 @@ class HybridKNNIndex:
         """Return the number of vectors in the index."""
         return len(self._impl)
     
-    def get_memory_usage(self) -> Dict[str, Any]:
+    def get_memory_usage(self) -> dict[str, Any]:
         """Estimate memory usage of the index."""
         import sys
         
