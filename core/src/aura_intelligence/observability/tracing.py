@@ -66,13 +66,13 @@ if not OPENTELEMETRY_AVAILABLE:
     class MockSampler:
         """Mock sampler when OpenTelemetry is not available"""
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL processing implementation"""
-        import time
-        import numpy as np
-        
-        start_time = time.time()
-        
-        # Validate input
+            """REAL processing implementation"""
+            import time
+            import numpy as np
+            
+            start_time = time.time()
+            
+            # Validate input
         if not data:
             return {'error': 'No input data provided', 'status': 'failed'}
         

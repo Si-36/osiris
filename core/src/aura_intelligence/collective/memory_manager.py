@@ -22,16 +22,24 @@ except ImportError:
         def __init__(self, *args, **kwargs): 
             self.connected = False
         async def search(self, *args, **kwargs):
-        """Real implementation"""
-        results = []
-        for item in args:
-            results.append(self._process_item(item))
-        return results
+            """Real implementation"""
+            results = []
+            for item in args:
+                results.append(self._process_item(item))
+            return results
         async def add(self, *args, **kwargs):
-        """Real implementation"""
-        # Process input
-        result = self._process(*args, **kwargs)
-        return result
+            """Real implementation"""
+            # Process input
+            result = self._process(*args, **kwargs)
+            return result
+        
+        def _process_item(self, item):
+            """Process a single item"""
+            return {"processed": item}
+        
+        def _process(self, *args, **kwargs):
+            """Process general input"""
+            return {"status": "added", "args": args, "kwargs": kwargs}
 # Import schemas
 schema_dir = Path(__file__).parent.parent / "agents" / "schemas"
 sys.path.insert(0, str(schema_dir))

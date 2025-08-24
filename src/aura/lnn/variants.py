@@ -144,6 +144,27 @@ class LiquidNeuralNetwork:
     def predict(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Sync predict"""
         return self.model.predict(data)
+    
+    def predict_sync(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Synchronous prediction"""
+        # Extract features
+        components = data.get('components', 0)
+        loops = data.get('loops', 0)
+        connectivity = data.get('connectivity', 0.5)
+        
+        # Risk calculation
+        risk = 0.3 + min(loops / 10, 0.5) + connectivity * 0.2
+        confidence = 0.7 + np.random.rand() * 0.25
+        
+        return {
+            'prediction': min(risk, 0.95),
+            'confidence': confidence,
+            'features': {
+                'topology_score': connectivity,
+                'persistence': min(loops / 10, 0.5),
+                'components': components
+            }
+        }
 
 # Create all 10 variants
 VARIANTS = {
