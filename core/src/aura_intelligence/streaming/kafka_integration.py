@@ -38,6 +38,7 @@ except ImportError:
             self.events_published = []
         
         def send(self, topic: str, value: Dict[str, Any], key: str = None):
+        def send(self, topic: str, value: Dict[str, Any], key: str = None):
             self.events_published.append({
                 'topic': topic,
                 'value': value,
@@ -47,7 +48,7 @@ except ImportError:
             return MockFuture()
         
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL processing implementation"""
+        def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         import time
         import numpy as np
         
@@ -72,14 +73,17 @@ except ImportError:
     
     class MockFuture:
         def get(self, timeout=10):
+        def get(self, timeout=10):
             return MockRecordMetadata()
     
     class MockRecordMetadata:
+        def __init__(self):
         def __init__(self):
             self.partition = 0
             self.offset = len(str(time.time()))
 
 class KafkaEventProducer:
+    def __init__(self, bootstrap_servers: str = "localhost:9092"):
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
         self.bootstrap_servers = bootstrap_servers
         
@@ -142,10 +146,12 @@ class KafkaEventProducer:
         return await self.publish_event(event)
     
     def close(self):
+    def close(self):
         if self.producer:
             self.producer.close()
 
 class AURAEventStreaming:
+    def __init__(self, bootstrap_servers: str = "localhost:9092"):
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
         self.producer = KafkaEventProducer(bootstrap_servers)
         self.event_stats = {
@@ -172,6 +178,7 @@ class AURAEventStreaming:
         return success
     
     def get_streaming_stats(self) -> Dict[str, Any]:
+    def get_streaming_stats(self) -> Dict[str, Any]:
         return {
             'events_published': self.event_stats['events_published'],
             'events_consumed': self.event_stats['events_consumed'],
@@ -180,10 +187,12 @@ class AURAEventStreaming:
         }
     
     def close(self):
+    def close(self):
         self.producer.close()
 
 _event_streaming = None
 
+def get_event_streaming():
 def get_event_streaming():
     global _event_streaming
     if _event_streaming is None:

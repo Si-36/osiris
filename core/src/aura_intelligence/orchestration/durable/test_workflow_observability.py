@@ -6,6 +6,7 @@ Tests cover metrics collection, health monitoring, SLA compliance, and TDA integ
 with graceful fallbacks for missing dependencies.
 
 Tests cover:
+    - Workflow span tracking and metrics collection
 - Workflow span tracking and metrics collection
 - Health checks and SLA monitoring
 - TDA integration and correlation
@@ -26,8 +27,8 @@ from .workflow_observability import (
 
 
 class MockTDAIntegration:
-    """Mock TDA integration for testing"""
     
+    def __init__(self):
     def __init__(self):
         self.results = []
         self.health_status = {"status": "healthy", "tda_available": True}
@@ -41,21 +42,19 @@ class MockTDAIntegration:
 
 
 class TestWorkflowObservabilityManager:
-    """Test workflow observability manager"""
     
     @pytest.fixture
     def mock_tda_integration(self):
-        """Mock TDA integration for testing"""
+    def mock_tda_integration(self):
         return MockTDAIntegration()
     
     @pytest.fixture
     def observability_manager(self, mock_tda_integration):
-        """Create observability manager with mock TDA integration"""
+    def observability_manager(self, mock_tda_integration):
         return WorkflowObservabilityManager(tda_integration=mock_tda_integration)
     
     @pytest.mark.asyncio
     async def test_workflow_span_lifecycle(self, observability_manager):
-        """Test complete workflow span lifecycle"""
         
         # Start workflow span
         span_id = await observability_manager.start_workflow_span(
@@ -95,7 +94,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_workflow_span_with_error(self, observability_manager):
-        """Test workflow span with error handling"""
         
         span_id = await observability_manager.start_workflow_span(
             workflow_id="test_workflow_error",
@@ -124,7 +122,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_step_execution_recording(self, observability_manager):
-        """Test individual step execution recording"""
         
         # Record successful step
         await observability_manager.record_step_execution(
@@ -163,7 +160,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_sla_violation_detection(self, observability_manager):
-        """Test SLA violation detection and recording"""
         
         # Set lower SLA threshold for testing
         observability_manager.sla_thresholds["max_step_latency"] = 1.0
@@ -189,7 +185,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_health_check_workflow_execution(self, observability_manager):
-        """Test workflow execution health check"""
         
         # Simulate successful workflows
         for i in range(8):
@@ -221,7 +216,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_health_check_degraded_performance(self, observability_manager):
-        """Test health check with degraded performance"""
         
         # Simulate mostly failed workflows
         for i in range(7):
@@ -253,7 +247,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_health_check_observability(self, observability_manager):
-        """Test observability system health check"""
         
         # Add some recent metrics
         await observability_manager._record_metric(WorkflowMetric(
@@ -276,7 +269,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_health_check_tda_integration(self, observability_manager, mock_tda_integration):
-        """Test TDA integration health check"""
         
         # Test healthy TDA integration
         health_check = await observability_manager._check_tda_integration_health()
@@ -294,7 +286,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_health_check_sla_compliance(self, observability_manager):
-        """Test SLA compliance health check"""
         
         # Test with no violations (healthy)
         health_check = await observability_manager._check_sla_compliance()
@@ -320,7 +311,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_comprehensive_health_check(self, observability_manager):
-        """Test comprehensive health check of all components"""
         
         health_checks = await observability_manager.perform_health_check()
         
@@ -339,7 +329,7 @@ class TestWorkflowObservabilityManager:
             ]
     
     def test_workflow_metrics_collection(self, observability_manager):
-        """Test workflow metrics collection and aggregation"""
+    def test_workflow_metrics_collection(self, observability_manager):
         
         # Simulate workflow executions
         observability_manager._update_workflow_stats(
@@ -377,7 +367,7 @@ class TestWorkflowObservabilityManager:
         assert metrics["tda_correlated_count"] == 1
     
     def test_overall_workflow_metrics(self, observability_manager):
-        """Test overall workflow metrics across all workflow types"""
+    def test_overall_workflow_metrics(self, observability_manager):
         
         # Simulate different workflow types
         for workflow_type in ["data_processing", "model_inference", "result_aggregation"]:
@@ -411,7 +401,7 @@ class TestWorkflowObservabilityManager:
             assert by_type[workflow_type]["success_rate"] == 2/3
     
     def test_recent_metrics_filtering(self, observability_manager):
-        """Test recent metrics filtering by time window"""
+    def test_recent_metrics_filtering(self, observability_manager):
         
         current_time = datetime.now(timezone.utc)
         
@@ -444,7 +434,7 @@ class TestWorkflowObservabilityManager:
         assert len(recent_metrics) == 2
     
     def test_dashboard_data_export(self, observability_manager):
-        """Test dashboard data export functionality"""
+    def test_dashboard_data_export(self, observability_manager):
         
         # Add some test data
         observability_manager._update_workflow_stats(
@@ -493,7 +483,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_tda_integration_span_sending(self, observability_manager, mock_tda_integration):
-        """Test sending workflow spans to TDA integration"""
         
         # Start and end a workflow span with TDA correlation
         span_id = await observability_manager.start_workflow_span(
@@ -528,7 +517,6 @@ class TestWorkflowObservabilityManager:
     
     @pytest.mark.asyncio
     async def test_graceful_fallback_without_dependencies(self):
-        """Test graceful fallback when dependencies are not available"""
         
         # Create observability manager without TDA integration
         observability_manager = WorkflowObservabilityManager(tda_integration=None)
@@ -559,12 +547,10 @@ class TestWorkflowObservabilityManager:
 
 
 class TestWorkflowObservabilityIntegration:
-    """Integration tests for workflow observability"""
     
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_end_to_end_workflow_monitoring(self):
-        """Test end-to-end workflow monitoring scenario"""
         
         mock_tda = MockTDAIntegration()
         observability_manager = WorkflowObservabilityManager(tda_integration=mock_tda)

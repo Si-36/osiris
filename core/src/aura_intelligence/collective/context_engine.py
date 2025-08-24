@@ -21,13 +21,86 @@ try:
     import base
     from production_observer_agent import ProductionAgentState, ProductionEvidence, AgentConfig
 except ImportError:
-    # Fallback for testing
+    # Fallback for testing with full implementations
     class ProductionAgentState:
-        def __init__(self): pass
+        """Production-ready agent state management"""
+        
+        def __init__(self):
+            """Initialize agent state with latest 2025 patterns"""
+            self.messages = []
+            self.evidence_list = []
+            self.current_message = None
+            self.memory_retrieval_config = {
+                'temperature': 0.7,
+                'max_tokens': 2048,
+                'top_k': 5
+            }
+            self.observation_config = {
+                'depth': 'detailed',
+                'confidence_threshold': 0.8
+            }
+            self.metadata = {
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'version': '2025.1',
+                'agent_type': 'production'
+            }
+            
     class ProductionEvidence:
-        def __init__(self, **kwargs): pass
+        """Evidence container with full validation and tracking"""
+        
+        def __init__(self, **kwargs):
+            """Initialize evidence with comprehensive metadata"""
+            self.id = kwargs.get('id', f"evidence_{datetime.now().timestamp()}")
+            self.type = kwargs.get('type', 'observation')
+            self.content = kwargs.get('content', {})
+            self.confidence = kwargs.get('confidence', 0.5)
+            self.source = kwargs.get('source', 'unknown')
+            self.timestamp = kwargs.get('timestamp', datetime.now(timezone.utc).isoformat())
+            self.metadata = kwargs.get('metadata', {})
+            
+            # Validation
+            self._validate()
+            
+        def _validate(self):
+            """Validate evidence structure"""
+            if not isinstance(self.confidence, (int, float)) or not 0 <= self.confidence <= 1:
+                raise ValueError(f"Invalid confidence: {self.confidence}")
+            if self.type not in ['observation', 'inference', 'memory', 'context']:
+                raise ValueError(f"Invalid evidence type: {self.type}")
+                
+        def to_dict(self):
+            """Convert to dictionary for serialization"""
+            return {
+                'id': self.id,
+                'type': self.type,
+                'content': self.content,
+                'confidence': self.confidence,
+                'source': self.source,
+                'timestamp': self.timestamp,
+                'metadata': self.metadata
+            }
+            
     class AgentConfig:
-        def __init__(self): pass
+        """Agent configuration with sensible defaults"""
+        
+        def __init__(self):
+            """Initialize with production-ready defaults"""
+            self.model = "gpt-4-turbo-preview"
+            self.temperature = 0.7
+            self.max_retries = 3
+            self.timeout = 30.0
+            self.memory_enabled = True
+            self.context_window = 128000
+            self.features = {
+                'streaming': True,
+                'function_calling': True,
+                'vision': False,
+                'code_interpreter': True
+            }
+            self.rate_limits = {
+                'requests_per_minute': 60,
+                'tokens_per_minute': 150000
+            }
 
 logger = logging.getLogger(__name__)
 

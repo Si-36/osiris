@@ -22,23 +22,21 @@ except ImportError:
         def __init__(self, *args, **kwargs): 
             self.connected = False
         async def search(self, *args, **kwargs):
-            """Real implementation"""
             results = []
             for item in args:
                 results.append(self._process_item(item))
             return results
         async def add(self, *args, **kwargs):
-            """Real implementation"""
             # Process input
             result = self._process(*args, **kwargs)
             return result
         
         def _process_item(self, item):
-            """Process a single item"""
+        def _process_item(self, item):
             return {"processed": item}
         
         def _process(self, *args, **kwargs):
-            """Process general input"""
+        def _process(self, *args, **kwargs):
             return {"status": "added", "args": args, "kwargs": kwargs}
 # Import schemas
 schema_dir = Path(__file__).parent.parent / "agents" / "schemas"
@@ -57,11 +55,11 @@ logger = logging.getLogger(__name__)
 
 
 class CollectiveMemoryManager:
-    """
     Professional LangMem integration for collective intelligence.
     Manages context engineering and continuous learning.
     """
     
+    def __init__(self, config: Dict[str, Any]):
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.namespace = config.get("namespace", "aura_collective_intelligence")
@@ -81,7 +79,6 @@ class CollectiveMemoryManager:
             logger.warning("⚠️ LangMem API key not provided - using fallback mode")
     
     async def query_relevant_context(self, state: Any) -> Dict[str, Any]:
-        """
         Query LangMem for relevant context to inform supervisor decisions.
         
         Args:
@@ -124,7 +121,6 @@ class CollectiveMemoryManager:
             return self._fallback_context()
     
     async def learn_from_workflow(self, final_state: Any) -> None:
-        """
         Store completed workflow in collective memory for future learning.
         
         Args:
@@ -154,7 +150,7 @@ class CollectiveMemoryManager:
             logger.error(f"❌ Failed to store workflow: {e}")
     
     def _create_event_signature(self, state: Any) -> str:
-        """Create semantic signature for event matching."""
+    def _create_event_signature(self, state: Any) -> str:
         
         try:
             if hasattr(state, 'evidence_entries') and state.evidence_entries:
@@ -169,7 +165,7 @@ class CollectiveMemoryManager:
             return "unknown_event"
     
     def _analyze_memory_patterns(self, memories: List[Dict]) -> Dict[str, Any]:
-        """Analyze patterns from retrieved memories."""
+    def _analyze_memory_patterns(self, memories: List[Dict]) -> Dict[str, Any]:
         
         if not memories:
             return {"confidence": 0.0}
@@ -203,7 +199,7 @@ class CollectiveMemoryManager:
         }
     
     def _create_workflow_summary(self, final_state: Any) -> Dict[str, Any]:
-        """Create workflow summary for storage."""
+    def _create_workflow_summary(self, final_state: Any) -> Dict[str, Any]:
         
         try:
             workflow_id = getattr(final_state, 'workflow_id', 'unknown')
@@ -236,7 +232,7 @@ class CollectiveMemoryManager:
             }
     
     def _extract_patterns(self, state: Any) -> List[str]:
-        """Extract patterns from workflow state."""
+    def _extract_patterns(self, state: Any) -> List[str]:
         
         patterns = []
         
@@ -264,7 +260,7 @@ class CollectiveMemoryManager:
         return patterns
     
     def _fallback_context(self) -> Dict[str, Any]:
-        """Fallback context when LangMem is unavailable"""
+    def _fallback_context(self) -> Dict[str, Any]:
         return {
             "insight": "LangMem unavailable - using default context",
             "confidence": 0.5,
@@ -272,3 +268,4 @@ class CollectiveMemoryManager:
             "source": "fallback",
             "context_summary": "No historical context available"
         }
+"""

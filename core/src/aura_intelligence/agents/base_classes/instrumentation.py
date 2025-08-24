@@ -2,6 +2,7 @@
 📊 Agent Instrumentation - OpenTelemetry Integration
 
 Comprehensive observability instrumentation for agents with:
+    - Automatic tracing of agent methods
 - Automatic tracing of agent methods
 - Performance metrics collection
 - Error tracking and alerting
@@ -60,9 +61,9 @@ else:
     # Fallback meter
     class NoOpMeter:
         def create_counter(self, **kwargs):
+        def create_counter(self, **kwargs):
             class NoOpCounter:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL agent processing with decision making"""
         import time
         import numpy as np
         
@@ -87,9 +88,9 @@ else:
     
             return NoOpCounter()
         def create_histogram(self, **kwargs):
+        def create_histogram(self, **kwargs):
             class NoOpHistogram:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL agent processing with decision making"""
         import time
         import numpy as np
         
@@ -114,9 +115,9 @@ else:
     
             return NoOpHistogram()
         def create_gauge(self, **kwargs):
+        def create_gauge(self, **kwargs):
             class NoOpGauge:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL agent processing with decision making"""
         import time
         import numpy as np
         
@@ -144,8 +145,8 @@ else:
 
 
 class AgentMetrics:
-    """Centralized metrics collection for agents."""
     
+    def __init__(self):
     def __init__(self):
         # Counters
         self.method_calls = meter.create_counter(
@@ -215,7 +216,6 @@ def instrument_agent(
     record_result: bool = False,
     extract_correlation_id: bool = True
 ):
-    """
     Decorator to instrument agent methods with OpenTelemetry.
     
     Args:
@@ -224,6 +224,7 @@ def instrument_agent(
         record_result: Whether to record method results
         extract_correlation_id: Whether to extract correlation ID from args
     """
+    def decorator(func: Callable) -> Callable:
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs):
@@ -334,6 +335,7 @@ def instrument_agent(
         
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args, **kwargs):
             # Similar implementation for sync functions
             agent_self = args[0] if args else None
             agent_id = getattr(agent_self, 'agent_id', 'unknown')
@@ -424,7 +426,7 @@ def instrument_agent(
 
 
 def instrument_memory_operation(operation: str = "query"):
-    """Decorator specifically for memory operations."""
+def instrument_memory_operation(operation: str = "query"):
     return instrument_agent(
         operation_type=f"memory_{operation}",
         record_args=True,
@@ -434,7 +436,7 @@ def instrument_memory_operation(operation: str = "query"):
 
 
 def instrument_message_operation(operation: str = "send"):
-    """Decorator specifically for message operations."""
+def instrument_message_operation(operation: str = "send"):
     return instrument_agent(
         operation_type=f"message_{operation}",
         record_args=False,  # Don't record message content for security
@@ -444,7 +446,7 @@ def instrument_message_operation(operation: str = "send"):
 
 
 def instrument_task_processing():
-    """Decorator specifically for task processing."""
+def instrument_task_processing():
     return instrument_agent(
         operation_type="task_processing",
         record_args=False,  # AgentState could be large
@@ -454,7 +456,7 @@ def instrument_task_processing():
 
 
 def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
-    """Extract correlation ID from method arguments."""
+def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
     # Check kwargs first
     if 'correlation_id' in kwargs:
         return kwargs['correlation_id']
@@ -472,7 +474,7 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
 
 
 def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
-    """Record method arguments in span (safely)."""
+def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
     try:
         # Record number of args
         span.set_attribute("method.args_count", len(args))
@@ -504,7 +506,7 @@ def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
 
 
 def _record_method_result(span: Span, result: Any) -> None:
-    """Record method result in span (safely)."""
+def _record_method_result(span: Span, result: Any) -> None:
     try:
         result_type = type(result).__name__
         span.set_attribute("method.result_type", result_type)
@@ -535,7 +537,6 @@ def create_child_span(
     parent_context: Optional[Dict[str, str]] = None,
     attributes: Optional[Dict[str, Any]] = None
 ) -> Span:
-    """
     Create a child span with optional parent context.
     
     Args:
@@ -562,7 +563,7 @@ def create_child_span(
 
 
 def inject_trace_context() -> Dict[str, str]:
-    """
+def inject_trace_context() -> Dict[str, str]:
     Inject current trace context for propagation.
     
     Returns:
@@ -578,7 +579,6 @@ def record_agent_event(
     agent_id: str,
     attributes: Optional[Dict[str, Any]] = None
 ) -> None:
-    """
     Record a custom agent event.
     
     Args:
@@ -603,7 +603,6 @@ def record_confidence_score(
     confidence: float,
     operation: str = "general"
 ) -> None:
-    """
     Record agent confidence score.
     
     Args:
@@ -620,7 +619,7 @@ def record_confidence_score(
 
 
 def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> None:
-    """
+def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> None:
     Update active tasks gauge.
     
     Args:
