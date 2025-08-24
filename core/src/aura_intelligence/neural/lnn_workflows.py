@@ -14,7 +14,7 @@ from temporalio import workflow, activity
 from temporalio.common import RetryPolicy
 import structlog
 
-from .lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig, benchmark_lnn
+from aura_intelligence.lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig, benchmark_lnn
 from .lnn_consensus import (
     DistributedLNN,
     LNNConsensusOrchestrator,

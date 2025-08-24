@@ -17,7 +17,7 @@ from langsmith.wrappers import wrap_openai
 import langsmith
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import

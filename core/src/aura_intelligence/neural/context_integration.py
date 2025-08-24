@@ -16,7 +16,7 @@ from opentelemetry import trace
 
 from ..neural.lnn import LiquidNeuralNetwork, LNNConfig
 from ..resilience import resilient, ResilienceLevel
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 
 logger = logging.getLogger(__name__)
 tracer = create_tracer("context_aware_lnn")

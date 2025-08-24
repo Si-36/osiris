@@ -44,7 +44,7 @@ except ImportError:
     trace = MockTrace()
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import

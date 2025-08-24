@@ -9,7 +9,7 @@ import numpy as np
 from typing import Dict, Any, Optional
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import GPUAllocationRequest
 
 logger = structlog.get_logger()

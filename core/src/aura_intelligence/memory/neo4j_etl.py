@@ -21,7 +21,7 @@ from neo4j import AsyncGraphDatabase, AsyncSession
 import redis
 import schedule
 
-from .observability import observability, traced
+from aura_intelligence.observability import observability, traced
 from .redis_store import RedisVectorStore, KEY_PREFIX
 
 logger = logging.getLogger(__name__)

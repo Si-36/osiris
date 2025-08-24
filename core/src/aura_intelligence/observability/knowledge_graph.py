@@ -17,7 +17,7 @@ except ImportError:
     print("⚠️ Neo4j driver not available - install with: pip install neo4j")
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import

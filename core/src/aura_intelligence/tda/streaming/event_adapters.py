@@ -17,10 +17,10 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.protobuf import ProtobufSerializer, ProtobufDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
 
-from ..streaming import StreamingTDAProcessor, TDAStatistics
+from aura_intelligence.streaming import StreamingTDAProcessor, TDAStatistics
 from .parallel_processor import MultiScaleProcessor, ScaleConfig
-from ...infrastructure.kafka_event_mesh import KafkaEventMesh, EventMessage
-from ...observability.tracing import get_tracer
+from aura_intelligence.infrastructure.kafka_event_mesh import KafkaEventMesh, EventMessage
+from aura_intelligence.observability.tracing import get_tracer
 
 logger = structlog.get_logger(__name__)
 

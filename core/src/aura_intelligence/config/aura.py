@@ -10,9 +10,9 @@ from pydantic import Field
 
 from .base import BaseSettings
 from .agent import AgentSettings
-from .memory import MemorySettings
+from aura_intelligence.memory import MemorySettings
 from .api import APISettings
-from .observability import ObservabilitySettings
+from aura_intelligence.observability import ObservabilitySettings
 from .integration import IntegrationSettings
 from .security import SecuritySettings
 from .deployment import DeploymentSettings

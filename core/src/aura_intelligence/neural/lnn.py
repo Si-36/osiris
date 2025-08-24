@@ -24,7 +24,7 @@ from enum import Enum
 import structlog
 from opentelemetry import trace, metrics
 
-from ..observability import create_tracer, create_meter
+from aura_intelligence.observability import create_tracer, create_meter
 
 logger = structlog.get_logger()
 tracer = create_tracer("lnn")

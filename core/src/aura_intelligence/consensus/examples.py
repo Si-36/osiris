@@ -110,7 +110,7 @@ async def example_no_consensus_needed():
     
     These use simpler patterns like event sourcing or optimistic locking.
     """
-    from ..events import EventProducer
+    from aura_intelligence.events import EventProducer
     
     # Simple event publishing for agent decisions
     producer = EventProducer("localhost:9092")

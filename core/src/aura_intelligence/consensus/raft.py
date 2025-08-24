@@ -25,7 +25,7 @@ from .types import (
     RaftVoteRequest, RaftVoteResponse,
     AppendEntriesRequest, AppendEntriesResponse
 )
-from ..events import EventProducer
+from aura_intelligence.events import EventProducer
 from ..agents.temporal import execute_workflow
 
 logger = structlog.get_logger()

@@ -20,7 +20,7 @@ Latest 2025 Features:
 ✅ Bio-inspired organism health monitoring
 """
 
-from .config import (
+from aura_intelligence.config import (
     ObservabilityConfig,
     create_development_config,
     create_production_config,

@@ -16,8 +16,8 @@ from langgraph.graph import StateGraph, END
 import structlog
 
 from ..base import AgentBase, AgentConfig, AgentState
-from ..observability import AgentInstrumentor
-from ...observability.knowledge_graph import KnowledgeGraphManager  # Fixed import name
+from aura_intelligence.observability import AgentInstrumentor
+from aura_intelligence.observability.knowledge_graph import KnowledgeGraphManager  # Fixed import name
 
 
 class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):

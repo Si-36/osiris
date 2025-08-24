@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 from pydantic import ValidationError
 
-from ..config import AURASettings
+from aura_intelligence.config import AURASettings
 from .logging import get_logger
 
 logger = get_logger(__name__)

@@ -20,8 +20,8 @@ from prometheus_client import Counter, Histogram, Gauge
 from .windows import StreamingWindow, WindowStats
 from .incremental_persistence import VineyardAlgorithm, DiagramUpdate
 from ..models import PersistenceDiagram, PersistenceFeature
-from ...observability.tracing import get_tracer
-from ...resilience.circuit_breaker import AdaptiveCircuitBreaker as CircuitBreaker
+from aura_intelligence.observability.tracing import get_tracer
+from aura_intelligence.resilience.circuit_breaker import AdaptiveCircuitBreaker as CircuitBreaker
 
 logger = structlog.get_logger(__name__)
 

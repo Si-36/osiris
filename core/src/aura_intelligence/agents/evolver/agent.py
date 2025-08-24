@@ -10,8 +10,8 @@ import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
 
-from ...orchestration.bus_redis import create_redis_bus
-from ...orchestration.bus_protocol import Event
+from aura_intelligence.orchestration.bus_redis import create_redis_bus
+from aura_intelligence.orchestration.bus_protocol import Event
 
 logger = logging.getLogger(__name__)
 

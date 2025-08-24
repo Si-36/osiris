@@ -24,7 +24,7 @@ from .lnn_council_agent import (
     GPUAllocationDecision,
     LNNCouncilState
 )
-from ...lnn.core import ActivationType
+from aura_intelligence.lnn.core import ActivationType
 from ..base import AgentConfig
 
 

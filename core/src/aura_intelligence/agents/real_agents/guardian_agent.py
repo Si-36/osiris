@@ -16,7 +16,7 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 import hashlib
 
-from ...core.types import ConfidenceScore
+from aura_intelligence.core.types import ConfidenceScore
 
 
 @dataclass

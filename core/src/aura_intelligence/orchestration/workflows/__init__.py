@@ -6,7 +6,7 @@ Based on LangGraph Academy ambient agents and professional configuration pattern
 """
 
 from .state import CollectiveState
-from .config import extract_config, WorkflowConfig
+from aura_intelligence.config import extract_config, WorkflowConfig
 from .tools import (
     observe_system_event,
     analyze_risk_patterns,
@@ -17,7 +17,7 @@ from .shadow_mode import (
     log_shadow_mode_prediction,
     record_shadow_mode_outcome
 )
-# from .graph import create_collective_workflow  
+# from aura_intelligence.graph import create_collective_workflow  
 # Temporarily commented out due to import issues
 # from .nodes import (
 #     SupervisorNode,

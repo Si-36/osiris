@@ -13,7 +13,7 @@ import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
 
 from ..interfaces import INeuralEngine
-from .config import NeuralConfig, ODESolver
+from aura_intelligence.config import NeuralConfig, ODESolver
 from .layers import LiquidTimeStep, AdaptiveLayer, SparseConnection, AttentionLayer
 
 

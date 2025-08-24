@@ -57,7 +57,7 @@ try:
 except ImportError:
     INSTRUMENTATION_AVAILABLE['psycopg2'] = None
 
-from .config import ObservabilityConfig
+from aura_intelligence.config import ObservabilityConfig
 
 logger = logging.getLogger(__name__)
 

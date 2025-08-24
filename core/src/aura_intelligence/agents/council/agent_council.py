@@ -51,7 +51,7 @@ class AgentCouncil:
             
         # REAL agent deliberation using actual components
         try:
-            from ...components.real_registry import get_real_registry
+            from aura_intelligence.components.real_registry import get_real_registry
             registry = get_real_registry()
             
             # Get real agent components

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import structlog
 import time
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState
 
 logger = structlog.get_logger()

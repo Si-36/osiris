@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .opentelemetry_integration import OpenTelemetryManager
     from .langsmith_integration import LangSmithManager
     from .prometheus_metrics import PrometheusMetricsManager

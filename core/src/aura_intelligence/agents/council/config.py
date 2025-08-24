@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 from enum import Enum
 
-from ...lnn.core import ActivationType, LiquidConfig, TimeConstants, WiringConfig
+from aura_intelligence.lnn.core import ActivationType, LiquidConfig, TimeConstants, WiringConfig
 from ..base import AgentConfig
 
 

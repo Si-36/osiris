@@ -8,7 +8,7 @@ import asyncio
 from typing import Dict, Any
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState, GPUAllocationDecision
 from .steps import (
     AnalyzeRequestStep,

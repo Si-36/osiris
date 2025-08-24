@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState
 
 logger = structlog.get_logger()

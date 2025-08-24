@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import json
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState, GPUAllocationRequest, GPUAllocationDecision
 
 logger = structlog.get_logger()
@@ -119,7 +119,7 @@ class LNNMemoryIntegration:
         
         try:
             # Search for recent decisions by this user
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -174,7 +174,7 @@ class LNNMemoryIntegration:
             # Semantic search for similar GPU requests
             semantic_query = f"GPU:{request.gpu_type} memory:{request.memory_gb}GB hours:{request.compute_hours}"
             
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -228,7 +228,7 @@ class LNNMemoryIntegration:
         
         try:
             # Search for decision outcomes and learning patterns
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -287,7 +287,7 @@ class LNNMemoryIntegration:
             temporal_data = {}
             
             for start_time, end_time, period_name in time_periods:
-                from ...adapters.mem0_adapter import SearchQuery
+                from aura_intelligence.adapters.mem0_adapter import SearchQuery
                 
                 query = SearchQuery(
                     agent_id="lnn_council_agent",
@@ -556,7 +556,7 @@ class LNNMemoryIntegration:
                 })
             
             # Store in Mem0
-            from ...adapters.mem0_adapter import Memory, MemoryType
+            from aura_intelligence.adapters.mem0_adapter import Memory, MemoryType
             
             memory = Memory(
                 agent_id="lnn_council_agent",
@@ -621,7 +621,7 @@ class LNNMemoryIntegration:
                     **learning_signal
                 }
                 
-                from ...adapters.mem0_adapter import Memory, MemoryType
+                from aura_intelligence.adapters.mem0_adapter import Memory, MemoryType
                 
                 learning_memory = Memory(
                     agent_id="lnn_council_agent",

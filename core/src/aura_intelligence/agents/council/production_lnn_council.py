@@ -21,18 +21,18 @@ from langgraph.graph import StateGraph, END
 from pydantic import BaseModel, Field
 import structlog
 
-from ...agents.base import AgentBase, AgentConfig, AgentState
-from ...agents.council.lnn_council import (
+from aura_intelligence.agents.base import AgentBase, AgentConfig, AgentState
+from aura_intelligence.agents.council.lnn_council import (
     LNNCouncilAgent, CouncilTask, CouncilVote, VoteType
 )
-from ...neural.lnn import LiquidNeuralNetwork, LNNConfig, ODESolver
-from ...neural.context_integration import ContextAwareLNN, ContextWindow
-from ...neural.memory_hooks import LNNMemoryHooks
-from ...adapters.neo4j_adapter import Neo4jAdapter, Neo4jConfig
-from ...events.producers import EventProducer
-from ...memory.mem0_integration import Mem0Manager
-from ...observability import create_tracer, create_meter
-from ...resilience import resilient, ResilienceLevel
+from aura_intelligence.neural.lnn import LiquidNeuralNetwork, LNNConfig, ODESolver
+from aura_intelligence.neural.context_integration import ContextAwareLNN, ContextWindow
+from aura_intelligence.neural.memory_hooks import LNNMemoryHooks
+from aura_intelligence.adapters.neo4j_adapter import Neo4jAdapter, Neo4jConfig
+from aura_intelligence.events.producers import EventProducer
+from aura_intelligence.memory.mem0_integration import Mem0Manager
+from aura_intelligence.observability import create_tracer, create_meter
+from aura_intelligence.resilience import resilient, ResilienceLevel
 
 logger = structlog.get_logger()
 tracer = create_tracer("production_lnn_council")

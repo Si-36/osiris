@@ -9,7 +9,7 @@ This package contains advanced neural network implementations including:
 - Neuro-symbolic integration components
 """
 
-from .lnn import (
+from aura_intelligence.lnn import (
     LiquidNeuralNetwork,
     LiquidCell, 
     LiquidLayer,

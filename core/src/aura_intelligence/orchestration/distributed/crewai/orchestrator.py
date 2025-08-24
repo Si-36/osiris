@@ -9,7 +9,7 @@ import logging
 
 from .geometric_space import HyperbolicSpace, GeometricRouter
 from .flow_engine import FlowEngine
-from ...observability.hybrid import HybridObservability
+from aura_intelligence.observability.hybrid import HybridObservability
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class CrewAIOrchestrator:
         flow_id = self.engine.create_flow(config)
         
         if self.observability:
-            from ...observability.core import pure_metric
+            from aura_intelligence.observability.core import pure_metric
             await self.observability.emit_metric(
                 pure_metric("crewai_flow_created", 1.0)
                 .with_tag("flow_id", flow_id)
@@ -49,7 +49,7 @@ class CrewAIOrchestrator:
             result = await self.engine.execute_flow(flow_id, config)
             
             if self.observability:
-                from ...observability.core import pure_metric
+                from aura_intelligence.observability.core import pure_metric
                 await self.observability.emit_metric(
                     pure_metric("crewai_flow_completed", 1.0)
                     .with_tag("flow_id", flow_id)

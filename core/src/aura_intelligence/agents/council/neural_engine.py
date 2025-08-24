@@ -9,7 +9,7 @@ from typing import Dict, Any
 import structlog
 
 from .context_aware_lnn import ContextAwareLNN
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState
 
 logger = structlog.get_logger()

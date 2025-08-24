@@ -23,10 +23,10 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization
 
-from ...observability.metrics import metrics_collector
-from ...observability.tracing import TracingContext
-from ...events.event_bus import EventBus
-from ...config.base import Config
+from aura_intelligence.observability.metrics import metrics_collector
+from aura_intelligence.observability.tracing import TracingContext
+from aura_intelligence.events.event_bus import EventBus
+from aura_intelligence.config.base import Config
 
 logger = logging.getLogger(__name__)
 

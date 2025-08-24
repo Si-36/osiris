@@ -44,8 +44,8 @@ from ..resilience import (
 
 from ..agents.temporal import TemporalClient, execute_workflow
 from ..agents.v2 import ObserverAgent, ExecutorAgent, CoordinatorAgent
-from ..consensus import ConsensusManager, ConsensusRequest, DecisionType
-from ..events import EventProducer, AgentEvent, EventType
+from aura_intelligence.consensus import ConsensusManager, ConsensusRequest, DecisionType
+from aura_intelligence.events import EventProducer, AgentEvent, EventType
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

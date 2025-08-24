@@ -17,7 +17,7 @@ with comprehensive observability and resilience patterns.
 
 # Phase 2 new implementations - commented out due to complex dependencies
 # from .base import AgentBase, AgentConfig, AgentState
-# from .observability import AgentInstrumentor, AgentMetrics
+# from aura_intelligence.observability import AgentInstrumentor, AgentMetrics
 
 # Original schemas (to be implemented/migrated) - commented out due to missing modules
 # from .schemas.acp import ACPEnvelope, ACPEndpoint, MessageType, Priority

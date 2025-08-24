@@ -24,8 +24,8 @@ from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
 
 from ..base import AgentBase, AgentState, AgentConfig
-from ...lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
-from ...config.agent import AgentSettings
+from aura_intelligence.lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
+from aura_intelligence.config.agent import AgentSettings
 
 # LangGraph imports for workflow building
 try:

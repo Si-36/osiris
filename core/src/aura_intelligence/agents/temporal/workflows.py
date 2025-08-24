@@ -15,8 +15,8 @@ from temporalio.common import RetryPolicy
 from temporalio.exceptions import ApplicationError
 import structlog
 
-from ...agents.base import AgentState
-from ...agents.observability import GenAIAttributes
+from aura_intelligence.agents.base import AgentState
+from aura_intelligence.agents.observability import GenAIAttributes
 from .activities import (
     AgentActivity,
     KafkaProducerActivity,

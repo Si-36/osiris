@@ -22,8 +22,8 @@ import structlog
 
 from opentelemetry import trace, metrics
 
-from ..consensus import SimpleConsensus, Decision
-from ..events import EventProducer
+from aura_intelligence.consensus import SimpleConsensus, Decision
+from aura_intelligence.events import EventProducer
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
