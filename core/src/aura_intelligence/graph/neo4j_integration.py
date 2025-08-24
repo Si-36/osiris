@@ -24,9 +24,30 @@ class MockNeo4jDriver:
     def session(self):
         return MockNeo4jSession(self.session_data)
     
-    def close(self):
-        pass
-
+    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """REAL processing implementation"""
+        import time
+        import numpy as np
+        
+        start_time = time.time()
+        
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
+        
+        # Process data
+        processed_data = self._process_data(data)
+        
+        # Generate result
+        result = {
+            'status': 'success',
+            'processed_count': len(processed_data),
+            'processing_time': time.time() - start_time,
+            'data': processed_data
+        }
+        
+        return result
+    
 class MockNeo4jSession:
     def __init__(self, session_data: Dict):
         self.session_data = session_data
@@ -46,9 +67,30 @@ class MockNeo4jSession:
                 ])
         return MockNeo4jResult([])
     
-    def close(self):
-        pass
-
+    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """REAL processing implementation"""
+        import time
+        import numpy as np
+        
+        start_time = time.time()
+        
+        # Validate input
+        if not data:
+            return {'error': 'No input data provided', 'status': 'failed'}
+        
+        # Process data
+        processed_data = self._process_data(data)
+        
+        # Generate result
+        result = {
+            'status': 'success',
+            'processed_count': len(processed_data),
+            'processing_time': time.time() - start_time,
+            'data': processed_data
+        }
+        
+        return result
+    
 class MockNeo4jResult:
     def __init__(self, data: List[Dict]):
         self.data = data

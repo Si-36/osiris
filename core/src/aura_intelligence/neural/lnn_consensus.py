@@ -22,8 +22,8 @@ import numpy as np
 import structlog
 from opentelemetry import trace
 
-from .lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig
-from ..consensus import (
+from aura_intelligence.lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig
+from aura_intelligence.consensus import (
     ConsensusManager,
     ConsensusLevel,
     Decision,
@@ -31,8 +31,8 @@ from ..consensus import (
     ByzantineConsensus,
     RaftConsensus
 )
-from ..events import EventProducer, EventConsumer
-from ..observability import create_tracer
+from aura_intelligence.events import EventProducer, EventConsumer
+from aura_intelligence.observability import create_tracer
 
 logger = structlog.get_logger()
 tracer = create_tracer("lnn_consensus")

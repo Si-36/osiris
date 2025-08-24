@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import asyncio
 import hashlib
 
-from ..events import EventProducer
+from aura_intelligence.events import EventProducer
 
 
 @dataclass

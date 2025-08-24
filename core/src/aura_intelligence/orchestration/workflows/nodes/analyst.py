@@ -12,7 +12,7 @@ from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
 
 import structlog
-from ....resilience import resilient, ResilienceLevel
+from aura_intelligence..resilience import resilient, ResilienceLevel
 
 # Simple replacements for missing aura_common functions
 def get_logger(name):
@@ -32,7 +32,7 @@ def resilient_operation(**kwargs):
     return decorator
 
 from ..state import CollectiveState, NodeResult
-from ....tda.unified_engine import UnifiedTDAEngine, TDARequest
+from aura_intelligence..tda.unified_engine import UnifiedTDAEngine, TDARequest
 
 logger = get_logger(__name__)
 

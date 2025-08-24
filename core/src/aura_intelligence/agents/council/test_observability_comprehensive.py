@@ -11,7 +11,7 @@ from typing import Dict, Any, List
 
 # Import the observability components
 try:
-    from .observability import (
+    from aura_intelligence.observability import (
         ObservabilityEngine, MetricType, AlertLevel, PerformanceMetric,
         DecisionTrace, SystemAlert, ComponentMetrics
     )

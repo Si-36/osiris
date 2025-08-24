@@ -47,7 +47,7 @@ from .training import (
     TemporalLoss
 )
 
-from .utils import (
+from aura_intelligence.utils import (
     create_sparse_wiring,
     visualize_dynamics,
     analyze_stability,

@@ -28,7 +28,7 @@ from .coordination_core import (
     NodeId, MessageId, DistributedMessage, MessageType, VectorClock,
     NodeInfo, NodeState, MessageTransport
 )
-from .consensus import ModernRaftConsensus
+from aura_intelligence.consensus import ModernRaftConsensus
 from .load_balancing import TDALoadBalancer, LoadBalancingStrategy, LoadMetrics
 
 class CoordinationEvent(Enum):

@@ -26,7 +26,7 @@ from redis.exceptions import ResponseError, ConnectionError, TimeoutError
 from pybreaker import CircuitBreaker
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
-from .observability import instrument, update_vector_count, record_embedding_age
+from aura_intelligence.observability import instrument, update_vector_count, record_embedding_age
 from .storage_interface import MemoryStorage
 
 logger = logging.getLogger(__name__)

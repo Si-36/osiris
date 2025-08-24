@@ -13,7 +13,7 @@ from langgraph.graph import StateGraph, END
 from pydantic import Field
 
 from ..base import AgentBase, AgentConfig, AgentState
-from ..observability import AgentInstrumentor, GenAIAttributes
+from aura_intelligence.observability import AgentInstrumentor, GenAIAttributes
 
 
 class ResearchAnalysisState(AgentState):

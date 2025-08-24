@@ -19,11 +19,21 @@ try:
 except ImportError:
     # Fallback for development
     class StateGraph:
-        def __init__(self, state_class): pass
-        def add_node(self, name, func): pass
-        def add_edge(self, from_node, to_node): pass
-        def add_conditional_edges(self, from_node, condition, mapping): pass
-        def set_entry_point(self, node): pass
+        def __init__(self, state_class): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
+        def add_node(self, name, func): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
+        def add_edge(self, from_node, to_node): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
+        def add_conditional_edges(self, from_node, condition, mapping): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
+        def set_entry_point(self, node): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
         def compile(self, **kwargs): return None
     
     class SqliteSaver:
@@ -43,8 +53,9 @@ try:
 except ImportError:
     # Fallback for testing
     class ProductionAgentState:
-        def __init__(self): pass
-
+        def __init__(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 logger = logging.getLogger(__name__)
 
 

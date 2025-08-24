@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from dataclasses import dataclass, field
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import

@@ -229,7 +229,7 @@ class EndToEndIntegrationTester:
             # Test basic imports and initialization
             from .models import GPUAllocationRequest, GPUAllocationDecision, LNNCouncilState
             from .core_agent import LNNCouncilAgent
-            from .config import LNNCouncilConfig
+            from aura_intelligence.config import LNNCouncilConfig
             
             # Create test configuration
             config = {

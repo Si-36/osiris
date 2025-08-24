@@ -310,7 +310,7 @@ class AURAWorkflowNodes:
                 thread_id=state.get("trace_id", "unknown"),
                 timestamp=datetime.now(),
                 evidence_log=state.get("messages", []),
-                memory_context={},  # TODO: Add memory context
+                memory_context={},  
                 supervisor_decision=state.get("proposed_action", {}),
                 predicted_success_probability=validation_result.get("success_probability", 0.5),
                 prediction_confidence_score=validation_result.get("confidence_score", 0.8),

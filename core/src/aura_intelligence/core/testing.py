@@ -38,7 +38,7 @@ from sklearn.metrics import mutual_info_score
 
 from .types import AuraType, TypeUniverse, PathSpace, HigherGroupoid
 from .exceptions import AuraError, ConsciousnessError, TopologicalComputationError
-from .config import get_config
+from aura_intelligence.config import get_config
 
 
 class TestingLevel(Enum):

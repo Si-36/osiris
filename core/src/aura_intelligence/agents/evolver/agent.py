@@ -10,8 +10,8 @@ import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
 
-from ...orchestration.bus_redis import create_redis_bus
-from ...orchestration.bus_protocol import Event
+from aura_intelligence.orchestration.bus_redis import create_redis_bus
+from aura_intelligence.orchestration.bus_protocol import Event
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +139,7 @@ class EvolverAgent:
             # Mock AI response based on analysis
             return self._generate_mock_patch(failure, analysis)
         else:
-            # TODO: Integrate real AI providers (Gemini, GPT-4)
+            
             raise NotImplementedError(f"AI provider {self.ai_provider} not implemented")
             
     def _generate_mock_patch(

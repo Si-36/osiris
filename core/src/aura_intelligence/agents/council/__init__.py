@@ -6,7 +6,7 @@ Each module < 150 lines, focused responsibility.
 """
 
 from .core_agent import LNNCouncilAgent
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import GPUAllocationRequest, GPUAllocationDecision, LNNCouncilState
 
 __all__ = [

@@ -19,7 +19,7 @@ from ..observer.agent import ObserverAgent
 from ..analyst.agent import AnalystAgent, AgentConfig
 from ..supervisor import Supervisor
 # Validator and TDA Analyzer agents will be imported dynamically if needed
-from ...observability.tracing import TracingContext
+from aura_intelligence.observability.tracing import TracingContext
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ class BaseAgentFactory(ABC):
     """Base factory for all agents."""
     
     def __init__(self):
-        from ...observability.metrics import metrics_collector
+        from aura_intelligence.observability.metrics import metrics_collector
         self.metrics = metrics_collector
         self._credentials_cache: Dict[str, AgentCredentials] = {}
     

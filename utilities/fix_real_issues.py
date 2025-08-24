@@ -18,7 +18,7 @@ print("✅ Fix actual dependency problems")
 print("=" * 40)
 
 def run_command(cmd, description):
-    """Run command and show real results"""
+def run_command(cmd, description):
     print(f"\n🔧 {description}")
     print(f"Command: {cmd}")
     try:
@@ -37,7 +37,7 @@ def run_command(cmd, description):
         return False
 
 def check_service(service, port):
-    """Check if service is actually running"""
+def check_service(service, port):
     print(f"\n🔍 Checking {service} on port {port}")
     result = subprocess.run(["nc", "-z", "localhost", str(port)], capture_output=True)
     if result.returncode == 0:
@@ -196,7 +196,6 @@ core_path = Path(__file__).parent / "core" / "src"
 sys.path.insert(0, str(core_path))
 
 async def test_real_components():
-    """Test what actually works"""
     
     print("🔍 HONEST COMPONENT TESTING")
     print("=" * 40)
@@ -321,4 +320,4 @@ print("No more fake success - only real results! 🎯")
 with open('fix_real_issues.py', 'w') as f:
     f.write(fix_real_issues_code)
 
-print("✅ Created fix_real_issues.py")
+print("✅ Created fix_real_issues.py")'''

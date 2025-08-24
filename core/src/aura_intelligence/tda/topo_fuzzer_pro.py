@@ -12,8 +12,8 @@ import logging
 from dataclasses import dataclass
 import hashlib
 
-from ...orchestration.bus_redis import create_redis_bus
-from ...orchestration.bus_protocol import EventBus
+from aura_intelligence.orchestration.bus_redis import create_redis_bus
+from aura_intelligence.orchestration.bus_protocol import EventBus
 
 logger = logging.getLogger(__name__)
 

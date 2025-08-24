@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from collections import deque
 import json
 
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 from ..resilience import resilient, ResilienceLevel
 
 logger = logging.getLogger(__name__)

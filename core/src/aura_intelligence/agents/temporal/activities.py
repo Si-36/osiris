@@ -18,9 +18,9 @@ import structlog
 from aiokafka import AIOKafkaProducer
 # import aioredis  # Temporarily commented out due to Python 3.13 compatibility issue
 
-from ...agents.base import AgentBase, AgentState, AgentConfig
-from ...agents.observability import AgentInstrumentor, GenAIAttributes
-from ...agents.resilience import CircuitBreaker, CircuitBreakerConfig
+from aura_intelligence.agents.base import AgentBase, AgentState, AgentConfig
+from aura_intelligence.agents.observability import AgentInstrumentor, GenAIAttributes
+from aura_intelligence.agents.resilience import CircuitBreaker, CircuitBreakerConfig
 # from ..legacy.core.observer import ObserverAgent as LegacyObserverAgent  # Temporarily commented out - module not available
 from ..v2.observer import ObserverAgentV2
 # from ..v2.analyst import AnalystAgentV2  # Temporarily commented out - module not available

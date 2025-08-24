@@ -21,7 +21,7 @@ from opentelemetry import trace
 import httpx
 
 from ..resilience import resilient, ResilienceLevel
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 
 logger = structlog.get_logger()
 tracer = create_tracer("mem0_adapter")

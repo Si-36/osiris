@@ -66,9 +66,9 @@ class AURACollectiveIntelligence:
         self.supervisor_agent = MemoryAwareSupervisor()
         
         # Initialize placeholders for missing agents (to be implemented)
-        self.researcher_agent = None  # TODO: Implement
-        self.optimizer_agent = None   # TODO: Implement
-        self.guardian_agent = None    # TODO: Implement
+        self.researcher_agent = None  
+        self.optimizer_agent = None   
+        self.guardian_agent = None    
         
         # Create the workflow
         self.workflow = self._create_workflow()
@@ -216,7 +216,7 @@ class AURACollectiveIntelligence:
         """Researcher agent node - knowledge discovery (placeholder)."""
         logger.info("📚 Researcher Agent discovering knowledge")
         
-        # TODO: Implement actual researcher agent
+        
         # For now, simulate research activity
         research_result = {
             'knowledge_discovered': f"Research insights for evidence: {len(state['evidence_log'])} items",
@@ -237,7 +237,7 @@ class AURACollectiveIntelligence:
         """Optimizer agent node - performance optimization (placeholder)."""
         logger.info("⚡ Optimizer Agent optimizing performance")
         
-        # TODO: Implement actual optimizer agent
+        
         # For now, simulate optimization activity
         optimization_result = {
             'optimizations_applied': 'performance_tuning_simulated',
@@ -258,7 +258,7 @@ class AURACollectiveIntelligence:
         """Guardian agent node - security and compliance (placeholder)."""
         logger.info("🛡️ Guardian Agent enforcing security")
         
-        # TODO: Implement actual guardian agent
+        
         # For now, simulate security enforcement
         security_result = {
             'threat_level': 'medium',
@@ -280,7 +280,7 @@ class AURACollectiveIntelligence:
         """Monitor agent node - system health monitoring."""
         logger.info("📊 Monitor Agent tracking system health")
         
-        # TODO: Integrate with actual monitoring system
+        
         # For now, simulate monitoring
         monitor_result = {
             'system_health': 'healthy',

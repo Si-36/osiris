@@ -15,7 +15,7 @@ from datetime import datetime, timezone, timedelta
 from unittest.mock import Mock, AsyncMock
 
 from .coordination_core import NodeId, NodeInfo, NodeState, VectorClock
-from .consensus import ModernRaftConsensus, RaftState
+from aura_intelligence.consensus import ModernRaftConsensus, RaftState
 from .load_balancing import TDALoadBalancer, LoadBalancingStrategy, LoadMetrics
 from .coordination_manager import (
     DistributedCoordinationManager, AgentRequest, AgentResponse,

@@ -14,7 +14,9 @@ except ImportError:
     print("Warning: OpenTelemetry not available, using fallback")
     # Create mock objects
     class MockExporter:
-        def __init__(self, *args, **kwargs): pass
+        def __init__(self, *args, **kwargs): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
         def export(self, *args, **kwargs): return True
     
     class MockTrace:

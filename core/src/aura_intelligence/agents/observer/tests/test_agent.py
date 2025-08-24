@@ -14,8 +14,8 @@ from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from ..agent import ObserverAgent
-from ...schemas.enums import TaskStatus, EvidenceType, SignatureAlgorithm
-from ...schemas.crypto import get_crypto_provider
+from aura_intelligence.schemas.enums import TaskStatus, EvidenceType, SignatureAlgorithm
+from aura_intelligence.schemas.crypto import get_crypto_provider
 
 
 class TestObserverAgent:

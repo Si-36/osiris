@@ -1,0 +1,1242 @@
+{
+  "summary": {
+    "total_folders": 8,
+    "total_files": 106,
+    "dummy_files": 22,
+    "needs_update": 50,
+    "completion_rate": 79.24528301886792
+  },
+  "folders": {
+    "byzantine": {
+      "total_files": 15,
+      "dummy_files": 3,
+      "needs_update": 2,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "byzantine/src/api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 75,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 85,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 539,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "byzantine/src/services/network_manager.py": {
+          "dummy_implementations": [
+            {
+              "line": 36,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Send message to specific node (placeholder)\"\"\""
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "byzantine/src/models/consensus/byzantine_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 587,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Broadcast vote to all nodes (placeholder for network layer)\"\"\""
+            },
+            {
+              "line": 589,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# For now, it's a placeholder for the API layer to implement"
+            },
+            {
+              "line": 590,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 593,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Forward proposal to current leader (placeholder)\"\"\""
+            },
+            {
+              "line": 595,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 598,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Broadcast view change message (placeholder)\"\"\""
+            },
+            {
+              "line": 600,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 603,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Notify observers of consensus decision (placeholder)\"\"\""
+            },
+            {
+              "line": 605,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "demos": {
+      "total_files": 2,
+      "dummy_files": 0,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {}
+    },
+    "integration": {
+      "total_files": 6,
+      "dummy_files": 5,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": false,
+      "files": {
+        "integration/demos/interactive/demo_framework.py": {
+          "dummy_implementations": [
+            {
+              "line": 604,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "95  # Placeholder for reliability"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "integration/tests/e2e/test_full_stack_integration.py": {
+          "dummy_implementations": [
+            {
+              "line": 372,
+              "pattern": "pass\\s*$",
+              "code": "# Verify all contracts pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "integration/framework/chaos/chaos_framework_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 582,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "integration/framework/testcontainers/container_manager.py": {
+          "dummy_implementations": [
+            {
+              "line": 395,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "integration/framework/contracts/contract_framework.py": {
+          "dummy_implementations": [
+            {
+              "line": 316,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            },
+            {
+              "line": 489,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "lnn": {
+      "total_files": 28,
+      "dummy_files": 5,
+      "needs_update": 28,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "lnn/src/consensus.py": {
+          "dummy_implementations": [
+            {
+              "line": 149,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"\"\"Broadcast decision to peer nodes (placeholder for real implementation).\"\"\""
+            },
+            {
+              "line": 152,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/main.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 76,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/api/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/schemas/responses.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/schemas/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/schemas/requests.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/services/continuous_learning.py": {
+          "dummy_implementations": [
+            {
+              "line": 162,
+              "pattern": "pass\\s*$",
+              "code": "# Forward pass"
+            },
+            {
+              "line": 170,
+              "pattern": "pass\\s*$",
+              "code": "# Backward pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [
+            "dangerous eval/exec"
+          ],
+          "security_issues": []
+        },
+        "lnn/src/services/model_registry.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/services/adaptation_service.py": {
+          "dummy_implementations": [
+            {
+              "line": 185,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "dummy_output = torch.randn(1, layer.current_size)"
+            },
+            {
+              "line": 186,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "info = layer._check_adaptation(dummy_output)"
+            },
+            {
+              "line": 224,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "\"sparsity\": 0.8,  # Placeholder"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/services/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/middleware/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/middleware/circuit_breaker.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/middleware/security.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/middleware/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/middleware/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/middleware/circuit_breaker.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/middleware/security.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/utils/middleware/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models/liquid/liquid_neural_network_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 618,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# For now, it's a placeholder"
+            },
+            {
+              "line": 689,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            },
+            {
+              "line": 703,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models/liquid/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models/adaptive/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "lnn/src/models/core/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "memory": {
+      "total_files": 15,
+      "dummy_files": 4,
+      "needs_update": 15,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "memory/src/api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 302,
+              "pattern": "TODO|FIXME|XXX",
+              "code": "prefetched_keys=[]  # TODO: Track prefetched keys"
+            },
+            {
+              "line": 379,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# For now, return placeholder"
+            },
+            {
+              "line": 490,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# For now, return placeholder results"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/schemas/responses.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/schemas/requests.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/services/graph_manager.py": {
+          "dummy_implementations": [
+            {
+              "line": 58,
+              "pattern": "return\\s*\\[\\s*\\]",
+              "code": "return []"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/services/prefetch_engine.py": {
+          "dummy_implementations": [
+            {
+              "line": 57,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/services/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/services/shape_analyzer.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/middleware/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/middleware/circuit_breaker.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/middleware/security.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/utils/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/utils/middleware/observability.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/utils/middleware/circuit_breaker.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/utils/middleware/security.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "memory/src/models/advanced/memory_tiers_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 586,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [
+            "insecure pickle usage"
+          ],
+          "security_issues": []
+        }
+      }
+    },
+    "moe": {
+      "total_files": 25,
+      "dummy_files": 2,
+      "needs_update": 5,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "moe/src/models/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 76,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/services/load_monitor.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "observability",
+              "expected": [
+                "opentelemetry",
+                "prometheus",
+                "jaeger"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/models/routing/moe_router_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 435,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# TDA integration placeholder"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/models/routing/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/models/experts/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "moe/src/models/gating/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "neuromorphic": {
+      "total_files": 13,
+      "dummy_files": 2,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "neuromorphic/src/api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 395,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# For now, return a placeholder"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "neuromorphic/src/models/advanced/neuromorphic_2025.py": {
+          "dummy_implementations": [
+            {
+              "line": 775,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 788,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 800,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "tda": {
+      "total_files": 2,
+      "dummy_files": 1,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "tda/src/algorithms.py": {
+          "dummy_implementations": [
+            {
+              "line": 60,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 237,
+              "pattern": "return\\s*\\[\\s*\\]",
+              "code": "return []"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    }
+  }
+}

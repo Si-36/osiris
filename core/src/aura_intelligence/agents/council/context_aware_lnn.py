@@ -11,8 +11,8 @@ from typing import Dict, Any, Optional, List, Tuple
 import asyncio
 import structlog
 
-from ...lnn.core import LiquidNeuralNetwork, LiquidConfig
-from .config import LNNCouncilConfig
+from aura_intelligence.lnn.core import LiquidNeuralNetwork, LiquidConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState
 from .context_encoder import ContextEncoder
 from .memory_context import LNNMemoryIntegration

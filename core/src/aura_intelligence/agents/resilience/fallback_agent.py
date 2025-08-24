@@ -12,7 +12,7 @@ import asyncio
 from datetime import timedelta
 
 from ..base import AgentBase, AgentConfig, AgentState
-from ..observability import AgentInstrumentor, GenAIAttributes
+from aura_intelligence.observability import AgentInstrumentor, GenAIAttributes
 from .circuit_breaker import CircuitBreaker, CircuitBreakerConfig, CircuitBreakerError
 
 from opentelemetry import trace

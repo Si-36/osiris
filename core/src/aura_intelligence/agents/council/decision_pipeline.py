@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 import structlog
 from dataclasses import dataclass, field
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState, GPUAllocationRequest, GPUAllocationDecision
 from .context_aware_lnn import ContextAwareLNN
 from .memory_context import MemoryContextProvider

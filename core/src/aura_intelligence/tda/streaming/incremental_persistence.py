@@ -15,7 +15,7 @@ from prometheus_client import Counter, Histogram, Gauge
 
 from ..models import PersistenceDiagram, PersistenceFeature
 from .windows import StreamingWindow
-from ...observability.tracing import get_tracer
+from aura_intelligence.observability.tracing import get_tracer
 
 logger = structlog.get_logger(__name__)
 

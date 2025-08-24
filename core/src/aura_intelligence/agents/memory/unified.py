@@ -26,22 +26,22 @@ from opentelemetry.trace import Status, StatusCode
 
 # Import your existing memory components with graceful fallbacks
 try:
-    from ...enterprise.mem0_hot.ingest import HotMemoryIngest
+    from aura_intelligence.enterprise.mem0_hot.ingest import HotMemoryIngest
 except ImportError:
     HotMemoryIngest = None
 
 try:
-    from ...enterprise.mem0_semantic.sync import SemanticSync
+    from aura_intelligence.enterprise.mem0_semantic.sync import SemanticSync
 except ImportError:
     SemanticSync = None
 
 try:
-    from ...enterprise.cold_storage.archive import ArchivalJob
+    from aura_intelligence.enterprise.cold_storage.archive import ArchivalJob
 except ImportError:
     ArchivalJob = None
 
 try:
-    from ...api.search import SearchRouter
+    from aura_intelligence.api.search import SearchRouter
 except ImportError:
     SearchRouter = None
 

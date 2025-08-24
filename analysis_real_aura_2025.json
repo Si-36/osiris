@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "total_folders": 5,
+    "total_files": 3,
+    "dummy_files": 3,
+    "needs_update": 2,
+    "completion_rate": 0.0
+  },
+  "folders": {
+    "api": {
+      "total_files": 1,
+      "dummy_files": 1,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "api/main.py": {
+          "dummy_implementations": [
+            {
+              "line": 2,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "Real AURA API - Serves actual system data, no mocks"
+            },
+            {
+              "line": 222,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "print(\"\ud83d\udcca This serves REAL system metrics, not dummy data!\")"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "core": {
+      "total_files": 1,
+      "dummy_files": 1,
+      "needs_update": 1,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "core/collector.py": {
+          "dummy_implementations": [
+            {
+              "line": 3,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "No dummy data, no mocks, just real system information"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [
+            "blocking sleep instead of async"
+          ],
+          "security_issues": []
+        }
+      }
+    },
+    "demo": {
+      "total_files": 1,
+      "dummy_files": 1,
+      "needs_update": 1,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "demo/terminal_dashboard.py": {
+          "dummy_implementations": [
+            {
+              "line": 3,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "No fake data - connects to real API and displays actual metrics"
+            },
+            {
+              "line": 175,
+              "pattern": "pass\\s*$",
+              "code": "pass"
+            },
+            {
+              "line": 227,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "[yellow]This dashboard shows REAL system metrics - no fake data![/yellow]"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [
+            "blocking sleep instead of async"
+          ],
+          "security_issues": []
+        }
+      }
+    },
+    "tests": {
+      "total_files": 0,
+      "dummy_files": 0,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {}
+    },
+    "venv": {
+      "total_files": 0,
+      "dummy_files": 0,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {}
+    }
+  }
+}

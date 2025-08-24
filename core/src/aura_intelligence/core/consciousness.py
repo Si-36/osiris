@@ -499,38 +499,57 @@ class ConsciousnessCore:
 # Consciousness Layer Classes
 class SensoryLayer:
     """Sensory perception layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data): return data
-    async def cleanup(self): pass
-
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 class ProcessingLayer:
     """Data processing layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data): return data
-    async def cleanup(self): pass
-
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 class ReasoningLayer:
     """Causal reasoning layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data, causal_chains): return data
-    async def activate_emergency_mode(self): pass
-    async def cleanup(self): pass
-
+    async def activate_emergency_mode(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 class DecisionLayer:
     """Decision making layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data): return data
-    async def cleanup(self): pass
-
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 class ReflectionLayer:
     """Self-reflection layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data, previous_level): return data
-    async def cleanup(self): pass
-
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 class EvolutionLayer:
     """Consciousness evolution layer."""
-    async def initialize(self): pass
+    async def initialize(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     async def process(self, data): 
         return {
             "learning_magnitude": 0.01,
@@ -539,4 +558,6 @@ class EvolutionLayer:
             "type": "gradual",
             "trigger": "continuous_learning"
         }
-    async def cleanup(self): pass
+    async def cleanup(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")

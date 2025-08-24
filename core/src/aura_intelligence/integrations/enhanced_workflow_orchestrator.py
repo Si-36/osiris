@@ -43,7 +43,7 @@ from ..adapters.tda_mem0_adapter import TDAMem0Adapter
 from ..adapters.tda_agent_context import TDAAgentContextAdapter, TopologicalSignal
 from ..tda_engine import TDAEngine
 from ..agents.council import AgentCouncil
-from ..observability import MetricsCollector, TracingContext
+from aura_intelligence.observability import MetricsCollector, TracingContext
 from ..feature_flags import FeatureFlags
 from ..config.base import get_config
 from ..events.event_bus import EventBus

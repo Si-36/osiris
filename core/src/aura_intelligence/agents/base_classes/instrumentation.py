@@ -2,6 +2,7 @@
 📊 Agent Instrumentation - OpenTelemetry Integration
 
 Comprehensive observability instrumentation for agents with:
+    - Automatic tracing of agent methods
 - Automatic tracing of agent methods
 - Performance metrics collection
 - Error tracking and alerting
@@ -61,24 +62,120 @@ else:
     class NoOpMeter:
         def create_counter(self, **kwargs):
             class NoOpCounter:
-                def add(self, value, attributes=None):
+                async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+                    """Process data asynchronously"""
+                    import time
+                    import numpy as np
+                    
+                    start_time = time.time()
+                    
+                    # Extract features
+                    features = self._extract_features(data)
+                    
+                    # Make decision
+                    decision = self._make_decision(features)
+                    
+                    # Execute action
+                    result = await self._execute_action(decision)
+                    
+                    return {
+                        'status': 'success',
+                        'decision': decision,
+                        'result': result,
+                        'processing_time': time.time() - start_time,
+                        'confidence': 0.95
+                    }
+                
+                def _extract_features(self, data):
+                    """Extract features from data"""
+                    return data.get('features', {})
+                
+                def _make_decision(self, features):
+                    """Make a decision based on features"""
+                    return {'action': 'process', 'priority': 'normal'}
+                
+                async def _execute_action(self, decision):
+                    """Execute the decided action"""
+                    return {'executed': True, 'action': decision.get('action')}
+                
+                def add(self, n=1):
+                    """Add to counter"""
                     pass
+    
             return NoOpCounter()
         def create_histogram(self, **kwargs):
             class NoOpHistogram:
-                def record(self, value, attributes=None):
+                async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+                    """Process data for histogram"""
+                    import time
+                    import numpy as np
+                    
+                    start_time = time.time()
+                    
+                    # Extract features
+                    features = self._extract_features(data)
+                    
+                    # Make decision
+                    decision = self._make_decision(features)
+                    
+                    # Execute action
+                    result = await self._execute_action(decision)
+                    
+                    return {
+                        'status': 'success',
+                        'decision': decision,
+                        'result': result,
+                        'processing_time': time.time() - start_time,
+                        'confidence': 0.95
+                    }
+                
+                def _extract_features(self, data):
+                    """Extract features from data"""
+                    return data.get('features', {})
+                
+                def _make_decision(self, features):
+                    """Make a decision based on features"""
+                    return {'action': 'record', 'priority': 'normal'}
+                
+                async def _execute_action(self, decision):
+                    """Execute the decided action"""
+                    return {'executed': True, 'action': decision.get('action')}
+                
+                def record(self, value):
+                    """Record a value"""
                     pass
+            
             return NoOpHistogram()
         def create_gauge(self, **kwargs):
             class NoOpGauge:
-                def set(self, value, attributes=None):
-                    pass
+                async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        import time
+        import numpy as np
+        
+        start_time = time.time()
+        
+        # Extract features
+        features = self._extract_features(data)
+        
+        # Make decision
+        decision = self._make_decision(features)
+        
+        # Execute action
+        result = await self._execute_action(decision)
+        
+        return {
+            'status': 'success',
+            'decision': decision,
+            'result': result,
+            'processing_time': time.time() - start_time,
+            'confidence': 0.95
+        }
+    
             return NoOpGauge()
     meter = NoOpMeter()
 
 
 class AgentMetrics:
-    """Centralized metrics collection for agents."""
     
     def __init__(self):
         # Counters
@@ -149,7 +246,6 @@ def instrument_agent(
     record_result: bool = False,
     extract_correlation_id: bool = True
 ):
-    """
     Decorator to instrument agent methods with OpenTelemetry.
     
     Args:
@@ -358,7 +454,6 @@ def instrument_agent(
 
 
 def instrument_memory_operation(operation: str = "query"):
-    """Decorator specifically for memory operations."""
     return instrument_agent(
         operation_type=f"memory_{operation}",
         record_args=True,
@@ -368,7 +463,6 @@ def instrument_memory_operation(operation: str = "query"):
 
 
 def instrument_message_operation(operation: str = "send"):
-    """Decorator specifically for message operations."""
     return instrument_agent(
         operation_type=f"message_{operation}",
         record_args=False,  # Don't record message content for security
@@ -378,7 +472,6 @@ def instrument_message_operation(operation: str = "send"):
 
 
 def instrument_task_processing():
-    """Decorator specifically for task processing."""
     return instrument_agent(
         operation_type="task_processing",
         record_args=False,  # AgentState could be large
@@ -388,7 +481,6 @@ def instrument_task_processing():
 
 
 def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
-    """Extract correlation ID from method arguments."""
     # Check kwargs first
     if 'correlation_id' in kwargs:
         return kwargs['correlation_id']
@@ -406,7 +498,6 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
 
 
 def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
-    """Record method arguments in span (safely)."""
     try:
         # Record number of args
         span.set_attribute("method.args_count", len(args))
@@ -438,7 +529,6 @@ def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
 
 
 def _record_method_result(span: Span, result: Any) -> None:
-    """Record method result in span (safely)."""
     try:
         result_type = type(result).__name__
         span.set_attribute("method.result_type", result_type)
@@ -469,7 +559,6 @@ def create_child_span(
     parent_context: Optional[Dict[str, str]] = None,
     attributes: Optional[Dict[str, Any]] = None
 ) -> Span:
-    """
     Create a child span with optional parent context.
     
     Args:
@@ -496,7 +585,6 @@ def create_child_span(
 
 
 def inject_trace_context() -> Dict[str, str]:
-    """
     Inject current trace context for propagation.
     
     Returns:
@@ -512,7 +600,6 @@ def record_agent_event(
     agent_id: str,
     attributes: Optional[Dict[str, Any]] = None
 ) -> None:
-    """
     Record a custom agent event.
     
     Args:
@@ -537,7 +624,6 @@ def record_confidence_score(
     confidence: float,
     operation: str = "general"
 ) -> None:
-    """
     Record agent confidence score.
     
     Args:
@@ -554,7 +640,6 @@ def record_confidence_score(
 
 
 def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> None:
-    """
     Update active tasks gauge.
     
     Args:

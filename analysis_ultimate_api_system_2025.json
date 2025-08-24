@@ -1,0 +1,246 @@
+{
+  "summary": {
+    "total_folders": 4,
+    "total_files": 22,
+    "dummy_files": 5,
+    "needs_update": 8,
+    "completion_rate": 77.27272727272727
+  },
+  "folders": {
+    "api": {
+      "total_files": 11,
+      "dummy_files": 0,
+      "needs_update": 4,
+      "missing_init": false,
+      "missing_tests": true,
+      "files": {
+        "api/monitoring/endpoints.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "observability",
+              "expected": [
+                "opentelemetry",
+                "prometheus",
+                "jaeger"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "api/monitoring/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "observability",
+              "expected": [
+                "opentelemetry",
+                "prometheus",
+                "jaeger"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "api/memory/endpoints.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "api/memory/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "components": {
+      "total_files": 9,
+      "dummy_files": 4,
+      "needs_update": 4,
+      "missing_init": false,
+      "missing_tests": true,
+      "files": {
+        "components/memory/max_memory.py": {
+          "dummy_implementations": [
+            {
+              "line": 63,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            },
+            {
+              "line": 92,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# This is a placeholder."
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "components/memory/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "vector_db",
+              "expected": [
+                "faiss",
+                "qdrant",
+                "pinecone",
+                "weaviate",
+                "milvus"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "components/neural/max_lnn.py": {
+          "dummy_implementations": [
+            {
+              "line": 62,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            },
+            {
+              "line": 76,
+              "pattern": "raise\\s+NotImplementedError",
+              "code": "raise NotImplementedError(\"Training is not supported for the MAX-accelerated LNN.\")"
+            },
+            {
+              "line": 80,
+              "pattern": "raise\\s+NotImplementedError",
+              "code": "raise NotImplementedError(\"Model saving is handled by the MAXModelManager.\")"
+            },
+            {
+              "line": 84,
+              "pattern": "raise\\s+NotImplementedError",
+              "code": "raise NotImplementedError(\"Model loading is handled by the MAXModelManager.\")"
+            }
+          ],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "components/neural/__init__.py": {
+          "dummy_implementations": [],
+          "missing_features": [
+            {
+              "category": "ai_patterns",
+              "expected": [
+                "transformer",
+                "attention",
+                "diffusion",
+                "mamba",
+                "flash_attention"
+              ]
+            }
+          ],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "components/tda/max_tda.py": {
+          "dummy_implementations": [
+            {
+              "line": 57,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        },
+        "components/consciousness/max_consciousness.py": {
+          "dummy_implementations": [
+            {
+              "line": 57,
+              "pattern": "return\\s*{\\s*}",
+              "code": "return {}"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    },
+    "deployment": {
+      "total_files": 0,
+      "dummy_files": 0,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {}
+    },
+    "tests": {
+      "total_files": 2,
+      "dummy_files": 1,
+      "needs_update": 0,
+      "missing_init": true,
+      "missing_tests": true,
+      "files": {
+        "tests/test_max_components.py": {
+          "dummy_implementations": [
+            {
+              "line": 54,
+              "pattern": "dummy|mock|fake|placeholder",
+              "code": "# Create a dummy input tensor"
+            }
+          ],
+          "missing_features": [],
+          "outdated_patterns": [],
+          "security_issues": []
+        }
+      }
+    }
+  }
+}

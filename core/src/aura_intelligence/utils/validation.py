@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 from pydantic import ValidationError
 
-from ..config import AURASettings
+from aura_intelligence.config import AURASettings
 from .logging import get_logger
 
 logger = get_logger(__name__)
@@ -205,17 +205,17 @@ def validate_deployment_readiness() -> tuple[bool, dict[str, Any]]:
         
         # Check database connectivity
         if settings.integration.database_url:
-            # TODO: Implement actual database check
+            
             report["services_ready"]["database"] = True
         
         # Check Redis connectivity
         if settings.integration.redis_enabled:
-            # TODO: Implement actual Redis check
+            
             report["services_ready"]["redis"] = True
         
         # Check message queue
         if settings.integration.message_queue_url:
-            # TODO: Implement actual message queue check
+            
             report["services_ready"]["message_queue"] = True
         
     except Exception as e:

@@ -18,7 +18,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .topo_features import TopologicalFeatureExtractor
 from .fastrp import FastRP, FastRPConfig
 from .fusion_scorer import AdaptiveFusionScorer, FusionConfig
-from .observability import instrument, update_recall, update_false_positive_rate
+from aura_intelligence.observability import instrument, update_recall, update_false_positive_rate
 from ..tda.models import TDAResult, BettiNumbers
 
 logger = logging.getLogger(__name__)

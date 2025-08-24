@@ -11,7 +11,7 @@ from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.runnables import RunnableConfig
 
 import structlog
-from ....resilience import resilient, ResilienceLevel
+from aura_intelligence..resilience import resilient, ResilienceLevel
 
 # Simple replacements for missing aura_common functions
 def get_logger(name):

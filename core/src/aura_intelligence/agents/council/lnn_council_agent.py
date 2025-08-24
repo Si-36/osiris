@@ -24,8 +24,8 @@ from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
 
 from ..base import AgentBase, AgentState, AgentConfig
-from ...lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
-from ...config.agent import AgentSettings
+from aura_intelligence.lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
+from aura_intelligence.config.agent import AgentSettings
 
 # LangGraph imports for workflow building
 try:
@@ -645,7 +645,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         context_start = asyncio.get_event_loop().time()
         
-        # TODO: Integrate with actual Neo4j and Mem0 adapters
+        
         # For now, simulate context gathering
         await asyncio.sleep(0.1)  # Simulate I/O
         

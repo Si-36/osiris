@@ -21,7 +21,7 @@ from .constitutional import ConstitutionalAI, EthicalViolationError
 from .tda_engine import ProductionGradeTDA, TopologySignature
 from .causal_store import CausalPatternStore, CausalPattern
 from .collective import CollectiveIntelligenceOrchestrator
-from .observability import ObservabilityLayer, NeuralMetrics
+from aura_intelligence.observability import ObservabilityLayer, NeuralMetrics
 from .event_store import EventStore, DomainEvent
 from .vector_search import LlamaIndexClient
 from .cloud_integration import GoogleA2AClient

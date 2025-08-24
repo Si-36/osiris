@@ -12,7 +12,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import GPUAllocationRequest, GPUAllocationDecision
 
 logger = structlog.get_logger()

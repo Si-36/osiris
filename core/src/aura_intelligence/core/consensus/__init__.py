@@ -68,7 +68,7 @@ from .workflows import (
     BFTConsensusWorkflow
 )
 
-# from .events import (
+# from aura_intelligence.events import (
 #     ConsensusProposalEvent,
 #     ConsensusVoteEvent,
 #     ConsensusDecisionEvent,

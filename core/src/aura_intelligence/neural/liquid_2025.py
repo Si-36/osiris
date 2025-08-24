@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import asyncio
 
 # Import your existing LNN system
-from .lnn import LiquidNeuralNetwork, LNNConfig
+from aura_intelligence.lnn import LiquidNeuralNetwork, LNNConfig
 from ..agents.council.production_lnn_council import ProductionLNNCouncilAgent
 
 @dataclass

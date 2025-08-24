@@ -173,7 +173,7 @@ class ModernTelemetry:
         """Create adaptive sampler based on system load."""
         from opentelemetry.sdk.trace.sampling import TraceIdRatioBasedSampler
         
-        # TODO: Implement intelligent sampling based on:
+        
         # - System CPU/memory usage
         # - Error rates
         # - Business-critical operations

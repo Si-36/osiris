@@ -16,12 +16,12 @@ from dataclasses import dataclass
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode as ToolExecutor
 
-from ...agents.base import AgentBase, AgentConfig, AgentState
-from ...neural.context_integration import ContextAwareLNN
-from ...neural.lnn import LNNConfig
-from ...neural.memory_hooks import LNNMemoryHooks
-from ...resilience import resilient, ResilienceLevel
-from ...observability import create_tracer
+from aura_intelligence.agents.base import AgentBase, AgentConfig, AgentState
+from aura_intelligence.neural.context_integration import ContextAwareLNN
+from aura_intelligence.neural.lnn import LNNConfig
+from aura_intelligence.neural.memory_hooks import LNNMemoryHooks
+from aura_intelligence.resilience import resilient, ResilienceLevel
+from aura_intelligence.observability import create_tracer
 
 logger = logging.getLogger(__name__)
 tracer = create_tracer("lnn_council_agent")

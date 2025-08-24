@@ -11,7 +11,7 @@ from typing import Optional, Dict, Any, List
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ...observability.shadow_mode_logger import ShadowModeLogger, ShadowModeEntry
+from aura_intelligence.observability.shadow_mode_logger import ShadowModeLogger, ShadowModeEntry
 from .state import CollectiveState
 
 logger = logging.getLogger(__name__)
