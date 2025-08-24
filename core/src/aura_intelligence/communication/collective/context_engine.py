@@ -23,12 +23,17 @@ try:
 except ImportError:
     # Fallback for testing
     class ProductionAgentState:
-        def __init__(self): pass
+        def __init__(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     class ProductionEvidence:
-        def __init__(self, **kwargs): pass
+        def __init__(self, **kwargs): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
     class AgentConfig:
-        def __init__(self): pass
-
+        def __init__(self): 
+        """TODO: Implement this method"""
+        raise NotImplementedError("This method needs implementation")
 logger = logging.getLogger(__name__)
 
 

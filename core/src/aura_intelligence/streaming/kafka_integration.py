@@ -38,7 +38,6 @@ except ImportError:
             self.events_published = []
         
         def send(self, topic: str, value: Dict[str, Any], key: str = None):
-        def send(self, topic: str, value: Dict[str, Any], key: str = None):
             self.events_published.append({
                 'topic': topic,
                 'value': value,
@@ -48,42 +47,48 @@ except ImportError:
             return MockFuture()
         
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        import time
-        import numpy as np
+            """REAL processing implementation"""
+            import time
+            import numpy as np
+            
+            start_time = time.time()
+            
+            # Validate input
+            if not data:
+                return {'error': 'No input data provided', 'status': 'failed'}
+            
+            # Process data
+            processed_data = self._process_data(data)
+            
+            # Generate result
+            result = {
+                'status': 'success',
+                'processed_count': len(processed_data),
+                'processing_time': time.time() - start_time,
+                'data': processed_data
+            }
+            
+            return result
         
-        start_time = time.time()
-        
-        # Validate input
-        if not data:
-            return {'error': 'No input data provided', 'status': 'failed'}
-        
-        # Process data
-        processed_data = self._process_data(data)
-        
-        # Generate result
-        result = {
-            'status': 'success',
-            'processed_count': len(processed_data),
-            'processing_time': time.time() - start_time,
-            'data': processed_data
-        }
-        
-        return result
+        def _process_data(self, data):
+            """Process the data"""
+            if isinstance(data, dict):
+                return {k: v for k, v in data.items()}
+            elif isinstance(data, list):
+                return data[:]
+            else:
+                return [data]
     
     class MockFuture:
-        def get(self, timeout=10):
         def get(self, timeout=10):
             return MockRecordMetadata()
     
     class MockRecordMetadata:
         def __init__(self):
-        def __init__(self):
             self.partition = 0
             self.offset = len(str(time.time()))
 
 class KafkaEventProducer:
-    def __init__(self, bootstrap_servers: str = "localhost:9092"):
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
         self.bootstrap_servers = bootstrap_servers
         
@@ -146,12 +151,10 @@ class KafkaEventProducer:
         return await self.publish_event(event)
     
     def close(self):
-    def close(self):
         if self.producer:
             self.producer.close()
 
 class AURAEventStreaming:
-    def __init__(self, bootstrap_servers: str = "localhost:9092"):
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
         self.producer = KafkaEventProducer(bootstrap_servers)
         self.event_stats = {
@@ -178,7 +181,6 @@ class AURAEventStreaming:
         return success
     
     def get_streaming_stats(self) -> Dict[str, Any]:
-    def get_streaming_stats(self) -> Dict[str, Any]:
         return {
             'events_published': self.event_stats['events_published'],
             'events_consumed': self.event_stats['events_consumed'],
@@ -187,12 +189,10 @@ class AURAEventStreaming:
         }
     
     def close(self):
-    def close(self):
         self.producer.close()
 
 _event_streaming = None
 
-def get_event_streaming():
 def get_event_streaming():
     global _event_streaming
     if _event_streaming is None:

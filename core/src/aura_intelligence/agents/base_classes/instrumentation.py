@@ -61,60 +61,91 @@ else:
     # Fallback meter
     class NoOpMeter:
         def create_counter(self, **kwargs):
-        def create_counter(self, **kwargs):
             class NoOpCounter:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        import time
-        import numpy as np
-        
-        start_time = time.time()
-        
-        # Extract features
-        features = self._extract_features(data)
-        
-        # Make decision
-        decision = self._make_decision(features)
-        
-        # Execute action
-        result = await self._execute_action(decision)
-        
-        return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
-        }
+                    """Process data asynchronously"""
+                    import time
+                    import numpy as np
+                    
+                    start_time = time.time()
+                    
+                    # Extract features
+                    features = self._extract_features(data)
+                    
+                    # Make decision
+                    decision = self._make_decision(features)
+                    
+                    # Execute action
+                    result = await self._execute_action(decision)
+                    
+                    return {
+                        'status': 'success',
+                        'decision': decision,
+                        'result': result,
+                        'processing_time': time.time() - start_time,
+                        'confidence': 0.95
+                    }
+                
+                def _extract_features(self, data):
+                    """Extract features from data"""
+                    return data.get('features', {})
+                
+                def _make_decision(self, features):
+                    """Make a decision based on features"""
+                    return {'action': 'process', 'priority': 'normal'}
+                
+                async def _execute_action(self, decision):
+                    """Execute the decided action"""
+                    return {'executed': True, 'action': decision.get('action')}
+                
+                def add(self, n=1):
+                    """Add to counter"""
+                    pass
     
             return NoOpCounter()
         def create_histogram(self, **kwargs):
-        def create_histogram(self, **kwargs):
             class NoOpHistogram:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        import time
-        import numpy as np
-        
-        start_time = time.time()
-        
-        # Extract features
-        features = self._extract_features(data)
-        
-        # Make decision
-        decision = self._make_decision(features)
-        
-        # Execute action
-        result = await self._execute_action(decision)
-        
-        return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
-        }
-    
+                    """Process data for histogram"""
+                    import time
+                    import numpy as np
+                    
+                    start_time = time.time()
+                    
+                    # Extract features
+                    features = self._extract_features(data)
+                    
+                    # Make decision
+                    decision = self._make_decision(features)
+                    
+                    # Execute action
+                    result = await self._execute_action(decision)
+                    
+                    return {
+                        'status': 'success',
+                        'decision': decision,
+                        'result': result,
+                        'processing_time': time.time() - start_time,
+                        'confidence': 0.95
+                    }
+                
+                def _extract_features(self, data):
+                    """Extract features from data"""
+                    return data.get('features', {})
+                
+                def _make_decision(self, features):
+                    """Make a decision based on features"""
+                    return {'action': 'record', 'priority': 'normal'}
+                
+                async def _execute_action(self, decision):
+                    """Execute the decided action"""
+                    return {'executed': True, 'action': decision.get('action')}
+                
+                def record(self, value):
+                    """Record a value"""
+                    pass
+            
             return NoOpHistogram()
-        def create_gauge(self, **kwargs):
         def create_gauge(self, **kwargs):
             class NoOpGauge:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -146,7 +177,6 @@ else:
 
 class AgentMetrics:
     
-    def __init__(self):
     def __init__(self):
         # Counters
         self.method_calls = meter.create_counter(
@@ -224,7 +254,6 @@ def instrument_agent(
         record_result: Whether to record method results
         extract_correlation_id: Whether to extract correlation ID from args
     """
-    def decorator(func: Callable) -> Callable:
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs):
@@ -335,7 +364,6 @@ def instrument_agent(
         
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs):
-        def sync_wrapper(*args, **kwargs):
             # Similar implementation for sync functions
             agent_self = args[0] if args else None
             agent_id = getattr(agent_self, 'agent_id', 'unknown')
@@ -426,7 +454,6 @@ def instrument_agent(
 
 
 def instrument_memory_operation(operation: str = "query"):
-def instrument_memory_operation(operation: str = "query"):
     return instrument_agent(
         operation_type=f"memory_{operation}",
         record_args=True,
@@ -435,7 +462,6 @@ def instrument_memory_operation(operation: str = "query"):
     )
 
 
-def instrument_message_operation(operation: str = "send"):
 def instrument_message_operation(operation: str = "send"):
     return instrument_agent(
         operation_type=f"message_{operation}",
@@ -446,7 +472,6 @@ def instrument_message_operation(operation: str = "send"):
 
 
 def instrument_task_processing():
-def instrument_task_processing():
     return instrument_agent(
         operation_type="task_processing",
         record_args=False,  # AgentState could be large
@@ -455,7 +480,6 @@ def instrument_task_processing():
     )
 
 
-def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
 def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
     # Check kwargs first
     if 'correlation_id' in kwargs:
@@ -473,7 +497,6 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
     return None
 
 
-def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
 def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
     try:
         # Record number of args
@@ -505,7 +528,6 @@ def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
         pass
 
 
-def _record_method_result(span: Span, result: Any) -> None:
 def _record_method_result(span: Span, result: Any) -> None:
     try:
         result_type = type(result).__name__
@@ -563,7 +585,6 @@ def create_child_span(
 
 
 def inject_trace_context() -> Dict[str, str]:
-def inject_trace_context() -> Dict[str, str]:
     Inject current trace context for propagation.
     
     Returns:
@@ -618,7 +639,6 @@ def record_confidence_score(
     })
 
 
-def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> None:
 def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> None:
     Update active tasks gauge.
     

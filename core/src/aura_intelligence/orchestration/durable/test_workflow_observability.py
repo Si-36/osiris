@@ -29,7 +29,6 @@ from .workflow_observability import (
 class MockTDAIntegration:
     
     def __init__(self):
-    def __init__(self):
         self.results = []
         self.health_status = {"status": "healthy", "tda_available": True}
     
@@ -45,11 +44,9 @@ class TestWorkflowObservabilityManager:
     
     @pytest.fixture
     def mock_tda_integration(self):
-    def mock_tda_integration(self):
         return MockTDAIntegration()
     
     @pytest.fixture
-    def observability_manager(self, mock_tda_integration):
     def observability_manager(self, mock_tda_integration):
         return WorkflowObservabilityManager(tda_integration=mock_tda_integration)
     
@@ -329,7 +326,6 @@ class TestWorkflowObservabilityManager:
             ]
     
     def test_workflow_metrics_collection(self, observability_manager):
-    def test_workflow_metrics_collection(self, observability_manager):
         
         # Simulate workflow executions
         observability_manager._update_workflow_stats(
@@ -367,7 +363,6 @@ class TestWorkflowObservabilityManager:
         assert metrics["tda_correlated_count"] == 1
     
     def test_overall_workflow_metrics(self, observability_manager):
-    def test_overall_workflow_metrics(self, observability_manager):
         
         # Simulate different workflow types
         for workflow_type in ["data_processing", "model_inference", "result_aggregation"]:
@@ -401,7 +396,6 @@ class TestWorkflowObservabilityManager:
             assert by_type[workflow_type]["success_rate"] == 2/3
     
     def test_recent_metrics_filtering(self, observability_manager):
-    def test_recent_metrics_filtering(self, observability_manager):
         
         current_time = datetime.now(timezone.utc)
         
@@ -433,7 +427,6 @@ class TestWorkflowObservabilityManager:
         
         assert len(recent_metrics) == 2
     
-    def test_dashboard_data_export(self, observability_manager):
     def test_dashboard_data_export(self, observability_manager):
         
         # Add some test data
