@@ -95,28 +95,37 @@ if not OPENTELEMETRY_AVAILABLE:
     class MockSpan:
         """Mock span when OpenTelemetry is not available"""
         def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL processing implementation"""
-        import time
-        import numpy as np
+            """REAL processing implementation"""
+            import time
+            import numpy as np
+            
+            start_time = time.time()
+            
+            # Validate input
+            if not data:
+                return {'error': 'No input data provided', 'status': 'failed'}
+            
+            # Process data
+            processed_data = self._process_data(data)
+            
+            # Generate result
+            result = {
+                'status': 'success',
+                'processed_count': len(processed_data),
+                'processing_time': time.time() - start_time,
+                'data': processed_data
+            }
+            
+            return result
         
-        start_time = time.time()
-        
-        # Validate input
-        if not data:
-            return {'error': 'No input data provided', 'status': 'failed'}
-        
-        # Process data
-        processed_data = self._process_data(data)
-        
-        # Generate result
-        result = {
-            'status': 'success',
-            'processed_count': len(processed_data),
-            'processing_time': time.time() - start_time,
-            'data': processed_data
-        }
-        
-        return result
+        def _process_data(self, data):
+            """Process the data"""
+            if isinstance(data, dict):
+                return {k: v for k, v in data.items()}
+            elif isinstance(data, list):
+                return data[:]
+            else:
+                return [data]
     
         def __enter__(self):
             return self

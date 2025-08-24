@@ -1,0 +1,2364 @@
+{
+  "timestamp": "2025-08-24T12:11:33.038267",
+  "project_overview": {
+    "total_components": 53,
+    "total_files": 550,
+    "real_implementations": 160,
+    "microservices": 8,
+    "components_with_tests": 5,
+    "components_with_docs": 3
+  },
+  "key_components": {
+    "tda": {
+      "classes": [
+        "TDABenchmarkSuite",
+        "EnhancedTDAPipeline",
+        "RipsComplex",
+        "PersistentHomology",
+        "TDAAlgorithm",
+        "AgentSystemHealth",
+        "QuantumRipser",
+        "NeuralPersistence",
+        "AgentTopologyAnalyzer",
+        "UnifiedTDAEngine2025"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/tda/real_tda.py",
+        "/workspace/core/src/aura_intelligence/tda/real_algorithms_fixed.py"
+      ],
+      "key_features": [
+        "Multi-Agent Systems",
+        "Topological Data Analysis",
+        "GPU Acceleration",
+        "Stream Processing"
+      ]
+    },
+    "lnn": {
+      "classes": [
+        "RealMITLNN",
+        "ODEFunc",
+        "ODEBlock",
+        "ActivationType",
+        "TimeConstants",
+        "WiringConfig",
+        "LiquidConfig",
+        "LiquidActivation",
+        "LiquidNeuron",
+        "LiquidLayer"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/lnn/real_mit_lnn.py"
+      ],
+      "key_features": [
+        "Liquid Neural Networks",
+        "GPU Acceleration"
+      ]
+    },
+    "agents": {
+      "classes": [
+        "AgentType",
+        "AgentDecision",
+        "ConsolidatedAgent",
+        "ConsolidatedAgentFactory",
+        "ConsolidatedAgentRegistry",
+        "GenAIAttributes",
+        "AgentMetrics",
+        "AgentInstrumentor",
+        "ComponentError",
+        "AtomicComponent"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/agents/real_agent_system.py",
+        "/workspace/core/src/aura_intelligence/agents/simple_agent.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_real_integration_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_kg_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_context_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_modular_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_simple_components.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_real_system_integration.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_confidence_scoring_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_memory_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_real_integration.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_models_simple.py",
+        "/workspace/core/src/aura_intelligence/agents/workflows/simple_chain.py",
+        "/workspace/core/src/aura_intelligence/agents/council/lnn/implementations.py"
+      ],
+      "key_features": [
+        "Liquid Neural Networks",
+        "Topological Data Analysis",
+        "GPU Acceleration",
+        "Graph Processing",
+        "Multi-Agent Systems",
+        "Memory Management",
+        "Stream Processing"
+      ]
+    },
+    "memory": {
+      "classes": [
+        "TraceContextFormatter",
+        "ObservabilityManager",
+        "MemoryTier",
+        "CXLMemorySegment",
+        "CXLMemoryPool",
+        "RedisConfig",
+        "MetricsUpdater",
+        "RedisVectorStore",
+        "KNNConfig",
+        "VectorIndex"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/memory/simple_smoke_test.py",
+        "/workspace/core/src/aura_intelligence/memory/knn_index_real.py"
+      ],
+      "key_features": [
+        "Topological Data Analysis",
+        "Memory Management"
+      ]
+    },
+    "orchestration": {
+      "classes": [
+        "CheckpointMetadata",
+        "CoalescingPolicy",
+        "AdaptiveCheckpointCoalescer",
+        "TDACoordinatorState",
+        "TDACoordinator",
+        "TaskStatus",
+        "Task",
+        "OrchestratorMetrics",
+        "WorkingOrchestrator",
+        "FeatureFlag"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/orchestration/real_agent_workflows.py"
+      ],
+      "key_features": [
+        "Multi-Agent Systems",
+        "Topological Data Analysis",
+        "GPU Acceleration",
+        "Graph Processing"
+      ]
+    },
+    "streaming": {
+      "classes": [
+        "StreamingBackend",
+        "DeliveryGuarantee",
+        "ProcessingGuarantee",
+        "StreamConfig",
+        "StreamMessage",
+        "BaseEvent",
+        "TopologyChangeEvent",
+        "CascadePredictionEvent",
+        "InterventionEvent",
+        "MetricEvent"
+      ],
+      "real_implementations": [],
+      "key_features": [
+        "Topological Data Analysis",
+        "Stream Processing"
+      ]
+    },
+    "consensus": {
+      "classes": [
+        "DecisionType",
+        "VoteType",
+        "RaftState",
+        "BFTPhase",
+        "ConsensusState",
+        "Vote",
+        "ConsensusRequest",
+        "ConsensusProof",
+        "CausalNode",
+        "DecisionExplanation"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/consensus/simple.py"
+      ],
+      "key_features": []
+    },
+    "neural": {
+      "classes": [
+        "LNNDecision",
+        "ConsensusLNNConfig",
+        "DistributedLNN",
+        "LNNConsensusOrchestrator",
+        "LNNTrainingInput",
+        "LNNTrainingOutput",
+        "LNNInferenceInput",
+        "LNNInferenceOutput",
+        "LNNActivities",
+        "LNNTrainingWorkflow"
+      ],
+      "real_implementations": [
+        "/workspace/core/src/aura_intelligence/neural/liquid_real.py",
+        "/workspace/core/src/aura_intelligence/neural/mamba2_real.py"
+      ],
+      "key_features": [
+        "Liquid Neural Networks",
+        "GPU Acceleration",
+        "Memory Management"
+      ]
+    },
+    "graph": {
+      "classes": [
+        "MockNeo4jDriver",
+        "MockNeo4jSession",
+        "MockNeo4jResult",
+        "Neo4jIntegration"
+      ],
+      "real_implementations": [],
+      "key_features": []
+    }
+  },
+  "real_implementations": {
+    "/workspace/core/src/aura_intelligence/advanced_processing/real_pearl_inference.py": {
+      "component": "advanced_processing",
+      "classes": [
+        "InferenceMode",
+        "PEARLConfig",
+        "RealDraftModel",
+        "RealTargetModel",
+        "RealPEARLInferenceEngine"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/enhanced_council.py": {
+      "component": "agents",
+      "classes": [
+        "EnhancedDecision",
+        "EnhancedCouncilAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/working_council_agent.py": {
+      "component": "agents",
+      "classes": [
+        "DecisionType",
+        "CouncilDecision",
+        "AgentMetrics",
+        "CouncilAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/working_agents.py": {
+      "component": "agents",
+      "classes": [
+        "WorkingAgentType",
+        "AgentDecision",
+        "WorkingAgent",
+        "WorkingAgentRegistry"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/graph_enhanced_rl.py": {
+      "component": "agents",
+      "classes": [
+        "GraphEnhancedPolicy",
+        "GraphEnhancedRLAgent"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/real_agent_system.py": {
+      "component": "agents",
+      "classes": [
+        "AgentRole",
+        "MessageType",
+        "AgentMessage",
+        "AgentState",
+        "DecisionNetwork",
+        "ByzantineConsensus",
+        "BaseAgent",
+        "TopologyAnalyzerAgent",
+        "FailurePredictorAgent",
+        "MultiAgentSystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/unified_agent_system.py": {
+      "component": "agents",
+      "classes": [
+        "AgentType",
+        "AgentCapability",
+        "DecisionType",
+        "AgentDecision",
+        "AgentTask",
+        "AgentCapabilityProfile",
+        "UnifiedAgent",
+        "UnifiedAgentFactory",
+        "CouncilAgent",
+        "BioAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": [
+        "Factory"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/agents/agent_consolidation.py": {
+      "component": "agents",
+      "classes": [
+        "ConsolidationReport",
+        "AgentConsolidationSystem"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/simple_agent.py": {
+      "component": "agents",
+      "classes": [
+        "SimpleAgent",
+        "SimpleAgentRegistry"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/steps.py": {
+      "component": "agents",
+      "classes": [
+        "WorkflowStep",
+        "AnalyzeRequestStep",
+        "GatherContextStep",
+        "NeuralInferenceStep",
+        "ValidateDecisionStep",
+        "FinalizeOutputStep"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/decision_pipeline.py": {
+      "component": "agents",
+      "classes": [
+        "PipelineMetrics",
+        "DecisionContext",
+        "DecisionProcessingPipeline"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_observability_standalone.py": {
+      "component": "agents",
+      "classes": [
+        "MetricType",
+        "AlertLevel",
+        "PerformanceMetric",
+        "DecisionTrace",
+        "SystemAlert",
+        "ComponentMetrics",
+        "ObservabilityEngine",
+        "TestObservabilityEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_real_integration_simple.py": {
+      "component": "agents",
+      "classes": [
+        "RealIntegrationTester"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_kg_simple.py": {
+      "component": "agents",
+      "classes": [
+        "MockLNNCouncilConfig",
+        "MockGPURequest",
+        "MockLNNCouncilState",
+        "MockNeo4jAdapter",
+        "ProductionKnowledgeGraphProvider"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/standalone_test.py": {
+      "component": "agents",
+      "classes": [
+        "ActivationType",
+        "LNNCouncilConfig",
+        "GPUAllocationRequest",
+        "GPUAllocationDecision",
+        "MockLiquidNeuralNetwork",
+        "SimpleLNNCouncilAgent"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/lnn_council_agent.py": {
+      "component": "agents",
+      "classes": [
+        "LNNCouncilConfig",
+        "GPUAllocationRequest",
+        "GPUAllocationDecision",
+        "LNNCouncilState",
+        "LNNCouncilAgent",
+        "Config"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_context_simple.py": {
+      "component": "agents",
+      "classes": [
+        "SimpleContextEncoder",
+        "SimpleContextProvider",
+        "SimpleContextAwareLNN"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/production_lnn_council.py": {
+      "component": "agents",
+      "classes": [
+        "CouncilState",
+        "RealLiquidTimeStep",
+        "ProductionLNNCouncilAgent",
+        "Config"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_modular_simple.py": {
+      "component": "agents",
+      "classes": [
+        "SimpleConfig",
+        "SimpleAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_end_to_end_integration.py": {
+      "component": "agents",
+      "classes": [
+        "TestScenario",
+        "TestResult",
+        "EndToEndIntegrationTester"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_simple_components.py": {
+      "component": "agents",
+      "classes": [
+        "SimpleGPURequest",
+        "SimpleState",
+        "SimpleDecision",
+        "SimpleDecisionNetwork",
+        "SimpleContextProvider",
+        "MockRequest",
+        "SimpleDecisionPipeline",
+        "TestRequest",
+        "SimpleProvider"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_real_system_integration.py": {
+      "component": "agents",
+      "classes": [],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/agent_council.py": {
+      "component": "agents",
+      "classes": [
+        "CouncilDecision",
+        "AgentCouncil"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_integration_standalone.py": {
+      "component": "agents",
+      "classes": [
+        "MockGPURequest",
+        "MockGPUDecision",
+        "MockLNNCouncilAgent",
+        "IntegrationTestSuite"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/core_agent.py": {
+      "component": "agents",
+      "classes": [
+        "CouncilAgent",
+        "SpecializedCouncilAgent",
+        "ResourceAllocatorAgent",
+        "RiskAssessorAgent",
+        "PolicyEnforcerAgent",
+        "PerformanceOptimizerAgent"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_confidence_standalone.py": {
+      "component": "agents",
+      "classes": [
+        "GPUAllocationRequest",
+        "LNNCouncilState",
+        "ConfidenceMetrics",
+        "ValidationResult",
+        "ConfidenceScorer",
+        "DecisionValidator",
+        "ReasoningPathGenerator"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/neural_engine.py": {
+      "component": "agents",
+      "classes": [
+        "NeuralDecisionEngine"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_confidence_scoring_simple.py": {
+      "component": "agents",
+      "classes": [
+        "MockGPUAllocationRequest",
+        "MockLNNCouncilState"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_pipeline_integration.py": {
+      "component": "agents",
+      "classes": [
+        "MockLNNCouncilConfig",
+        "MockGPURequest",
+        "MockLNNCouncilState",
+        "MockGPUAllocationDecision",
+        "MockLiquidNeuralNetwork",
+        "IntegratedDecisionWorkflow"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_memory_simple.py": {
+      "component": "agents",
+      "classes": [
+        "SimpleMemoryIntegration",
+        "SimpleConfidenceCalibrator"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_real_integration.py": {
+      "component": "agents",
+      "classes": [],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/confidence_scoring.py": {
+      "component": "agents",
+      "classes": [
+        "ConfidenceMetrics",
+        "ValidationResult",
+        "ConfidenceScorer",
+        "DecisionValidator",
+        "ReasoningPathGenerator"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/fallback.py": {
+      "component": "agents",
+      "classes": [
+        "FallbackTrigger",
+        "DegradationLevel",
+        "FallbackMetrics",
+        "FallbackEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_models_simple.py": {
+      "component": "agents",
+      "classes": [],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/test_decision_pipeline.py": {
+      "component": "agents",
+      "classes": [
+        "MockLNNCouncilConfig",
+        "MockGPURequest",
+        "MockLNNCouncilState",
+        "MockGPUAllocationDecision",
+        "MockContextAwareLNN",
+        "MockMemoryProvider",
+        "MockKnowledgeProvider",
+        "MockContextEncoder",
+        "MockDecisionPipeline"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/memory/unified.py": {
+      "component": "agents",
+      "classes": [
+        "MemoryTier",
+        "QueryType",
+        "QueryResult",
+        "FusedQueryResult",
+        "UnifiedMemory",
+        "BaseRetriever",
+        "NodeWithScore",
+        "QueryBundle"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/real_agents/optimizer_agent.py": {
+      "component": "agents",
+      "classes": [
+        "OptimizationResult",
+        "RealOptimizerAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/real_agents/guardian_agent.py": {
+      "component": "agents",
+      "classes": [
+        "SecurityAssessment",
+        "RealGuardianAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/real_agents/researcher_agent.py": {
+      "component": "agents",
+      "classes": [
+        "ResearchResult",
+        "RealResearcherAgent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/real_agents/__init__.py": {
+      "component": "agents",
+      "classes": [],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/schemas/crypto.py": {
+      "component": "agents",
+      "classes": [
+        "CryptoProvider",
+        "HMACProvider",
+        "RSAProvider",
+        "ECDSAProvider",
+        "Ed25519Provider",
+        "PostQuantumProvider"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/factories/unified_factory.py": {
+      "component": "agents",
+      "classes": [
+        "AgentCredentials",
+        "AgentConfig",
+        "AgentInterface",
+        "BaseAgentFactory",
+        "ObserverAgentFactory",
+        "AnalystAgentFactory",
+        "SupervisorAgentFactory",
+        "ValidatorAgentFactory",
+        "UnifiedAgentFactory",
+        "AgentBuilder",
+        "DefaultLLM",
+        "Response"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": [
+        "Factory",
+        "Observer"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/agents/workflows/simple_chain.py": {
+      "component": "agents",
+      "classes": [
+        "ResearchAnalysisState",
+        "ResearchAgent",
+        "AnalysisAgent",
+        "ResearchAnalysisWorkflow",
+        "SimpleChainWorkflow"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/temporal/gpu_allocation_activities.py": {
+      "component": "agents",
+      "classes": [
+        "GPURequest",
+        "AllocationResult"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/temporal/activities.py": {
+      "component": "agents",
+      "classes": [
+        "AgentActivity",
+        "StateManagementActivity",
+        "KafkaProducerActivity",
+        "ObservabilityActivity"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/v2/observer.py": {
+      "component": "agents",
+      "classes": [
+        "ObserverAgentV2"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": [
+        "Observer"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/lnn/implementations.py": {
+      "component": "agents",
+      "classes": [
+        "TransformerNeuralEngine",
+        "GraphKnowledgeSystem",
+        "TopologyAnalyzer",
+        "AdaptiveMemorySystem",
+        "FaissMemoryStore",
+        "CouncilOrchestrator",
+        "WeightedVoting",
+        "ByzantineConsensus"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/agents/council/lnn/neural/engine.py": {
+      "component": "agents",
+      "classes": [
+        "LiquidNeuralEngine"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/api/search.py": {
+      "component": "api",
+      "classes": [
+        "SearchQuery",
+        "SearchResult",
+        "SearchResponse",
+        "HealthResponse"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/api/governance_dashboard.py": {
+      "component": "api",
+      "classes": [
+        "DashboardMetrics",
+        "RiskDistribution",
+        "PredictionTrends"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/bio_homeostatic/production_metabolic_manager.py": {
+      "component": "bio_homeostatic",
+      "classes": [
+        "ProductionMetabolicManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/chaos/experiments.py": {
+      "component": "chaos",
+      "classes": [
+        "ChaosExperiment",
+        "EventStoreFailureExperiment",
+        "ProjectionLagExperiment",
+        "NetworkPartitionExperiment",
+        "DebateTimeoutExperiment",
+        "MemoryPressureExperiment",
+        "ChaosOrchestrator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/collective/context_engine.py": {
+      "component": "collective",
+      "classes": [
+        "ContextEngine",
+        "ProductionAgentState",
+        "ProductionEvidence",
+        "AgentConfig"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/collective/memory_manager.py": {
+      "component": "collective",
+      "classes": [
+        "CollectiveMemoryManager",
+        "LangMemClient",
+        "ProductionAgentState"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/communication/collective/context_engine.py": {
+      "component": "communication",
+      "classes": [
+        "ContextEngine",
+        "ProductionAgentState",
+        "ProductionEvidence",
+        "AgentConfig"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/components/real_components.py": {
+      "component": "components",
+      "classes": [
+        "RedisConnectionPool",
+        "AsyncBatchProcessor",
+        "GlobalModelManager",
+        "GPUManager",
+        "RealComponent",
+        "RealLNNComponent",
+        "RealAttentionComponent",
+        "RealSwitchMoEComponent",
+        "RealTDAComponent",
+        "RealEmbeddingComponent",
+        "RealVAEComponent",
+        "RealNeuralODEComponent",
+        "RealRedisComponent",
+        "RealVectorStoreComponent",
+        "RealCacheComponent",
+        "RealCouncilAgentComponent",
+        "RealSupervisorAgentComponent",
+        "RealExecutorAgentComponent",
+        "RealWorkflowComponent",
+        "RealSchedulerComponent",
+        "RealMetricsComponent",
+        "VAE",
+        "ODEFunc",
+        "ODEFunc",
+        "DynamicODEFunc",
+        "GenericComponent"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/components/production_registry.py": {
+      "component": "components",
+      "classes": [
+        "ComponentType",
+        "ComponentMetrics",
+        "NeuralComponentActor",
+        "MemoryComponentActor",
+        "TDAComponentActor",
+        "LiquidNeuralNetwork",
+        "ProductionComponentRegistry"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": [
+        "Distributed"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/components/real_registry.py": {
+      "component": "components",
+      "classes": [
+        "ComponentType",
+        "RealComponent",
+        "RealComponentRegistry"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/consensus/simple.py": {
+      "component": "consensus",
+      "classes": [
+        "Decision",
+        "SimpleConsensus"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/coral/production_coral.py": {
+      "component": "coral",
+      "classes": [
+        "CoRaLConfig",
+        "SharedFeatureExtractor",
+        "MessageRoutingGNN",
+        "BatchedAgentProcessor",
+        "ProductionCoRaLSystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/system.py": {
+      "component": "core",
+      "classes": [
+        "UltimateSystemMetrics",
+        "UltimateAURASystem"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/testing.py": {
+      "component": "core",
+      "classes": [
+        "TestingLevel",
+        "VerificationResult",
+        "TestResult",
+        "PropertySpecification",
+        "PropertyBasedTester",
+        "ModelChecker",
+        "TheoremProver",
+        "ConsciousnessTester",
+        "QuantumTester",
+        "ChaosTester",
+        "AdvancedTestingFramework"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/unified_system.py": {
+      "component": "core",
+      "classes": [
+        "SystemMetrics",
+        "SystemState",
+        "UnifiedSystem"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/topology.py": {
+      "component": "core",
+      "classes": [
+        "TopologicalSignature",
+        "UltimateTDAEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/config.py": {
+      "component": "core",
+      "classes": [
+        "Environment",
+        "ConfigSource",
+        "ConfigMetadata",
+        "ConfigValidator",
+        "ConfigLoader",
+        "DatabaseConfig",
+        "RedisConfig",
+        "Neo4jConfig",
+        "QuantumConfig",
+        "ConsciousnessConfig",
+        "SwarmConfig",
+        "TDAConfig",
+        "ObservabilityConfig",
+        "AuraConfig",
+        "ConfigurationManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/memory.py": {
+      "component": "core",
+      "classes": [
+        "UltimateMemoryInsights",
+        "UltimateMemorySystem"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/unified_interfaces.py": {
+      "component": "core",
+      "classes": [
+        "ComponentStatus",
+        "Priority",
+        "HealthLevel",
+        "ComponentMetrics",
+        "SystemEvent",
+        "ConfigurationUpdate",
+        "UnifiedComponent",
+        "AgentComponent",
+        "MemoryComponent",
+        "NeuralComponent",
+        "OrchestrationComponent",
+        "ObservabilityComponent",
+        "ComponentRegistry"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/self_healing.py": {
+      "component": "core",
+      "classes": [
+        "FailureType",
+        "HealingStrategy",
+        "ChaosExperiment",
+        "ChaosResult",
+        "Stressor",
+        "AntifragileAdaptation",
+        "FailureInjector",
+        "BlastRadiusController",
+        "ChaosEngineer",
+        "AntifragilityEngine",
+        "PredictiveFailureDetector",
+        "SelfHealingErrorHandler"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/unified_config.py": {
+      "component": "core",
+      "classes": [
+        "Environment",
+        "LogLevel",
+        "StorageBackend",
+        "ActivationType",
+        "SolverType",
+        "SystemConfig",
+        "DatabaseConfig",
+        "AgentConfig",
+        "MemoryConfig",
+        "ObservabilityConfig",
+        "NeuralConfig",
+        "OrchestrationConfig",
+        "UnifiedConfig",
+        "ConfigurationManager"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/core/consensus/simple.py": {
+      "component": "core",
+      "classes": [
+        "Decision",
+        "SimpleConsensus"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/distributed/real_ray_system.py": {
+      "component": "distributed",
+      "classes": [
+        "RealComponentActor",
+        "RealRaySystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": [
+        "Distributed"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/distributed/actor_system.py": {
+      "component": "distributed",
+      "classes": [
+        "ActorConfig",
+        "ComponentActor",
+        "ProductionActorSystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": [
+        "Distributed"
+      ]
+    },
+    "/workspace/core/src/aura_intelligence/dpo/production_dpo.py": {
+      "component": "dpo",
+      "classes": [
+        "PreferenceRecord",
+        "ConstitutionalSafetyChecker",
+        "ProductionDPOTrainer"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/dpo/real_constitutional_ai.py": {
+      "component": "dpo",
+      "classes": [
+        "RealDPODataset",
+        "RealDPOModel",
+        "ConstitutionalAI",
+        "RealDPOTrainer",
+        "RealConstitutionalAISystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/enterprise/enhanced_knowledge_graph.py": {
+      "component": "enterprise",
+      "classes": [
+        "EnhancedKnowledgeGraphService"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/enterprise/mem0_semantic/sync.py": {
+      "component": "enterprise",
+      "classes": [
+        "SemanticCluster",
+        "MemoryConsolidationBatch",
+        "SemanticMemorySync"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/events/streams.py": {
+      "component": "events",
+      "classes": [
+        "WindowType",
+        "StreamConfig",
+        "StateStore",
+        "StreamTopology",
+        "AgentEventStream",
+        "WorkflowEventStream",
+        "EventAggregator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/events/connectors.py": {
+      "component": "events",
+      "classes": [
+        "TemporalKafkaConnector",
+        "StateStoreConnector",
+        "CDCConnector"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/events/real_event_sourcing.py": {
+      "component": "events",
+      "classes": [
+        "RealEventStore"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/examples/real_demo_system.py": {
+      "component": "examples",
+      "classes": [
+        "RealDemoSystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/examples/gpu_allocation_scenario.py": {
+      "component": "examples",
+      "classes": [
+        "GPUAllocationRequest",
+        "GPUResourceManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/governance/executor.py": {
+      "component": "governance",
+      "classes": [
+        "ActionExecutor"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/governance/real_policy_engine.py": {
+      "component": "governance",
+      "classes": [
+        "RealPolicyEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/governance/risk_engine.py": {
+      "component": "governance",
+      "classes": [
+        "RiskAssessmentEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/graph/neo4j_integration.py": {
+      "component": "graph",
+      "classes": [
+        "MockNeo4jDriver",
+        "MockNeo4jSession",
+        "MockNeo4jResult",
+        "Neo4jIntegration"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/inference/pearl_engine.py": {
+      "component": "inference",
+      "classes": [
+        "InferenceMode",
+        "PEARLConfig",
+        "PEARLInferenceEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integration/lnn_council_system.py": {
+      "component": "integration",
+      "classes": [
+        "CouncilDecision",
+        "LNNCouncilAgent",
+        "LNNCouncilSystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integration/advanced_workflow_integration.py": {
+      "component": "integration",
+      "classes": [
+        "DeploymentMode",
+        "AURAIntegrationConfig",
+        "AURAState",
+        "AURAWorkflowNodes",
+        "AURAWorkflowBuilder",
+        "AURAIntelligenceIntegration"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integration/real_system_2025.py": {
+      "component": "integration",
+      "classes": [
+        "RealSystemMetrics",
+        "RealAURASystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integration/complete_system_2025.py": {
+      "component": "integration",
+      "classes": [
+        "SystemRequest",
+        "SystemResponse",
+        "CompleteAURASystem"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integrations/real_api_connectors.py": {
+      "component": "integrations",
+      "classes": [
+        "RealAPIConnector"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integrations/enhanced_workflow_orchestrator.py": {
+      "component": "integrations",
+      "classes": [
+        "WorkflowState",
+        "EnhancedWorkflowContext",
+        "WorkflowContextData",
+        "EnhancedWorkflowOrchestrator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integrations/enhanced_workflow_integration.py": {
+      "component": "integrations",
+      "classes": [
+        "EnhancedWorkflowState",
+        "EnhancedWorkflowIntegration"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integrations/mojo_tda_bridge.py": {
+      "component": "integrations",
+      "classes": [
+        "MojoTDABridge"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/integrations/integration/advanced_workflow_integration.py": {
+      "component": "integrations",
+      "classes": [
+        "DeploymentMode",
+        "AURAIntegrationConfig",
+        "AURAState",
+        "AURAWorkflowNodes",
+        "AURAWorkflowBuilder",
+        "AURAIntelligenceIntegration"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/lnn/real_mit_lnn.py": {
+      "component": "lnn",
+      "classes": [
+        "RealMITLNN",
+        "ODEFunc",
+        "ODEBlock"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/lnn/training.py": {
+      "component": "lnn",
+      "classes": [
+        "LiquidTrainer",
+        "BackpropThroughTime",
+        "AdjointSensitivity",
+        "SparsityRegularizer",
+        "TemporalLoss"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory/simple_smoke_test.py": {
+      "component": "memory",
+      "classes": [],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory/memory_bus_adapter_clean.py": {
+      "component": "memory",
+      "classes": [
+        "MemoryBusAdapter"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory/neo4j_motifcost.py": {
+      "component": "memory",
+      "classes": [
+        "MotifSignature",
+        "MotifCostConfig",
+        "Neo4jMotifCostIndex"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory/knn_index_real.py": {
+      "component": "memory",
+      "classes": [
+        "KNNConfig",
+        "BaseKNNIndex",
+        "FaissKNNIndex",
+        "AnnoyKNNIndex",
+        "SklearnKNNIndex",
+        "HybridKNNIndex",
+        "RestrictedUnpickler"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory/benchmarks/run_production_benchmark.py": {
+      "component": "memory",
+      "classes": [
+        "TopologyDataGenerator",
+        "BenchmarkRunner"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/memory_tiers/real_hybrid_memory.py": {
+      "component": "memory_tiers",
+      "classes": [
+        "MemoryTier",
+        "MemoryItem",
+        "RealHybridMemoryManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/moe/real_switch_moe.py": {
+      "component": "moe",
+      "classes": [
+        "RealSwitchMoE",
+        "RealMoESystem",
+        "SwitchMoELayer"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/moe/switch_transformer.py": {
+      "component": "moe",
+      "classes": [
+        "SwitchTransformerMoE"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/moe/google_switch_transformer.py": {
+      "component": "moe",
+      "classes": [
+        "SwitchTransformerMoE",
+        "GoogleSwitchMoESystem"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/moe/mixture_of_experts.py": {
+      "component": "moe",
+      "classes": [
+        "ExpertRoute",
+        "MixtureOfExperts"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/monitoring/production_monitor.py": {
+      "component": "monitoring",
+      "classes": [
+        "AlertLevel",
+        "Alert",
+        "HealthCheck",
+        "ProductionMonitor"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/monitoring/real_time_dashboard.py": {
+      "component": "monitoring",
+      "classes": [
+        "RealTimeDashboard"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/multimodal/advanced_processing.py": {
+      "component": "multimodal",
+      "classes": [
+        "ModalityType",
+        "ModalityInput",
+        "RotaryPositionalEmbedding",
+        "MultiHeadAttention",
+        "SwiGLU",
+        "TransformerBlock",
+        "VisionTransformer",
+        "TextTransformer",
+        "AudioTransformer",
+        "CrossModalAttentionFusion",
+        "MultiModalTransformer",
+        "ProductionMultiModalProcessor"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/network/real_protocols.py": {
+      "component": "network",
+      "classes": [
+        "RealNetworkProtocol"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/network/diff_comm_v2b.py": {
+      "component": "network",
+      "classes": [
+        "MessageMetadata",
+        "DiffCommConfig",
+        "DeltaCache",
+        "HeaderPruner",
+        "DiffCommV2b"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/neural/liquid_real.py": {
+      "component": "neural",
+      "classes": [
+        "LiquidTimeConstant",
+        "RealLiquidNeuralNetwork",
+        "AdaptiveLiquidNetwork"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/neural/mamba2_real.py": {
+      "component": "neural",
+      "classes": [
+        "Mamba2Layer",
+        "RealMamba2Block",
+        "Mamba2Model",
+        "UnlimitedContextMamba2"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/observability/pro_observability_system.py": {
+      "component": "observability",
+      "classes": [
+        "LogLevel",
+        "SpanAttributes",
+        "MetricDefinition",
+        "ObservabilitySystem",
+        "InstrumentedAuraComponent"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/observability/opentelemetry_integration.py": {
+      "component": "observability",
+      "classes": [
+        "MockTracer",
+        "MockSpan",
+        "OpenTelemetryManager",
+        "MockTrace",
+        "ObservabilityConfig",
+        "ObservabilityContext"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/observability/shadow_mode_logger.py": {
+      "component": "observability",
+      "classes": [
+        "ShadowModeEntry",
+        "ShadowModeLogger"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/observability/dashboard.py": {
+      "component": "observability",
+      "classes": [
+        "MetricType",
+        "DashboardPanel",
+        "Alert",
+        "UnifiedDashboard"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/temporal_signalfirst.py": {
+      "component": "orchestration",
+      "classes": [
+        "SignalPriority",
+        "SignalMetadata",
+        "SignalFirstConfig",
+        "SignalFirstRouter",
+        "OptimizedWorkflow"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/real_agent_workflows.py": {
+      "component": "orchestration",
+      "classes": [
+        "RealAgentState",
+        "RealAURACollectiveIntelligence"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/pro_orchestration_system.py": {
+      "component": "orchestration",
+      "classes": [
+        "WorkflowStatus",
+        "CircuitState",
+        "Event",
+        "Command",
+        "WorkflowState",
+        "CircuitBreaker",
+        "SagaStep",
+        "Saga",
+        "EventStore",
+        "WorkflowEngine",
+        "Config",
+        "AuraWorkflowState"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/langgraph_collective.py": {
+      "component": "orchestration",
+      "classes": [
+        "CollectiveState",
+        "AgentRole",
+        "CollectiveConfig",
+        "LangGraphCollectiveIntelligence"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/production/alerting.py": {
+      "component": "orchestration",
+      "classes": [
+        "AlertSeverity",
+        "AlertStatus",
+        "Alert",
+        "NotificationChannel",
+        "AlertManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/production/scaling.py": {
+      "component": "orchestration",
+      "classes": [
+        "ScalingAction",
+        "ScalingTrigger",
+        "ScalingRule",
+        "ScalingEvent",
+        "AutoScaler"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/production/monitoring.py": {
+      "component": "orchestration",
+      "classes": [
+        "SLAThreshold",
+        "HealthCheck",
+        "ProductionMonitor"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/production/__init__.py": {
+      "component": "orchestration",
+      "classes": [],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/distributed/consensus.py": {
+      "component": "orchestration",
+      "classes": [
+        "RaftState",
+        "LogEntryType",
+        "LogEntry",
+        "RaftNode",
+        "ModernRaftConsensus"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/distributed/hierarchical_orchestrator.py": {
+      "component": "orchestration",
+      "classes": [
+        "OrchestrationLayer",
+        "DecisionScope",
+        "LayerContext",
+        "EscalationRequest",
+        "HierarchicalOrchestrator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/distributed/test_distributed_coordination.py": {
+      "component": "orchestration",
+      "classes": [
+        "MockTDAIntegration",
+        "TestVectorClock",
+        "TestTDALoadBalancer",
+        "TestDistributedCoordinationManager",
+        "TestIntegrationScenarios"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/durable/workflow_observability.py": {
+      "component": "orchestration",
+      "classes": [
+        "WorkflowMetricType",
+        "HealthStatus",
+        "WorkflowMetric",
+        "WorkflowSpan",
+        "HealthCheck",
+        "MockTracer",
+        "MockSpan",
+        "WorkflowObservabilityManager"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/durable/temporal_orchestrator.py": {
+      "component": "orchestration",
+      "classes": [
+        "WorkflowStatus",
+        "CompensationStrategy",
+        "DurableWorkflowConfig",
+        "WorkflowExecutionResult",
+        "CompensationAction",
+        "TemporalDurableOrchestrator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/workflows/tools.py": {
+      "component": "orchestration",
+      "classes": [
+        "CircuitBreaker"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/events/event_patterns.py": {
+      "component": "orchestration",
+      "classes": [
+        "PatternType",
+        "PatternPriority",
+        "EventPattern",
+        "PatternMatch",
+        "PatternMatcher"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/events/semantic_orchestrator.py": {
+      "component": "orchestration",
+      "classes": [
+        "OrchestrationEvent",
+        "SemanticEventOrchestrator"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/orchestration/distributed/crewai/flow_engine.py": {
+      "component": "orchestration",
+      "classes": [
+        "FlowComplexity",
+        "FlowContext",
+        "FlowEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/real_components/real_moe_router.py": {
+      "component": "real_components",
+      "classes": [
+        "SwitchTransformerGate",
+        "RealMoERouter"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/real_components/real_spiking_gnn.py": {
+      "component": "real_components",
+      "classes": [
+        "LIFNeuron",
+        "SpikingGraphConv",
+        "RealSpikingGNN",
+        "RealSpikingCoordinator"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/real_components/real_multimodal.py": {
+      "component": "real_components",
+      "classes": [
+        "SimpleViT",
+        "SimpleTextEncoder",
+        "CrossModalFusion",
+        "RealMultiModalProcessor"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/resilience/circuit_breaker.py": {
+      "component": "resilience",
+      "classes": [
+        "CircuitBreakerState",
+        "CircuitBreakerConfig",
+        "CircuitBreakerMetrics",
+        "ThresholdPredictor",
+        "AdaptiveCircuitBreaker",
+        "CircuitBreakerOpenError"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/routing/real_load_balancer.py": {
+      "component": "routing",
+      "classes": [
+        "RealLoadBalancer"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/routing/mixture_of_experts.py": {
+      "component": "routing",
+      "classes": [
+        "TopKGate",
+        "MoELayer",
+        "ProductionMoE",
+        "AURAMixtureOfExperts"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/security/hash_with_carry.py": {
+      "component": "security",
+      "classes": [
+        "HwCConfig",
+        "CarryRegister",
+        "SecureEnclaveInterface",
+        "HashWithCarry"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/security/kmux_ebpf.py": {
+      "component": "security",
+      "classes": [
+        "KMUXConfig",
+        "SecurityRule",
+        "KernelChecker",
+        "KMUXeBPF",
+        "BPFRule"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/spiking/real_spiking_networks.py": {
+      "component": "spiking",
+      "classes": [
+        "RealSpikingNetwork"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/spiking/advanced_spiking_gnn.py": {
+      "component": "spiking",
+      "classes": [
+        "LIFNeuron",
+        "SpikeFunction",
+        "SpikingGraphConv",
+        "SpikingGAT",
+        "AdvancedSpikingGNN",
+        "NeuromorphicCoordinator"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/spiking_gnn/real_spiking_gnn.py": {
+      "component": "spiking_gnn",
+      "classes": [
+        "RealSpikingGNN"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/streaming/pro_streaming_system.py": {
+      "component": "streaming",
+      "classes": [
+        "StreamingBackend",
+        "DeliveryGuarantee",
+        "ProcessingGuarantee",
+        "StreamConfig",
+        "StreamMessage",
+        "BaseEvent",
+        "TopologyChangeEvent",
+        "CascadePredictionEvent",
+        "InterventionEvent",
+        "MetricEvent",
+        "StreamProducer",
+        "StreamConsumer",
+        "KafkaStreamProducer",
+        "KafkaStreamConsumer",
+        "NatsStreamProducer",
+        "NatsStreamConsumer",
+        "StreamProcessor",
+        "WebSocketStreamServer",
+        "StreamingSystem",
+        "Config"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/enhanced_pipeline.py": {
+      "component": "tda",
+      "classes": [
+        "EnhancedTDAPipeline"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/algorithms.py": {
+      "component": "tda",
+      "classes": [
+        "RipsComplex",
+        "PersistentHomology"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/unified_engine_2025.py": {
+      "component": "tda",
+      "classes": [
+        "TDAAlgorithm",
+        "AgentSystemHealth",
+        "QuantumRipser",
+        "NeuralPersistence",
+        "AgentTopologyAnalyzer",
+        "UnifiedTDAEngine2025"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/real_tda.py": {
+      "component": "tda",
+      "classes": [
+        "RealTDA"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/production_fallbacks.py": {
+      "component": "tda",
+      "classes": [
+        "FallbackConfig",
+        "DeterministicTDAFallback",
+        "MinimalTDAFallback"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/topo_fuzzer_pro.py": {
+      "component": "tda",
+      "classes": [
+        "TopologyViolation",
+        "TopoFuzzerPro"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/real_algorithms_fixed.py": {
+      "component": "tda",
+      "classes": [
+        "RealPersistenceDiagram",
+        "RealTDAEngine",
+        "GPUAcceleratedTDA"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/unified_engine.py": {
+      "component": "tda",
+      "classes": [
+        "TDAAlgorithm",
+        "TDARequest",
+        "TDAResponse",
+        "TDAEngineInterface",
+        "SpecSeqPlusPlusEngine",
+        "SimBaGPUEngine",
+        "UnifiedTDAEngine"
+      ],
+      "has_gpu": true,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/tda/streaming/__init__.py": {
+      "component": "tda",
+      "classes": [
+        "TDAStatistics",
+        "DiagramUpdate",
+        "MultiScaleResult",
+        "StreamingTDAProcessor",
+        "DataWindow",
+        "StreamAdapter",
+        "MultiScaleProcessor"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/testing/real_test_framework.py": {
+      "component": "testing",
+      "classes": [
+        "RealTestRunner"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/testing/cicd_automation.py": {
+      "component": "testing",
+      "classes": [
+        "CIConfig",
+        "TestResult",
+        "AlertManager",
+        "PerformanceTracker",
+        "PRCommentGenerator",
+        "CIPipeline"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/testing/chaos_engineering.py": {
+      "component": "testing",
+      "classes": [
+        "FaultType",
+        "ChaosScenario",
+        "ChaosResult",
+        "NetworkChaosInjector",
+        "KafkaChaosInjector",
+        "SystemChaosInjector",
+        "ChaosOrchestrator",
+        "RealisticDataGenerator",
+        "LongRunningStressTest"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    },
+    "/workspace/core/src/aura_intelligence/workflows/real_temporal_workflows.py": {
+      "component": "workflows",
+      "classes": [
+        "RealWorkflowEngine"
+      ],
+      "has_gpu": false,
+      "has_async": false,
+      "patterns": []
+    }
+  },
+  "microservices": {
+    "moe": {
+      "path": "/workspace/aura-microservices/moe",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 8005
+    },
+    "memory": {
+      "path": "/workspace/aura-microservices/memory",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 0
+    },
+    "integration": {
+      "path": "/workspace/aura-microservices/integration",
+      "has_dockerfile": false,
+      "has_api": false,
+      "port": 0
+    },
+    "byzantine": {
+      "path": "/workspace/aura-microservices/byzantine",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 0
+    },
+    "tda": {
+      "path": "/workspace/aura-microservices/tda",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 0
+    },
+    "demos": {
+      "path": "/workspace/aura-microservices/demos",
+      "has_dockerfile": false,
+      "has_api": false,
+      "port": 0
+    },
+    "lnn": {
+      "path": "/workspace/aura-microservices/lnn",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 8003
+    },
+    "neuromorphic": {
+      "path": "/workspace/aura-microservices/neuromorphic",
+      "has_dockerfile": true,
+      "has_api": false,
+      "port": 0
+    }
+  },
+  "integration_map": {
+    "adapters": [],
+    "advanced_processing": [],
+    "agents": [
+      "neo4j_adapter",
+      "redis_adapter",
+      "council",
+      "mem0_adapter",
+      "producers"
+    ],
+    "api": [
+      "mem0_semantic",
+      "anomaly_detection",
+      "telemetry",
+      "logger",
+      "mem0_hot"
+    ],
+    "benchmarks": [],
+    "bio_homeostatic": [],
+    "chaos": [],
+    "collective": [],
+    "communication": [],
+    "components": [],
+    "config": [],
+    "consciousness": [],
+    "consensus": [],
+    "coral": [],
+    "core": [
+      "search_api",
+      "enhanced_knowledge_graph",
+      "mem0_semantic",
+      "knowledge",
+      "consciousness",
+      "mojo_tda_bridge",
+      "logger",
+      "topology",
+      "mem0_search",
+      "memory",
+      "agents",
+      "data_structures",
+      "mem0_hot"
+    ],
+    "distributed": [],
+    "dpo": [],
+    "enterprise": [
+      "vector_database",
+      "enhanced_knowledge_graph",
+      "mem0_semantic",
+      "logger",
+      "mem0_search",
+      "knowledge_graph",
+      "data_structures",
+      "mem0_hot"
+    ],
+    "events": [],
+    "examples": [],
+    "governance": [],
+    "graph": [],
+    "inference": [],
+    "infrastructure": [],
+    "innovations": [],
+    "integration": [],
+    "integrations": [],
+    "lnn": [],
+    "memory": [
+      "redis_store",
+      "config",
+      "observability",
+      "models",
+      "async_shape_memory",
+      "src",
+      "shape_memory_v2_prod"
+    ],
+    "memory_tiers": [],
+    "models": [],
+    "moe": [],
+    "monitoring": [],
+    "multimodal": [],
+    "network": [],
+    "neural": [],
+    "neuromorphic": [],
+    "observability": [
+      "config",
+      "context_managers",
+      "structured_logging",
+      "prometheus_metrics",
+      "knowledge_graph",
+      "health_monitor",
+      "opentelemetry_integration",
+      "langsmith_integration"
+    ],
+    "orchestration": [
+      "streaming",
+      "kafka_event_mesh",
+      "metrics",
+      "tracing"
+    ],
+    "persistence": [],
+    "real_components": [],
+    "research_2025": [],
+    "resilience": [
+      "schemas"
+    ],
+    "routing": [],
+    "security": [],
+    "spiking": [],
+    "spiking_gnn": [],
+    "streaming": [],
+    "swarm_intelligence": [],
+    "tda": [],
+    "testing": [],
+    "utils": [],
+    "workflows": []
+  },
+  "technology_stack": {
+    "ml_frameworks": [
+      "PyTorch",
+      "Scikit-learn"
+    ],
+    "databases": [
+      "Neo4j",
+      "Redis",
+      "PostgreSQL"
+    ],
+    "messaging": [
+      "Kafka",
+      "NATS"
+    ],
+    "web_frameworks": [
+      "FastAPI"
+    ],
+    "distributed": [
+      "Ray"
+    ],
+    "monitoring": [
+      "Prometheus",
+      "OpenTelemetry"
+    ]
+  }
+}
