@@ -57,23 +57,23 @@ class AuraError(Exception):
                 from ..logging.correlation import get_correlation_id
                 self.correlation_id = get_correlation_id()
             except ImportError:
-                pass
+        pass
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
-            'error_type': self.__class__.__name__,
-            'error_code': self.error_code,
-            'message': self.message,
-            'details': self.details,
-            'correlation_id': self.correlation_id,
-            'suggestions': self.suggestions,
-            'timestamp': self.timestamp.isoformat(),
-            'cause': str(self.cause) if self.cause else None,
-            'traceback': self.traceback
+        'error_type': self.__class__.__name__,
+        'error_code': self.error_code,
+        'message': self.message,
+        'details': self.details,
+        'correlation_id': self.correlation_id,
+        'suggestions': self.suggestions,
+        'timestamp': self.timestamp.isoformat(),
+        'cause': str(self.cause) if self.cause else None,
+        'traceback': self.traceback
         }
     
-    def to_json(self) -> str:
+        def to_json(self) -> str:
         """Convert to JSON string."""
         return json.dumps(self.to_dict(), indent=2)
     
@@ -82,7 +82,7 @@ class AuraError(Exception):
         self.details.update(kwargs)
         return self
     
-    def with_suggestion(self, suggestion: str) -> 'AuraError':
+        def with_suggestion(self, suggestion: str) -> 'AuraError':
         """Add a suggestion for fixing the error."""
         self.suggestions.append(suggestion)
         return self

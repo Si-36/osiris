@@ -137,6 +137,7 @@ class NeuromorphicCoordinator:
     
     def _build_component_graph(self) -> torch.Tensor:
         """Build adjacency matrix based on component relationships"""
+        pass
         adj = torch.zeros(self.num_components, self.num_components)
         
         # Connect similar component types
@@ -163,7 +164,7 @@ class NeuromorphicCoordinator:
         
         return adj
     
-    async def neuromorphic_decision(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def neuromorphic_decision(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Make component selection using neuromorphic processing"""
         start_time = time.time()
         
@@ -205,5 +206,5 @@ class NeuromorphicCoordinator:
             'decision_time_ms': (time.time() - start_time) * 1000
         }
 
-def get_neuromorphic_coordinator():
-    return NeuromorphicCoordinator()
+    def get_neuromorphic_coordinator():
+        return NeuromorphicCoordinator()

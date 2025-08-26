@@ -143,5 +143,5 @@ class GPUAccelerator:
             'method': method
         }
 
-def get_gpu_accelerator(device='auto'):
-    return GPUAccelerator(device)
+    def get_gpu_accelerator(device='auto'):
+        return GPUAccelerator(device)

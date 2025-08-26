@@ -62,16 +62,16 @@ except ImportError:
             
             # Generate result
             result = {
-                'status': 'success',
-                'processed_count': len(processed_data),
-                'processing_time': time.time() - start_time,
-                'data': processed_data
+            'status': 'success',
+            'processed_count': len(processed_data),
+            'processing_time': time.time() - start_time,
+            'data': processed_data
             }
             
             return result
         
         def _process_data(self, data):
-            """Process the data"""
+                """Process the data"""
             if isinstance(data, dict):
                 return {k: v for k, v in data.items()}
             elif isinstance(data, list):
@@ -83,10 +83,10 @@ except ImportError:
         def get(self, timeout=10):
             return MockRecordMetadata()
     
-    class MockRecordMetadata:
-        def __init__(self):
-            self.partition = 0
-            self.offset = len(str(time.time()))
+            class MockRecordMetadata:
+                def __init__(self):
+                    self.partition = 0
+                    self.offset = len(str(time.time()))
 
 class KafkaEventProducer:
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
@@ -95,28 +95,28 @@ class KafkaEventProducer:
         if KAFKA_AVAILABLE:
             try:
                 self.producer = KafkaProducer(
-                    bootstrap_servers=[bootstrap_servers],
-                    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-                    key_serializer=lambda k: k.encode('utf-8') if k else None
-                )
-                logger.info(f"Real Kafka producer connected to {bootstrap_servers}")
-            except Exception as e:
-                logger.warning(f"Failed to connect to Kafka, using mock: {e}")
-                self.producer = MockKafkaProducer()
+        bootstrap_servers=[bootstrap_servers],
+        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+        key_serializer=lambda k: k.encode('utf-8') if k else None
+        )
+        logger.info(f"Real Kafka producer connected to {bootstrap_servers}")
+        except Exception as e:
+        logger.warning(f"Failed to connect to Kafka, using mock: {e}")
+        self.producer = MockKafkaProducer()
         else:
-            logger.warning("kafka-python not installed, using mock producer")
-            self.producer = MockKafkaProducer()
+        logger.warning("kafka-python not installed, using mock producer")
+        self.producer = MockKafkaProducer()
         self.topics = {
-            EventType.LIQUID_ADAPTATION: "aura.liquid.adaptations",
-            EventType.MAMBA_CONTEXT: "aura.mamba.context",
-            EventType.CONSTITUTIONAL_CORRECTION: "aura.constitutional.corrections",
-            EventType.MEMORY_OPERATION: "aura.memory.operations",
-            EventType.METABOLIC_THROTTLE: "aura.metabolic.throttles",
-            EventType.COMPONENT_HEALTH: "aura.component.health"
+        EventType.LIQUID_ADAPTATION: "aura.liquid.adaptations",
+        EventType.MAMBA_CONTEXT: "aura.mamba.context",
+        EventType.CONSTITUTIONAL_CORRECTION: "aura.constitutional.corrections",
+        EventType.MEMORY_OPERATION: "aura.memory.operations",
+        EventType.METABOLIC_THROTTLE: "aura.metabolic.throttles",
+        EventType.COMPONENT_HEALTH: "aura.component.health"
         }
         logger.info(f"Kafka producer initialized")
     
-    async def publish_event(self, event: AURAEvent) -> bool:
+        async def publish_event(self, event: AURAEvent) -> bool:
         try:
             topic = self.topics[event.event_type]
             event_data = asdict(event)
@@ -132,16 +132,16 @@ class KafkaEventProducer:
             logger.error(f"Failed to publish event: {e}")
             return False
     
-    async def publish_liquid_adaptation(self, component_id: str, adaptations: int, complexity: float):
+        async def publish_liquid_adaptation(self, component_id: str, adaptations: int, complexity: float):
         event = AURAEvent(
-            event_type=EventType.LIQUID_ADAPTATION,
-            source_component=component_id,
-            timestamp=time.time(),
-            data={'adaptations': adaptations, 'complexity': complexity}
+        event_type=EventType.LIQUID_ADAPTATION,
+        source_component=component_id,
+        timestamp=time.time(),
+        data={'adaptations': adaptations, 'complexity': complexity}
         )
         return await self.publish_event(event)
     
-    async def publish_constitutional_correction(self, corrections: List[str], compliance_score: float):
+        async def publish_constitutional_correction(self, corrections: List[str], compliance_score: float):
         event = AURAEvent(
             event_type=EventType.CONSTITUTIONAL_CORRECTION,
             source_component="dpo_system",
@@ -158,21 +158,21 @@ class AURAEventStreaming:
     def __init__(self, bootstrap_servers: str = "localhost:9092"):
         self.producer = KafkaEventProducer(bootstrap_servers)
         self.event_stats = {
-            'events_published': 0,
-            'events_consumed': 0,
-            'last_event_time': 0
+        'events_published': 0,
+        'events_consumed': 0,
+        'last_event_time': 0
         }
     
-    async def start_streaming(self):
+        async def start_streaming(self):
         logger.info("🚀 Starting AURA event streaming...")
         logger.info("✅ Event streaming started")
     
-    async def publish_system_event(self, event_type: EventType, source_component: str, data: Dict[str, Any]):
+        async def publish_system_event(self, event_type: EventType, source_component: str, data: Dict[str, Any]):
         event = AURAEvent(
-            event_type=event_type,
-            source_component=source_component,
-            timestamp=time.time(),
-            data=data
+        event_type=event_type,
+        source_component=source_component,
+        timestamp=time.time(),
+        data=data
         )
         
         success = await self.producer.publish_event(event)
@@ -191,10 +191,10 @@ class AURAEventStreaming:
     def close(self):
         self.producer.close()
 
-_event_streaming = None
+        _event_streaming = None
 
-def get_event_streaming():
-    global _event_streaming
-    if _event_streaming is None:
+    def get_event_streaming():
+        global _event_streaming
+        if _event_streaming is None:
         _event_streaming = AURAEventStreaming()
-    return _event_streaming
+        return _event_streaming

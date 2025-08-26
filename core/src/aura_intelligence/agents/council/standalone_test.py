@@ -71,6 +71,7 @@ class LNNCouncilConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
+        pass
         if not self.name:
             raise ValueError("Agent name is required")
         
@@ -204,6 +205,7 @@ class SimpleLNNCouncilAgent:
     
     def _initialize_lnn_engine(self):
         """Initialize mock LNN engine."""
+        pass
         return MockLiquidNeuralNetwork(
             self.config.input_size,
             self.config.output_size,
@@ -242,7 +244,7 @@ class SimpleLNNCouncilAgent:
         
         return torch.tensor(features, dtype=torch.float32).unsqueeze(0)
     
-    async def make_decision(self, request: GPUAllocationRequest) -> GPUAllocationDecision:
+        async def make_decision(self, request: GPUAllocationRequest) -> GPUAllocationDecision:
         """Make a decision using the LNN."""
         start_time = asyncio.get_event_loop().time()
         
@@ -319,6 +321,7 @@ class SimpleLNNCouncilAgent:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get agent metrics."""
+        pass
         return {
             "total_decisions": self._total_decisions,
             "successful_decisions": self._successful_decisions,
@@ -329,11 +332,11 @@ class SimpleLNNCouncilAgent:
 
 
 async def test_configuration():
-    """Test configuration validation."""
-    print("🧪 Testing Configuration")
+        """Test configuration validation."""
+        print("🧪 Testing Configuration")
     
     # Test valid configuration
-    try:
+        try:
         config = LNNCouncilConfig(
             name="test_agent",
             input_size=128,
@@ -341,19 +344,19 @@ async def test_configuration():
         )
         config.validate()
         print("✅ Valid configuration accepted")
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Valid configuration rejected: {e}")
         return False
     
     # Test invalid configurations
-    invalid_configs = [
+        invalid_configs = [
         {"name": "", "error": "empty name"},
         {"input_size": 0, "error": "zero input size"},
         {"confidence_threshold": 1.5, "error": "invalid confidence threshold"},
         {"tau_min": 10.0, "tau_max": 5.0, "error": "invalid time constants"}
-    ]
+        ]
     
-    for invalid_config in invalid_configs:
+        for invalid_config in invalid_configs:
         error_desc = invalid_config.pop("error")
         try:
             config = LNNCouncilConfig(**invalid_config)
@@ -363,15 +366,15 @@ async def test_configuration():
         except ValueError:
             print(f"✅ Invalid configuration rejected: {error_desc}")
     
-    return True
+        return True
 
 
 async def test_request_validation():
-    """Test request validation."""
-    print("\n🧪 Testing Request Validation")
+        """Test request validation."""
+        print("\n🧪 Testing Request Validation")
     
     # Test valid request
-    try:
+        try:
         request = GPUAllocationRequest(
             user_id="test_user",
             project_id="test_project",
@@ -383,18 +386,18 @@ async def test_request_validation():
             special_requirements=["high_memory", "multi_gpu"]
         )
         print("✅ Valid request created")
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Valid request rejected: {e}")
         return False
     
     # Test invalid requests
-    invalid_requests = [
+        invalid_requests = [
         {"user_id": "test", "project_id": "test", "gpu_type": "INVALID", "gpu_count": 1, "memory_gb": 10, "compute_hours": 1.0},
         {"user_id": "test", "project_id": "test", "gpu_type": "A100", "gpu_count": 0, "memory_gb": 10, "compute_hours": 1.0},
         {"user_id": "test", "project_id": "test", "gpu_type": "A100", "gpu_count": 1, "memory_gb": 10, "compute_hours": 1.0, "special_requirements": ["invalid"]}
-    ]
+        ]
     
-    for invalid_request in invalid_requests:
+        for invalid_request in invalid_requests:
         try:
             request = GPUAllocationRequest(**invalid_request)
             print(f"❌ Invalid request accepted: {invalid_request}")
@@ -402,15 +405,15 @@ async def test_request_validation():
         except ValueError:
             print(f"✅ Invalid request rejected")
     
-    return True
+        return True
 
 
 async def test_agent_functionality():
-    """Test agent functionality."""
-    print("\n🧪 Testing Agent Functionality")
+        """Test agent functionality."""
+        print("\n🧪 Testing Agent Functionality")
     
     # Create agent
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_agent",
         input_size=64,
         output_size=32,
@@ -418,13 +421,13 @@ async def test_agent_functionality():
         use_gpu=False,
         mixed_precision=False,
         compile_mode=None
-    )
+        )
     
-    agent = SimpleLNNCouncilAgent(config)
-    print(f"✅ Agent created: {agent.name}")
+        agent = SimpleLNNCouncilAgent(config)
+        print(f"✅ Agent created: {agent.name}")
     
     # Create test request
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         user_id="test_user",
         project_id="test_project",
         gpu_type="H100",
@@ -432,10 +435,10 @@ async def test_agent_functionality():
         memory_gb=40,
         compute_hours=12.0,
         priority=8
-    )
+        )
     
     # Make decision
-    try:
+        try:
         decision = await agent.make_decision(request)
         print(f"✅ Decision made: {decision.decision}")
         print(f"   Confidence: {decision.confidence_score:.3f}")
@@ -451,62 +454,62 @@ async def test_agent_functionality():
         
         print("✅ Decision validation passed")
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Decision making failed: {e}")
         import traceback
         traceback.print_exc()
         return False
     
     # Test metrics
-    metrics = agent.get_metrics()
-    print(f"✅ Metrics: {metrics}")
+        metrics = agent.get_metrics()
+        print(f"✅ Metrics: {metrics}")
     
-    return True
+        return True
 
 
 async def test_performance():
-    """Test performance characteristics."""
-    print("\n🧪 Testing Performance")
+        """Test performance characteristics."""
+        print("\n🧪 Testing Performance")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="perf_agent",
         input_size=64,
         output_size=32,
         hidden_sizes=[32],
         use_gpu=False,
         max_inference_time=2.0
-    )
+        )
     
-    agent = SimpleLNNCouncilAgent(config)
+        agent = SimpleLNNCouncilAgent(config)
     
     # Test single request performance
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         user_id="perf_user",
         project_id="perf_project",
         gpu_type="A100",
         gpu_count=1,
         memory_gb=20,
         compute_hours=4.0
-    )
+        )
     
-    start_time = asyncio.get_event_loop().time()
-    decision = await agent.make_decision(request)
-    end_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
+        decision = await agent.make_decision(request)
+        end_time = asyncio.get_event_loop().time()
     
-    total_time = end_time - start_time
+        total_time = end_time - start_time
     
-    print(f"✅ Single request time: {total_time*1000:.1f}ms")
-    print(f"✅ Reported inference time: {decision.inference_time_ms:.1f}ms")
+        print(f"✅ Single request time: {total_time*1000:.1f}ms")
+        print(f"✅ Reported inference time: {decision.inference_time_ms:.1f}ms")
     
     # Check SLA compliance
-    if total_time < config.max_inference_time:
+        if total_time < config.max_inference_time:
         print("✅ SLA compliance: PASS")
-    else:
+        else:
         print("❌ SLA compliance: FAIL")
         return False
     
     # Test batch performance
-    requests = [
+        requests = [
         GPUAllocationRequest(
             user_id=f"batch_user_{i}",
             project_id=f"batch_project_{i}",
@@ -516,34 +519,34 @@ async def test_performance():
             compute_hours=2.0
         )
         for i in range(5)
-    ]
+        ]
     
-    batch_start = asyncio.get_event_loop().time()
-    batch_decisions = await asyncio.gather(*[agent.make_decision(req) for req in requests])
-    batch_end = asyncio.get_event_loop().time()
+        batch_start = asyncio.get_event_loop().time()
+        batch_decisions = await asyncio.gather(*[agent.make_decision(req) for req in requests])
+        batch_end = asyncio.get_event_loop().time()
     
-    batch_time = batch_end - batch_start
-    avg_time = batch_time / len(requests)
+        batch_time = batch_end - batch_start
+        avg_time = batch_time / len(requests)
     
-    print(f"✅ Batch processing: {len(requests)} requests in {batch_time*1000:.1f}ms")
-    print(f"✅ Average time per request: {avg_time*1000:.1f}ms")
+        print(f"✅ Batch processing: {len(requests)} requests in {batch_time*1000:.1f}ms")
+        print(f"✅ Average time per request: {avg_time*1000:.1f}ms")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all tests."""
-    print("🚀 Starting LNN Council Agent Standalone Tests\n")
+        """Run all tests."""
+        print("🚀 Starting LNN Council Agent Standalone Tests\n")
     
-    tests = [
+        tests = [
         test_configuration,
         test_request_validation,
         test_agent_functionality,
         test_performance
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -553,16 +556,16 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All tests passed! LNN Council Agent is working correctly.")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    sys.exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        sys.exit(exit_code)

@@ -51,8 +51,9 @@ class TDAMem0Adapter:
         self.memory = Memory()
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize Mem0 connection and collections"""
+        pass
         try:
             # Initialize memory system
             await self.memory.initialize()
@@ -80,13 +81,13 @@ class TDAMem0Adapter:
             raise
             
     @trace_span("store_tda_memory")
-    async def store_tda_memory(
+        async def store_tda_memory(
         self,
         result: TDAResult,
         agent_id: str,
         context: Optional[Dict[str, Any]] = None,
         ttl: Optional[int] = 86400  # 24 hours default
-    ) -> str:
+        ) -> str:
         """
         Store TDA result as episodic memory.
         
@@ -263,7 +264,7 @@ class TDAMem0Adapter:
                     
         return tags
         
-    async def _generate_embedding(self, entry: TDAMemoryEntry) -> List[float]:
+        async def _generate_embedding(self, entry: TDAMemoryEntry) -> List[float]:
         """Generate embedding vector for semantic search"""
         # In production, use a proper embedding model
         # This is a placeholder that creates a feature vector
@@ -289,14 +290,14 @@ class TDAMem0Adapter:
         return features.tolist()
         
     @trace_span("recall_tda_memories")
-    async def recall_tda_memories(
+        async def recall_tda_memories(
         self,
         agent_id: str,
         query: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
         limit: int = 10,
         time_window: Optional[Tuple[datetime, datetime]] = None
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """
         Recall TDA memories for an agent.
         
@@ -367,12 +368,12 @@ class TDAMem0Adapter:
             raise
             
     @trace_span("get_tda_context_for_agent")
-    async def get_tda_context_for_agent(
+        async def get_tda_context_for_agent(
         self,
         agent_id: str,
         current_data_id: str,
         lookback_hours: int = 24
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Get TDA context for agent decision making.
         

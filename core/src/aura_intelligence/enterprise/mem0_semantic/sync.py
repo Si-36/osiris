@@ -64,10 +64,11 @@ class SemanticMemorySync:
     """
     
     def __init__(self,
-                 redis_url: str,
+        redis_url: str,
                  vectorizer: SignatureVectorizer,
                  cluster_threshold: float = 0.8):
         """Initialize semantic memory sync service."""
+        pass
 
         self.redis_url = redis_url
         self.vectorizer = vectorizer
@@ -104,36 +105,38 @@ class SemanticMemorySync:
 
     async def initialize(self):
         """Initialize Redis connection, create vector indexes, and load existing clusters."""
+        pass
 
         try:
             # Connect to Redis
-            self.redis_client = redis.from_url(
-                self.redis_url,
-                decode_responses=False,  # Keep binary for vector data
-                socket_keepalive=True,
-                socket_keepalive_options={},
-                health_check_interval=30
-            )
+        self.redis_client = redis.from_url(
+        self.redis_url,
+        decode_responses=False,  # Keep binary for vector data
+        socket_keepalive=True,
+        socket_keepalive_options={},
+        health_check_interval=30
+        )
 
-            # Test connection
-            await self.redis_client.ping()
-            self.logger.info("✅ Redis connection established")
+        # Test connection
+        await self.redis_client.ping()
+        self.logger.info("✅ Redis connection established")
 
-            # Create vector search indexes
-            if REDIS_SEARCH_AVAILABLE:
-                await self._create_vector_indexes()
+        # Create vector search indexes
+        if REDIS_SEARCH_AVAILABLE:
+            await self._create_vector_indexes()
 
-            # Load existing clusters
-            await self._load_existing_clusters()
+        # Load existing clusters
+        await self._load_existing_clusters()
 
-            return True
+        return True
 
         except Exception as e:
-            self.logger.error(f"❌ Redis initialization failed: {e}")
-            return False
+        self.logger.error(f"❌ Redis initialization failed: {e}")
+        return False
 
-    async def _create_vector_indexes(self):
-        """Create Redis vector search indexes for semantic memories and clusters."""
+        async def _create_vector_indexes(self):
+            """Create Redis vector search indexes for semantic memories and clusters."""
+        pass
 
         try:
             # Create semantic memory index
@@ -149,63 +152,65 @@ class SemanticMemorySync:
 
     async def _create_semantic_memory_index(self):
         """Create the main semantic memory vector search index."""
+        pass
 
         try:
             # Check if index exists
-            await run_in_threadpool(
-                lambda: self.redis_client.ft(self.index_name).info()
-            )
-            self.logger.debug(f"Index '{self.index_name}' already exists")
-            return
+        await run_in_threadpool(
+        lambda: self.redis_client.ft(self.index_name).info()
+        )
+        self.logger.debug(f"Index '{self.index_name}' already exists")
+        return
 
         except:
-            # Index doesn't exist, create it
-            pass
+        # Index doesn't exist, create it
+        pass
 
         try:
             # Define the schema for searchable semantic memories
-            schema = (
-                # Core vector field for similarity search
-                VectorField(
-                    "embedding",
-                    "HNSW",  # High-performance HNSW algorithm
-                    {
-                        "TYPE": "FLOAT32",
-                        "DIM": self.vector_dimension,  # 128-dimensional vectors
-                        "DISTANCE_METRIC": "COSINE",  # Cosine similarity
-                    },
-                ),
-                # Searchable metadata fields
-                TagField("agent_id"),
-                TextField("event_type"),
-                TextField("signature_hash"),
-                TagField("memory_tier"),
-                TextField("betti_numbers"),
-                TextField("timestamp"),
-            )
+        schema = (
+        # Core vector field for similarity search
+        VectorField(
+        "embedding",
+        "HNSW",  # High-performance HNSW algorithm
+        {
+        "TYPE": "FLOAT32",
+        "DIM": self.vector_dimension,  # 128-dimensional vectors
+        "DISTANCE_METRIC": "COSINE",  # Cosine similarity
+        },
+        ),
+        # Searchable metadata fields
+        TagField("agent_id"),
+        TextField("event_type"),
+        TextField("signature_hash"),
+        TagField("memory_tier"),
+        TextField("betti_numbers"),
+        TextField("timestamp"),
+        )
 
-            # Create index definition
-            definition = IndexDefinition(
-                prefix=["semantic:signature:"],
-                index_type=IndexType.HASH
-            )
+        # Create index definition
+        definition = IndexDefinition(
+        prefix=["semantic:signature:"],
+        index_type=IndexType.HASH
+        )
 
-            # Create the index
-            await run_in_threadpool(
-                lambda: self.redis_client.ft(self.index_name).create_index(
-                    fields=schema,
-                    definition=definition
-                )
-            )
+        # Create the index
+        await run_in_threadpool(
+        lambda: self.redis_client.ft(self.index_name).create_index(
+        fields=schema,
+        definition=definition
+        )
+        )
 
-            self.logger.info(f"✅ Created semantic memory index '{self.index_name}'")
+        self.logger.info(f"✅ Created semantic memory index '{self.index_name}'")
 
         except Exception as e:
-            self.logger.error(f"❌ Failed to create semantic memory index: {e}")
-            raise
+        self.logger.error(f"❌ Failed to create semantic memory index: {e}")
+        raise
 
-    async def _create_cluster_index(self):
-        """Create the cluster centroid vector search index."""
+        async def _create_cluster_index(self):
+            """Create the cluster centroid vector search index."""
+        pass
 
         try:
             # Check if cluster index exists
@@ -217,7 +222,7 @@ class SemanticMemorySync:
 
         except:
             # Index doesn't exist, create it
-            pass
+        pass
 
         try:
             # Define schema for cluster centroids
@@ -265,20 +270,21 @@ class SemanticMemorySync:
         
         if self.is_running:
             self.logger.warning("⚠️ Background sync already running")
-            return
+        return
         
         if not self.redis_client:
             await self.initialize()
         
         self.is_running = True
         self.sync_task = asyncio.create_task(
-            self._background_sync_loop(interval_minutes)
+        self._background_sync_loop(interval_minutes)
         )
         
         self.logger.info(f"🔄 Background sync started (interval: {interval_minutes}min)")
     
-    async def stop_background_sync(self):
-        """Stop background synchronization process."""
+        async def stop_background_sync(self):
+            """Stop background synchronization process."""
+        pass
         
         if not self.is_running:
             return
@@ -289,7 +295,7 @@ class SemanticMemorySync:
             try:
                 await self.sync_task
             except asyncio.CancelledError:
-                pass
+        pass
         
         self.logger.info("⏹️ Background sync stopped")
     
@@ -297,19 +303,19 @@ class SemanticMemorySync:
         """Background loop for periodic synchronization."""
         
         while self.is_running:
-            try:
-                # This would integrate with the hot tier to get new signatures
-                # For now, we'll implement the sync logic structure
-                await self._perform_sync_cycle()
-                await asyncio.sleep(interval_minutes * 60)
-            except asyncio.CancelledError:
-                break
-            except Exception as e:
-                self.logger.error(f"❌ Background sync error: {e}")
-                self.sync_errors += 1
-                await asyncio.sleep(60)  # Wait 1 minute before retry
+        try:
+            # This would integrate with the hot tier to get new signatures
+        # For now, we'll implement the sync logic structure
+        await self._perform_sync_cycle()
+        await asyncio.sleep(interval_minutes * 60)
+        except asyncio.CancelledError:
+        break
+        except Exception as e:
+        self.logger.error(f"❌ Background sync error: {e}")
+        self.sync_errors += 1
+        await asyncio.sleep(60)  # Wait 1 minute before retry
     
-    async def sync_batch(self, batch: MemoryConsolidationBatch) -> Dict[str, Any]:
+        async def sync_batch(self, batch: MemoryConsolidationBatch) -> Dict[str, Any]:
         """
         Synchronize a batch of signatures to semantic long-term memory.
         
@@ -362,31 +368,31 @@ class SemanticMemorySync:
         cluster_assignments = {}
         
         for i, (signature, vector) in enumerate(zip(batch.signatures, batch.vectors)):
-            # Find best matching cluster
-            best_cluster_id = None
-            best_similarity = 0.0
+        # Find best matching cluster
+        best_cluster_id = None
+        best_similarity = 0.0
             
-            for cluster_id, cluster in self.active_clusters.items():
-                similarity = self.vectorizer.compute_similarity(
-                    vector, cluster.centroid_vector, metric="cosine"
-                )
+        for cluster_id, cluster in self.active_clusters.items():
+        similarity = self.vectorizer.compute_similarity(
+        vector, cluster.centroid_vector, metric="cosine"
+        )
                 
-                if similarity > best_similarity and similarity >= self.cluster_threshold:
-                    best_similarity = similarity
-                    best_cluster_id = cluster_id
+        if similarity > best_similarity and similarity >= self.cluster_threshold:
+            best_similarity = similarity
+        best_cluster_id = cluster_id
             
-            # Create new cluster if no match found
-            if best_cluster_id is None:
-                best_cluster_id = await self._create_new_cluster(signature, vector)
+        # Create new cluster if no match found
+        if best_cluster_id is None:
+            best_cluster_id = await self._create_new_cluster(signature, vector)
             
-            # Add to cluster assignment
-            if best_cluster_id not in cluster_assignments:
-                cluster_assignments[best_cluster_id] = []
-            cluster_assignments[best_cluster_id].append(i)
+        # Add to cluster assignment
+        if best_cluster_id not in cluster_assignments:
+            cluster_assignments[best_cluster_id] = []
+        cluster_assignments[best_cluster_id].append(i)
         
         return cluster_assignments
     
-    async def _create_new_cluster(self, signature: TopologicalSignature, vector: np.ndarray) -> str:
+        async def _create_new_cluster(self, signature: TopologicalSignature, vector: np.ndarray) -> str:
         """Create a new semantic cluster."""
         
         self.cluster_counter += 1
@@ -418,48 +424,48 @@ class SemanticMemorySync:
         try:
             pipe = self.redis_client.pipeline()
 
-            for cluster_id, signature_indices in cluster_assignments.items():
-                cluster = self.active_clusters[cluster_id]
+        for cluster_id, signature_indices in cluster_assignments.items():
+        cluster = self.active_clusters[cluster_id]
 
-                # Store cluster metadata with vector index support
-                cluster_key = f"semantic:cluster:{cluster_id}"
+        # Store cluster metadata with vector index support
+        cluster_key = f"semantic:cluster:{cluster_id}"
 
-                # Prepare cluster data for vector index
-                cluster_data = {
-                    "cluster_id": cluster_id,
-                    "cluster_label": f"cluster_{cluster_id}",
-                    "signature_count": str(len(cluster.signature_hashes)),
-                    "created_at": cluster.creation_time.isoformat(),
-                    "signature_hashes": ",".join(cluster.signature_hashes)
-                }
+        # Prepare cluster data for vector index
+        cluster_data = {
+        "cluster_id": cluster_id,
+        "cluster_label": f"cluster_{cluster_id}",
+        "signature_count": str(len(cluster.signature_hashes)),
+        "created_at": cluster.creation_time.isoformat(),
+        "signature_hashes": ",".join(cluster.signature_hashes)
+        }
 
-                # Add centroid vector for vector search (binary format)
-                if REDIS_SEARCH_AVAILABLE:
-                    cluster_data["centroid"] = cluster.centroid_vector.astype(np.float32).tobytes()
-                else:
-                    # Fallback to JSON for non-vector search
-                    cluster_data["centroid_vector"] = json.dumps(cluster.centroid_vector.tolist())
+        # Add centroid vector for vector search (binary format)
+        if REDIS_SEARCH_AVAILABLE:
+            cluster_data["centroid"] = cluster.centroid_vector.astype(np.float32).tobytes()
+        else:
+        # Fallback to JSON for non-vector search
+        cluster_data["centroid_vector"] = json.dumps(cluster.centroid_vector.tolist())
 
-                pipe.hset(cluster_key, mapping=cluster_data)
-                pipe.expire(cluster_key, 86400 * 30)  # 30 day TTL
-                operations += 2
+        pipe.hset(cluster_key, mapping=cluster_data)
+        pipe.expire(cluster_key, 86400 * 30)  # 30 day TTL
+        operations += 2
 
-                # Store signature hashes in cluster (for backward compatibility)
-                signatures_key = f"semantic:signatures:{cluster_id}"
-                pipe.sadd(signatures_key, *cluster.signature_hashes)
-                pipe.expire(signatures_key, 86400 * 30)
-                operations += 2
+        # Store signature hashes in cluster (for backward compatibility)
+        signatures_key = f"semantic:signatures:{cluster_id}"
+        pipe.sadd(signatures_key, *cluster.signature_hashes)
+        pipe.expire(signatures_key, 86400 * 30)
+        operations += 2
 
-            # Execute pipeline
-            await pipe.execute()
+        # Execute pipeline
+        await pipe.execute()
 
-            return operations
+        return operations
 
         except Exception as e:
-            self.logger.error(f"❌ Redis cluster update failed: {e}")
-            return 0
+        self.logger.error(f"❌ Redis cluster update failed: {e}")
+        return 0
 
-    async def sync_consolidated_memories(self, memories: List[Dict[str, Any]]) -> int:
+        async def sync_consolidated_memories(self, memories: List[Dict[str, Any]]) -> int:
         """
         Write consolidated memories to Redis with vector search index.
 
@@ -516,11 +522,12 @@ class SemanticMemorySync:
         """Update local cluster state."""
         
         for cluster_id in cluster_assignments:
-            if cluster_id in self.active_clusters:
-                self.active_clusters[cluster_id].last_updated = datetime.now()
+        if cluster_id in self.active_clusters:
+            self.active_clusters[cluster_id].last_updated = datetime.now()
     
-    async def _load_existing_clusters(self):
-        """Load existing clusters from Redis."""
+        async def _load_existing_clusters(self):
+            """Load existing clusters from Redis."""
+        pass
         
         if not self.redis_client:
             return
@@ -559,6 +566,7 @@ class SemanticMemorySync:
     
     async def _perform_sync_cycle(self):
         """Perform a complete sync cycle."""
+        pass
         
         # This would integrate with the hot tier to get new data
         # For now, we'll implement the structure
@@ -573,6 +581,7 @@ class SemanticMemorySync:
     
     def get_sync_metrics(self) -> Dict[str, Any]:
         """Get synchronization performance metrics."""
+        pass
         
         avg_sync_time = self.total_sync_time / max(self.sync_count, 1)
         
@@ -587,40 +596,41 @@ class SemanticMemorySync:
             "is_running": self.is_running
         }
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Perform health check on semantic sync service."""
+        pass
         
         try:
             # Check Redis connectivity
-            redis_healthy = False
-            if self.redis_client:
-                try:
-                    await self.redis_client.ping()
-                    redis_healthy = True
-                except Exception:
-                    pass
+        redis_healthy = False
+        if self.redis_client:
+            try:
+                await self.redis_client.ping()
+        redis_healthy = True
+        except Exception:
+        pass
             
-            # Check cluster state
-            cluster_health = {
-                "active_clusters": len(self.active_clusters),
-                "avg_cluster_size": sum(len(c.signature_hashes) for c in self.active_clusters.values()) / max(len(self.active_clusters), 1)
-            }
+        # Check cluster state
+        cluster_health = {
+        "active_clusters": len(self.active_clusters),
+        "avg_cluster_size": sum(len(c.signature_hashes) for c in self.active_clusters.values()) / max(len(self.active_clusters), 1)
+        }
             
-            return {
-                "status": "healthy" if redis_healthy else "unhealthy",
-                "redis_healthy": redis_healthy,
-                "background_running": self.is_running,
-                "cluster_health": cluster_health,
-                "metrics": self.get_sync_metrics()
-            }
+        return {
+        "status": "healthy" if redis_healthy else "unhealthy",
+        "redis_healthy": redis_healthy,
+        "background_running": self.is_running,
+        "cluster_health": cluster_health,
+        "metrics": self.get_sync_metrics()
+        }
             
         except Exception as e:
-            return {
-                "status": "unhealthy",
-                "error": str(e),
-                "redis_healthy": False
-            }
+        return {
+        "status": "unhealthy",
+        "error": str(e),
+        "redis_healthy": False
+        }
 
 
-# Alias for backward compatibility
-SemanticSync = SemanticMemorySync
+    # Alias for backward compatibility
+        SemanticSync = SemanticMemorySync

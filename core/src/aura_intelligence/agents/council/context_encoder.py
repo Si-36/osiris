@@ -166,6 +166,7 @@ class ContextEncoder:
     
     def get_feature_names(self) -> list:
         """Get names of encoded features for interpretability."""
+        pass
         
         names = [
             # GPU embeddings

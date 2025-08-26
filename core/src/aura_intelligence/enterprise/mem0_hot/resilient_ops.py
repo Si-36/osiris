@@ -27,10 +27,11 @@ class ResilientDuckDBOperations:
     """
     
     def __init__(self, 
-                 conn: duckdb.DuckDBPyConnection,
+        conn: duckdb.DuckDBPyConnection,
                  retry_config: RetryConfig = None,
                  circuit_config: CircuitBreakerConfig = None):
         """Initialize resilient DuckDB operations."""
+        pass
         
         self.conn = conn
         
@@ -54,7 +55,7 @@ class ResilientDuckDBOperations:
         self.logger.info("🦆 Resilient DuckDB operations initialized")
     
     async def execute_query(self, 
-                           query: str, 
+        query: str,
                            params: List = None,
                            operation_name: str = "query") -> Any:
         """Execute DuckDB query with resilience."""
@@ -64,57 +65,57 @@ class ResilientDuckDBOperations:
             loop = asyncio.get_event_loop()
             if params:
                 return await loop.run_in_executor(
-                    None, 
-                    lambda: self.conn.execute(query, params)
-                )
+            None,
+            lambda: self.conn.execute(query, params)
+            )
             else:
-                return await loop.run_in_executor(
-                    None,
-                    lambda: self.conn.execute(query)
-                )
+            return await loop.run_in_executor(
+            None,
+            lambda: self.conn.execute(query)
+            )
         
-        try:
-            # Execute through circuit breaker and retry logic
+            try:
+                # Execute through circuit breaker and retry logic
             result = await self.circuit_breaker.call(
-                self.backoff.retry,
-                _execute,
-                operation_name=f"duckdb_{operation_name}"
+            self.backoff.retry,
+            _execute,
+            operation_name=f"duckdb_{operation_name}"
             )
             
             return result
             
-        except CircuitBreakerOpenError as e:
+            except CircuitBreakerOpenError as e:
             self.logger.error(f"🚨 DuckDB circuit breaker open for {operation_name}")
             
             # Add to dead letter queue
             self.dead_letter_queue.add_failed_operation(
-                operation_name=f"duckdb_{operation_name}",
-                operation_data={"query": query, "params": params},
-                error_message=str(e)
+            operation_name=f"duckdb_{operation_name}",
+            operation_data={"query": query, "params": params},
+            error_message=str(e)
             )
             
             raise e
             
-        except Exception as e:
+            except Exception as e:
             self.logger.error(f"❌ DuckDB {operation_name} failed after all retries: {e}")
             
             # Add to dead letter queue
             self.dead_letter_queue.add_failed_operation(
-                operation_name=f"duckdb_{operation_name}",
-                operation_data={"query": query, "params": params},
-                error_message=str(e)
+            operation_name=f"duckdb_{operation_name}",
+            operation_data={"query": query, "params": params},
+            error_message=str(e)
             )
             
             raise e
     
-    async def execute_batch(self, 
-                           query: str, 
-                           batch_data: List,
-                           operation_name: str = "batch") -> Any:
-        """Execute DuckDB batch operation with resilience."""
+            async def execute_batch(self,
+            query: str,
+            batch_data: List,
+            operation_name: str = "batch") -> Any:
+            """Execute DuckDB batch operation with resilience."""
         
-        async def _execute_batch():
-            loop = asyncio.get_event_loop()
+            async def _execute_batch():
+        loop = asyncio.get_event_loop()
             return await loop.run_in_executor(
                 None,
                 lambda: self.conn.executemany(query, batch_data)
@@ -147,7 +148,7 @@ class ResilientDuckDBOperations:
             raise e
     
     async def fetch_dataframe(self, 
-                             query: str, 
+        query: str,
                              params: List = None,
                              operation_name: str = "fetch_df") -> Any:
         """Fetch DataFrame with resilience."""
@@ -156,47 +157,48 @@ class ResilientDuckDBOperations:
             loop = asyncio.get_event_loop()
             if params:
                 return await loop.run_in_executor(
-                    None,
-                    lambda: self.conn.execute(query, params).fetchdf()
-                )
+            None,
+            lambda: self.conn.execute(query, params).fetchdf()
+            )
             else:
-                return await loop.run_in_executor(
-                    None,
-                    lambda: self.conn.execute(query).fetchdf()
-                )
+            return await loop.run_in_executor(
+            None,
+            lambda: self.conn.execute(query).fetchdf()
+            )
         
-        try:
-            result = await self.circuit_breaker.call(
-                self.backoff.retry,
-                _fetch_df,
-                operation_name=f"duckdb_df_{operation_name}"
+            try:
+                result = await self.circuit_breaker.call(
+            self.backoff.retry,
+            _fetch_df,
+            operation_name=f"duckdb_df_{operation_name}"
             )
             
             return result
             
-        except Exception as e:
+            except Exception as e:
             self.logger.error(f"❌ DuckDB DataFrame {operation_name} failed: {e}")
             
             self.dead_letter_queue.add_failed_operation(
-                operation_name=f"duckdb_df_{operation_name}",
-                operation_data={"query": query, "params": params},
-                error_message=str(e)
+            operation_name=f"duckdb_df_{operation_name}",
+            operation_data={"query": query, "params": params},
+            error_message=str(e)
             )
             
             raise e
     
     def get_health_status(self) -> Dict[str, Any]:
-        """Get health status of DuckDB operations."""
+            """Get health status of DuckDB operations."""
+            pass
         
-        return {
+            return {
             "circuit_breaker": self.circuit_breaker.get_status(),
             "dead_letter_queue": self.dead_letter_queue.get_status(),
             "retry_config": {
-                "max_attempts": self.retry_config.max_attempts,
-                "base_delay_seconds": self.retry_config.base_delay_seconds,
-                "max_delay_seconds": self.retry_config.max_delay_seconds
+            "max_attempts": self.retry_config.max_attempts,
+            "base_delay_seconds": self.retry_config.base_delay_seconds,
+            "max_delay_seconds": self.retry_config.max_delay_seconds
             }
-        }
+            }
 
 
 class ResilientRedisOperations:
@@ -207,10 +209,11 @@ class ResilientRedisOperations:
     """
     
     def __init__(self, 
-                 redis_client: redis.Redis,
+        redis_client: redis.Redis,
                  retry_config: RetryConfig = None,
                  circuit_config: CircuitBreakerConfig = None):
         """Initialize resilient Redis operations."""
+        pass
         
         self.redis_client = redis_client
         
@@ -234,7 +237,7 @@ class ResilientRedisOperations:
         self.logger.info("🔴 Resilient Redis operations initialized")
     
     async def set_with_retry(self, 
-                            key: str, 
+        key: str,
                             value: Any,
                             ex: int = None,
                             operation_name: str = "set") -> bool:
@@ -243,33 +246,33 @@ class ResilientRedisOperations:
         async def _redis_set():
             return await self.redis_client.set(key, value, ex=ex)
         
-        try:
-            result = await self.circuit_breaker.call(
-                self.backoff.retry,
-                _redis_set,
-                operation_name=f"redis_{operation_name}"
+            try:
+                result = await self.circuit_breaker.call(
+            self.backoff.retry,
+            _redis_set,
+            operation_name=f"redis_{operation_name}"
             )
             
             return result
             
-        except Exception as e:
+            except Exception as e:
             self.logger.error(f"❌ Redis {operation_name} failed: {e}")
             
             self.dead_letter_queue.add_failed_operation(
-                operation_name=f"redis_{operation_name}",
-                operation_data={"key": key, "value": str(value)[:100], "ex": ex},
-                error_message=str(e)
+            operation_name=f"redis_{operation_name}",
+            operation_data={"key": key, "value": str(value)[:100], "ex": ex},
+            error_message=str(e)
             )
             
             raise e
     
-    async def get_with_retry(self, 
-                            key: str,
-                            operation_name: str = "get") -> Any:
-        """Get Redis key with resilience."""
+            async def get_with_retry(self,
+            key: str,
+            operation_name: str = "get") -> Any:
+            """Get Redis key with resilience."""
         
-        async def _redis_get():
-            return await self.redis_client.get(key)
+            async def _redis_get():
+        return await self.redis_client.get(key)
         
         try:
             result = await self.circuit_breaker.call(
@@ -292,7 +295,7 @@ class ResilientRedisOperations:
             raise e
     
     async def pipeline_with_retry(self, 
-                                 operations: List[Dict[str, Any]],
+        operations: List[Dict[str, Any]],
                                  operation_name: str = "pipeline") -> List[Any]:
         """Execute Redis pipeline with resilience."""
         
@@ -300,43 +303,44 @@ class ResilientRedisOperations:
             pipe = self.redis_client.pipeline()
             
             for op in operations:
-                method = getattr(pipe, op["method"])
-                method(*op.get("args", []), **op.get("kwargs", {}))
+            method = getattr(pipe, op["method"])
+            method(*op.get("args", []), **op.get("kwargs", {}))
             
             return await pipe.execute()
         
-        try:
-            result = await self.circuit_breaker.call(
-                self.backoff.retry,
-                _redis_pipeline,
-                operation_name=f"redis_{operation_name}"
+            try:
+                result = await self.circuit_breaker.call(
+            self.backoff.retry,
+            _redis_pipeline,
+            operation_name=f"redis_{operation_name}"
             )
             
             return result
             
-        except Exception as e:
+            except Exception as e:
             self.logger.error(f"❌ Redis pipeline {operation_name} failed: {e}")
             
             self.dead_letter_queue.add_failed_operation(
-                operation_name=f"redis_pipeline_{operation_name}",
-                operation_data={"operations_count": len(operations)},
-                error_message=str(e)
+            operation_name=f"redis_pipeline_{operation_name}",
+            operation_data={"operations_count": len(operations)},
+            error_message=str(e)
             )
             
             raise e
     
     def get_health_status(self) -> Dict[str, Any]:
-        """Get health status of Redis operations."""
+            """Get health status of Redis operations."""
+            pass
         
-        return {
+            return {
             "circuit_breaker": self.circuit_breaker.get_status(),
             "dead_letter_queue": self.dead_letter_queue.get_status(),
             "retry_config": {
-                "max_attempts": self.retry_config.max_attempts,
-                "base_delay_seconds": self.retry_config.base_delay_seconds,
-                "max_delay_seconds": self.retry_config.max_delay_seconds
+            "max_attempts": self.retry_config.max_attempts,
+            "base_delay_seconds": self.retry_config.base_delay_seconds,
+            "max_delay_seconds": self.retry_config.max_delay_seconds
             }
-        }
+            }
 
 
 class ResilientOperationsManager:
@@ -347,9 +351,10 @@ class ResilientOperationsManager:
     """
     
     def __init__(self, 
-                 duckdb_conn: duckdb.DuckDBPyConnection,
+        duckdb_conn: duckdb.DuckDBPyConnection,
                  redis_client: redis.Redis = None):
         """Initialize resilient operations manager."""
+        pass
         
         self.duckdb_ops = ResilientDuckDBOperations(duckdb_conn)
         self.redis_ops = ResilientRedisOperations(redis_client) if redis_client else None
@@ -359,10 +364,11 @@ class ResilientOperationsManager:
     
     def get_comprehensive_health(self) -> Dict[str, Any]:
         """Get comprehensive health status of all operations."""
+        pass
         
         health = {
-            "timestamp": datetime.now().isoformat(),
-            "duckdb": self.duckdb_ops.get_health_status()
+        "timestamp": datetime.now().isoformat(),
+        "duckdb": self.duckdb_ops.get_health_status()
         }
         
         if self.redis_ops:
@@ -379,7 +385,7 @@ class ResilientOperationsManager:
         
         return health
     
-    async def retry_failed_operations(self, max_retries: int = 5) -> Dict[str, Any]:
+        async def retry_failed_operations(self, max_retries: int = 5) -> Dict[str, Any]:
         """Retry failed operations from dead letter queues."""
         
         results = {

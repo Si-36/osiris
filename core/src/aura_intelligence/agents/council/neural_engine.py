@@ -32,6 +32,7 @@ class NeuralDecisionEngine:
     
     def _initialize_context_lnn(self) -> ContextAwareLNN:
         """Initialize Context-Aware LNN engine."""
+        pass
         if self.context_lnn is None:
             self.context_lnn = ContextAwareLNN(self.config)
             
@@ -78,7 +79,7 @@ class NeuralDecisionEngine:
         
         return tensor
     
-    async def make_decision(self, state: LNNCouncilState) -> Dict[str, Any]:
+        async def make_decision(self, state: LNNCouncilState) -> Dict[str, Any]:
         """Make context-aware neural network decision."""
         # Initialize Context-Aware LNN
         context_lnn = self._initialize_context_lnn()
@@ -123,8 +124,9 @@ class NeuralDecisionEngine:
         
         return result
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Check neural engine health."""
+        pass
         health = {
             "context_lnn_initialized": self.context_lnn is not None,
             "gpu_available": torch.cuda.is_available() if self.config.use_gpu else False,

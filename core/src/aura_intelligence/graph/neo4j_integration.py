@@ -40,10 +40,10 @@ class MockNeo4jDriver:
         
         # Generate result
         result = {
-            'status': 'success',
-            'processed_count': len(processed_data),
-            'processing_time': time.time() - start_time,
-            'data': processed_data
+        'status': 'success',
+        'processed_count': len(processed_data),
+        'processing_time': time.time() - start_time,
+        'data': processed_data
         }
         
         return result
@@ -83,10 +83,10 @@ class MockNeo4jSession:
         
         # Generate result
         result = {
-            'status': 'success',
-            'processed_count': len(processed_data),
-            'processing_time': time.time() - start_time,
-            'data': processed_data
+        'status': 'success',
+        'processed_count': len(processed_data),
+        'processing_time': time.time() - start_time,
+        'data': processed_data
         }
         
         return result
@@ -107,21 +107,21 @@ class Neo4jIntegration:
         if NEO4J_AVAILABLE:
             try:
                 self.driver = GraphDatabase.driver(self.uri, auth=(self.username, self.password))
-                # Test connection
-                with self.driver.session() as session:
-                    session.run("RETURN 1")
-                self.connected = True
-                logger.info(f"Real Neo4j connection established: {self.uri}")
-            except Exception as e:
-                logger.warning(f"Failed to connect to Neo4j, using mock: {e}")
-                self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
-                self.connected = True
+        # Test connection
+        with self.driver.session() as session:
+            session.run("RETURN 1")
+        self.connected = True
+        logger.info(f"Real Neo4j connection established: {self.uri}")
+        except Exception as e:
+        logger.warning(f"Failed to connect to Neo4j, using mock: {e}")
+        self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
+        self.connected = True
         else:
-            logger.warning("neo4j driver not installed, using mock")
-            self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
-            self.connected = True
+        logger.warning("neo4j driver not installed, using mock")
+        self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
+        self.connected = True
     
-    async def query(self, cypher_query: str, parameters: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+        async def query(self, cypher_query: str, parameters: Dict[str, Any] = None) -> List[Dict[str, Any]]:
         if not self.connected:
             return []
         
@@ -133,32 +133,32 @@ class Neo4jIntegration:
             logger.error(f"Neo4j query failed: {e}")
             return []
     
-    async def store_council_decision(self, decision_data: Dict[str, Any]) -> bool:
+        async def store_council_decision(self, decision_data: Dict[str, Any]) -> bool:
         query = """
         CREATE (d:Decision {
-            decision_id: $decision_id,
-            agent_id: $agent_id,
-            vote: $vote,
-            confidence: $confidence,
-            reasoning: $reasoning,
-            timestamp: $timestamp
+        decision_id: $decision_id,
+        agent_id: $agent_id,
+        vote: $vote,
+        confidence: $confidence,
+        reasoning: $reasoning,
+        timestamp: $timestamp
         })
         RETURN d
         """
         
         parameters = {
-            "decision_id": decision_data.get("decision_id", f"dec_{int(time.time())}"),
-            "agent_id": decision_data.get("agent_id", "lnn_council"),
-            "vote": decision_data.get("vote", "ABSTAIN"),
-            "confidence": decision_data.get("confidence", 0.0),
-            "reasoning": decision_data.get("reasoning", ""),
-            "timestamp": decision_data.get("timestamp", time.time())
+        "decision_id": decision_data.get("decision_id", f"dec_{int(time.time())}"),
+        "agent_id": decision_data.get("agent_id", "lnn_council"),
+        "vote": decision_data.get("vote", "ABSTAIN"),
+        "confidence": decision_data.get("confidence", 0.0),
+        "reasoning": decision_data.get("reasoning", ""),
+        "timestamp": decision_data.get("timestamp", time.time())
         }
         
         result = await self.query(query, parameters)
         return len(result) > 0
     
-    async def get_gpu_allocation_history(self, user_id: str) -> List[Dict[str, Any]]:
+        async def get_gpu_allocation_history(self, user_id: str) -> List[Dict[str, Any]]:
         query = """
         MATCH (u:User {id: $user_id})-[:REQUESTED]->(a:Allocation)
         RETURN a.gpu_count as gpu_count, a.cost_per_hour as cost_per_hour, 
@@ -167,21 +167,21 @@ class Neo4jIntegration:
         """
         return await self.query(query, {"user_id": user_id})
     
-    async def get_historical_decisions(self, agent_id: str = None, limit: int = 100) -> List[Dict[str, Any]]:
+        async def get_historical_decisions(self, agent_id: str = None, limit: int = 100) -> List[Dict[str, Any]]:
         if agent_id:
             query = """
-            MATCH (d:Decision {agent_id: $agent_id})
-            RETURN d.decision_id as decision_id, d.vote as vote, d.confidence as confidence
-            ORDER BY d.timestamp DESC LIMIT $limit
-            """
-            parameters = {"agent_id": agent_id, "limit": limit}
+        MATCH (d:Decision {agent_id: $agent_id})
+        RETURN d.decision_id as decision_id, d.vote as vote, d.confidence as confidence
+        ORDER BY d.timestamp DESC LIMIT $limit
+        """
+        parameters = {"agent_id": agent_id, "limit": limit}
         else:
-            query = """
-            MATCH (d:Decision)
-            RETURN d.decision_id as decision_id, d.vote as vote, d.confidence as confidence
-            ORDER BY d.timestamp DESC LIMIT $limit
-            """
-            parameters = {"limit": limit}
+        query = """
+        MATCH (d:Decision)
+        RETURN d.decision_id as decision_id, d.vote as vote, d.confidence as confidence
+        ORDER BY d.timestamp DESC LIMIT $limit
+        """
+        parameters = {"limit": limit}
         
         return await self.query(query, parameters)
     
@@ -195,12 +195,12 @@ class Neo4jIntegration:
     def close(self):
         if self.driver:
             self.driver.close()
-            self.connected = False
+        self.connected = False
 
-_neo4j_integration = None
+        _neo4j_integration = None
 
-def get_neo4j_integration():
-    global _neo4j_integration
-    if _neo4j_integration is None:
+    def get_neo4j_integration():
+        global _neo4j_integration
+        if _neo4j_integration is None:
         _neo4j_integration = Neo4jIntegration()
-    return _neo4j_integration
+        return _neo4j_integration

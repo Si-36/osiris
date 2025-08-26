@@ -26,12 +26,12 @@ class ObservableWorkflowOrchestrator:
         self._active_spans: Dict[str, SpanContext] = {}
     
     @asynccontextmanager
-    async def observable_workflow(
+        async def observable_workflow(
         self,
         workflow_id: str,
         operation_name: str,
         correlation_id: Optional[str] = None
-    ) -> AsyncContextManager[SpanContext]:
+        ) -> AsyncContextManager[SpanContext]:
         """Context manager for observable workflow execution"""
         start_time = datetime.now(timezone.utc)
         
@@ -72,14 +72,14 @@ class ObservableWorkflowOrchestrator:
             # Cleanup
             self._active_spans.pop(workflow_id, None)
     
-    async def record_step_execution(
+        async def record_step_execution(
         self,
         workflow_id: str,
         step_name: str,
         duration_seconds: float,
         status: str = "success",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> None:
+        ) -> None:
         """Record individual step execution"""
         event = WorkflowEvent(
             workflow_id=workflow_id,
@@ -104,14 +104,14 @@ class ObservableWorkflowOrchestrator:
         
         await self._observability._collector.collect(metric).run()
     
-    async def record_llm_interaction(
+        async def record_llm_interaction(
         self,
         workflow_id: str,
         model: str,
         tokens: int,
         latency_ms: float,
         cost: float = 0.0
-    ) -> None:
+        ) -> None:
         """Record LLM interaction (optimized for Arize)"""
         await self._observability.record_llm_call(
             workflow_id=workflow_id,
@@ -142,12 +142,12 @@ class ObservableSagaOrchestrator:
         self._base_orchestrator = base_orchestrator
         self._observable_orchestrator = observable_orchestrator
     
-    async def execute_observable_saga(
+        async def execute_observable_saga(
         self,
         saga_id: str,
         steps: list,
         tda_correlation_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute saga with full observability"""
         
         async with self._observable_orchestrator.observable_workflow(
@@ -179,26 +179,26 @@ class ObservableSagaOrchestrator:
 
 # Example usage
 async def example_integration():
-    """Example of workflow observability integration"""
-    from .collectors import ArizeConfig, LangSmithConfig
-    from .tracers import JaegerConfig
+        """Example of workflow observability integration"""
+        from .collectors import ArizeConfig, LangSmithConfig
+        from .tracers import JaegerConfig
     
     # Configure observability
-    config = ObservabilityConfig(
+        config = ObservabilityConfig(
         arize=ArizeConfig(project_name="aura-production"),
         langsmith=LangSmithConfig(project_name="aura-workflows"),
         jaeger=JaegerConfig(service_name="aura-orchestration")
-    )
+        )
     
     # Create observable orchestrator
-    orchestrator = create_observable_orchestrator(config)
+        orchestrator = create_observable_orchestrator(config)
     
     # Use in workflow
-    async with orchestrator.observable_workflow(
+        async with orchestrator.observable_workflow(
         workflow_id="integration_example",
         operation_name="multi_agent_processing",
         correlation_id="example-123"
-    ) as span_context:
+        ) as span_context:
         
         # Record step execution
         await orchestrator.record_step_execution(

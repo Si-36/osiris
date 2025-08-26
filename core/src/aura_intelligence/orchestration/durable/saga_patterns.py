@@ -91,12 +91,12 @@ class SagaOrchestrator:
         self.compensation_handlers: Dict[str, List[CompensationHandler]] = {}
         self.saga_history: List[Dict[str, Any]] = []
     
-    async def execute_saga(
+        async def execute_saga(
         self,
         saga_id: str,
         steps: List[SagaStep],
         tda_correlation_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute a saga transaction with automatic compensation on failure
         """
@@ -198,11 +198,11 @@ class SagaOrchestrator:
             if saga_id in self.active_sagas:
                 del self.active_sagas[saga_id]
     
-    async def _execute_step_with_retry(
+        async def _execute_step_with_retry(
         self,
         step: SagaStep,
         step_input: Dict[str, Any]
-    ) -> Any:
+        ) -> Any:
         """
         Execute a saga step with retry logic
         """
@@ -226,13 +226,13 @@ class SagaOrchestrator:
                 delay = min(2 ** attempt, 30)  # Max 30 seconds
                 await asyncio.sleep(delay)
     
-    async def _compensate_saga_steps(
+        async def _compensate_saga_steps(
         self,
         saga_id: str,
         executed_steps: List[SagaStep],
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ):
+        ):
         """
         Enhanced compensation with TDA-aware error correlation and intelligent recovery
         """
@@ -342,7 +342,7 @@ class SagaOrchestrator:
         self,
         step_name: str,
         handler: CompensationHandler
-    ):
+        ):
         """
         Register a compensation handler for a specific step type
         """
@@ -354,14 +354,14 @@ class SagaOrchestrator:
         # Sort by priority (higher priority first)
         self.compensation_handlers[step_name].sort(key=lambda h: h.priority, reverse=True)
     
-    async def execute_custom_compensation(
+        async def execute_custom_compensation(
         self,
         saga_id: str,
         step_name: str,
         compensation_type: CompensationType,
         parameters: Dict[str, Any],
         tda_correlation_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute custom compensation logic for specific scenarios
         """
@@ -437,13 +437,13 @@ class SagaOrchestrator:
         
         return None
     
-    async def _analyze_failure_patterns(
+        async def _analyze_failure_patterns(
         self,
         saga_id: str,
         executed_steps: List[SagaStep],
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Analyze failure patterns using TDA correlation for intelligent compensation
         """
@@ -485,11 +485,11 @@ class SagaOrchestrator:
         
         return failure_analysis
     
-    async def _determine_compensation_strategy(
+        async def _determine_compensation_strategy(
         self,
         failure_analysis: Dict[str, Any],
         tda_context: Optional[TDAContext]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Determine optimal compensation strategy based on failure analysis and TDA context
         """
@@ -540,12 +540,12 @@ class SagaOrchestrator:
         
         return strategy
     
-    async def _execute_compensation_with_safeguards(
+        async def _execute_compensation_with_safeguards(
         self,
         step: SagaStep,
         compensation_input: Dict[str, Any],
         strategy: Dict[str, Any]
-    ) -> Any:
+        ) -> Any:
         """
         Execute compensation with circuit breaker and timeout safeguards
         """
@@ -575,13 +575,13 @@ class SagaOrchestrator:
                     raise
                 await asyncio.sleep(2 ** attempt)
     
-    async def _correlate_compensation_error(
+        async def _correlate_compensation_error(
         self,
         error: Exception,
         step: SagaStep,
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Correlate compensation errors with TDA patterns for intelligent error handling
         """
@@ -634,6 +634,7 @@ class SagaOrchestrator:
         """
         Enhanced saga execution metrics with TDA correlation insights
         """
+        pass
         if not self.saga_history:
             return {
                 "total_sagas": 0,

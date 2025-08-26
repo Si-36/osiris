@@ -43,8 +43,8 @@ class TDAAnalyzerAgent:
         
         self.logger.info("🔍 TDA Analyzer Agent initialized")
     
-    async def analyze_events(self, events: List[Dict[str, Any]], 
-                           analysis_type: str = "anomaly_detection") -> Dict[str, Any]:
+        async def analyze_events(self, events: List[Dict[str, Any]],
+        analysis_type: str = "anomaly_detection") -> Dict[str, Any]:
         """
         Analyze events using TDA service integration.
         
@@ -86,8 +86,8 @@ class TDAAnalyzerAgent:
             self.logger.error(f"❌ TDA analyzer failed: {e}")
             return self._create_fallback_analysis(events)
     
-    async def _call_tda_service(self, events: List[Dict[str, Any]], 
-                              analysis_type: str) -> TDAServiceResponse:
+        async def _call_tda_service(self, events: List[Dict[str, Any]],
+        analysis_type: str) -> TDAServiceResponse:
         """Call the TDA service for topological analysis."""
         
         # Create TDA service request
@@ -163,8 +163,8 @@ class TDAAnalyzerAgent:
             memory_usage_mb=1.0
         )
     
-    async def _enhance_tda_analysis(self, events: List[Dict[str, Any]], 
-                                  tda_results: TDAServiceResponse) -> Dict[str, Any]:
+        async def _enhance_tda_analysis(self, events: List[Dict[str, Any]],
+        tda_results: TDAServiceResponse) -> Dict[str, Any]:
         """Enhance TDA results with domain-specific analysis."""
         
         # Extract event characteristics
@@ -268,7 +268,7 @@ class TDAAnalyzerAgent:
         return reasoning_map.get(pattern, f"Pattern {pattern} detected - routing to {agent}")
     
     def _generate_insights(self, events: List[Dict[str, Any]], 
-                         tda_results: TDAServiceResponse,
+        tda_results: TDAServiceResponse,
                          event_analysis: Dict[str, Any]) -> List[str]:
         """Generate actionable insights from combined analysis."""
         
@@ -296,7 +296,7 @@ class TDAAnalyzerAgent:
         return insights
     
     def _generate_recommendations(self, tda_results: TDAServiceResponse,
-                                event_analysis: Dict[str, Any]) -> List[str]:
+        event_analysis: Dict[str, Any]) -> List[str]:
         """Generate actionable recommendations."""
         
         recommendations = []
@@ -337,7 +337,7 @@ class TDAAnalyzerAgent:
         
         return recommendations
     
-    async def _store_pattern(self, pattern_classification: str, analysis: Dict[str, Any]):
+        async def _store_pattern(self, pattern_classification: str, analysis: Dict[str, Any]):
         """Store pattern for learning and future reference."""
         
         if pattern_classification not in self.pattern_memory:
@@ -387,8 +387,9 @@ class TDAAnalyzerAgent:
             'analyzer_version': '2.0_fallback_mode'
         }
     
-    async def get_pattern_statistics(self) -> Dict[str, Any]:
+        async def get_pattern_statistics(self) -> Dict[str, Any]:
         """Get statistics about observed patterns."""
+        pass
         
         stats = {
             'total_patterns_observed': sum(len(patterns) for patterns in self.pattern_memory.values()),

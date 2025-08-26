@@ -56,31 +56,31 @@ class SystemComponent(ABC):
         )
     
     @abstractmethod
-    async def initialize(self) -> None:
+        async def initialize(self) -> None:
         """Initialize the component."""
         pass
     
     @abstractmethod
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start the component."""
         pass
     
     @abstractmethod
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop the component."""
         pass
     
     @abstractmethod
-    async def health_check(self) -> HealthStatus:
+        async def health_check(self) -> HealthStatus:
         """Check the health of the component."""
         pass
     
     @abstractmethod
-    async def get_metrics(self) -> Dict[str, Any]:
+        async def get_metrics(self) -> Dict[str, Any]:
         """Get component metrics."""
         pass
     
-    async def restart(self) -> None:
+        async def restart(self) -> None:
         """Restart the component."""
         await self.stop()
         await self.start()
@@ -103,6 +103,7 @@ class CognitiveComponent(SystemComponent):
     async def get_attention_weight(self) -> float:
         """Get the current attention weight for this component."""
         pass
+
     
     @abstractmethod
     async def update_working_memory(self, memory_update: Dict[str, Any]) -> None:
@@ -113,6 +114,7 @@ class CognitiveComponent(SystemComponent):
     async def get_consciousness_contribution(self) -> Dict[str, Any]:
         """Get this component's contribution to global consciousness."""
         pass
+
 
 
 class TopologicalComponent(SystemComponent):
@@ -132,11 +134,13 @@ class TopologicalComponent(SystemComponent):
     async def get_topological_signature(self) -> Dict[str, Any]:
         """Get the topological signature of the component's state."""
         pass
+
     
     @abstractmethod
     async def verify_topological_consistency(self) -> bool:
         """Verify topological consistency of the component."""
         pass
+
 
 
 class QuantumComponent(SystemComponent):
@@ -156,16 +160,19 @@ class QuantumComponent(SystemComponent):
     async def get_quantum_state(self) -> Dict[str, Any]:
         """Get the current quantum state."""
         pass
+
     
     @abstractmethod
     async def measure_quantum_observables(self) -> Dict[str, float]:
         """Measure quantum observables."""
         pass
+
     
     @abstractmethod
     async def verify_quantum_coherence(self) -> bool:
         """Verify quantum coherence is maintained."""
         pass
+
 
 
 class Configurable(ABC):
@@ -203,6 +210,7 @@ class Recoverable(ABC):
     async def create_checkpoint(self) -> Dict[str, Any]:
         """Create a recovery checkpoint."""
         pass
+
     
     @abstractmethod
     async def restore_from_checkpoint(self, checkpoint: Dict[str, Any]) -> None:

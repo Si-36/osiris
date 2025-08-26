@@ -42,21 +42,21 @@ meter = metrics.get_meter(__name__)
 
 # Create metrics
 agent_invocation_counter = meter.create_counter(
-    name="agent.invocations",
-    description="Number of agent invocations",
-    unit="1"
+        name="agent.invocations",
+        description="Number of agent invocations",
+        unit="1"
 )
 
 agent_duration_histogram = meter.create_histogram(
-    name="agent.duration",
-    description="Agent execution duration",
-    unit="ms"
+        name="agent.duration",
+        description="Agent execution duration",
+        unit="ms"
 )
 
 agent_error_counter = meter.create_counter(
-    name="agent.errors",
-    description="Number of agent errors",
-    unit="1"
+        name="agent.errors",
+        description="Number of agent errors",
+        unit="1"
 )
 
 
@@ -74,6 +74,7 @@ class AgentConfig:
     
     def validate(self) -> None:
         """Validate agent configuration."""
+        pass
         if not self.name:
             raise ValueError("Agent name is required")
         if self.temperature < 0 or self.temperature > 2:
@@ -124,6 +125,7 @@ class AgentState(BaseModel):
     
     def get_last_message(self) -> Optional[Dict[str, Any]]:
         """Get the most recent message."""
+        pass
         return self.messages[-1] if self.messages else None
 
 
@@ -141,6 +143,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
     
     def __init__(self, config: AgentConfig):
         """Initialize the agent with configuration."""
+        pass
         super().__init__(config.name, config)
         self.logger = structlog.get_logger().bind(agent=config.name)
         self.state_graph: Optional[StateGraph] = None
@@ -152,6 +155,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
     
     def _validate_config(self) -> None:
         """Validate agent configuration."""
+        pass
         self.config.validate()
     
     @abstractmethod
@@ -165,7 +169,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
     @abstractmethod
-    async def _execute_step(self, state: TState, step_name: str) -> TState:
+        async def _execute_step(self, state: TState, step_name: str) -> TState:
         """
         Execute a specific step in the agent workflow.
         
@@ -178,7 +182,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         """
         pass
     
-    async def _process(self, input_data: TInput) -> TOutput:
+        async def _process(self, input_data: TInput) -> TOutput:
         """
         Process input through the agent workflow.
         
@@ -231,7 +235,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
                 span.record_exception(e)
                 raise
     
-    async def _run_graph(self, state: TState) -> TState:
+        async def _run_graph(self, state: TState) -> TState:
         """Run the compiled graph with the given state."""
         # For now, manually execute steps (LangGraph integration pending)
         current_state = state
@@ -281,8 +285,9 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         """Extract the output from the final state."""
         pass
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Check agent health."""
+        pass
         health = await super().health_check()
         
         # Add agent-specific metrics
@@ -297,4 +302,5 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
     
     def get_capabilities(self) -> List[str]:
         """Get list of agent capabilities."""
+        pass
         return ["base_agent", "observability", "state_management"]

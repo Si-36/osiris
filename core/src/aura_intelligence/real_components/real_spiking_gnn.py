@@ -174,7 +174,7 @@ class RealSpikingCoordinator:
         
         return features
     
-    async def process_with_spiking(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def process_with_spiking(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         start_time = time.time()
         
         node_features = self._extract_features(task_data)
@@ -242,8 +242,8 @@ class RealSpikingCoordinator:
 
 _spiking_coordinator = None
 
-def get_spiking_coordinator():
-    global _spiking_coordinator
-    if _spiking_coordinator is None:
+    def get_spiking_coordinator():
+        global _spiking_coordinator
+        if _spiking_coordinator is None:
         _spiking_coordinator = RealSpikingCoordinator()
-    return _spiking_coordinator
+        return _spiking_coordinator

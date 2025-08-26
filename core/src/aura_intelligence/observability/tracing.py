@@ -110,16 +110,16 @@ if not OPENTELEMETRY_AVAILABLE:
             
             # Generate result
             result = {
-                'status': 'success',
-                'processed_count': len(processed_data),
-                'processing_time': time.time() - start_time,
-                'data': processed_data
+            'status': 'success',
+            'processed_count': len(processed_data),
+            'processing_time': time.time() - start_time,
+            'data': processed_data
             }
             
             return result
         
         def _process_data(self, data):
-            """Process the data"""
+                """Process the data"""
             if isinstance(data, dict):
                 return {k: v for k, v in data.items()}
             elif isinstance(data, list):
@@ -267,7 +267,7 @@ class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampl
         self.sample_count = 0
         self.error_count = 0
         
-    def should_sample(
+        def should_sample(
         self,
         parent_context,
         trace_id,
@@ -275,7 +275,7 @@ class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampl
         kind=None,
         attributes=None,
         links=None
-    ) -> sampling.SamplingResult:
+        ) -> sampling.SamplingResult:
         # Always sample if parent was sampled
         if parent_context and parent_context.is_valid:
             parent_span_context = trace.get_current_span(parent_context).get_span_context()
@@ -318,10 +318,10 @@ class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampl
         # Update error rate with exponential moving average
         if self.sample_count > 100:
             self.error_rate = self.error_count / self.sample_count
-            # Reset counters periodically
-            if self.sample_count > 10000:
-                self.sample_count = 100
-                self.error_count = int(self.error_rate * 100)
+        # Reset counters periodically
+        if self.sample_count > 10000:
+            self.sample_count = 100
+        self.error_count = int(self.error_rate * 100)
     
     def get_description(self) -> str:
         return f"AdaptiveSampler(base_rate={self.base_rate}, current_error_rate={self.error_rate:.2%})"
@@ -338,7 +338,8 @@ class OpenTelemetryManager:
         self.sampler: Optional[AdaptiveSampler] = None
         
     def initialize(self):
-        """Initialize OpenTelemetry with OTLP exporter"""
+            """Initialize OpenTelemetry with OTLP exporter"""
+        pass
         if not self.config.enable_tracing:
             logger.info("Tracing disabled in configuration")
             return
@@ -403,20 +404,21 @@ class OpenTelemetryManager:
     
     def _setup_auto_instrumentation(self):
         """Setup automatic instrumentation for common libraries"""
+        pass
         try:
             # HTTP clients
-            RequestsInstrumentor().instrument()
-            AioHttpClientInstrumentor().instrument()
+        RequestsInstrumentor().instrument()
+        AioHttpClientInstrumentor().instrument()
             
-            # Databases
-            SQLAlchemyInstrumentor().instrument()
-            RedisInstrumentor().instrument()
-            Psycopg2Instrumentor().instrument()
+        # Databases
+        SQLAlchemyInstrumentor().instrument()
+        RedisInstrumentor().instrument()
+        Psycopg2Instrumentor().instrument()
             
-            logger.info("Auto-instrumentation configured")
+        logger.info("Auto-instrumentation configured")
             
         except Exception as e:
-            logger.warning(f"Some auto-instrumentation failed: {e}")
+        logger.warning(f"Some auto-instrumentation failed: {e}")
     
     def get_tracer(self, name: str = None) -> trace.Tracer:
         """Get a tracer instance"""
@@ -430,14 +432,14 @@ class OpenTelemetryManager:
         operation_name: str,
         attributes: Optional[Dict[str, Any]] = None,
         kind: trace.SpanKind = trace.SpanKind.INTERNAL
-    ):
+        ):
         """
         Context manager for tracing operations
         
         Usage:
             with tracer.trace_operation("process_data", {"data.size": 1024}):
                 # Your code here
-                pass
+        pass
         """
         tracer = self.get_tracer()
         
@@ -464,7 +466,7 @@ class OpenTelemetryManager:
         metric_name: str,
         value: float,
         unit: str = None
-    ):
+        ):
         """Record a metric as a span event"""
         event_attributes = {
             "metric.name": metric_name,
@@ -492,79 +494,80 @@ class OpenTelemetryManager:
         inject(carrier)
         
     def extract_context(self, carrier: Dict[str, str]):
-        """Extract trace context from carrier"""
+            """Extract trace context from carrier"""
         from opentelemetry.propagate import extract
         return extract(carrier)
     
     def shutdown(self):
         """Shutdown tracing and flush remaining spans"""
+        pass
         if self.tracer_provider:
             self.tracer_provider.shutdown()
-            logger.info("OpenTelemetry shutdown complete")
+        logger.info("OpenTelemetry shutdown complete")
 
 
-# Convenience functions
-_manager: Optional[OpenTelemetryManager] = None
+    # Convenience functions
+        _manager: Optional[OpenTelemetryManager] = None
 
 
-def initialize_tracing(config: ObservabilityConfig):
-    """Initialize global tracing"""
-    global _manager
-    _manager = OpenTelemetryManager(config)
-    _manager.initialize()
-    return _manager
+    def initialize_tracing(config: ObservabilityConfig):
+        """Initialize global tracing"""
+        global _manager
+        _manager = OpenTelemetryManager(config)
+        _manager.initialize()
+        return _manager
 
 
-def get_tracer(name: str = None) -> trace.Tracer:
-    """Get a tracer instance"""
-    if _manager:
+    def get_tracer(name: str = None) -> trace.Tracer:
+        """Get a tracer instance"""
+        if _manager:
         return _manager.get_tracer(name)
     # Return default tracer if not initialized
-    return trace.get_tracer(name or "aura_intelligence")
+        return trace.get_tracer(name or "aura_intelligence")
 
 
-def trace_operation(operation_name: str, **kwargs):
-    """Decorator for tracing operations"""
+    def trace_operation(operation_name: str, **kwargs):
+        """Decorator for tracing operations"""
     def decorator(func):
-        @wraps(func)
+    @wraps(func)
         async def async_wrapper(*args, **kwargs):
-            tracer = get_tracer()
-            with tracer.start_as_current_span(operation_name) as span:
-                return await func(*args, **kwargs)
+        tracer = get_tracer()
+        with tracer.start_as_current_span(operation_name) as span:
+        return await func(*args, **kwargs)
         
-        @wraps(func)
-        def sync_wrapper(*args, **kwargs):
-            tracer = get_tracer()
-            with tracer.start_as_current_span(operation_name) as span:
-                return func(*args, **kwargs)
+    @wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        tracer = get_tracer()
+        with tracer.start_as_current_span(operation_name) as span:
+        return func(*args, **kwargs)
         
         if asyncio.iscoroutinefunction(func):
-            return async_wrapper
+        return async_wrapper
         else:
-            return sync_wrapper
-    return decorator
+        return sync_wrapper
+        return decorator
 
 
-def trace_span(name: str, **kwargs):
-    """Decorator for tracing function execution."""
+    def trace_span(name: str, **kwargs):
+        """Decorator for tracing function execution."""
     def decorator(func):
-        @wraps(func)
+    @wraps(func)
         async def async_wrapper(*args, **kwargs):
-            tracer = get_tracer()
-            async with tracer.start_as_current_span(name) as span:
-                return await func(*args, **kwargs)
+        tracer = get_tracer()
+        async with tracer.start_as_current_span(name) as span:
+        return await func(*args, **kwargs)
         
-        @wraps(func)
-        def sync_wrapper(*args, **kwargs):
-            tracer = get_tracer()
-            with tracer.start_as_current_span(name):
-                return func(*args, **kwargs)
+    @wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        tracer = get_tracer()
+        with tracer.start_as_current_span(name):
+        return func(*args, **kwargs)
         
         if asyncio.iscoroutinefunction(func):
-            return async_wrapper
+        return async_wrapper
         else:
-            return sync_wrapper
-    return decorator
+        return sync_wrapper
+        return decorator
 
 
 class TracingContext:
@@ -575,12 +578,12 @@ class TracingContext:
         self.operation = operation
         self.span = None
         
-    async def __aenter__(self):
+        async def __aenter__(self):
         tracer = get_tracer()
         self.span = tracer.start_span(f"{self.service}.{self.operation}")
         return self
         
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.span:
             self.span.end()
             

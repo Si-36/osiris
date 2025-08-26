@@ -64,7 +64,7 @@ class AgentWorkflow:
         self.start_time: Optional[float] = None
         
     @workflow.run
-    async def run(self, input: AgentWorkflowInput) -> AgentWorkflowResult:
+        async def run(self, input: AgentWorkflowInput) -> AgentWorkflowResult:
         """Execute agent workflow with full resilience."""
         self.start_time = workflow.now().timestamp()
         

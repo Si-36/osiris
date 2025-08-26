@@ -32,7 +32,7 @@ class MixtureOfExperts:
         self.routing_history = []
         self.expert_performance = {}
         
-    async def route_request(self, request: Dict[str, Any], num_experts: int = 5) -> List[ExpertRoute]:
+        async def route_request(self, request: Dict[str, Any], num_experts: int = 5) -> List[ExpertRoute]:
         """Route request to best expert components"""
         
         # Analyze request to determine required expertise
@@ -65,7 +65,7 @@ class MixtureOfExperts:
         
         return routes
     
-    async def process_with_experts(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        async def process_with_experts(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Process request using mixture of experts"""
         start_time = time.time()
         
@@ -187,8 +187,8 @@ class MixtureOfExperts:
         
         return unique_candidates
     
-    async def _score_component(self, component: RealComponent, request: Dict[str, Any], 
-                             expertise_needed: Dict[str, float]) -> float:
+        async def _score_component(self, component: RealComponent, request: Dict[str, Any],
+        expertise_needed: Dict[str, float]) -> float:
         """Score how well component matches request"""
         
         # Base score from specialization match
@@ -214,7 +214,7 @@ class MixtureOfExperts:
         return min(1.0, total_score)
     
     def _get_specialization_match(self, component: RealComponent, 
-                                expertise_needed: Dict[str, float]) -> float:
+        expertise_needed: Dict[str, float]) -> float:
         """Get how well component specialization matches needed expertise"""
         component_type = component.type.value
         return expertise_needed.get(component_type, 0.0)
@@ -276,7 +276,7 @@ class MixtureOfExperts:
         }
     
     def _update_performance_tracking(self, routes: List[ExpertRoute], 
-                                   results: Dict[str, Dict[str, Any]], 
+        results: Dict[str, Dict[str, Any]],
                                    processing_time: float):
         """Update expert performance tracking"""
         for route in routes:
@@ -317,6 +317,7 @@ class MixtureOfExperts:
     
     def get_moe_stats(self) -> Dict[str, Any]:
         """Get MoE system statistics"""
+        pass
         total_components = len(self.registry.components)
         
         # Performance statistics
@@ -344,6 +345,6 @@ class MixtureOfExperts:
         }
 
 
-def get_moe_system() -> MixtureOfExperts:
-    """Get global MoE system"""
-    return MixtureOfExperts()
+    def get_moe_system() -> MixtureOfExperts:
+        """Get global MoE system"""
+        return MixtureOfExperts()

@@ -78,12 +78,12 @@ class ConsensusManager:
         
         # Integration clients
         self.temporal_client = TemporalClient(
-            namespace=config.temporal_namespace
+        namespace=config.temporal_namespace
         )
         self.event_producer = EventProducer(
-            ProducerConfig(
-                bootstrap_servers=config.kafka_bootstrap_servers
-            )
+        ProducerConfig(
+        bootstrap_servers=config.kafka_bootstrap_servers
+        )
         )
         
         # State tracking
@@ -103,15 +103,15 @@ class ConsensusManager:
     def _init_bft(self, config: ConsensusConfig) -> ByzantineConsensus:
         """Initialize Byzantine consensus."""
         bft_config = BFTConfig(
-            node_id="consensus-manager",
-            validators=["validator-1", "validator-2", "validator-3", "validator-4"],
-            view_timeout_ms=5000,
-            batch_size=100
+        node_id="consensus-manager",
+        validators=["validator-1", "validator-2", "validator-3", "validator-4"],
+        view_timeout_ms=5000,
+        batch_size=100
         )
         return ByzantineConsensus(bft_config)
     
     def _init_multi_raft(self, config: ConsensusConfig):
-        """Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
+            """Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
         
         raft_config = RaftConfig(
             node_id="multi-raft-leader",
@@ -127,74 +127,76 @@ class ConsensusManager:
         class StubValidator:
             def __init__(self, config):
                 self.config = config
-            async def validate(self, decision):
+                async def validate(self, decision):
                 return True  # Always validate for now
-        return StubValidator(config)
+                return StubValidator(config)
     
-    async def start(self):
-        """Start the consensus manager."""
-        if self._started:
-            return
+                async def start(self):
+                """Start the consensus manager."""
+                pass
+                if self._started:
+                return
         
-        logger.info("Starting consensus manager")
+                logger.info("Starting consensus manager")
         
         # Start components
-        await self.event_producer.start()
-        await self.temporal_client.connect()
+                await self.event_producer.start()
+                await self.temporal_client.connect()
         
         # Start consensus protocols
-        await self.raft_consensus.start()
-        if self.config.use_bft_for_strategic:
-            await self.bft_consensus.start()
-        if self.config.use_multi_raft_for_tactical:
-            await self.multi_raft.start()
+                await self.raft_consensus.start()
+                if self.config.use_bft_for_strategic:
+                await self.bft_consensus.start()
+                if self.config.use_multi_raft_for_tactical:
+                await self.multi_raft.start()
         
-        self._started = True
-        logger.info("Consensus manager started")
+                self._started = True
+                logger.info("Consensus manager started")
     
-    async def stop(self):
-        """Stop the consensus manager."""
-        if not self._started:
-            return
+                async def stop(self):
+                """Stop the consensus manager."""
+                pass
+                if not self._started:
+                return
         
-        logger.info("Stopping consensus manager")
+                logger.info("Stopping consensus manager")
         
         # Stop protocols
-        await self.raft_consensus.stop()
-        await self.bft_consensus.stop()
-        await self.multi_raft.stop()
+                await self.raft_consensus.stop()
+                await self.bft_consensus.stop()
+                await self.multi_raft.stop()
         
         # Stop clients
-        await self.event_producer.stop()
+                await self.event_producer.stop()
         
-        self._started = False
-        logger.info("Consensus manager stopped")
+                self._started = False
+                logger.info("Consensus manager stopped")
     
-    async def propose(self, request: ConsensusRequest) -> ConsensusResult:
-        """
-        Route consensus request to appropriate protocol.
+                async def propose(self, request: ConsensusRequest) -> ConsensusResult:
+                """
+                Route consensus request to appropriate protocol.
         
-        Args:
-            request: Consensus request with proposal and metadata
+                Args:
+                request: Consensus request with proposal and metadata
             
-        Returns:
-            ConsensusResult with decision and explanation
-        """
-        if not self._started:
-            await self.start()
+                Returns:
+                ConsensusResult with decision and explanation
+                """
+                if not self._started:
+                await self.start()
         
         # Start span for tracing
-        with tracer.start_as_current_span(
-            "consensus.propose",
-            attributes={
+                with tracer.start_as_current_span(
+                "consensus.propose",
+                attributes={
                 "request_id": request.request_id,
                 "decision_type": request.decision_type.value,
                 "proposer_id": request.proposer_id
-            }
-        ) as span:
-            start_time = datetime.now(timezone.utc)
+                }
+                ) as span:
+                start_time = datetime.now(timezone.utc)
             
-            try:
+                try:
                 # Track active request
                 self.active_requests[request.request_id] = request
                 
@@ -254,7 +256,7 @@ class ConsensusManager:
                 
                 return result
                 
-            except Exception as e:
+                except Exception as e:
                 logger.error(
                     "Consensus proposal failed",
                     request_id=request.request_id,
@@ -280,149 +282,149 @@ class ConsensusManager:
                     completed_at=datetime.now(timezone.utc)
                 )
                 
-            finally:
+                finally:
                 # Clean up
                 self.active_requests.pop(request.request_id, None)
     
-    async def _pre_validate(self, request: ConsensusRequest):
-        """Pre-validate consensus request."""
-        return await self.validator.pre_validate(request)
+                async def _pre_validate(self, request: ConsensusRequest):
+                """Pre-validate consensus request."""
+                return await self.validator.pre_validate(request)
     
-    async def _route_request(self, request: ConsensusRequest) -> ConsensusResult:
-        """Route request to appropriate consensus protocol."""
+                async def _route_request(self, request: ConsensusRequest) -> ConsensusResult:
+                """Route request to appropriate consensus protocol."""
         # Set default quorum sizes if not specified
-        if request.quorum_size is None:
-            if request.decision_type == DecisionType.OPERATIONAL:
+                if request.quorum_size is None:
+                if request.decision_type == DecisionType.OPERATIONAL:
                 request.quorum_size = self.config.operational_quorum
-            elif request.decision_type == DecisionType.TACTICAL:
+                elif request.decision_type == DecisionType.TACTICAL:
                 request.quorum_size = self.config.tactical_quorum
-            elif request.decision_type == DecisionType.STRATEGIC:
+                elif request.decision_type == DecisionType.STRATEGIC:
                 request.quorum_size = self.config.strategic_quorum
-            else:  # EMERGENCY
+                else:  # EMERGENCY
                 request.quorum_size = self.config.operational_quorum
         
         # Set timeout based on decision type
-        if request.decision_type == DecisionType.OPERATIONAL:
-            request.timeout = self.config.operational_timeout
-        elif request.decision_type == DecisionType.TACTICAL:
-            request.timeout = self.config.tactical_timeout
-        elif request.decision_type == DecisionType.STRATEGIC:
-            request.timeout = self.config.strategic_timeout
+                if request.decision_type == DecisionType.OPERATIONAL:
+                request.timeout = self.config.operational_timeout
+                elif request.decision_type == DecisionType.TACTICAL:
+                request.timeout = self.config.tactical_timeout
+                elif request.decision_type == DecisionType.STRATEGIC:
+                request.timeout = self.config.strategic_timeout
         
         # Route to protocol
-        if request.decision_type == DecisionType.OPERATIONAL:
-            return await self.raft_consensus.propose(request)
+                if request.decision_type == DecisionType.OPERATIONAL:
+                return await self.raft_consensus.propose(request)
             
-        elif request.decision_type == DecisionType.TACTICAL:
-            if self.config.use_multi_raft_for_tactical:
+                elif request.decision_type == DecisionType.TACTICAL:
+                if self.config.use_multi_raft_for_tactical:
                 return await self.multi_raft.propose(request)
-            else:
+                else:
                 return await self.raft_consensus.propose(request)
                 
-        elif request.decision_type == DecisionType.STRATEGIC:
-            if self.config.use_bft_for_strategic:
+                elif request.decision_type == DecisionType.STRATEGIC:
+                if self.config.use_bft_for_strategic:
                 return await self.bft_consensus.propose(request)
-            else:
+                else:
                 # Use Raft with higher quorum
                 request.quorum_size = self.config.strategic_quorum
                 return await self.raft_consensus.propose(request)
                 
-        elif request.decision_type == DecisionType.EMERGENCY:
+                elif request.decision_type == DecisionType.EMERGENCY:
             # Fast path for emergency decisions
-            return await self._emergency_consensus(request)
+                return await self._emergency_consensus(request)
             
-        else:
-            raise ValueError(f"Unknown decision type: {request.decision_type}")
+                else:
+                raise ValueError(f"Unknown decision type: {request.decision_type}")
     
-    async def _emergency_consensus(self, request: ConsensusRequest) -> ConsensusResult:
-        """
-        Fast consensus for emergency decisions.
-        Uses first responder with validation.
-        """
+                async def _emergency_consensus(self, request: ConsensusRequest) -> ConsensusResult:
+                """
+                Fast consensus for emergency decisions.
+                Uses first responder with validation.
+                """
         # Get first available validator
-        validators = request.validators or ["emergency-1", "emergency-2", "emergency-3"]
+                validators = request.validators or ["emergency-1", "emergency-2", "emergency-3"]
         
         # Collect votes quickly with short timeout
-        votes = []
-        vote_tasks = []
+                votes = []
+                vote_tasks = []
         
-        for validator in validators[:3]:  # Only need 3 for speed
-            task = asyncio.create_task(
+                for validator in validators[:3]:  # Only need 3 for speed
+                task = asyncio.create_task(
                 self._get_emergency_vote(validator, request)
-            )
-            vote_tasks.append(task)
+                )
+                vote_tasks.append(task)
         
         # Wait for first valid vote
-        done, pending = await asyncio.wait(
-            vote_tasks,
-            timeout=0.1,  # 100ms timeout
-            return_when=asyncio.FIRST_COMPLETED
-        )
+                done, pending = await asyncio.wait(
+                vote_tasks,
+                timeout=0.1,  # 100ms timeout
+                return_when=asyncio.FIRST_COMPLETED
+                )
         
         # Cancel pending tasks
-        for task in pending:
-            task.cancel()
+                for task in pending:
+                task.cancel()
         
         # Process completed votes
-        for task in done:
-            try:
+                for task in done:
+                try:
                 vote = await task
                 if vote and vote.vote_type == VoteType.APPROVE:
-                    votes.append(vote)
+                votes.append(vote)
                     
-                    # One valid vote is enough for emergency
-                    return ConsensusResult(
-                        request_id=request.request_id,
-                        status=ConsensusState.ACCEPTED,
-                        decision=request.proposal,
-                        votes=votes,
-                        consensus_type="emergency",
-                        reason="Emergency consensus achieved"
-                    )
-            except Exception as e:
+        # One valid vote is enough for emergency
+                return ConsensusResult(
+                request_id=request.request_id,
+                status=ConsensusState.ACCEPTED,
+                decision=request.proposal,
+                votes=votes,
+                consensus_type="emergency",
+                reason="Emergency consensus achieved"
+                )
+                except Exception as e:
                 logger.warning(f"Emergency vote failed: {e}")
         
         # No approval received
-        return ConsensusResult(
-            request_id=request.request_id,
-            status=ConsensusState.REJECTED,
-            votes=votes,
-            consensus_type="emergency",
-            reason="No emergency approval received"
-        )
+                return ConsensusResult(
+                request_id=request.request_id,
+                status=ConsensusState.REJECTED,
+                votes=votes,
+                consensus_type="emergency",
+                reason="No emergency approval received"
+                )
     
-    async def _get_emergency_vote(
-        self,
-        validator_id: str,
-        request: ConsensusRequest
-    ) -> Optional[Vote]:
-        """Get emergency vote from validator."""
+                async def _get_emergency_vote(
+                self,
+                validator_id: str,
+                request: ConsensusRequest
+                ) -> Optional[Vote]:
+                """Get emergency vote from validator."""
         # In production, this would call the actual validator
         # For now, simulate with simple logic
-        await asyncio.sleep(0.05)  # Simulate network delay
+                await asyncio.sleep(0.05)  # Simulate network delay
         
         # Emergency approval logic
-        if "safety" in str(request.proposal).lower():
-            return Vote(
+                if "safety" in str(request.proposal).lower():
+                return Vote(
                 voter_id=validator_id,
                 vote_type=VoteType.APPROVE,
                 reason="Safety-critical decision approved"
-            )
+                )
         
-        return Vote(
-            voter_id=validator_id,
-            vote_type=VoteType.REJECT,
-            reason="Not a valid emergency"
-        )
+                return Vote(
+                voter_id=validator_id,
+                vote_type=VoteType.REJECT,
+                reason="Not a valid emergency"
+                )
     
-    async def _publish_decision(
-        self,
-        request: ConsensusRequest,
-        result: ConsensusResult
-    ):
-        """Publish consensus decision to event mesh."""
-        try:
-            event = ConsensusDecisionEvent(
+                async def _publish_decision(
+                self,
+                request: ConsensusRequest,
+                result: ConsensusResult
+                ):
+                """Publish consensus decision to event mesh."""
+                try:
+                event = ConsensusDecisionEvent(
                 proposal_id=request.request_id,
                 decision=result.decision,
                 status=result.status.value,
@@ -434,27 +436,28 @@ class ConsensusManager:
                 ),
                 duration_ms=result.duration_ms,
                 participation_rate=result.participation_rate
-            )
+                )
             
-            await self.event_producer.send_event(
+                await self.event_producer.send_event(
                 "consensus.decisions",
                 event
-            )
+                )
             
-        except Exception as e:
-            logger.error(f"Failed to publish decision: {e}")
+                except Exception as e:
+                logger.error(f"Failed to publish decision: {e}")
     
-    async def get_status(self) -> Dict[str, Any]:
-        """Get consensus manager status."""
-        return {
-            "started": self._started,
-            "active_requests": len(self.active_requests),
-            "protocols": {
+                async def get_status(self) -> Dict[str, Any]:
+                """Get consensus manager status."""
+                pass
+                return {
+                "started": self._started,
+                "active_requests": len(self.active_requests),
+                "protocols": {
                 "raft": await self.raft_consensus.get_status(),
                 "bft": await self.bft_consensus.get_status() if self.config.use_bft_for_strategic else None,
                 "multi_raft": await self.multi_raft.get_status() if self.config.use_multi_raft_for_tactical else None
-            }
-        }
+                }
+                }
 
 
 class HierarchicalConsensus:
@@ -467,22 +470,22 @@ class HierarchicalConsensus:
         self.managers = [ConsensusManager(config) for config in levels]
         self.levels = len(levels)
     
-    async def propose(
+        async def propose(
         self,
         request: ConsensusRequest,
         level: int = 0
-    ) -> ConsensusResult:
+        ) -> ConsensusResult:
         """Propose at specific hierarchy level."""
         if level >= self.levels:
             raise ValueError(f"Invalid level {level}, max is {self.levels - 1}")
         
         return await self.managers[level].propose(request)
     
-    async def escalate(
+        async def escalate(
         self,
         request: ConsensusRequest,
         from_level: int
-    ) -> ConsensusResult:
+        ) -> ConsensusResult:
         """Escalate decision to higher level."""
         next_level = from_level + 1
         

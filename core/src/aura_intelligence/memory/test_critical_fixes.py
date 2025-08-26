@@ -23,14 +23,16 @@ class TestCriticalFixes(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures."""
+        pass
         self.config = ShapeMemoryConfig(
-            storage_backend="memory",  # Use in-memory for testing
-            enable_fusion_scoring=True
+        storage_backend="memory",  # Use in-memory for testing
+        enable_fusion_scoring=True
         )
         self.memory = ShapeMemoryV2(self.config)
     
     def test_deterministic_reconstruction(self):
-        """Test that persistence diagram reconstruction is deterministic."""
+            """Test that persistence diagram reconstruction is deterministic."""
+        pass
         # Create test TDA result
         betti = BettiNumbers(b0=3, b1=2, b2=1)
         persistence_diagram = np.array([
@@ -83,25 +85,27 @@ class TestCriticalFixes(unittest.TestCase):
     
     def test_error_propagation(self):
         """Test that errors are propagated, not hidden."""
+        pass
         # Create a mock storage that fails
         with patch.object(self.memory.storage, 'search') as mock_search:
             mock_search.side_effect = Exception("Database connection failed")
             
-            tda_result = TDAResult(
-                betti_numbers=BettiNumbers(b0=1, b1=0, b2=0),
-                persistence_diagram=np.array([[0, 1]]),
-                confidence=0.9
-            )
+        tda_result = TDAResult(
+        betti_numbers=BettiNumbers(b0=1, b1=0, b2=0),
+        persistence_diagram=np.array([[0, 1]]),
+        confidence=0.9
+        )
             
-            # Should raise RuntimeError, not return empty list
-            with self.assertRaises(RuntimeError) as context:
-                self.memory.retrieve(tda_result, k=5)
+        # Should raise RuntimeError, not return empty list
+        with self.assertRaises(RuntimeError) as context:
+            self.memory.retrieve(tda_result, k=5)
             
-            self.assertIn("Memory retrieval failed", str(context.exception))
-            self.assertIn("Database connection failed", str(context.exception))
+        self.assertIn("Memory retrieval failed", str(context.exception))
+        self.assertIn("Database connection failed", str(context.exception))
     
     def test_persistence_diagram_storage(self):
-        """Test that persistence diagrams are stored in metadata."""
+            """Test that persistence diagrams are stored in metadata."""
+        pass
         # Create test data
         betti = BettiNumbers(b0=2, b1=1, b2=0)
         persistence_diagram = np.array([
@@ -119,47 +123,48 @@ class TestCriticalFixes(unittest.TestCase):
         stored_metadata = None
         original_add = self.memory.storage.add
         
-        def capture_add(*args, **kwargs):
+    def capture_add(*args, **kwargs):
             nonlocal stored_metadata
             stored_metadata = kwargs.get('metadata', {})
             return original_add(*args, **kwargs)
         
-        with patch.object(self.memory.storage, 'add', side_effect=capture_add):
-            memory_id = self.memory.store(
-                content={"test": "persistence"},
-                tda_result=tda_result
+            with patch.object(self.memory.storage, 'add', side_effect=capture_add):
+                memory_id = self.memory.store(
+            content={"test": "persistence"},
+            tda_result=tda_result
             )
         
-        # Verify persistence diagram was stored
-        self.assertIsNotNone(stored_metadata)
-        self.assertIn('persistence_diagram', stored_metadata)
+            # Verify persistence diagram was stored
+            self.assertIsNotNone(stored_metadata)
+            self.assertIn('persistence_diagram', stored_metadata)
         
-        # Verify it can be reconstructed correctly
-        stored_diagram = np.array(stored_metadata['persistence_diagram'])
-        np.testing.assert_array_almost_equal(stored_diagram, persistence_diagram)
+            # Verify it can be reconstructed correctly
+            stored_diagram = np.array(stored_metadata['persistence_diagram'])
+            np.testing.assert_array_almost_equal(stored_diagram, persistence_diagram)
     
     def test_fallback_reconstruction(self):
-        """Test fallback when persistence diagram is missing."""
-        # Metadata without persistence diagram
-        metadata = {
+                """Test fallback when persistence diagram is missing."""
+            pass
+            # Metadata without persistence diagram
+            metadata = {
             "betti_numbers": {"b0": 5, "b1": 3, "b2": 1}
-        }
+            }
         
-        # Should create deterministic synthetic diagram
-        diagram1 = self.memory._reconstruct_diagram(metadata)
-        diagram2 = self.memory._reconstruct_diagram(metadata)
+            # Should create deterministic synthetic diagram
+            diagram1 = self.memory._reconstruct_diagram(metadata)
+            diagram2 = self.memory._reconstruct_diagram(metadata)
         
-        # Check determinism
-        np.testing.assert_array_equal(diagram1, diagram2)
+            # Check determinism
+            np.testing.assert_array_equal(diagram1, diagram2)
         
-        # Check shape matches Betti numbers
-        total_features = 5 + 3 + 1  # b0 + b1 + b2
-        self.assertEqual(diagram1.shape, (total_features, 2))
+            # Check shape matches Betti numbers
+            total_features = 5 + 3 + 1  # b0 + b1 + b2
+            self.assertEqual(diagram1.shape, (total_features, 2))
         
-        # Check births < deaths (valid persistence diagram)
-        births = diagram1[:, 0]
-        deaths = diagram1[:, 1]
-        self.assertTrue(np.all(births < deaths))
+            # Check births < deaths (valid persistence diagram)
+            births = diagram1[:, 0]
+            deaths = diagram1[:, 1]
+            self.assertTrue(np.all(births < deaths))
 
 
 class TestObservabilityFixes(unittest.TestCase):
@@ -167,8 +172,9 @@ class TestObservabilityFixes(unittest.TestCase):
     
     def test_no_duplicate_metrics(self):
         """Test that metrics are not duplicated."""
+        pass
         from circle.core.src.aura_intelligence.memory.observability import (
-            PROMETHEUS_REGISTRY, QUERY_LATENCY, QUERY_TRAFFIC
+        PROMETHEUS_REGISTRY, QUERY_LATENCY, QUERY_TRAFFIC
         )
         
         # Get current metric families
@@ -177,15 +183,16 @@ class TestObservabilityFixes(unittest.TestCase):
         # Count occurrences of each metric
         metric_counts = {}
         for family in families:
-            name = family.name
-            metric_counts[name] = metric_counts.get(name, 0) + 1
+        name = family.name
+        metric_counts[name] = metric_counts.get(name, 0) + 1
         
         # Each metric should appear exactly once
         for metric_name, count in metric_counts.items():
-            self.assertEqual(count, 1, f"Metric {metric_name} appears {count} times")
+        self.assertEqual(count, 1, f"Metric {metric_name} appears {count} times")
     
     def test_backward_compatibility(self):
-        """Test backward compatibility shims."""
+            """Test backward compatibility shims."""
+        pass
         from circle.core.src.aura_intelligence.memory.observability import (
             traced, ObservabilityManager
         )
@@ -193,16 +200,16 @@ class TestObservabilityFixes(unittest.TestCase):
         # Test deprecated decorator still works
         with self.assertWarns(DeprecationWarning):
             @traced("test_operation")
-            def dummy_function():
+    def dummy_function():
                 return "success"
         
-        # Test deprecated class still works
-        with self.assertWarns(DeprecationWarning):
-            manager = ObservabilityManager()
+                # Test deprecated class still works
+                with self.assertWarns(DeprecationWarning):
+                    manager = ObservabilityManager()
         
-        # Should not crash when using old methods
-        manager.update_memory_count("test", 100)
-        manager.record_embedding_age(24.5)
+                # Should not crash when using old methods
+                manager.update_memory_count("test", 100)
+                manager.record_embedding_age(24.5)
 
 
 class TestRedisSearchFix(unittest.TestCase):
@@ -211,8 +218,9 @@ class TestRedisSearchFix(unittest.TestCase):
     @patch('redis.Redis')
     def test_version_filter_included(self, mock_redis):
         """Test that version filter is properly included in search."""
+        pass
         from circle.core.src.aura_intelligence.memory.redis_store import (
-            RedisVectorStore, RedisConfig, INDEX_NAME
+        RedisVectorStore, RedisConfig, INDEX_NAME
         )
         
         # Set up mocks
@@ -228,17 +236,17 @@ class TestRedisSearchFix(unittest.TestCase):
         # We need to mock the pool creation
         with patch('redis.BlockingConnectionPool.from_url') as mock_pool:
             mock_pool.return_value = Mock()
-            store = RedisVectorStore(config)
+        store = RedisVectorStore(config)
         
         # Mock search to capture the query
         captured_query = None
-        def capture_search(query, **kwargs):
-            nonlocal captured_query
-            captured_query = query
-            # Return mock results
-            mock_result = Mock()
-            mock_result.docs = []
-            return mock_result
+    def capture_search(query, **kwargs):
+        nonlocal captured_query
+        captured_query = query
+        # Return mock results
+        mock_result = Mock()
+        mock_result.docs = []
+        return mock_result
         
         mock_instance.ft.return_value.search = capture_search
         
@@ -253,5 +261,5 @@ class TestRedisSearchFix(unittest.TestCase):
         # This test shows how to verify it
 
 
-if __name__ == '__main__':
-    unittest.main()
+        if __name__ == '__main__':
+        unittest.main()

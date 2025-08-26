@@ -70,8 +70,8 @@ class RealOptimizerAgent:
         
         logger.info("⚡ Real Optimizer Agent initialized")
     
-    async def optimize_performance(self, evidence_log: List[Dict[str, Any]], 
-                                 context: Dict[str, Any] = None) -> OptimizationResult:
+        async def optimize_performance(self, evidence_log: List[Dict[str, Any]],
+        context: Dict[str, Any] = None) -> OptimizationResult:
         """
         Optimize system performance based on evidence analysis.
         
@@ -129,8 +129,9 @@ class RealOptimizerAgent:
         
         return result
     
-    async def _analyze_current_performance(self) -> Dict[str, Any]:
+        async def _analyze_current_performance(self) -> Dict[str, Any]:
         """Analyze current system performance metrics."""
+        pass
         
         try:
             # Get system metrics using psutil
@@ -178,7 +179,7 @@ class RealOptimizerAgent:
             }
     
     def _identify_bottlenecks(self, evidence_log: List[Dict[str, Any]], 
-                            current_performance: Dict[str, Any]) -> List[Dict[str, Any]]:
+        current_performance: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Identify performance bottlenecks from evidence and current metrics."""
         
         bottlenecks = []
@@ -330,7 +331,7 @@ class RealOptimizerAgent:
         logger.info(f"📋 Generated {len(strategies)} optimization strategies")
         return strategies
     
-    async def _apply_optimizations(self, strategies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        async def _apply_optimizations(self, strategies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Apply safe optimization strategies."""
         
         applied_optimizations = []
@@ -354,7 +355,7 @@ class RealOptimizerAgent:
         logger.info(f"⚡ Applied {len([o for o in applied_optimizations if o['success']])} optimizations")
         return applied_optimizations
     
-    async def _apply_single_optimization(self, strategy: Dict[str, Any]) -> Dict[str, Any]:
+        async def _apply_single_optimization(self, strategy: Dict[str, Any]) -> Dict[str, Any]:
         """Apply a single optimization strategy."""
         
         technique = strategy.get('technique', 'unknown')
@@ -380,7 +381,7 @@ class RealOptimizerAgent:
         logger.info(f"✅ Applied optimization: {technique}")
         return optimization_result
     
-    async def _measure_improvements(self, baseline_performance: Dict[str, Any]) -> Dict[str, float]:
+        async def _measure_improvements(self, baseline_performance: Dict[str, Any]) -> Dict[str, float]:
         """Measure performance improvements after optimization."""
         
         # Get current performance after optimizations
@@ -436,7 +437,7 @@ class RealOptimizerAgent:
         return savings
     
     def _generate_recommendations(self, bottlenecks: List[Dict[str, Any]], 
-                                applied_optimizations: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        applied_optimizations: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Generate recommendations for further optimization."""
         
         recommendations = []
@@ -482,7 +483,7 @@ class RealOptimizerAgent:
         return recommendations
     
     def _calculate_optimization_confidence(self, applied_optimizations: List[Dict[str, Any]], 
-                                         performance_improvement: Dict[str, float]) -> float:
+        performance_improvement: Dict[str, float]) -> float:
         """Calculate confidence in optimization results."""
         
         if not applied_optimizations:
@@ -509,7 +510,7 @@ class RealOptimizerAgent:
         return min(confidence, 1.0)
     
     def _generate_optimization_summary(self, applied_optimizations: List[Dict[str, Any]], 
-                                     performance_improvement: Dict[str, float]) -> str:
+        performance_improvement: Dict[str, float]) -> str:
         """Generate human-readable summary of optimization results."""
         
         successful_count = len([opt for opt in applied_optimizations if opt.get('success')])

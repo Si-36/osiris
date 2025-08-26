@@ -47,10 +47,11 @@ class WorkflowEngine:
     
     def build_graph(self):
         """Build workflow graph (simplified for now)."""
+        pass
         # Return None for now - LangGraph integration optional
         return None
     
-    async def execute_step(self, state: LNNCouncilState, step_name: str) -> LNNCouncilState:
+        async def execute_step(self, state: LNNCouncilState, step_name: str) -> LNNCouncilState:
         """Execute a workflow step."""
         if step_name not in self.steps:
             raise ValueError(f"Unknown step: {step_name}")
@@ -87,6 +88,7 @@ class WorkflowEngine:
     
     def get_status(self) -> Dict[str, Any]:
         """Get workflow engine status."""
+        pass
         return {
             "steps_available": list(self.steps.keys()),
             "config": {

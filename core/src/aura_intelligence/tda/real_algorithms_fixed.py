@@ -82,6 +82,7 @@ class RealPersistenceDiagram:
     
     def compute_entropy(self) -> float:
         """Compute persistence entropy"""
+        pass
         finite_persistence = self.persistence[self.persistence < np.inf]
         if len(finite_persistence) == 0:
             return 0.0
@@ -123,7 +124,7 @@ class RealTDAEngine:
         max_dimension: int = 2,
         max_edge_length: float = np.inf,
         resolution: float = 0.01
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Compute persistence diagrams with real algorithms
         
@@ -191,7 +192,7 @@ class RealTDAEngine:
     
     def _compute_ripser_persistence(
         self, data: np.ndarray, max_dim: int, max_edge: float, resolution: float
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Compute persistence using Ripser (fastest)"""
         if not RIPSER_AVAILABLE:
             return self._compute_spectral_persistence(data, max_dim, max_edge, resolution)
@@ -231,7 +232,7 @@ class RealTDAEngine:
     
     def _compute_gudhi_persistence(
         self, data: np.ndarray, max_dim: int, max_edge: float, resolution: float
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Compute persistence using GUDHI"""
         if not GUDHI_AVAILABLE:
             return self._compute_ripser_persistence(data, max_dim, max_edge, resolution)
@@ -279,7 +280,7 @@ class RealTDAEngine:
     
     def _compute_giotto_persistence(
         self, data: np.ndarray, max_dim: int, max_edge: float, resolution: float
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Compute persistence using Giotto-TDA"""
         if not GIOTTO_AVAILABLE:
             return self._compute_gudhi_persistence(data, max_dim, max_edge, resolution)
@@ -328,7 +329,7 @@ class RealTDAEngine:
     
     def _compute_neural_persistence(
         self, data: np.ndarray, max_dim: int, max_edge: float, resolution: float
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Neural network-based persistence (experimental)"""
         # This is a placeholder for neural persistence methods
         # In practice, you would use learned representations
@@ -338,7 +339,7 @@ class RealTDAEngine:
     
     def _compute_spectral_persistence(
         self, data: np.ndarray, max_dim: int, max_edge: float, resolution: float
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Compute persistence using spectral methods (fallback)"""
         from scipy.spatial.distance import pdist, squareform
         from scipy.sparse import csr_matrix
@@ -511,7 +512,7 @@ class RealTDAEngine:
     
     def compute_wasserstein_distance(
         self, dgm1: RealPersistenceDiagram, dgm2: RealPersistenceDiagram, p: int = 2
-    ) -> float:
+        ) -> float:
         """Compute Wasserstein distance between persistence diagrams"""
         if PERSIM_AVAILABLE:
             return wasserstein(dgm1.birth_death_pairs, dgm2.birth_death_pairs, p=p)
@@ -521,7 +522,7 @@ class RealTDAEngine:
     
     def _wasserstein_fallback(
         self, dgm1: RealPersistenceDiagram, dgm2: RealPersistenceDiagram, p: int
-    ) -> float:
+        ) -> float:
         """Fallback Wasserstein distance computation"""
         from scipy.spatial.distance import cdist
         from scipy.optimize import linear_sum_assignment
@@ -555,7 +556,7 @@ class RealTDAEngine:
     
     def compute_persistence_landscape(
         self, dgm: RealPersistenceDiagram, resolution: int = 100, k_max: int = 5
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """Compute persistence landscape"""
         if PERSIM_AVAILABLE:
             landscaper = PersLandscaper(resolution=resolution, k=k_max)
@@ -566,7 +567,7 @@ class RealTDAEngine:
     
     def _landscape_fallback(
         self, dgm: RealPersistenceDiagram, resolution: int, k_max: int
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """Fallback persistence landscape computation"""
         if dgm.num_features == 0:
             return np.zeros((k_max, resolution))
@@ -631,18 +632,18 @@ class GPUAcceleratedTDA(RealTDAEngine):
 
 
 # Factory function
-def create_tda_engine(use_gpu: bool = True, algorithm: str = 'auto') -> RealTDAEngine:
-    """Create appropriate TDA engine"""
-    if use_gpu and CUDA_AVAILABLE:
+    def create_tda_engine(use_gpu: bool = True, algorithm: str = 'auto') -> RealTDAEngine:
+        """Create appropriate TDA engine"""
+        if use_gpu and CUDA_AVAILABLE:
         return GPUAcceleratedTDA()
-    else:
+        else:
         return RealTDAEngine(use_gpu=False)
 
 
 # Export main components
 __all__ = [
-    'RealPersistenceDiagram',
-    'RealTDAEngine',
-    'GPUAcceleratedTDA',
-    'create_tda_engine'
+        'RealPersistenceDiagram',
+        'RealTDAEngine',
+        'GPUAcceleratedTDA',
+        'create_tda_engine'
 ]

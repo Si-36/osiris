@@ -38,12 +38,12 @@ class EnhancedCouncilAgent:
         self.motif_index = None  # Will be initialized
         self.experience_buffer = []
         
-    async def initialize(self, neo4j_uri: str, neo4j_auth: tuple):
+        async def initialize(self, neo4j_uri: str, neo4j_auth: tuple):
         """Initialize with existing infrastructure"""
         self.motif_index = Neo4jMotifCostIndex(neo4j_uri, neo4j_auth)
         await self.motif_index.connect()
         
-    async def make_decision(self, context: Dict[str, Any]) -> EnhancedDecision:
+        async def make_decision(self, context: Dict[str, Any]) -> EnhancedDecision:
         """Make decision using TDA + Graph analysis"""
         
         # 1. Analyze system topology
@@ -86,8 +86,8 @@ class EnhancedCouncilAgent:
             reasoning=reasoning
         )
     
-    async def _record_action(self, action: str, context: Dict[str, Any], 
-                           confidence: float, risk: RiskLevel, reasoning: str):
+        async def _record_action(self, action: str, context: Dict[str, Any],
+        confidence: float, risk: RiskLevel, reasoning: str):
         """Record action using existing action schema"""
         
         intent = ActionIntent(
@@ -114,8 +114,9 @@ class EnhancedCouncilAgent:
         
         self.experience_buffer.append(record)
         
-    async def learn_from_experience(self) -> Dict[str, float]:
+        async def learn_from_experience(self) -> Dict[str, float]:
         """Learn from recorded actions"""
+        pass
         if not self.experience_buffer:
             return {"learning_score": 0.0}
             

@@ -14,7 +14,7 @@ class RealWorkflowEngine:
         self.temporal_available = TEMPORAL_AVAILABLE
         self.workflows = {}
     
-    async def start_workflow(self, workflow_id: str, workflow_type: str, data: Dict[str, Any]) -> str:
+        async def start_workflow(self, workflow_id: str, workflow_type: str, data: Dict[str, Any]) -> str:
         """Start real Temporal workflow"""
         if self.temporal_available:
             try:
@@ -27,7 +27,7 @@ class RealWorkflowEngine:
                 )
                 return handle.id
             except Exception:
-                pass
+        pass
         
         # Fallback
         self.workflows[workflow_id] = {
@@ -37,11 +37,11 @@ class RealWorkflowEngine:
         }
         return workflow_id
     
-    async def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
+        async def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
         """Get workflow status"""
         if workflow_id in self.workflows:
             return self.workflows[workflow_id]
         return {'status': 'not_found'}
 
-def get_real_workflow_engine():
-    return RealWorkflowEngine()
+    def get_real_workflow_engine():
+        return RealWorkflowEngine()

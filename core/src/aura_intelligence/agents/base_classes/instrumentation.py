@@ -49,15 +49,15 @@ else:
     # Fallback tracer
     class NoOpTracer:
         def start_as_current_span(self, name, **kwargs):
-            def decorator(func):
-                return func
+        def decorator(func):
+            return func
             return decorator
-    tracer = NoOpTracer()
+            tracer = NoOpTracer()
 
 # Initialize meter with fallback
-if metrics:
-    meter = metrics.get_meter(__name__)
-else:
+            if metrics:
+            meter = metrics.get_meter(__name__)
+            else:
     # Fallback meter
     class NoOpMeter:
         def create_counter(self, **kwargs):
@@ -79,34 +79,34 @@ else:
                     result = await self._execute_action(decision)
                     
                     return {
-                        'status': 'success',
-                        'decision': decision,
-                        'result': result,
-                        'processing_time': time.time() - start_time,
-                        'confidence': 0.95
+                    'status': 'success',
+                    'decision': decision,
+                    'result': result,
+                    'processing_time': time.time() - start_time,
+                    'confidence': 0.95
                     }
                 
                 def _extract_features(self, data):
-                    """Extract features from data"""
+                        """Extract features from data"""
                     return data.get('features', {})
                 
                 def _make_decision(self, features):
                     """Make a decision based on features"""
                     return {'action': 'process', 'priority': 'normal'}
                 
-                async def _execute_action(self, decision):
-                    """Execute the decided action"""
+                    async def _execute_action(self, decision):
+                        """Execute the decided action"""
                     return {'executed': True, 'action': decision.get('action')}
                 
                 def add(self, n=1):
                     """Add to counter"""
                     pass
     
-            return NoOpCounter()
-        def create_histogram(self, **kwargs):
-            class NoOpHistogram:
-                async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-                    """Process data for histogram"""
+                    return NoOpCounter()
+                def create_histogram(self, **kwargs):
+                    class NoOpHistogram:
+                    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process data for histogram"""
                     import time
                     import numpy as np
                     
@@ -121,7 +121,7 @@ else:
                     # Execute action
                     result = await self._execute_action(decision)
                     
-                    return {
+                        return {
                         'status': 'success',
                         'decision': decision,
                         'result': result,
@@ -129,50 +129,50 @@ else:
                         'confidence': 0.95
                     }
                 
-                def _extract_features(self, data):
-                    """Extract features from data"""
-                    return data.get('features', {})
+                        def _extract_features(self, data):
+                            """Extract features from data"""
+                            return data.get('features', {})
                 
-                def _make_decision(self, features):
-                    """Make a decision based on features"""
-                    return {'action': 'record', 'priority': 'normal'}
+                        def _make_decision(self, features):
+                            """Make a decision based on features"""
+                            return {'action': 'record', 'priority': 'normal'}
                 
-                async def _execute_action(self, decision):
-                    """Execute the decided action"""
-                    return {'executed': True, 'action': decision.get('action')}
+                            async def _execute_action(self, decision):
+                            """Execute the decided action"""
+                            return {'executed': True, 'action': decision.get('action')}
                 
-                def record(self, value):
-                    """Record a value"""
-                    pass
+                        def record(self, value):
+                            """Record a value"""
+                            pass
             
-            return NoOpHistogram()
-        def create_gauge(self, **kwargs):
+                            return NoOpHistogram()
+                        def create_gauge(self, **kwargs):
             class NoOpGauge:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        import time
-        import numpy as np
+                    import time
+                    import numpy as np
         
-        start_time = time.time()
+                    start_time = time.time()
         
-        # Extract features
-        features = self._extract_features(data)
+                    # Extract features
+                    features = self._extract_features(data)
         
-        # Make decision
-        decision = self._make_decision(features)
+                    # Make decision
+                    decision = self._make_decision(features)
         
-        # Execute action
-        result = await self._execute_action(decision)
+                    # Execute action
+                    result = await self._execute_action(decision)
         
-        return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
-        }
+                    return {
+                    'status': 'success',
+                    'decision': decision,
+                    'result': result,
+                    'processing_time': time.time() - start_time,
+                    'confidence': 0.95
+                    }
     
-            return NoOpGauge()
-    meter = NoOpMeter()
+                    return NoOpGauge()
+                    meter = NoOpMeter()
 
 
 class AgentMetrics:
@@ -180,64 +180,64 @@ class AgentMetrics:
     def __init__(self):
         # Counters
         self.method_calls = meter.create_counter(
-            name="agent_method_calls_total",
-            description="Total number of agent method calls",
-            unit="1"
+        name="agent_method_calls_total",
+        description="Total number of agent method calls",
+        unit="1"
         )
         
         self.method_errors = meter.create_counter(
-            name="agent_method_errors_total",
-            description="Total number of agent method errors",
-            unit="1"
+        name="agent_method_errors_total",
+        description="Total number of agent method errors",
+        unit="1"
         )
         
         self.memory_operations = meter.create_counter(
-            name="agent_memory_operations_total",
-            description="Total number of memory operations",
-            unit="1"
+        name="agent_memory_operations_total",
+        description="Total number of memory operations",
+        unit="1"
         )
         
         self.message_operations = meter.create_counter(
-            name="agent_message_operations_total",
-            description="Total number of message operations",
-            unit="1"
+        name="agent_message_operations_total",
+        description="Total number of message operations",
+        unit="1"
         )
         
         # Histograms
         self.method_duration = meter.create_histogram(
-            name="agent_method_duration_ms",
-            description="Agent method execution duration",
-            unit="ms"
+        name="agent_method_duration_ms",
+        description="Agent method execution duration",
+        unit="ms"
         )
         
         self.memory_query_duration = meter.create_histogram(
-            name="agent_memory_query_duration_ms",
-            description="Memory query duration",
-            unit="ms"
+        name="agent_memory_query_duration_ms",
+        description="Memory query duration",
+        unit="ms"
         )
         
         self.message_processing_duration = meter.create_histogram(
-            name="agent_message_processing_duration_ms",
-            description="Message processing duration",
-            unit="ms"
+        name="agent_message_processing_duration_ms",
+        description="Message processing duration",
+        unit="ms"
         )
         
         # Gauges
         self.active_tasks = meter.create_gauge(
-            name="agent_active_tasks",
-            description="Number of active tasks per agent",
-            unit="1"
+        name="agent_active_tasks",
+        description="Number of active tasks per agent",
+        unit="1"
         )
         
         self.confidence_score = meter.create_histogram(
-            name="agent_confidence_score",
-            description="Agent confidence scores",
-            unit="1"
+        name="agent_confidence_score",
+        description="Agent confidence scores",
+        unit="1"
         )
 
 
-# Global metrics instance
-agent_metrics = AgentMetrics()
+    # Global metrics instance
+        agent_metrics = AgentMetrics()
 
 
 def instrument_agent(
@@ -257,226 +257,226 @@ def instrument_agent(
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs):
-            # Extract agent info from self
-            agent_self = args[0] if args else None
-            agent_id = getattr(agent_self, 'agent_id', 'unknown')
-            agent_role = getattr(agent_self, 'role', 'unknown')
-            if hasattr(agent_role, 'value'):
-                agent_role = agent_role.value
+        # Extract agent info from self
+        agent_self = args[0] if args else None
+        agent_id = getattr(agent_self, 'agent_id', 'unknown')
+        agent_role = getattr(agent_self, 'role', 'unknown')
+        if hasattr(agent_role, 'value'):
+            agent_role = agent_role.value
             
-            # Create span name
-            span_name = f"agent_{operation_type}_{func.__name__}"
+        # Create span name
+        span_name = f"agent_{operation_type}_{func.__name__}"
             
-            with tracer.start_as_current_span(span_name) as span:
-                # Set basic attributes
-                span.set_attributes({
-                    "agent.id": agent_id,
-                    "agent.role": agent_role,
-                    "operation.type": operation_type,
-                    "method.name": func.__name__,
-                    "method.module": func.__module__
-                })
+        with tracer.start_as_current_span(span_name) as span:
+            # Set basic attributes
+        span.set_attributes({
+        "agent.id": agent_id,
+        "agent.role": agent_role,
+        "operation.type": operation_type,
+        "method.name": func.__name__,
+        "method.module": func.__module__
+        })
                 
-                # Extract correlation ID if requested
-                correlation_id = None
-                if extract_correlation_id:
-                    correlation_id = _extract_correlation_id(args, kwargs)
-                    if correlation_id:
-                        span.set_attribute("correlation.id", correlation_id)
+        # Extract correlation ID if requested
+        correlation_id = None
+        if extract_correlation_id:
+            correlation_id = _extract_correlation_id(args, kwargs)
+        if correlation_id:
+            span.set_attribute("correlation.id", correlation_id)
                 
-                # Record arguments if requested
-                if record_args:
-                    _record_method_args(span, args, kwargs)
+        # Record arguments if requested
+        if record_args:
+            _record_method_args(span, args, kwargs)
                 
-                start_time = time.time()
+        start_time = time.time()
                 
-                try:
-                    # Execute the method
-                    if inspect.iscoroutinefunction(func):
-                        result = await func(*args, **kwargs)
-                    else:
-                        result = func(*args, **kwargs)
+        try:
+            # Execute the method
+        if inspect.iscoroutinefunction(func):
+            result = await func(*args, **kwargs)
+        else:
+        result = func(*args, **kwargs)
                     
-                    # Calculate duration
-                    duration_ms = (time.time() - start_time) * 1000
+        # Calculate duration
+        duration_ms = (time.time() - start_time) * 1000
                     
-                    # Record metrics
-                    agent_metrics.method_calls.add(1, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__,
-                        "status": "success"
-                    })
+        # Record metrics
+        agent_metrics.method_calls.add(1, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__,
+        "status": "success"
+        })
                     
-                    agent_metrics.method_duration.record(duration_ms, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__
-                    })
+        agent_metrics.method_duration.record(duration_ms, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__
+        })
                     
-                    # Record result if requested
-                    if record_result and result is not None:
-                        _record_method_result(span, result)
+        # Record result if requested
+        if record_result and result is not None:
+            _record_method_result(span, result)
                     
-                    # Set span attributes
-                    span.set_attributes({
-                        "method.duration_ms": duration_ms,
-                        "method.status": "success"
-                    })
+        # Set span attributes
+        span.set_attributes({
+        "method.duration_ms": duration_ms,
+        "method.status": "success"
+        })
                     
-                    span.set_status(Status(StatusCode.OK))
+        span.set_status(Status(StatusCode.OK))
                     
-                    return result
+        return result
                     
-                except Exception as e:
-                    # Calculate duration
-                    duration_ms = (time.time() - start_time) * 1000
+        except Exception as e:
+        # Calculate duration
+        duration_ms = (time.time() - start_time) * 1000
                     
-                    # Record error metrics
-                    agent_metrics.method_errors.add(1, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__,
-                        "error_type": type(e).__name__
-                    })
+        # Record error metrics
+        agent_metrics.method_errors.add(1, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__,
+        "error_type": type(e).__name__
+        })
                     
-                    agent_metrics.method_duration.record(duration_ms, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__
-                    })
+        agent_metrics.method_duration.record(duration_ms, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__
+        })
                     
-                    # Record exception in span
-                    span.record_exception(e)
-                    span.set_attributes({
-                        "method.duration_ms": duration_ms,
-                        "method.status": "error",
-                        "error.type": type(e).__name__,
-                        "error.message": str(e)
-                    })
-                    span.set_status(Status(StatusCode.ERROR, str(e)))
+        # Record exception in span
+        span.record_exception(e)
+        span.set_attributes({
+        "method.duration_ms": duration_ms,
+        "method.status": "error",
+        "error.type": type(e).__name__,
+        "error.message": str(e)
+        })
+        span.set_status(Status(StatusCode.ERROR, str(e)))
                     
-                    raise
+        raise
         
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs):
-            # Similar implementation for sync functions
-            agent_self = args[0] if args else None
-            agent_id = getattr(agent_self, 'agent_id', 'unknown')
-            agent_role = getattr(agent_self, 'role', 'unknown')
-            if hasattr(agent_role, 'value'):
-                agent_role = agent_role.value
+        # Similar implementation for sync functions
+        agent_self = args[0] if args else None
+        agent_id = getattr(agent_self, 'agent_id', 'unknown')
+        agent_role = getattr(agent_self, 'role', 'unknown')
+        if hasattr(agent_role, 'value'):
+            agent_role = agent_role.value
             
-            span_name = f"agent_{operation_type}_{func.__name__}"
+        span_name = f"agent_{operation_type}_{func.__name__}"
             
-            with tracer.start_as_current_span(span_name) as span:
-                span.set_attributes({
-                    "agent.id": agent_id,
-                    "agent.role": agent_role,
-                    "operation.type": operation_type,
-                    "method.name": func.__name__,
-                    "method.module": func.__module__
-                })
+        with tracer.start_as_current_span(span_name) as span:
+            span.set_attributes({
+        "agent.id": agent_id,
+        "agent.role": agent_role,
+        "operation.type": operation_type,
+        "method.name": func.__name__,
+        "method.module": func.__module__
+        })
                 
-                if extract_correlation_id:
-                    correlation_id = _extract_correlation_id(args, kwargs)
-                    if correlation_id:
-                        span.set_attribute("correlation.id", correlation_id)
+        if extract_correlation_id:
+            correlation_id = _extract_correlation_id(args, kwargs)
+        if correlation_id:
+            span.set_attribute("correlation.id", correlation_id)
                 
-                if record_args:
-                    _record_method_args(span, args, kwargs)
+        if record_args:
+            _record_method_args(span, args, kwargs)
                 
-                start_time = time.time()
+        start_time = time.time()
                 
-                try:
-                    result = func(*args, **kwargs)
-                    duration_ms = (time.time() - start_time) * 1000
+        try:
+            result = func(*args, **kwargs)
+        duration_ms = (time.time() - start_time) * 1000
                     
-                    agent_metrics.method_calls.add(1, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__,
-                        "status": "success"
-                    })
+        agent_metrics.method_calls.add(1, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__,
+        "status": "success"
+        })
                     
-                    agent_metrics.method_duration.record(duration_ms, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__
-                    })
+        agent_metrics.method_duration.record(duration_ms, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__
+        })
                     
-                    if record_result and result is not None:
-                        _record_method_result(span, result)
+        if record_result and result is not None:
+            _record_method_result(span, result)
                     
-                    span.set_attributes({
-                        "method.duration_ms": duration_ms,
-                        "method.status": "success"
-                    })
-                    span.set_status(Status(StatusCode.OK))
+        span.set_attributes({
+        "method.duration_ms": duration_ms,
+        "method.status": "success"
+        })
+        span.set_status(Status(StatusCode.OK))
                     
-                    return result
+        return result
                     
-                except Exception as e:
-                    duration_ms = (time.time() - start_time) * 1000
+        except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
                     
-                    agent_metrics.method_errors.add(1, {
-                        "agent_id": agent_id,
-                        "agent_role": agent_role,
-                        "operation_type": operation_type,
-                        "method": func.__name__,
-                        "error_type": type(e).__name__
-                    })
+        agent_metrics.method_errors.add(1, {
+        "agent_id": agent_id,
+        "agent_role": agent_role,
+        "operation_type": operation_type,
+        "method": func.__name__,
+        "error_type": type(e).__name__
+        })
                     
-                    span.record_exception(e)
-                    span.set_attributes({
-                        "method.duration_ms": duration_ms,
-                        "method.status": "error",
-                        "error.type": type(e).__name__,
-                        "error.message": str(e)
-                    })
-                    span.set_status(Status(StatusCode.ERROR, str(e)))
+        span.record_exception(e)
+        span.set_attributes({
+        "method.duration_ms": duration_ms,
+        "method.status": "error",
+        "error.type": type(e).__name__,
+        "error.message": str(e)
+        })
+        span.set_status(Status(StatusCode.ERROR, str(e)))
                     
-                    raise
+        raise
         
         # Return appropriate wrapper based on function type
         if inspect.iscoroutinefunction(func):
             return async_wrapper
         else:
-            return sync_wrapper
+        return sync_wrapper
     
-    return decorator
+        return decorator
 
 
 def instrument_memory_operation(operation: str = "query"):
     return instrument_agent(
-        operation_type=f"memory_{operation}",
-        record_args=True,
-        record_result=False,  # Don't record full results (could be large)
-        extract_correlation_id=True
+    operation_type=f"memory_{operation}",
+    record_args=True,
+    record_result=False,  # Don't record full results (could be large)
+    extract_correlation_id=True
     )
 
 
 def instrument_message_operation(operation: str = "send"):
     return instrument_agent(
-        operation_type=f"message_{operation}",
-        record_args=False,  # Don't record message content for security
-        record_result=False,
-        extract_correlation_id=True
+    operation_type=f"message_{operation}",
+    record_args=False,  # Don't record message content for security
+    record_result=False,
+    extract_correlation_id=True
     )
 
 
 def instrument_task_processing():
     return instrument_agent(
-        operation_type="task_processing",
-        record_args=False,  # AgentState could be large
-        record_result=False,
-        extract_correlation_id=True
+    operation_type="task_processing",
+    record_args=False,  # AgentState could be large
+    record_result=False,
+    extract_correlation_id=True
     )
 
 
@@ -487,12 +487,12 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
     
     # Check for AgentState in args
     for arg in args:
-        if isinstance(arg, AgentState):
-            return arg.correlation_id
-        elif isinstance(arg, ACPEnvelope):
-            return arg.correlation_id
-        elif isinstance(arg, dict) and 'correlation_id' in arg:
-            return arg['correlation_id']
+    if isinstance(arg, AgentState):
+        return arg.correlation_id
+    elif isinstance(arg, ACPEnvelope):
+    return arg.correlation_id
+    elif isinstance(arg, dict) and 'correlation_id' in arg:
+    return arg['correlation_id']
     
     return None
 
@@ -500,58 +500,58 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
 def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
     try:
         # Record number of args
-        span.set_attribute("method.args_count", len(args))
-        span.set_attribute("method.kwargs_count", len(kwargs))
+    span.set_attribute("method.args_count", len(args))
+    span.set_attribute("method.kwargs_count", len(kwargs))
         
-        # Record specific argument types and values (safely)
-        for i, arg in enumerate(args[1:], 1):  # Skip self
-            arg_type = type(arg).__name__
-            span.set_attribute(f"method.arg_{i}_type", arg_type)
+    # Record specific argument types and values (safely)
+    for i, arg in enumerate(args[1:], 1):  # Skip self
+    arg_type = type(arg).__name__
+    span.set_attribute(f"method.arg_{i}_type", arg_type)
             
-            # Record safe values
-            if isinstance(arg, (str, int, float, bool)):
-                if isinstance(arg, str) and len(arg) < 100:
-                    span.set_attribute(f"method.arg_{i}_value", arg)
-                elif not isinstance(arg, str):
-                    span.set_attribute(f"method.arg_{i}_value", str(arg))
+    # Record safe values
+    if isinstance(arg, (str, int, float, bool)):
+        if isinstance(arg, str) and len(arg) < 100:
+            span.set_attribute(f"method.arg_{i}_value", arg)
+    elif not isinstance(arg, str):
+    span.set_attribute(f"method.arg_{i}_value", str(arg))
         
-        # Record safe kwargs
-        for key, value in kwargs.items():
-            if isinstance(value, (str, int, float, bool)):
-                if isinstance(value, str) and len(value) < 100:
-                    span.set_attribute(f"method.kwarg_{key}", value)
-                elif not isinstance(value, str):
-                    span.set_attribute(f"method.kwarg_{key}", str(value))
+    # Record safe kwargs
+    for key, value in kwargs.items():
+    if isinstance(value, (str, int, float, bool)):
+        if isinstance(value, str) and len(value) < 100:
+            span.set_attribute(f"method.kwarg_{key}", value)
+    elif not isinstance(value, str):
+    span.set_attribute(f"method.kwarg_{key}", str(value))
     
     except Exception:
-        # Don't fail the method if argument recording fails
-        pass
+    # Don't fail the method if argument recording fails
+    pass
 
 
 def _record_method_result(span: Span, result: Any) -> None:
     try:
         result_type = type(result).__name__
-        span.set_attribute("method.result_type", result_type)
+    span.set_attribute("method.result_type", result_type)
         
-        # Record safe result information
-        if isinstance(result, (str, int, float, bool)):
-            if isinstance(result, str) and len(result) < 100:
-                span.set_attribute("method.result_value", result)
-            elif not isinstance(result, str):
-                span.set_attribute("method.result_value", str(result))
-        elif isinstance(result, (list, tuple)):
-            span.set_attribute("method.result_length", len(result))
-        elif isinstance(result, dict):
-            span.set_attribute("method.result_keys_count", len(result))
-        elif hasattr(result, '__len__'):
-            try:
-                span.set_attribute("method.result_length", len(result))
-            except:
-                pass
+    # Record safe result information
+    if isinstance(result, (str, int, float, bool)):
+        if isinstance(result, str) and len(result) < 100:
+            span.set_attribute("method.result_value", result)
+    elif not isinstance(result, str):
+    span.set_attribute("method.result_value", str(result))
+    elif isinstance(result, (list, tuple)):
+    span.set_attribute("method.result_length", len(result))
+    elif isinstance(result, dict):
+    span.set_attribute("method.result_keys_count", len(result))
+    elif hasattr(result, '__len__'):
+    try:
+        span.set_attribute("method.result_length", len(result))
+    except:
+    pass
     
     except Exception:
-        # Don't fail the method if result recording fails
-        pass
+    # Don't fail the method if result recording fails
+    pass
 
 
 def create_child_span(
@@ -588,7 +588,7 @@ def inject_trace_context() -> Dict[str, str]:
     Inject current trace context for propagation.
     
     Returns:
-        Trace context headers
+    Trace context headers
     """
     headers = {}
     inject(headers)
@@ -643,11 +643,11 @@ def update_active_tasks_gauge(agent_id: str, agent_role: str, count: int) -> Non
     Update active tasks gauge.
     
     Args:
-        agent_id: Agent identifier
-        agent_role: Agent role
-        count: Number of active tasks
+    agent_id: Agent identifier
+    agent_role: Agent role
+    count: Number of active tasks
     """
     agent_metrics.active_tasks.set(count, {
-        "agent_id": agent_id,
-        "agent_role": agent_role
+    "agent_id": agent_id,
+    "agent_role": agent_role
     })

@@ -20,11 +20,28 @@ Latest 2025 Features:
 ✅ Bio-inspired organism health monitoring
 """
 
-from aura_intelligence.config import (
-    ObservabilityConfig,
-    create_development_config,
-    create_production_config,
-)
+# Avoid circular import - define local config classes
+class ObservabilityConfig:
+    """Local observability configuration to avoid circular imports"""
+    def __init__(self):
+        self.enable_metrics = True
+        self.enable_tracing = True
+        self.enable_profiling = False
+        self.langsmith_enabled = False
+        self.prometheus_enabled = True
+        self.opentelemetry_enabled = True
+
+    def create_development_config():
+        """Create development observability config"""
+        config = ObservabilityConfig()
+        config.enable_profiling = True
+        return config
+
+    def create_production_config():
+        """Create production observability config"""
+        config = ObservabilityConfig()
+        config.langsmith_enabled = True
+        return config
 from .core import NeuralObservabilityCore
 try:
     from .opentelemetry_integration import OpenTelemetryManager

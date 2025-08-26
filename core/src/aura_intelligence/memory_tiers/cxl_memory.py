@@ -111,7 +111,7 @@ class CXLMemoryManager:
         """Deserialize data from storage"""
         return pickle.loads(data)
     
-    async def store(self, key: str, data: Any, tier: Optional[MemoryTier] = None) -> bool:
+        async def store(self, key: str, data: Any, tier: Optional[MemoryTier] = None) -> bool:
         """Store data in appropriate tier"""
         serialized_data = self._serialize_data(data)
         size_bytes = len(serialized_data)
@@ -156,7 +156,7 @@ class CXLMemoryManager:
         
         return True
     
-    async def retrieve(self, key: str) -> Optional[Any]:
+        async def retrieve(self, key: str) -> Optional[Any]:
         """Retrieve data from any tier"""
         # Search through tiers (hot to cold)
         for tier in [MemoryTier.L0_HBM, MemoryTier.L1_DDR, MemoryTier.L2_CXL, 
@@ -201,7 +201,7 @@ class CXLMemoryManager:
         self.stats['cache_misses'] += 1
         return None
     
-    async def _promote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+        async def _promote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
         """Promote object to faster tier"""
         if obj.tier == target_tier:
             return
@@ -218,7 +218,7 @@ class CXLMemoryManager:
         
         self.stats['promotion_events'] += 1
     
-    async def _demote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+        async def _demote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
         """Demote object to slower tier"""
         if obj.tier == target_tier:
             return
@@ -237,6 +237,7 @@ class CXLMemoryManager:
     
     def _background_promotion(self):
         """Background thread for promotion/demotion"""
+        pass
         while True:
             try:
                 # Check all objects for promotion/demotion opportunities
@@ -259,6 +260,7 @@ class CXLMemoryManager:
     
     def get_memory_stats(self) -> Dict[str, Any]:
         """Get memory tier statistics"""
+        pass
         total_size_by_tier = {}
         for tier, objects in self.tiers.items():
             total_size = sum(obj.size_bytes for obj in objects.values())
@@ -276,5 +278,5 @@ class CXLMemoryManager:
             'cache_hit_rate': self.stats['cache_hits'] / max(1, self.stats['cache_hits'] + self.stats['cache_misses'])
         }
 
-def get_cxl_memory_manager():
-    return CXLMemoryManager()
+    def get_cxl_memory_manager():
+        return CXLMemoryManager()

@@ -61,7 +61,7 @@ class TDAService:
         from .unified_engine import UnifiedTDAEngine
         self.engine = UnifiedTDAEngine()
         
-    async def analyze(self, request: TDAServiceRequest) -> TDAServiceResponse:
+        async def analyze(self, request: TDAServiceRequest) -> TDAServiceResponse:
         """
         Analyze data using TDA.
         
@@ -95,8 +95,9 @@ class TDAService:
             metadata=result.get("metadata", {})
         )
         
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Check service health."""
+        pass
         return {
             "status": "healthy",
             "service": "TDA Service",

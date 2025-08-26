@@ -29,13 +29,14 @@ class AgentCouncil:
         self.agents: List[str] = ["observer", "analyst", "supervisor"]
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize the council"""
+        pass
         # In a real implementation, this would initialize actual agents
         logger.info("Agent council initialized with agents: %s", self.agents)
         self._initialized = True
         
-    async def deliberate(self, context: Dict[str, Any], timeout: float = 30.0) -> Dict[str, Any]:
+        async def deliberate(self, context: Dict[str, Any], timeout: float = 30.0) -> Dict[str, Any]:
         """
         Coordinate agent deliberation on the given context.
         
@@ -106,7 +107,8 @@ class AgentCouncil:
             "risk_level": "critical" if anomaly_score > 0.8 else "normal"
         }
         
-    async def cleanup(self):
+        async def cleanup(self):
         """Cleanup council resources"""
+        pass
         logger.info("Agent council cleanup completed")
         self._initialized = False

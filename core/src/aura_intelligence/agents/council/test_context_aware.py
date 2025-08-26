@@ -41,10 +41,10 @@ class MockLNNCouncilState:
         }
 
 async def test_context_encoder():
-    """Test the context encoder."""
-    print("🧪 Testing Context Encoder")
+        """Test the context encoder."""
+        print("🧪 Testing Context Encoder")
     
-    try:
+        try:
         # Import here to avoid path issues
         import sys, os
         sys.path.insert(0, os.path.dirname(__file__))
@@ -67,15 +67,15 @@ async def test_context_encoder():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Context encoder test failed: {e}")
         return False
 
 async def test_memory_context():
-    """Test the memory context provider."""
-    print("\n🧪 Testing Memory Context Provider")
+        """Test the memory context provider."""
+        print("\n🧪 Testing Memory Context Provider")
     
-    try:
+        try:
         from memory_context import MemoryContextProvider
         
         config = MockLNNCouncilConfig()
@@ -92,15 +92,15 @@ async def test_memory_context():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Memory context test failed: {e}")
         return False
 
 async def test_knowledge_context():
-    """Test the knowledge graph context provider."""
-    print("\n🧪 Testing Knowledge Graph Context Provider")
+        """Test the knowledge graph context provider."""
+        print("\n🧪 Testing Knowledge Graph Context Provider")
     
-    try:
+        try:
         from knowledge_context import KnowledgeGraphContextProvider
         
         config = MockLNNCouncilConfig()
@@ -117,15 +117,15 @@ async def test_knowledge_context():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Knowledge context test failed: {e}")
         return False
 
 async def test_integration():
-    """Test the integrated context-aware system."""
-    print("\n🧪 Testing Context-Aware Integration")
+        """Test the integrated context-aware system."""
+        print("\n🧪 Testing Context-Aware Integration")
     
-    try:
+        try:
         # Test that all components can work together
         from context_encoder import ContextEncoder
         from memory_context import MemoryContextProvider
@@ -159,25 +159,25 @@ async def test_integration():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Integration test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
 
 async def main():
-    """Run all context-aware tests."""
-    print("🚀 Context-Aware LNN Engine Tests (2025)\n")
+        """Run all context-aware tests."""
+        print("🚀 Context-Aware LNN Engine Tests (2025)\n")
     
-    tests = [
+        tests = [
         test_context_encoder,
         test_memory_context,
         test_knowledge_context,
         test_integration
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -185,9 +185,9 @@ async def main():
             print(f"❌ Test {test.__name__} crashed: {e}")
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All context-aware tests passed!")
         print("\n🎯 Context-Aware Features Verified:")
         print("   • Multi-source context encoding")
@@ -196,10 +196,10 @@ async def main():
         print("   • Feature engineering with domain knowledge")
         print("   • Temporal and hierarchical features")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

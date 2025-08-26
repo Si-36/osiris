@@ -21,8 +21,8 @@ class RecoveryStrategy(ABC):
         """Get delay before next retry attempt."""
         pass
     
-    @abstractmethod
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        @abstractmethod
+        def should_retry(self, attempt: int, error: Exception) -> bool:
         """Determine if we should retry."""
         pass
 
@@ -47,12 +47,12 @@ class ExponentialBackoff(RecoveryStrategy):
         delay = min(self.base_delay * (2 ** attempt), self.max_delay)
         
         if self.jitter:
-            # Add random jitter to prevent thundering herd
-            delay = delay * (0.5 + random.random() * 0.5)
+        # Add random jitter to prevent thundering herd
+        delay = delay * (0.5 + random.random() * 0.5)
         
         return delay
     
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        def should_retry(self, attempt: int, error: Exception) -> bool:
         """Check if we should retry."""
         return attempt < self.max_attempts
 
@@ -72,7 +72,7 @@ class LinearBackoff(RecoveryStrategy):
         """Get constant delay."""
         return self.delay
     
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        def should_retry(self, attempt: int, error: Exception) -> bool:
         """Check if we should retry."""
         return attempt < self.max_attempts
 
@@ -99,15 +99,15 @@ def with_retry(
         )
         async def fetch_data():
             return await api.get_data()
-        ```
-    """
-    if strategy is None:
-        strategy = ExponentialBackoff()
+            ```
+            """
+            if strategy is None:
+            strategy = ExponentialBackoff()
     
-    def decorator(func: Callable[..., T]) -> Callable[..., T]:
-        @wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> T:
-            attempt = 0
+            def decorator(func: Callable[..., T]) -> Callable[..., T]:
+            @wraps(func)
+            async def async_wrapper(*args: Any, **kwargs: Any) -> T:
+        attempt = 0
             last_error: Optional[Exception] = None
             
             while True:
@@ -132,25 +132,25 @@ def with_retry(
             last_error: Optional[Exception] = None
             
             while True:
-                try:
-                    return func(*args, **kwargs)
-                except exceptions as e:
-                    last_error = e
+            try:
+            return func(*args, **kwargs)
+            except exceptions as e:
+            last_error = e
                     
-                    if not strategy.should_retry(attempt, e):
-                        raise
+            if not strategy.should_retry(attempt, e):
+            raise
                     
-                    if on_retry:
-                        on_retry(attempt, e)
+            if on_retry:
+            on_retry(attempt, e)
                     
-                    delay = strategy.get_delay(attempt)
-                    time.sleep(delay)
-                    attempt += 1
+            delay = strategy.get_delay(attempt)
+            time.sleep(delay)
+            attempt += 1
         
-        # Return appropriate wrapper
-        import asyncio
-        if asyncio.iscoroutinefunction(func):
+            # Return appropriate wrapper
+            import asyncio
+            if asyncio.iscoroutinefunction(func):
             return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+            return sync_wrapper  # type: ignore
     
-    return decorator
+            return decorator

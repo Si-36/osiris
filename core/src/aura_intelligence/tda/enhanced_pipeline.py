@@ -16,6 +16,7 @@ class EnhancedTDAPipeline:
     
     def _init_components(self):
         """Initialize all pipeline components"""
+        pass
         try:
             from .phformer_integration import get_phformer_processor
             from .multi_parameter_persistence import get_multiparameter_processor
@@ -232,6 +233,7 @@ class EnhancedTDAPipeline:
     
     def get_pipeline_info(self) -> Dict[str, Any]:
         """Get pipeline information"""
+        pass
         return {
             'components_loaded': self.components_loaded,
             'device': self.device,
@@ -239,5 +241,5 @@ class EnhancedTDAPipeline:
             'fallback_reason': getattr(self, 'fallback_reason', None)
         }
 
-def get_enhanced_pipeline(device='auto'):
-    return EnhancedTDAPipeline(device)
+    def get_enhanced_pipeline(device='auto'):
+        return EnhancedTDAPipeline(device)

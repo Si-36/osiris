@@ -170,12 +170,12 @@ class ObservabilitySystem:
         """Initialize distributed tracing"""
         # Create resource
         resource = Resource.create({
-            SERVICE_NAME: self.service_name,
-            SERVICE_VERSION: self.service_version,
-            "deployment.environment": self.attributes.DEPLOYMENT_ENV,
-            "telemetry.sdk.language": "python",
-            "telemetry.sdk.name": "opentelemetry",
-            "host.name": self._get_hostname(),
+        SERVICE_NAME: self.service_name,
+        SERVICE_VERSION: self.service_version,
+        "deployment.environment": self.attributes.DEPLOYMENT_ENV,
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "host.name": self._get_hostname(),
         })
         
         # Create tracer provider
@@ -183,30 +183,30 @@ class ObservabilitySystem:
         
         # Add Jaeger exporter
         jaeger_exporter = JaegerExporter(
-            collector_endpoint=jaeger_endpoint,
-            max_tag_value_length=2048
+        collector_endpoint=jaeger_endpoint,
+        max_tag_value_length=2048
         )
         self.tracer_provider.add_span_processor(
-            BatchSpanProcessor(jaeger_exporter)
+        BatchSpanProcessor(jaeger_exporter)
         )
         
         # Add console exporter for debugging
         if enable_console:
             self.tracer_provider.add_span_processor(
-                BatchSpanProcessor(ConsoleSpanExporter())
-            )
+        BatchSpanProcessor(ConsoleSpanExporter())
+        )
         
         # Set global tracer provider
         trace.set_tracer_provider(self.tracer_provider)
         
         # Get tracer
         self.tracer = trace.get_tracer(
-            self.service_name,
-            self.service_version
+        self.service_name,
+        self.service_version
         )
     
     def _init_metrics(self, prometheus_port: int):
-        """Initialize metrics collection"""
+            """Initialize metrics collection"""
         # Create meter provider with Prometheus exporter
         reader = PrometheusMetricReader()
         self.meter_provider = MeterProvider(
@@ -240,21 +240,21 @@ class ObservabilitySystem:
         """Initialize structured logging"""
         # Configure structured logging
         structlog.configure(
-            processors=[
-                structlog.stdlib.filter_by_level,
-                structlog.stdlib.add_logger_name,
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.PositionalArgumentsFormatter(),
-                structlog.processors.TimeStamper(fmt="iso"),
-                structlog.processors.StackInfoRenderer(),
-                structlog.processors.format_exc_info,
-                structlog.processors.UnicodeDecoder(),
-                self._add_trace_context,
-                structlog.processors.JSONRenderer()
-            ],
-            context_class=dict,
-            logger_factory=structlog.stdlib.LoggerFactory(),
-            cache_logger_on_first_use=True,
+        processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        self._add_trace_context,
+        structlog.processors.JSONRenderer()
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
         )
         
         # Set up JSON formatter for standard logging
@@ -273,7 +273,8 @@ class ObservabilitySystem:
         LoggingInstrumentor().instrument(set_logging_format=True)
     
     def _add_trace_context(self, logger, method_name, event_dict):
-        """Add trace context to logs"""
+            """Add trace context to logs"""
+        pass
         span = trace.get_current_span()
         if span and span.is_recording():
             span_context = span.get_span_context()
@@ -284,56 +285,58 @@ class ObservabilitySystem:
     
     def _create_standard_metrics(self):
         """Create standard application metrics"""
+        pass
         # Request metrics
         self.request_counter = self.meter.create_counter(
-            name="requests_total",
-            description="Total number of requests",
-            unit="1"
+        name="requests_total",
+        description="Total number of requests",
+        unit="1"
         )
         
         self.request_duration = self.meter.create_histogram(
-            name="request_duration_seconds",
-            description="Request duration in seconds",
-            unit="s"
+        name="request_duration_seconds",
+        description="Request duration in seconds",
+        unit="s"
         )
         
         # Error metrics
         self.error_counter = self.meter.create_counter(
-            name="errors_total",
-            description="Total number of errors",
-            unit="1"
+        name="errors_total",
+        description="Total number of errors",
+        unit="1"
         )
         
         # Business metrics
         self.cascade_predictions = self.meter.create_counter(
-            name="cascade_predictions_total",
-            description="Total cascade failure predictions",
-            unit="1"
+        name="cascade_predictions_total",
+        description="Total cascade failure predictions",
+        unit="1"
         )
         
         self.topology_computations = self.meter.create_histogram(
-            name="topology_computation_duration_seconds",
-            description="Topology computation duration",
-            unit="s"
+        name="topology_computation_duration_seconds",
+        description="Topology computation duration",
+        unit="s"
         )
         
         # System metrics
         self.active_agents = self.meter.create_up_down_counter(
-            name="active_agents",
-            description="Number of active agents",
-            unit="1"
+        name="active_agents",
+        description="Number of active agents",
+        unit="1"
         )
         
         # Async gauge for system health
         self.meter.create_observable_gauge(
-            name="system_health_score",
-            callbacks=[self._observe_system_health],
-            description="Overall system health score (0-100)",
-            unit="1"
+        name="system_health_score",
+        callbacks=[self._observe_system_health],
+        description="Overall system health score (0-100)",
+        unit="1"
         )
     
     def _create_prometheus_metrics(self):
-        """Create Prometheus-specific metrics"""
+            """Create Prometheus-specific metrics"""
+        pass
         self.prom_request_duration = PromHistogram(
             'http_request_duration_seconds',
             'HTTP request duration',
@@ -362,22 +365,23 @@ class ObservabilitySystem:
         
         # Factor in error rate
         recent_errors = sum(1 for e in self.error_samples if 
-                          time.time() - e.get('timestamp', 0) < 300)
+        time.time() - e.get('timestamp', 0) < 300)
         if recent_errors > 0:
             health_score -= min(recent_errors * 5, 50)
         
         # Factor in SLO compliance
         for slo_name, target in self.slo_targets.items():
-            measurements = self.sli_measurements.get(slo_name, [])
-            if measurements:
-                compliance = sum(1 for m in measurements if m >= target) / len(measurements)
-                if compliance < 0.95:  # 95% SLO target
-                    health_score -= (1 - compliance) * 20
+        measurements = self.sli_measurements.get(slo_name, [])
+        if measurements:
+            compliance = sum(1 for m in measurements if m >= target) / len(measurements)
+        if compliance < 0.95:  # 95% SLO target
+        health_score -= (1 - compliance) * 20
         
         return [Observation(value=max(0, health_score))]
     
     def _setup_custom_collectors(self):
-        """Setup custom metric collectors"""
+            """Setup custom metric collectors"""
+        pass
         # Topology metrics collector
         self.meter.create_observable_counter(
             name="topology_changes_total",
@@ -416,307 +420,311 @@ class ObservabilitySystem:
     
     def _get_hostname(self) -> str:
         """Get hostname for resource attributes"""
+        pass
         import socket
         return socket.gethostname()
     
-    # Decorator for tracing functions
-    def trace(
+        # Decorator for tracing functions
+        def trace(
         self,
         name: Optional[str] = None,
         kind: SpanKind = SpanKind.INTERNAL,
         attributes: Optional[Dict[str, Any]] = None,
         record_exception: bool = True
-    ):
+        ):
         """Decorator to trace function execution"""
-        def decorator(func: F) -> F:
+    def decorator(func: F) -> F:
             @functools.wraps(func)
             async def async_wrapper(*args, **kwargs):
-                span_name = name or f"{func.__module__}.{func.__name__}"
+            span_name = name or f"{func.__module__}.{func.__name__}"
                 
-                with self.tracer.start_as_current_span(
-                    span_name,
-                    kind=kind,
-                    attributes=attributes or {}
-                ) as span:
-                    try:
-                        # Add function metadata
-                        span.set_attribute("function.name", func.__name__)
-                        span.set_attribute("function.module", func.__module__)
+            with self.tracer.start_as_current_span(
+            span_name,
+            kind=kind,
+            attributes=attributes or {}
+            ) as span:
+            try:
+                # Add function metadata
+            span.set_attribute("function.name", func.__name__)
+            span.set_attribute("function.module", func.__module__)
                         
-                        # Execute function
-                        result = await func(*args, **kwargs)
+            # Execute function
+            result = await func(*args, **kwargs)
                         
-                        # Mark success
-                        span.set_status(Status(StatusCode.OK))
+            # Mark success
+            span.set_status(Status(StatusCode.OK))
                         
-                        return result
+            return result
                         
-                    except Exception as e:
-                        if record_exception:
-                            span.record_exception(e)
-                        span.set_status(
-                            Status(StatusCode.ERROR, str(e))
-                        )
-                        self._record_error(e, span_name)
-                        raise
+            except Exception as e:
+            if record_exception:
+                span.record_exception(e)
+            span.set_status(
+            Status(StatusCode.ERROR, str(e))
+            )
+            self._record_error(e, span_name)
+            raise
             
             @functools.wraps(func)
-            def sync_wrapper(*args, **kwargs):
-                span_name = name or f"{func.__module__}.{func.__name__}"
+    def sync_wrapper(*args, **kwargs):
+            span_name = name or f"{func.__module__}.{func.__name__}"
                 
-                with self.tracer.start_as_current_span(
-                    span_name,
-                    kind=kind,
-                    attributes=attributes or {}
-                ) as span:
-                    try:
-                        # Add function metadata
-                        span.set_attribute("function.name", func.__name__)
-                        span.set_attribute("function.module", func.__module__)
+            with self.tracer.start_as_current_span(
+            span_name,
+            kind=kind,
+            attributes=attributes or {}
+            ) as span:
+            try:
+                # Add function metadata
+            span.set_attribute("function.name", func.__name__)
+            span.set_attribute("function.module", func.__module__)
                         
-                        # Execute function
-                        result = func(*args, **kwargs)
+            # Execute function
+            result = func(*args, **kwargs)
                         
-                        # Mark success
-                        span.set_status(Status(StatusCode.OK))
+            # Mark success
+            span.set_status(Status(StatusCode.OK))
                         
-                        return result
+            return result
                         
-                    except Exception as e:
-                        if record_exception:
-                            span.record_exception(e)
-                        span.set_status(
-                            Status(StatusCode.ERROR, str(e))
-                        )
-                        self._record_error(e, span_name)
-                        raise
+            except Exception as e:
+            if record_exception:
+                span.record_exception(e)
+            span.set_status(
+            Status(StatusCode.ERROR, str(e))
+            )
+            self._record_error(e, span_name)
+            raise
             
             # Return appropriate wrapper
             if asyncio.iscoroutinefunction(func):
                 return async_wrapper
             else:
-                return sync_wrapper
+            return sync_wrapper
         
-        return decorator
+            return decorator
     
-    # Context manager for tracing
-    @contextmanager
-    def trace_operation(
-        self,
-        name: str,
-        kind: SpanKind = SpanKind.INTERNAL,
-        attributes: Optional[Dict[str, Any]] = None
-    ):
-        """Context manager for tracing operations"""
-        with self.tracer.start_as_current_span(
+            # Context manager for tracing
+            @contextmanager
+            def trace_operation(
+            self,
+            name: str,
+            kind: SpanKind = SpanKind.INTERNAL,
+            attributes: Optional[Dict[str, Any]] = None
+            ):
+            """Context manager for tracing operations"""
+            with self.tracer.start_as_current_span(
             name,
             kind=kind,
             attributes=attributes or {}
-        ) as span:
+            ) as span:
             start_time = time.time()
             try:
                 yield span
-                span.set_status(Status(StatusCode.OK))
+            span.set_status(Status(StatusCode.OK))
             except Exception as e:
-                span.record_exception(e)
-                span.set_status(Status(StatusCode.ERROR, str(e)))
-                self._record_error(e, name)
-                raise
+            span.record_exception(e)
+            span.set_status(Status(StatusCode.ERROR, str(e)))
+            self._record_error(e, name)
+            raise
             finally:
-                # Record duration
-                duration = time.time() - start_time
-                self.profile_data[name].append(duration)
+            # Record duration
+            duration = time.time() - start_time
+            self.profile_data[name].append(duration)
                 
-                # Update metrics
-                self.request_duration.record(
-                    duration,
-                    {"operation": name}
-                )
+            # Update metrics
+            self.request_duration.record(
+            duration,
+            {"operation": name}
+            )
     
     def _record_error(self, error: Exception, operation: str):
-        """Record error for tracking"""
-        error_type = type(error).__name__
-        self.error_counts[error_type] += 1
+                """Record error for tracking"""
+            error_type = type(error).__name__
+            self.error_counts[error_type] += 1
         
-        # Sample error details
-        self.error_samples.append({
+            # Sample error details
+            self.error_samples.append({
             "timestamp": time.time(),
             "operation": operation,
             "error_type": error_type,
             "error_message": str(error),
             "traceback": traceback.format_exc()
-        })
+            })
         
-        # Update metrics
-        self.error_counter.add(1, {"error_type": error_type})
+            # Update metrics
+            self.error_counter.add(1, {"error_type": error_type})
         
-        # Log error
-        self.logger.error(
+            # Log error
+            self.logger.error(
             "Operation failed",
             operation=operation,
             error_type=error_type,
             error_message=str(error),
             exc_info=True
-        )
+            )
     
-    # SLO/SLI monitoring
+            # SLO/SLI monitoring
     def define_slo(self, name: str, target: float, unit: str = "ratio"):
-        """Define a Service Level Objective"""
-        self.slo_targets[name] = target
-        self.logger.info(
+                """Define a Service Level Objective"""
+            self.slo_targets[name] = target
+            self.logger.info(
             "SLO defined",
             slo_name=name,
             target=target,
             unit=unit
-        )
+            )
     
     def record_sli(self, name: str, value: float):
-        """Record a Service Level Indicator measurement"""
-        if name not in self.slo_targets:
-            self.logger.warning(f"SLI recorded for undefined SLO: {name}")
+                """Record a Service Level Indicator measurement"""
+            if name not in self.slo_targets:
+                self.logger.warning(f"SLI recorded for undefined SLO: {name}")
         
-        self.sli_measurements[name].append(value)
+            self.sli_measurements[name].append(value)
         
-        # Keep only recent measurements (last 1000)
-        if len(self.sli_measurements[name]) > 1000:
-            self.sli_measurements[name] = self.sli_measurements[name][-1000:]
+            # Keep only recent measurements (last 1000)
+            if len(self.sli_measurements[name]) > 1000:
+                self.sli_measurements[name] = self.sli_measurements[name][-1000:]
         
-        # Check SLO compliance
-        target = self.slo_targets.get(name, 0)
-        if value < target:
-            self.logger.warning(
-                "SLO violation",
-                slo_name=name,
-                target=target,
-                actual=value
+            # Check SLO compliance
+            target = self.slo_targets.get(name, 0)
+            if value < target:
+                self.logger.warning(
+            "SLO violation",
+            slo_name=name,
+            target=target,
+            actual=value
             )
     
     def get_slo_report(self) -> Dict[str, Dict[str, Any]]:
-        """Get SLO compliance report"""
-        report = {}
+            """Get SLO compliance report"""
+            pass
+            report = {}
         
-        for slo_name, target in self.slo_targets.items():
+            for slo_name, target in self.slo_targets.items():
             measurements = self.sli_measurements.get(slo_name, [])
             
             if measurements:
                 compliance = sum(1 for m in measurements if m >= target) / len(measurements)
-                report[slo_name] = {
-                    "target": target,
-                    "compliance_rate": compliance,
-                    "measurements": len(measurements),
-                    "current_value": measurements[-1] if measurements else None,
-                    "min_value": min(measurements),
-                    "max_value": max(measurements),
-                    "avg_value": sum(measurements) / len(measurements)
-                }
+            report[slo_name] = {
+            "target": target,
+            "compliance_rate": compliance,
+            "measurements": len(measurements),
+            "current_value": measurements[-1] if measurements else None,
+            "min_value": min(measurements),
+            "max_value": max(measurements),
+            "avg_value": sum(measurements) / len(measurements)
+            }
             else:
-                report[slo_name] = {
-                    "target": target,
-                    "compliance_rate": None,
-                    "measurements": 0
-                }
+            report[slo_name] = {
+            "target": target,
+            "compliance_rate": None,
+            "measurements": 0
+            }
         
-        return report
+            return report
     
-    # Performance profiling
+            # Performance profiling
     def get_performance_report(self, top_n: int = 10) -> Dict[str, Dict[str, float]]:
-        """Get performance profiling report"""
-        report = {}
+            """Get performance profiling report"""
+            report = {}
         
-        for operation, durations in self.profile_data.items():
+            for operation, durations in self.profile_data.items():
             if durations:
                 report[operation] = {
-                    "count": len(durations),
-                    "total": sum(durations),
-                    "mean": sum(durations) / len(durations),
-                    "min": min(durations),
-                    "max": max(durations),
-                    "p50": self._percentile(durations, 50),
-                    "p95": self._percentile(durations, 95),
-                    "p99": self._percentile(durations, 99)
-                }
+            "count": len(durations),
+            "total": sum(durations),
+            "mean": sum(durations) / len(durations),
+            "min": min(durations),
+            "max": max(durations),
+            "p50": self._percentile(durations, 50),
+            "p95": self._percentile(durations, 95),
+            "p99": self._percentile(durations, 99)
+            }
         
-        # Sort by total time and return top N
-        sorted_ops = sorted(
+            # Sort by total time and return top N
+            sorted_ops = sorted(
             report.items(),
             key=lambda x: x[1]["total"],
             reverse=True
-        )
+            )
         
-        return dict(sorted_ops[:top_n])
+            return dict(sorted_ops[:top_n])
     
     def _percentile(self, data: List[float], percentile: float) -> float:
-        """Calculate percentile"""
-        if not data:
-            return 0.0
+            """Calculate percentile"""
+            if not data:
+                return 0.0
         
-        sorted_data = sorted(data)
-        index = int(len(sorted_data) * percentile / 100)
-        return sorted_data[min(index, len(sorted_data) - 1)]
+            sorted_data = sorted(data)
+            index = int(len(sorted_data) * percentile / 100)
+            return sorted_data[min(index, len(sorted_data) - 1)]
     
-    # Error analysis
+            # Error analysis
     def get_error_report(self) -> Dict[str, Any]:
-        """Get error analysis report"""
-        total_errors = sum(self.error_counts.values())
+            """Get error analysis report"""
+            pass
+            total_errors = sum(self.error_counts.values())
         
-        report = {
+            report = {
             "total_errors": total_errors,
             "error_types": dict(self.error_counts),
             "error_rate": total_errors / max(1, sum(len(d) for d in self.profile_data.values())),
             "recent_errors": list(self.error_samples)[-10:],  # Last 10 errors
             "error_distribution": {
-                error_type: count / total_errors 
-                for error_type, count in self.error_counts.items()
+            error_type: count / total_errors
+            for error_type, count in self.error_counts.items()
             } if total_errors > 0 else {}
-        }
+            }
         
-        return report
+            return report
     
-    # Baggage propagation
+            # Baggage propagation
     def set_baggage(self, key: str, value: str):
-        """Set baggage for context propagation"""
-        baggage.set_baggage(key, value)
+                """Set baggage for context propagation"""
+            baggage.set_baggage(key, value)
     
     def get_baggage(self, key: str) -> Optional[str]:
-        """Get baggage value"""
-        return baggage.get_baggage(key)
+            """Get baggage value"""
+            return baggage.get_baggage(key)
     
-    # Shutdown
+            # Shutdown
     def shutdown(self):
-        """Shutdown observability system"""
-        self.logger.info("Shutting down observability system")
+                """Shutdown observability system"""
+            pass
+            self.logger.info("Shutting down observability system")
         
-        # Flush and shutdown tracing
-        if hasattr(self, 'tracer_provider'):
-            self.tracer_provider.shutdown()
+            # Flush and shutdown tracing
+            if hasattr(self, 'tracer_provider'):
+                self.tracer_provider.shutdown()
         
-        # Shutdown metrics
-        if hasattr(self, 'meter_provider'):
-            self.meter_provider.shutdown()
+            # Shutdown metrics
+            if hasattr(self, 'meter_provider'):
+                self.meter_provider.shutdown()
         
-        # Log final reports
-        self.logger.info("Performance report", **self.get_performance_report())
-        self.logger.info("Error report", **self.get_error_report())
-        self.logger.info("SLO report", **self.get_slo_report())
+            # Log final reports
+            self.logger.info("Performance report", **self.get_performance_report())
+            self.logger.info("Error report", **self.get_error_report())
+            self.logger.info("SLO report", **self.get_slo_report())
 
 
-# Convenience functions for global access
-def get_tracer() -> Optional[trace.Tracer]:
-    """Get global tracer instance"""
-    return tracer
+    # Convenience functions for global access
+    def get_tracer() -> Optional[trace.Tracer]:
+        """Get global tracer instance"""
+        return tracer
 
 
-def get_meter() -> Optional[metrics.Meter]:
-    """Get global meter instance"""
-    return meter
+    def get_meter() -> Optional[metrics.Meter]:
+        """Get global meter instance"""
+        return meter
 
 
-def get_logger() -> Optional[structlog.BoundLogger]:
-    """Get global logger instance"""
-    return logger
+    def get_logger() -> Optional[structlog.BoundLogger]:
+        """Get global logger instance"""
+        return logger
 
 
-# Example instrumentation
+    # Example instrumentation
 class InstrumentedAuraComponent:
     """Example of an instrumented AURA component"""
     
@@ -726,108 +734,109 @@ class InstrumentedAuraComponent:
         
         # Component-specific metrics
         self.operation_counter = self.obs.meter.create_counter(
-            f"{component_name}_operations_total",
-            description=f"Total operations for {component_name}"
+        f"{component_name}_operations_total",
+        description=f"Total operations for {component_name}"
         )
     
-    @property
+        @property
     def logger(self):
-        """Get logger bound with component context"""
+            """Get logger bound with component context"""
+        pass
         return self.obs.logger.bind(component=self.component_name)
     
-    async def process_topology(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def process_topology(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Example instrumented method"""
         with self.obs.trace_operation(
-            "process_topology",
-            kind=SpanKind.INTERNAL,
-            attributes={
-                self.obs.attributes.AURA_COMPONENT: self.component_name,
-                self.obs.attributes.AURA_OPERATION: "topology_analysis"
-            }
+        "process_topology",
+        kind=SpanKind.INTERNAL,
+        attributes={
+        self.obs.attributes.AURA_COMPONENT: self.component_name,
+        self.obs.attributes.AURA_OPERATION: "topology_analysis"
+        }
         ) as span:
-            # Log start
-            self.logger.info("Processing topology", data_size=len(data))
+        # Log start
+        self.logger.info("Processing topology", data_size=len(data))
             
-            # Set span attributes
-            span.set_attribute("topology.nodes", data.get("nodes", 0))
-            span.set_attribute("topology.edges", data.get("edges", 0))
+        # Set span attributes
+        span.set_attribute("topology.nodes", data.get("nodes", 0))
+        span.set_attribute("topology.edges", data.get("edges", 0))
             
-            # Simulate processing
-            await asyncio.sleep(0.1)
+        # Simulate processing
+        await asyncio.sleep(0.1)
             
-            # Record metrics
-            self.operation_counter.add(1, {"operation": "topology_analysis"})
+        # Record metrics
+        self.operation_counter.add(1, {"operation": "topology_analysis"})
             
-            # Simulate result
-            result = {
-                "betti_numbers": {"b0": 1, "b1": 5, "b2": 0},
-                "risk_score": 0.7
-            }
+        # Simulate result
+        result = {
+        "betti_numbers": {"b0": 1, "b1": 5, "b2": 0},
+        "risk_score": 0.7
+        }
             
-            # Record SLI
-            self.obs.record_sli("topology_processing_accuracy", 0.95)
+        # Record SLI
+        self.obs.record_sli("topology_processing_accuracy", 0.95)
             
-            # Log completion
-            self.logger.info(
-                "Topology processed",
-                risk_score=result["risk_score"],
-                betti_numbers=result["betti_numbers"]
-            )
+        # Log completion
+        self.logger.info(
+        "Topology processed",
+        risk_score=result["risk_score"],
+        betti_numbers=result["betti_numbers"]
+        )
             
-            return result
+        return result
 
 
-# Example usage
+    # Example usage
 async def test_observability():
-    """Test observability system"""
+        """Test observability system"""
     # Initialize system
-    obs = ObservabilitySystem(
+        obs = ObservabilitySystem(
         service_name="aura-test",
         enable_console_export=True,
         log_level=LogLevel.INFO
-    )
+        )
     
     # Define SLOs
-    obs.define_slo("topology_processing_accuracy", 0.9)
-    obs.define_slo("prediction_latency_ms", 100, "ms")
+        obs.define_slo("topology_processing_accuracy", 0.9)
+        obs.define_slo("prediction_latency_ms", 100, "ms")
     
     # Create instrumented component
-    component = InstrumentedAuraComponent("tda_analyzer", obs)
+        component = InstrumentedAuraComponent("tda_analyzer", obs)
     
     # Simulate operations
-    for i in range(5):
+        for i in range(5):
         try:
-            # Process with tracing
-            result = await component.process_topology({
-                "nodes": 50 + i * 10,
-                "edges": 100 + i * 20
-            })
+        # Process with tracing
+        result = await component.process_topology({
+        "nodes": 50 + i * 10,
+        "edges": 100 + i * 20
+        })
             
-            # Record latency SLI
-            obs.record_sli("prediction_latency_ms", 50 + i * 10)
+    # Record latency SLI
+        obs.record_sli("prediction_latency_ms", 50 + i * 10)
             
         except Exception as e:
-            obs.logger.error("Test operation failed", error=str(e))
+        obs.logger.error("Test operation failed", error=str(e))
     
     # Simulate an error
-    try:
+        try:
         raise ValueError("Simulated error for testing")
-    except Exception as e:
+        except Exception as e:
         obs._record_error(e, "test_operation")
     
     # Get reports
-    print("\n📊 Performance Report:")
-    print(json.dumps(obs.get_performance_report(), indent=2))
+        print("\n📊 Performance Report:")
+        print(json.dumps(obs.get_performance_report(), indent=2))
     
-    print("\n❌ Error Report:")
-    print(json.dumps(obs.get_error_report(), indent=2))
+        print("\n❌ Error Report:")
+        print(json.dumps(obs.get_error_report(), indent=2))
     
-    print("\n📈 SLO Report:")
-    print(json.dumps(obs.get_slo_report(), indent=2))
+        print("\n📈 SLO Report:")
+        print(json.dumps(obs.get_slo_report(), indent=2))
     
     # Shutdown
-    obs.shutdown()
+        obs.shutdown()
 
 
-if __name__ == "__main__":
-    asyncio.run(test_observability())
+        if __name__ == "__main__":
+        asyncio.run(test_observability())

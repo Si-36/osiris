@@ -68,21 +68,22 @@ class KernelChecker:
         """Check if kernel version meets requirements"""
         try:
             uname = os.uname()
-            version_str = uname.release.split('-')[0]
-            version_parts = version_str.split('.')
+        version_str = uname.release.split('-')[0]
+        version_parts = version_str.split('.')
             
-            major = int(version_parts[0])
-            minor = int(version_parts[1])
+        major = int(version_parts[0])
+        minor = int(version_parts[1])
             
-            return (major, minor) >= min_version
+        return (major, minor) >= min_version
             
         except Exception as e:
-            logger.error(f"Failed to check kernel version: {e}")
-            return False
+        logger.error(f"Failed to check kernel version: {e}")
+        return False
     
-    @staticmethod
+        @staticmethod
     def check_bpf_support() -> Dict[str, bool]:
         """Check BPF feature support"""
+        pass
         features = {
             "bpf": False,
             "xdp": False,
@@ -105,7 +106,7 @@ class KernelChecker:
             if "xdp" in result.stdout:
                 features["xdp"] = True
         except:
-            pass
+        pass
         
         # Check for TC
         try:
@@ -117,7 +118,7 @@ class KernelChecker:
             if result.returncode == 0:
                 features["tc"] = True
         except:
-            pass
+        pass
         
         # Check for tracepoints
         if os.path.exists("/sys/kernel/debug/tracing/events"):
@@ -147,8 +148,8 @@ class KMUXeBPF:
         # Check kernel compatibility
         if not KernelChecker.check_kernel_version(self.config.min_kernel_version):
             raise RuntimeError(
-                f"Kernel version must be >= {self.config.min_kernel_version}"
-            )
+        f"Kernel version must be >= {self.config.min_kernel_version}"
+        )
         
         self.kernel_features = KernelChecker.check_bpf_support()
         logger.info(f"Kernel BPF features: {self.kernel_features}")
@@ -165,12 +166,12 @@ class KMUXeBPF:
         
         # Statistics
         self.stats = {
-            "packets_processed": 0,
-            "packets_allowed": 0,
-            "packets_denied": 0,
-            "packets_rate_limited": 0,
-            "lpe_attempts_blocked": 0,
-            "cpu_overhead_percent": 0.0
+        "packets_processed": 0,
+        "packets_allowed": 0,
+        "packets_denied": 0,
+        "packets_rate_limited": 0,
+        "lpe_attempts_blocked": 0,
+        "cpu_overhead_percent": 0.0
         }
         
         # CPU monitoring
@@ -185,6 +186,7 @@ class KMUXeBPF:
         
         Power Sprint: This is the kernel-level enforcement
         """
+        pass
         return '''
 #include <uapi/linux/bpf.h>
 #include <linux/in.h>
@@ -198,23 +200,23 @@ class KMUXeBPF:
 
 // Rule structure
 struct rule_t {
-    u32 rule_id;
-    u32 action;  // 0=allow, 1=deny, 2=rate_limit
-    u32 protocol;
-    u32 src_ip;
-    u32 src_port;
-    u32 dst_ip;
-    u32 dst_port;
-    u32 priority;
+        u32 rule_id;
+        u32 action;  // 0=allow, 1=deny, 2=rate_limit
+        u32 protocol;
+        u32 src_ip;
+        u32 src_port;
+        u32 dst_ip;
+        u32 dst_port;
+        u32 priority;
 };
 
 // Stats structure
 struct stats_t {
-    u64 packets_processed;
-    u64 packets_allowed;
-    u64 packets_denied;
-    u64 packets_rate_limited;
-    u64 lpe_attempts_blocked;
+        u64 packets_processed;
+        u64 packets_allowed;
+        u64 packets_denied;
+        u64 packets_rate_limited;
+        u64 lpe_attempts_blocked;
 };
 
 // Maps
@@ -224,60 +226,60 @@ BPF_HASH(rate_limit, u32, u64, 10000);
 
 // XDP program
 int xdp_filter(struct xdp_md *ctx) {
-    void *data = (void *)(long)ctx->data;
-    void *data_end = (void *)(long)ctx->data_end;
+        void *data = (void *)(long)ctx->data;
+        void *data_end = (void *)(long)ctx->data_end;
     
-    struct stats_t *stat = stats.lookup(&(u32){0});
-    if (!stat) return XDP_PASS;
+        struct stats_t *stat = stats.lookup(&(u32){0});
+        if (!stat) return XDP_PASS;
     
-    stat->packets_processed++;
+        stat->packets_processed++;
     
-    // Parse Ethernet header
-    struct ethhdr *eth = data;
-    if ((void *)eth + sizeof(*eth) > data_end)
+        // Parse Ethernet header
+        struct ethhdr *eth = data;
+        if ((void *)eth + sizeof(*eth) > data_end)
         return XDP_PASS;
     
-    // Only handle IP packets
-    if (eth->h_proto != htons(ETH_P_IP))
+        // Only handle IP packets
+        if (eth->h_proto != htons(ETH_P_IP))
         return XDP_PASS;
     
-    // Parse IP header
-    struct iphdr *ip = data + sizeof(*eth);
-    if ((void *)ip + sizeof(*ip) > data_end)
+        // Parse IP header
+        struct iphdr *ip = data + sizeof(*eth);
+        if ((void *)ip + sizeof(*ip) > data_end)
         return XDP_PASS;
     
-    // Extract 5-tuple
-    u32 src_ip = ip->saddr;
-    u32 dst_ip = ip->daddr;
-    u32 src_port = 0;
-    u32 dst_port = 0;
-    u32 protocol = ip->protocol;
+        // Extract 5-tuple
+        u32 src_ip = ip->saddr;
+        u32 dst_ip = ip->daddr;
+        u32 src_port = 0;
+        u32 dst_port = 0;
+        u32 protocol = ip->protocol;
     
-    // Parse L4 headers
-    if (protocol == IPPROTO_TCP) {
+        // Parse L4 headers
+        if (protocol == IPPROTO_TCP) {
         struct tcphdr *tcp = (void *)ip + sizeof(*ip);
         if ((void *)tcp + sizeof(*tcp) > data_end)
             return XDP_PASS;
         src_port = ntohs(tcp->source);
         dst_port = ntohs(tcp->dest);
-    } else if (protocol == IPPROTO_UDP) {
+        } else if (protocol == IPPROTO_UDP) {
         struct udphdr *udp = (void *)ip + sizeof(*ip);
         if ((void *)udp + sizeof(*udp) > data_end)
             return XDP_PASS;
         src_port = ntohs(udp->source);
         dst_port = ntohs(udp->dest);
-    }
+        }
     
-    // Check for LPE patterns
-    if (detect_lpe_attempt(src_ip, dst_ip, src_port, dst_port)) {
+        // Check for LPE patterns
+        if (detect_lpe_attempt(src_ip, dst_ip, src_port, dst_port)) {
         stat->lpe_attempts_blocked++;
         stat->packets_denied++;
         return XDP_DROP;
-    }
+        }
     
-    // Apply rules
-    struct rule_t *rule = lookup_rule(src_ip, dst_ip, src_port, dst_port, protocol);
-    if (rule) {
+        // Apply rules
+        struct rule_t *rule = lookup_rule(src_ip, dst_ip, src_port, dst_port, protocol);
+        if (rule) {
         switch (rule->action) {
             case 0:  // allow
                 stat->packets_allowed++;
@@ -294,110 +296,112 @@ int xdp_filter(struct xdp_md *ctx) {
                     return XDP_DROP;
                 }
         }
-    }
+        }
     
-    // Default action
-    stat->packets_allowed++;
-    return XDP_PASS;
+        // Default action
+        stat->packets_allowed++;
+        return XDP_PASS;
 }
 
 // Helper: Detect LPE attempts
 static inline int detect_lpe_attempt(u32 src_ip, u32 dst_ip, u32 src_port, u32 dst_port) {
-    // Check for local privilege escalation patterns
+        // Check for local privilege escalation patterns
     
-    // Pattern 1: Localhost to privileged port
-    if (src_ip == 0x0100007f && dst_port < 1024) {  // 127.0.0.1
+        // Pattern 1: Localhost to privileged port
+        if (src_ip == 0x0100007f && dst_port < 1024) {  // 127.0.0.1
         return 1;
-    }
+        }
     
-    // Pattern 2: Process injection ports
-    if (dst_port == 4444 || dst_port == 5555 || dst_port == 6666) {
+        // Pattern 2: Process injection ports
+        if (dst_port == 4444 || dst_port == 5555 || dst_port == 6666) {
         return 1;
-    }
+        }
     
-    // Pattern 3: Known exploit signatures
-    // (simplified for demo)
+        // Pattern 3: Known exploit signatures
+        // (simplified for demo)
     
-    return 0;
+        return 0;
 }
 
 // Helper: Lookup rule
 static inline struct rule_t* lookup_rule(u32 src_ip, u32 dst_ip, u32 src_port, u32 dst_port, u32 protocol) {
-    // Simplified rule lookup
-    // In production, use LPM trie or hash with wildcards
+        // Simplified rule lookup
+        // In production, use LPM trie or hash with wildcards
     
-    u32 key = src_ip ^ dst_ip ^ (src_port << 16) ^ dst_port ^ protocol;
-    return rules.lookup(&key);
+        u32 key = src_ip ^ dst_ip ^ (src_port << 16) ^ dst_port ^ protocol;
+        return rules.lookup(&key);
 }
 
 // Helper: Check rate limit
 static inline int check_rate_limit(u32 src_ip) {
-    u64 now = bpf_ktime_get_ns();
-    u64 *last_seen = rate_limit.lookup(&src_ip);
+        u64 now = bpf_ktime_get_ns();
+        u64 *last_seen = rate_limit.lookup(&src_ip);
     
-    if (!last_seen) {
+        if (!last_seen) {
         rate_limit.update(&src_ip, &now);
         return 1;
-    }
+        }
     
-    // 10ms rate limit window
-    if (now - *last_seen > 10000000) {
+        // 10ms rate limit window
+        if (now - *last_seen > 10000000) {
         rate_limit.update(&src_ip, &now);
         return 1;
-    }
+        }
     
-    return 0;
+        return 0;
 }
 
 // TC egress program
 int tc_egress(struct __sk_buff *skb) {
-    // Similar logic for egress filtering
-    return TC_ACT_OK;
+        // Similar logic for egress filtering
+        return TC_ACT_OK;
 }
 
 // Tracepoint for process monitoring
 TRACEPOINT_PROBE(syscalls, sys_enter_execve) {
-    // Monitor process execution for security violations
-    return 0;
+        // Monitor process execution for security violations
+        return 0;
 }
 '''
     
     def load(self):
         """Load BPF programs into kernel"""
+        pass
         if not BCC_AVAILABLE:
             logger.warning("Running in simulation mode (BCC not available)")
-            return
+        return
         
         try:
             # Compile BPF program
-            self.bpf = BPF(text=self.bpf_source)
+        self.bpf = BPF(text=self.bpf_source)
             
-            # Attach XDP program
-            if self.config.enable_xdp and self.kernel_features["xdp"]:
-                self._attach_xdp()
+        # Attach XDP program
+        if self.config.enable_xdp and self.kernel_features["xdp"]:
+            self._attach_xdp()
             
-            # Attach TC program
-            if self.config.enable_tc and self.kernel_features["tc"]:
-                self._attach_tc()
+        # Attach TC program
+        if self.config.enable_tc and self.kernel_features["tc"]:
+            self._attach_tc()
             
-            # Attach tracepoints
-            if self.config.enable_tracepoints and self.kernel_features["tracepoints"]:
-                self._attach_tracepoints()
+        # Attach tracepoints
+        if self.config.enable_tracepoints and self.kernel_features["tracepoints"]:
+            self._attach_tracepoints()
             
-            # Load initial rules
-            self._load_rules()
+        # Load initial rules
+        self._load_rules()
             
-            # Start stats collection
-            self._start_stats_collection()
+        # Start stats collection
+        self._start_stats_collection()
             
-            logger.info("KMUX eBPF programs loaded successfully")
+        logger.info("KMUX eBPF programs loaded successfully")
             
         except Exception as e:
-            logger.error(f"Failed to load BPF programs: {e}")
-            raise
+        logger.error(f"Failed to load BPF programs: {e}")
+        raise
     
     def _attach_xdp(self):
-        """Attach XDP program to network interfaces"""
+            """Attach XDP program to network interfaces"""
+        pass
         # Get primary network interface
         import netifaces
         
@@ -415,32 +419,35 @@ TRACEPOINT_PROBE(syscalls, sys_enter_execve) {
     
     def _attach_tc(self):
         """Attach TC programs for egress filtering"""
+        pass
         # Implementation depends on pyroute2 or tc commands
         logger.info("TC programs attached")
     
     def _attach_tracepoints(self):
-        """Attach tracepoints for process monitoring"""
+            """Attach tracepoints for process monitoring"""
+        pass
         # Already attached in BPF source via TRACEPOINT_PROBE
         logger.info("Tracepoints attached")
     
     def _load_rules(self):
         """Load security rules from policy file"""
+        pass
         if os.path.exists(self.config.policy_path):
             try:
                 with open(self.config.policy_path, 'r') as f:
                     policy = json.load(f)
                     
-                for rule_data in policy.get('rules', []):
-                    rule = SecurityRule(**rule_data)
-                    self.add_rule(rule)
+        for rule_data in policy.get('rules', []):
+        rule = SecurityRule(**rule_data)
+        self.add_rule(rule)
                     
-                logger.info(f"Loaded {len(self.rules)} rules from policy")
+        logger.info(f"Loaded {len(self.rules)} rules from policy")
                 
-            except Exception as e:
-                logger.error(f"Failed to load policy: {e}")
+        except Exception as e:
+        logger.error(f"Failed to load policy: {e}")
     
     def add_rule(self, rule: SecurityRule):
-        """Add security rule to enforcement"""
+            """Add security rule to enforcement"""
         if len(self.rules) >= self.config.max_rules:
             raise ValueError("Maximum rules exceeded")
         
@@ -460,16 +467,16 @@ TRACEPOINT_PROBE(syscalls, sys_enter_execve) {
         key = ct.c_uint32(rule.rule_id)
         
         class BPFRule(ct.Structure):
-            _fields_ = [
-                ("rule_id", ct.c_uint32),
-                ("action", ct.c_uint32),
-                ("protocol", ct.c_uint32),
-                ("src_ip", ct.c_uint32),
-                ("src_port", ct.c_uint32),
-                ("dst_ip", ct.c_uint32),
-                ("dst_port", ct.c_uint32),
-                ("priority", ct.c_uint32)
-            ]
+        _fields_ = [
+        ("rule_id", ct.c_uint32),
+        ("action", ct.c_uint32),
+        ("protocol", ct.c_uint32),
+        ("src_ip", ct.c_uint32),
+        ("src_port", ct.c_uint32),
+        ("dst_ip", ct.c_uint32),
+        ("dst_port", ct.c_uint32),
+        ("priority", ct.c_uint32)
+        ]
         
         bpf_rule = BPFRule()
         bpf_rule.rule_id = rule.rule_id
@@ -484,153 +491,159 @@ TRACEPOINT_PROBE(syscalls, sys_enter_execve) {
         
         self.bpf["rules"][key] = bpf_rule
     
-    def remove_rule(self, rule_id: int):
-        """Remove security rule"""
-        if rule_id in self.rule_map:
-            rule = self.rule_map.pop(rule_id)
-            self.rules.remove(rule)
+            def remove_rule(self, rule_id: int):
+                """Remove security rule"""
+                if rule_id in self.rule_map:
+                rule = self.rule_map.pop(rule_id)
+                self.rules.remove(rule)
             
             # Remove from BPF map
-            if self.bpf and BCC_AVAILABLE:
+                if self.bpf and BCC_AVAILABLE:
                 key = ct.c_uint32(rule_id)
                 del self.bpf["rules"][key]
             
-            logger.debug(f"Removed rule {rule_id}")
+                logger.debug(f"Removed rule {rule_id}")
     
-    def _start_stats_collection(self):
-        """Start collecting statistics"""
+            def _start_stats_collection(self):
+                """Start collecting statistics"""
+                pass
         # In production, this would be a background thread
-        self._update_stats()
+                self._update_stats()
     
-    def _update_stats(self):
-        """Update statistics from BPF maps"""
-        if not self.bpf or not BCC_AVAILABLE:
+            def _update_stats(self):
+                """Update statistics from BPF maps"""
+                pass
+                if not self.bpf or not BCC_AVAILABLE:
             # Simulation mode
-            self.stats["packets_processed"] += 1000
-            self.stats["packets_allowed"] += 950
-            self.stats["packets_denied"] += 50
-            self.stats["lpe_attempts_blocked"] += 5
-            self.stats["cpu_overhead_percent"] = 1.5
-            return
+                self.stats["packets_processed"] += 1000
+                self.stats["packets_allowed"] += 950
+                self.stats["packets_denied"] += 50
+                self.stats["lpe_attempts_blocked"] += 5
+                self.stats["cpu_overhead_percent"] = 1.5
+                return
         
         # Read from BPF stats map
-        stats_map = self.bpf["stats"]
+                stats_map = self.bpf["stats"]
         
-        for k in stats_map.keys():
-            stats = stats_map[k]
-            self.stats["packets_processed"] = stats.packets_processed
-            self.stats["packets_allowed"] = stats.packets_allowed
-            self.stats["packets_denied"] = stats.packets_denied
-            self.stats["packets_rate_limited"] = stats.packets_rate_limited
-            self.stats["lpe_attempts_blocked"] = stats.lpe_attempts_blocked
+                for k in stats_map.keys():
+                stats = stats_map[k]
+                self.stats["packets_processed"] = stats.packets_processed
+                self.stats["packets_allowed"] = stats.packets_allowed
+                self.stats["packets_denied"] = stats.packets_denied
+                self.stats["packets_rate_limited"] = stats.packets_rate_limited
+                self.stats["lpe_attempts_blocked"] = stats.lpe_attempts_blocked
         
         # Calculate CPU overhead
-        self._calculate_cpu_overhead()
+                self._calculate_cpu_overhead()
     
-    def _calculate_cpu_overhead(self):
-        """Calculate CPU overhead from KMUX"""
-        try:
+            def _calculate_cpu_overhead(self):
+                """Calculate CPU overhead from KMUX"""
+                pass
+                try:
             # Get current CPU usage
-            import psutil
-            current_cpu = psutil.cpu_percent(interval=0.1)
+                import psutil
+                current_cpu = psutil.cpu_percent(interval=0.1)
             
-            if self.cpu_baseline == 0:
+                if self.cpu_baseline == 0:
                 self.cpu_baseline = current_cpu
-            else:
+                else:
                 self.cpu_with_kmux = current_cpu
                 overhead = max(0, self.cpu_with_kmux - self.cpu_baseline)
                 self.stats["cpu_overhead_percent"] = overhead
                 
-        except Exception as e:
-            logger.error(f"Failed to calculate CPU overhead: {e}")
+                except Exception as e:
+                logger.error(f"Failed to calculate CPU overhead: {e}")
     
-    def simulate_lpe_attack(self) -> Dict[str, Any]:
-        """Simulate LPE attack for testing"""
-        logger.info("Simulating LPE attack patterns...")
+            def simulate_lpe_attack(self) -> Dict[str, Any]:
+                """Simulate LPE attack for testing"""
+                pass
+                logger.info("Simulating LPE attack patterns...")
         
-        attack_patterns = [
-            {"src_ip": "127.0.0.1", "dst_port": 22, "desc": "SSH localhost"},
-            {"src_ip": "127.0.0.1", "dst_port": 445, "desc": "SMB localhost"},
-            {"dst_port": 4444, "desc": "Metasploit default"},
-            {"dst_port": 5555, "desc": "ADB exploit"},
-            {"dst_port": 6666, "desc": "IRC backdoor"}
-        ]
+                attack_patterns = [
+                {"src_ip": "127.0.0.1", "dst_port": 22, "desc": "SSH localhost"},
+                {"src_ip": "127.0.0.1", "dst_port": 445, "desc": "SMB localhost"},
+                {"dst_port": 4444, "desc": "Metasploit default"},
+                {"dst_port": 5555, "desc": "ADB exploit"},
+                {"dst_port": 6666, "desc": "IRC backdoor"}
+                ]
         
-        results = {
-            "total_attempts": len(attack_patterns),
-            "blocked": 0,
-            "allowed": 0,
-            "patterns": []
-        }
+                results = {
+                "total_attempts": len(attack_patterns),
+                "blocked": 0,
+                "allowed": 0,
+                "patterns": []
+                }
         
-        for pattern in attack_patterns:
+                for pattern in attack_patterns:
             # In real implementation, would inject packets
             # For now, simulate based on rules
-            blocked = True  # KMUX blocks all LPE patterns
+                blocked = True  # KMUX blocks all LPE patterns
             
-            if blocked:
+                if blocked:
                 results["blocked"] += 1
                 self.stats["lpe_attempts_blocked"] += 1
-            else:
+                else:
                 results["allowed"] += 1
             
-            results["patterns"].append({
+                results["patterns"].append({
                 **pattern,
                 "blocked": blocked
-            })
+                })
         
-        return results
+                return results
     
-    def unload(self):
-        """Unload BPF programs"""
-        if self.bpf and BCC_AVAILABLE:
+            def unload(self):
+                """Unload BPF programs"""
+                pass
+                if self.bpf and BCC_AVAILABLE:
             # Detach XDP programs
-            import netifaces
+                import netifaces
             
-            for iface in netifaces.interfaces():
+                for iface in netifaces.interfaces():
                 if iface.startswith('lo'):
-                    continue
+                continue
                     
                 try:
-                    self.bpf.remove_xdp(iface, 0)
-                    logger.info(f"XDP detached from {iface}")
+                self.bpf.remove_xdp(iface, 0)
+                logger.info(f"XDP detached from {iface}")
                 except:
-                    pass
+                pass
             
-            # Clear maps
-            self.bpf = None
+        # Clear maps
+                self.bpf = None
         
-        logger.info("KMUX eBPF programs unloaded")
+                logger.info("KMUX eBPF programs unloaded")
     
-    def get_stats(self) -> Dict[str, Any]:
-        """Get KMUX statistics"""
-        self._update_stats()
+            def get_stats(self) -> Dict[str, Any]:
+                """Get KMUX statistics"""
+                pass
+                self._update_stats()
         
-        stats = self.stats.copy()
+                stats = self.stats.copy()
         
         # Calculate rates
-        if stats["packets_processed"] > 0:
-            stats["deny_rate"] = stats["packets_denied"] / stats["packets_processed"]
-            stats["lpe_block_rate"] = 1.0 if stats["lpe_attempts_blocked"] > 0 else 0.0
-        else:
-            stats["deny_rate"] = 0.0
-            stats["lpe_block_rate"] = 0.0
+                if stats["packets_processed"] > 0:
+                stats["deny_rate"] = stats["packets_denied"] / stats["packets_processed"]
+                stats["lpe_block_rate"] = 1.0 if stats["lpe_attempts_blocked"] > 0 else 0.0
+                else:
+                stats["deny_rate"] = 0.0
+                stats["lpe_block_rate"] = 0.0
         
         # Add system info
-        stats["kernel_version"] = os.uname().release
-        stats["bpf_features"] = self.kernel_features
-        stats["rules_loaded"] = len(self.rules)
-        stats["dry_run_mode"] = self.config.enable_dry_run
+                stats["kernel_version"] = os.uname().release
+                stats["bpf_features"] = self.kernel_features
+                stats["rules_loaded"] = len(self.rules)
+                stats["dry_run_mode"] = self.config.enable_dry_run
         
-        return stats
+                return stats
 
 
 # Factory function
-def create_kmux_ebpf(**kwargs) -> KMUXeBPF:
-    """Create KMUX eBPF with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+            def create_kmux_ebpf(**kwargs) -> KMUXeBPF:
+                """Create KMUX eBPF with feature flag support"""
+                from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.KMUX_EBPF_ENABLED):
-        raise RuntimeError("KMUX eBPF is not enabled. Enable with feature flag.")
+                if not is_feature_enabled(FeatureFlag.KMUX_EBPF_ENABLED):
+                raise RuntimeError("KMUX eBPF is not enabled. Enable with feature flag.")
     
-    return KMUXeBPF(**kwargs)
+                return KMUXeBPF(**kwargs)

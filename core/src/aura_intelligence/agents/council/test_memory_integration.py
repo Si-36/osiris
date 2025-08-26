@@ -45,10 +45,10 @@ class MockLNNCouncilState:
 
 
 async def test_memory_context_retrieval():
-    """Test memory context retrieval."""
-    print("🧪 Testing Memory Context Retrieval")
+        """Test memory context retrieval."""
+        print("🧪 Testing Memory Context Retrieval")
     
-    try:
+        try:
         # Import here to avoid path issues
         import sys, os
         sys.path.insert(0, os.path.dirname(__file__))
@@ -72,7 +72,7 @@ async def test_memory_context_retrieval():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Memory context test failed: {e}")
         import traceback
         traceback.print_exc()
@@ -80,10 +80,10 @@ async def test_memory_context_retrieval():
 
 
 async def test_decision_outcome_storage():
-    """Test storing decision outcomes."""
-    print("\n🧪 Testing Decision Outcome Storage")
+        """Test storing decision outcomes."""
+        print("\n🧪 Testing Decision Outcome Storage")
     
-    try:
+        try:
         from memory_context import LNNMemoryIntegration
         
         config = MockLNNCouncilConfig()
@@ -108,16 +108,16 @@ async def test_decision_outcome_storage():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Decision storage test failed: {e}")
         return False
 
 
 async def test_learning_from_outcomes():
-    """Test learning from decision outcomes."""
-    print("\n🧪 Testing Learning from Outcomes")
+        """Test learning from decision outcomes."""
+        print("\n🧪 Testing Learning from Outcomes")
     
-    try:
+        try:
         from memory_context import LNNMemoryIntegration
         
         config = MockLNNCouncilConfig()
@@ -151,16 +151,16 @@ async def test_learning_from_outcomes():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Learning test failed: {e}")
         return False
 
 
 async def test_memory_learning_engine():
-    """Test the memory learning engine."""
-    print("\n🧪 Testing Memory Learning Engine")
+        """Test the memory learning engine."""
+        print("\n🧪 Testing Memory Learning Engine")
     
-    try:
+        try:
         from memory_learning import MemoryLearningEngine
         
         config = MockLNNCouncilConfig()
@@ -191,7 +191,7 @@ async def test_memory_learning_engine():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Memory learning engine test failed: {e}")
         import traceback
         traceback.print_exc()
@@ -199,10 +199,10 @@ async def test_memory_learning_engine():
 
 
 async def test_confidence_calibration():
-    """Test confidence calibration."""
-    print("\n🧪 Testing Confidence Calibration")
+        """Test confidence calibration."""
+        print("\n🧪 Testing Confidence Calibration")
     
-    try:
+        try:
         from memory_learning import ConfidenceCalibrator
         
         config = MockLNNCouncilConfig()
@@ -230,16 +230,16 @@ async def test_confidence_calibration():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Confidence calibration test failed: {e}")
         return False
 
 
 async def test_pattern_learning():
-    """Test pattern learning."""
-    print("\n🧪 Testing Pattern Learning")
+        """Test pattern learning."""
+        print("\n🧪 Testing Pattern Learning")
     
-    try:
+        try:
         from memory_learning import PatternLearner
         
         config = MockLNNCouncilConfig()
@@ -277,16 +277,16 @@ async def test_pattern_learning():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Pattern learning test failed: {e}")
         return False
 
 
 async def test_memory_stats():
-    """Test memory statistics."""
-    print("\n🧪 Testing Memory Statistics")
+        """Test memory statistics."""
+        print("\n🧪 Testing Memory Statistics")
     
-    try:
+        try:
         from memory_context import LNNMemoryIntegration
         
         config = MockLNNCouncilConfig()
@@ -309,16 +309,16 @@ async def test_memory_stats():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Memory statistics test failed: {e}")
         return False
 
 
 async def main():
-    """Run all memory integration tests."""
-    print("🚀 Memory Integration Layer Tests (2025)\n")
+        """Run all memory integration tests."""
+        print("🚀 Memory Integration Layer Tests (2025)\n")
     
-    tests = [
+        tests = [
         test_memory_context_retrieval,
         test_decision_outcome_storage,
         test_learning_from_outcomes,
@@ -326,10 +326,10 @@ async def main():
         test_confidence_calibration,
         test_pattern_learning,
         test_memory_stats
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -337,9 +337,9 @@ async def main():
             print(f"❌ Test {test.__name__} crashed: {e}")
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All memory integration tests passed!")
         print("\n🎯 Memory Integration Features Verified:")
         print("   • Multi-level memory context retrieval ✅")
@@ -355,11 +355,11 @@ async def main():
         print("   • Semantic similarity search ready")
         print("   • Meta-learning pipeline ready")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

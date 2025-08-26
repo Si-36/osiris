@@ -60,7 +60,7 @@ class CircuitBreaker:
         
         @breaker
         async def call_external_service():
-            return await external_api.call()
+        return await external_api.call()
         ```
     """
     
@@ -164,7 +164,7 @@ class CircuitBreaker:
         """Decorator for protecting functions."""
         @wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> T:
-            # Check if we should attempt reset
+        # Check if we should attempt reset
             if self._should_attempt_reset():
                 async with self._state_lock:
                     if self._state == CircuitState.OPEN:
@@ -194,7 +194,7 @@ class CircuitBreaker:
         
         @wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> T:
-            # Simplified sync version - just track basic stats
+        # Simplified sync version - just track basic stats
             try:
                 result = func(*args, **kwargs)
                 self._stats.successful_calls += 1
@@ -265,7 +265,7 @@ def resilient_operation(
             recovery_timeout=30
         )
         async def call_api():
-            return await external_api.call()
+        return await external_api.call()
         ```
     """
     breaker = get_circuit_breaker(

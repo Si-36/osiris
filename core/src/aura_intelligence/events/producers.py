@@ -98,15 +98,16 @@ class ProducerConfig:
     
     def to_kafka_config(self) -> Dict[str, Any]:
         """Convert to Kafka configuration dict."""
+        pass
         config = {
-            "bootstrap_servers": self.bootstrap_servers,
-            "client_id": self.client_id,
-            "acks": self.acks,
-            # "retries": self.retries,  # Not supported in AIOKafkaProducer - handled by resilience layer
-            # "max_in_flight_requests_per_connection": self.max_in_flight_requests,  # Not supported in current AIOKafka version
-            "compression_type": self.compression_type,
-            "enable_idempotence": self.enable_idempotence,
-            "security_protocol": self.security_protocol
+        "bootstrap_servers": self.bootstrap_servers,
+        "client_id": self.client_id,
+        "acks": self.acks,
+        # "retries": self.retries,  # Not supported in AIOKafkaProducer - handled by resilience layer
+        # "max_in_flight_requests_per_connection": self.max_in_flight_requests,  # Not supported in current AIOKafka version
+        "compression_type": self.compression_type,
+        "enable_idempotence": self.enable_idempotence,
+        "security_protocol": self.security_protocol
         }
         
         if self.transactional_id:
@@ -114,8 +115,8 @@ class ProducerConfig:
             
         if self.sasl_mechanism:
             config["sasl_mechanism"] = self.sasl_mechanism
-            config["sasl_plain_username"] = self.sasl_username
-            config["sasl_plain_password"] = self.sasl_password
+        config["sasl_plain_username"] = self.sasl_username
+        config["sasl_plain_password"] = self.sasl_password
             
         config.update(self.additional_config)
         return config
@@ -138,8 +139,9 @@ class EventProducer:
         self.producer: Optional[AIOKafkaProducer] = None
         self._started = False
         
-    async def start(self):
-        """Start the producer."""
+        async def start(self):
+            """Start the producer."""
+        pass
         if self._started:
             return
             
@@ -160,21 +162,22 @@ class EventProducer:
             logger.error(f"Failed to start producer: {e}")
             raise
     
-    async def stop(self):
+        async def stop(self):
         """Stop the producer."""
+        pass
         if self.producer and self._started:
             await self.producer.stop()
-            self._started = False
-            logger.info("Event producer stopped")
+        self._started = False
+        logger.info("Event producer stopped")
     
-    async def send_event(
+        async def send_event(
         self,
         topic: str,
         event: EventSchema,
         key: Optional[str] = None,
         partition: Optional[int] = None,
         headers: Optional[List[tuple]] = None
-    ) -> None:
+        ) -> None:
         """Send a single event to Kafka."""
         if not self._started:
             await self.start()
@@ -241,12 +244,12 @@ class EventProducer:
                 logger.error(f"Failed to send event: {e}", event_id=event.event_id)
                 raise
     
-    async def send_batch(
+        async def send_batch(
         self,
         topic: str,
         events: List[EventSchema],
         ordered: bool = False
-    ) -> None:
+        ) -> None:
         """Send a batch of events."""
         if ordered:
             # Send sequentially to maintain order
@@ -278,8 +281,9 @@ class TransactionalProducer(EventProducer):
         super().__init__(config)
         self._in_transaction = False
     
-    async def start(self):
-        """Start the transactional producer."""
+        async def start(self):
+            """Start the transactional producer."""
+        pass
         await super().start()
         
         # Initialize transactions
@@ -287,47 +291,48 @@ class TransactionalProducer(EventProducer):
         logger.info(f"Transactional producer initialized: {self.config.transactional_id}")
     
     @asynccontextmanager
-    async def transaction(self):
+        async def transaction(self):
         """Context manager for transactions."""
+        pass
         if not self._started:
             await self.start()
         
         with tracer.start_as_current_span("kafka.transaction") as span:
             try:
                 # Begin transaction
-                await self.producer.begin_transaction()
-                self._in_transaction = True
-                span.set_attribute("transaction.id", self.config.transactional_id)
+        await self.producer.begin_transaction()
+        self._in_transaction = True
+        span.set_attribute("transaction.id", self.config.transactional_id)
                 
-                yield self
+        yield self
                 
-                # Commit transaction
-                await self.producer.commit_transaction()
-                self._in_transaction = False
+        # Commit transaction
+        await self.producer.commit_transaction()
+        self._in_transaction = False
                 
-                span.set_status(Status(StatusCode.OK))
-                logger.debug("Transaction committed successfully")
+        span.set_status(Status(StatusCode.OK))
+        logger.debug("Transaction committed successfully")
                 
-            except Exception as e:
-                # Abort transaction on error
-                if self._in_transaction:
-                    try:
-                        await self.producer.abort_transaction()
-                    except Exception as abort_error:
-                        logger.error(f"Failed to abort transaction: {abort_error}")
-                    finally:
-                        self._in_transaction = False
+        except Exception as e:
+        # Abort transaction on error
+        if self._in_transaction:
+            try:
+                await self.producer.abort_transaction()
+        except Exception as abort_error:
+        logger.error(f"Failed to abort transaction: {abort_error}")
+        finally:
+        self._in_transaction = False
                 
-                span.set_status(Status(StatusCode.ERROR, str(e)))
-                span.record_exception(e)
-                logger.error(f"Transaction failed: {e}")
-                raise
+        span.set_status(Status(StatusCode.ERROR, str(e)))
+        span.record_exception(e)
+        logger.error(f"Transaction failed: {e}")
+        raise
     
-    async def send_transactional_batch(
+        async def send_transactional_batch(
         self,
         events: List[tuple[str, EventSchema]],  # (topic, event) pairs
         consumer_offsets: Optional[Dict[str, Any]] = None
-    ) -> None:
+        ) -> None:
         """Send a batch of events in a transaction."""
         async with self.transaction():
             # Send all events
@@ -371,6 +376,7 @@ class BatchProducer:
     
     async def start(self):
         """Start the batch producer."""
+        pass
         await self.producer.start()
         self._running = True
         
@@ -378,8 +384,9 @@ class BatchProducer:
         self._flush_task = asyncio.create_task(self._flush_periodically())
         logger.info("Batch producer started")
     
-    async def stop(self):
-        """Stop the batch producer."""
+        async def stop(self):
+            """Stop the batch producer."""
+        pass
         self._running = False
         
         # Flush remaining events
@@ -391,7 +398,7 @@ class BatchProducer:
             try:
                 await self._flush_task
             except asyncio.CancelledError:
-                pass
+        pass
         
         await self.producer.stop()
         logger.info("Batch producer stopped")
@@ -399,16 +406,16 @@ class BatchProducer:
     async def add_event(self, topic: str, event: EventSchema) -> None:
         """Add event to batch buffer."""
         async with self._buffer_lock:
-            if topic not in self._buffer:
-                self._buffer[topic] = []
+        if topic not in self._buffer:
+            self._buffer[topic] = []
             
-            self._buffer[topic].append(event)
+        self._buffer[topic].append(event)
             
-            # Flush if batch size reached
-            if len(self._buffer[topic]) >= self.batch_size:
-                await self._flush_topic(topic)
+        # Flush if batch size reached
+        if len(self._buffer[topic]) >= self.batch_size:
+            await self._flush_topic(topic)
     
-    async def _flush_topic(self, topic: str) -> None:
+        async def _flush_topic(self, topic: str) -> None:
         """Flush events for a specific topic."""
         events = self._buffer.pop(topic, [])
         
@@ -445,14 +452,16 @@ class BatchProducer:
     
     async def flush_all(self) -> None:
         """Flush all buffered events."""
+        pass
         async with self._buffer_lock:
-            topics = list(self._buffer.keys())
+        topics = list(self._buffer.keys())
         
         for topic in topics:
-            await self._flush_topic(topic)
+        await self._flush_topic(topic)
     
-    async def _flush_periodically(self) -> None:
+        async def _flush_periodically(self) -> None:
         """Background task to flush events periodically."""
+        pass
         while self._running:
             try:
                 await asyncio.sleep(self.batch_timeout.total_seconds())

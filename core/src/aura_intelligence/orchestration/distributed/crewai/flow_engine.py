@@ -53,7 +53,7 @@ class FlowEngine:
         logger.info(f"Created flow {flow_id} with complexity {complexity.value}")
         return flow_id
     
-    async def execute_flow(self, flow_id: str, config: Dict[str, Any]) -> Dict[str, Any]:
+        async def execute_flow(self, flow_id: str, config: Dict[str, Any]) -> Dict[str, Any]:
         """Execute flow with geometric routing"""
         if flow_id not in self.active_flows:
             raise ValueError(f"Flow {flow_id} not found")
@@ -114,7 +114,7 @@ class FlowEngine:
         
         return embedding
     
-    async def _execute_tasks(self, tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        async def _execute_tasks(self, tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Execute routed tasks"""
         results = []
         for task in tasks:

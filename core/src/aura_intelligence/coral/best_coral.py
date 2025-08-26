@@ -114,6 +114,7 @@ class Mamba2Block(nn.Module):
     
     def _selective_scan(self, u, delta, A, B, C, D):
         """Selective scan - O(n) complexity."""
+        pass
         batch, seqlen, d_model = u.shape
         d_state = A.shape[1]
         
@@ -174,6 +175,7 @@ class BestCoRaLSystem:
         
     def _assign_roles(self) -> Tuple[List[str], List[str]]:
         """Smart role assignment"""
+        pass
         components = list(self.registry.components.items())
         
         # IA: Neural, Memory, Observability (first 100)
@@ -187,6 +189,7 @@ class BestCoRaLSystem:
     
     def _build_adjacency(self) -> torch.Tensor:
         """Build adjacency matrix for message routing"""
+        pass
         total = len(self.ia_ids) + len(self.ca_ids)
         adj = torch.zeros(total, total)
         
@@ -233,7 +236,7 @@ class BestCoRaLSystem:
         
         return embeddings
     
-    async def communicate(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
+        async def communicate(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Execute communication round with unlimited context"""
         start_time = time.time()
         
@@ -293,6 +296,7 @@ class BestCoRaLSystem:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get system statistics"""
+        pass
         return {
             'components': {
                 'information_agents': len(self.ia_ids),
@@ -320,8 +324,8 @@ class BestCoRaLSystem:
 # Global instance
 _best_coral = None
 
-def get_best_coral():
-    global _best_coral
-    if _best_coral is None:
+    def get_best_coral():
+        global _best_coral
+        if _best_coral is None:
         _best_coral = BestCoRaLSystem()
-    return _best_coral
+        return _best_coral

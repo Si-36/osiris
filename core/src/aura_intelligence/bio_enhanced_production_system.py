@@ -50,7 +50,7 @@ class BioEnhancedAURA:
             return SpikingCouncil()
         return None
 
-    async def process_enhanced(self, request: Any, component_id: Optional[str] = None) -> Dict[str, Any]:
+        async def process_enhanced(self, request: Any, component_id: Optional[str] = None) -> Dict[str, Any]:
         """Process through complete bio-enhanced pipeline"""
         t0 = time.perf_counter()
         enhancements = {}
@@ -110,7 +110,7 @@ class BioEnhancedAURA:
             "bio_enhanced": True
         }
     
-    async def _swarm_bg_check(self, request: Any):
+        async def _swarm_bg_check(self, request: Any):
         """Background swarm verification"""
         try:
             async with self._swarm_tokens:
@@ -120,6 +120,7 @@ class BioEnhancedAURA:
     
     def get_system_status(self) -> Dict[str, Any]:
         """Get complete system status"""
+        pass
         status = {
             "bio_enhancements": {
                 "metabolic": self.metabolic.get_status() if self.metabolic else {"status": "disabled"},
@@ -139,6 +140,7 @@ class BioEnhancedAURA:
     
     def get_capabilities(self) -> Dict[str, Any]:
         """Get system capabilities"""
+        pass
         return {
             "bio_inspired_features": {
                 "metabolic_regulation": {

@@ -58,8 +58,9 @@ class Neo4jAdapter:
         self._driver: Optional[AsyncDriver] = None
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize the Neo4j driver."""
+        pass
         if self._initialized:
             return
             
@@ -86,15 +87,16 @@ class Neo4jAdapter:
                 logger.error("Failed to initialize Neo4j", error=str(e))
                 raise
                 
-    async def close(self):
+        async def close(self):
         """Close the Neo4j driver."""
+        pass
         if self._driver:
             await self._driver.close()
             self._initialized = False
             logger.info("Neo4j adapter closed")
             
     @asynccontextmanager
-    async def session(self, database: Optional[str] = None):
+        async def session(self, database: Optional[str] = None):
         """Create a Neo4j session."""
         if not self._initialized:
             await self.initialize()
@@ -106,12 +108,12 @@ class Neo4jAdapter:
             yield session
             
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def query(
+        async def query(
         self,
         cypher: str,
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Execute a read query."""
         with tracer.start_as_current_span("neo4j_query") as span:
             span.set_attribute("neo4j.query", cypher[:100])  # First 100 chars
@@ -136,12 +138,12 @@ class Neo4jAdapter:
                     raise
                     
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def write(
+        async def write(
         self,
         cypher: str,
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute a write query."""
         with tracer.start_as_current_span("neo4j_write") as span:
             span.set_attribute("neo4j.query", cypher[:100])
@@ -175,11 +177,11 @@ class Neo4jAdapter:
                                error=str(e))
                     raise
                     
-    async def transaction(
+        async def transaction(
         self,
         queries: List[tuple[str, Dict[str, Any]]],
         database: Optional[str] = None
-    ) -> List[Any]:
+        ) -> List[Any]:
         """Execute multiple queries in a transaction."""
         with tracer.start_as_current_span("neo4j_transaction") as span:
             span.set_attribute("neo4j.query_count", len(queries))
@@ -204,12 +206,12 @@ class Neo4jAdapter:
                         
     # Knowledge graph specific methods
     
-    async def find_similar_patterns(
+        async def find_similar_patterns(
         self,
         embedding: List[float],
         limit: int = 10,
         threshold: float = 0.5
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Find similar patterns using vector similarity."""
         query = """
         MATCH (p:Pattern)
@@ -228,12 +230,12 @@ class Neo4jAdapter:
             }
         )
         
-    async def get_entity_relationships(
+        async def get_entity_relationships(
         self,
         entity_id: str,
         relationship_types: Optional[List[str]] = None,
         depth: int = 1
-    ) -> Dict[str, List[str]]:
+        ) -> Dict[str, List[str]]:
         """Get relationships for an entity."""
         if relationship_types:
             rel_filter = f"[r:{' | '.join(relationship_types)}]"
@@ -253,7 +255,7 @@ class Neo4jAdapter:
             
         return relationships
         
-    async def add_decision_node(
+        async def add_decision_node(
         self,
         decision_id: str,
         agent_id: str,
@@ -261,7 +263,7 @@ class Neo4jAdapter:
         confidence: float,
         context: Dict[str, Any],
         embedding: Optional[List[float]] = None
-    ) -> str:
+        ) -> str:
         """Add a decision node to the graph."""
         query = """
         CREATE (d:Decision {
@@ -290,12 +292,12 @@ class Neo4jAdapter:
         
         return result[0]["id"] if result else decision_id
         
-    async def link_decision_to_context(
+        async def link_decision_to_context(
         self,
         decision_id: str,
         context_ids: List[str],
         relationship_type: str = "INFLUENCED_BY"
-    ):
+        ):
         """Link a decision to its context nodes."""
         query = f"""
         MATCH (d:Decision {{id: $decision_id}})
@@ -311,11 +313,11 @@ class Neo4jAdapter:
             }
         )
         
-    async def update_entity(
+        async def update_entity(
         self,
         entity_id: str,
         properties: Dict[str, Any]
-    ):
+        ):
         """Update entity properties."""
         set_clause = ", ".join([f"e.{k} = ${k}" for k in properties.keys()])
         query = f"""

@@ -30,12 +30,13 @@ class Mem0Manager:
         self.memories: Dict[str, List[Memory]] = {}
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize Mem0 connection."""
+        pass
         logger.info("Initializing Mem0Manager")
         self._initialized = True
         
-    async def store_memory(self, agent_id: str, content: str, metadata: Optional[Dict[str, Any]] = None) -> str:
+        async def store_memory(self, agent_id: str, content: str, metadata: Optional[Dict[str, Any]] = None) -> str:
         """
         Store a memory for an agent.
         
@@ -64,12 +65,12 @@ class Mem0Manager:
         
         return memory_id
         
-    async def retrieve_memories(
+        async def retrieve_memories(
         self,
         agent_id: str,
         query: Optional[str] = None,
         limit: int = 10
-    ) -> List[Memory]:
+        ) -> List[Memory]:
         """
         Retrieve memories for an agent.
         
@@ -98,7 +99,7 @@ class Mem0Manager:
             
         return agent_memories[-limit:]
         
-    async def update_memory(self, memory_id: str, content: str, metadata: Optional[Dict[str, Any]] = None):
+        async def update_memory(self, memory_id: str, content: str, metadata: Optional[Dict[str, Any]] = None):
         """Update an existing memory."""
         # Find and update memory
         for agent_memories in self.memories.values():
@@ -109,18 +110,19 @@ class Mem0Manager:
                         memory.metadata.update(metadata)
                     return
                     
-    async def delete_memory(self, memory_id: str):
+        async def delete_memory(self, memory_id: str):
         """Delete a memory."""
         # Find and remove memory
         for agent_id, agent_memories in self.memories.items():
             self.memories[agent_id] = [m for m in agent_memories if m.id != memory_id]
             
-    async def clear_agent_memories(self, agent_id: str):
+        async def clear_agent_memories(self, agent_id: str):
         """Clear all memories for an agent."""
         if agent_id in self.memories:
             self.memories[agent_id].clear()
             
-    async def shutdown(self):
+        async def shutdown(self):
         """Shutdown Mem0 connection."""
+        pass
         logger.info("Shutting down Mem0Manager")
         self._initialized = False

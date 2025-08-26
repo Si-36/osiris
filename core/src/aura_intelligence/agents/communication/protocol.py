@@ -117,6 +117,7 @@ class ACPProtocol:
     
     async def start(self) -> None:
         """Start the protocol and background tasks."""
+        pass
         if self._running:
             return
         
@@ -141,6 +142,7 @@ class ACPProtocol:
     
     async def stop(self) -> None:
         """Stop the protocol and cleanup resources."""
+        pass
         self._running = False
         
         # Cancel background tasks
@@ -173,7 +175,7 @@ class ACPProtocol:
         self.middleware.append(middleware_func)
     
     @tracer.start_as_current_span("acp_send_message")
-    async def send_message(
+        async def send_message(
         self,
         recipient: ACPEndpoint,
         message_type: MessageType,
@@ -181,7 +183,7 @@ class ACPProtocol:
         correlation_id: str,
         priority: Priority = Priority.NORMAL,
         expires_in_seconds: Optional[float] = None
-    ) -> str:
+        ) -> str:
         """
         Send a message to another agent.
         
@@ -261,13 +263,13 @@ class ACPProtocol:
             raise
     
     @tracer.start_as_current_span("acp_send_request")
-    async def send_request(
+        async def send_request(
         self,
         recipient: ACPEndpoint,
         payload: Dict[str, Any],
         correlation_id: str,
         timeout_seconds: float = None
-    ) -> ACPResponse:
+        ) -> ACPResponse:
         """
         Send a request and wait for response.
         
@@ -305,11 +307,11 @@ class ACPProtocol:
                 "REQUEST_TIMEOUT"
             )
     
-    async def send_response(
+        async def send_response(
         self,
         original_message: ACPEnvelope,
         response: ACPResponse
-    ) -> str:
+        ) -> str:
         """Send a response to a request."""
         return await self.send_message(
             recipient=original_message.sender,
@@ -318,12 +320,12 @@ class ACPProtocol:
             correlation_id=original_message.correlation_id
         )
     
-    async def broadcast(
+        async def broadcast(
         self,
         payload: Dict[str, Any],
         correlation_id: str,
         target_roles: Optional[List[str]] = None
-    ) -> List[str]:
+        ) -> List[str]:
         """
         Broadcast a message to multiple agents.
         
@@ -351,8 +353,9 @@ class ACPProtocol:
         
         return message_ids
     
-    async def _process_incoming_messages(self) -> None:
+        async def _process_incoming_messages(self) -> None:
         """Background task to process incoming messages."""
+        pass
         while self._running:
             try:
                 # Receive messages from transport
@@ -368,7 +371,7 @@ class ACPProtocol:
                 await asyncio.sleep(1.0)
     
     @tracer.start_as_current_span("acp_handle_message")
-    async def _handle_message(self, envelope: ACPEnvelope) -> None:
+        async def _handle_message(self, envelope: ACPEnvelope) -> None:
         """Handle an incoming message."""
         span = trace.get_current_span()
         span.set_attributes({
@@ -443,15 +446,16 @@ class ACPProtocol:
             span.record_exception(e)
             span.set_status(Status(StatusCode.ERROR, str(e)))
     
-    async def _wait_for_response(self, correlation_id: str, request_id: str) -> ACPResponse:
+        async def _wait_for_response(self, correlation_id: str, request_id: str) -> ACPResponse:
         """Wait for a response to a specific request."""
         # This would be implemented based on the transport layer
         # For now, return a placeholder
         await asyncio.sleep(0.1)  # Simulate waiting
         return ACPResponse(success=True, result={"placeholder": "response"})
     
-    async def _cleanup_expired_messages(self) -> None:
+        async def _cleanup_expired_messages(self) -> None:
         """Background task to cleanup expired messages."""
+        pass
         while self._running:
             try:
                 current_time = datetime.now(timezone.utc)
@@ -474,8 +478,9 @@ class ACPProtocol:
                 print(f"Error in cleanup task: {e}")
                 await asyncio.sleep(60)
     
-    async def _retry_failed_messages(self) -> None:
+        async def _retry_failed_messages(self) -> None:
         """Background task to retry failed messages."""
+        pass
         while self._running:
             try:
                 retry_ids = []
@@ -517,6 +522,7 @@ class ACPProtocol:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get protocol statistics."""
+        pass
         return {
             **self.stats,
             'pending_messages': len(self.pending_messages),
@@ -537,8 +543,9 @@ class MessageBus:
         self.protocol = protocol
         self._response_handlers: Dict[str, asyncio.Future] = {}
     
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start the message bus."""
+        pass
         # Register response handler
         self.protocol.register_handler(
             MessageType.RESPONSE,
@@ -547,18 +554,19 @@ class MessageBus:
         
         await self.protocol.start()
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop the message bus."""
+        pass
         await self.protocol.stop()
     
-    async def call(
+        async def call(
         self,
         agent_role: str,
         method: str,
         params: Dict[str, Any],
         correlation_id: str,
         timeout: float = 30.0
-    ) -> Any:
+        ) -> Any:
         """
         Call a method on a remote agent.
         
@@ -596,13 +604,13 @@ class MessageBus:
         
         return response.result
     
-    async def notify(
+        async def notify(
         self,
         agent_role: str,
         event: str,
         data: Dict[str, Any],
         correlation_id: str
-    ) -> None:
+        ) -> None:
         """Send a notification to an agent."""
         agents = await self.protocol.transport.discover_agents([agent_role])
         
@@ -619,7 +627,7 @@ class MessageBus:
                 correlation_id=correlation_id
             )
     
-    async def _handle_response(self, envelope: ACPEnvelope) -> None:
+        async def _handle_response(self, envelope: ACPEnvelope) -> None:
         """Handle response messages."""
         correlation_id = envelope.correlation_id
         if correlation_id in self._response_handlers:

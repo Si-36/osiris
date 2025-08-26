@@ -79,7 +79,7 @@ class CrossModalFusion(nn.Module):
         self.fusion = nn.Linear(embed_dim * 3, embed_dim)  # vision + text + neural
         
     def forward(self, vision_emb: torch.Tensor, text_emb: torch.Tensor, 
-                neural_emb: torch.Tensor) -> torch.Tensor:
+        neural_emb: torch.Tensor) -> torch.Tensor:
         # Cross-modal attention
         vision_attended, _ = self.cross_attn(vision_emb.unsqueeze(1), 
                                            text_emb.unsqueeze(1), 
@@ -151,8 +151,9 @@ class RealMultiModalProcessor:
         
         return torch.tensor(tokens, dtype=torch.long)
     
-    async def _extract_neural_state(self) -> torch.Tensor:
+        async def _extract_neural_state(self) -> torch.Tensor:
         """Extract neural state from AURA components"""
+        pass
         neural_components = self.registry.get_components_by_type(ComponentType.NEURAL)[:10]
         
         features = []
@@ -170,7 +171,7 @@ class RealMultiModalProcessor:
         
         return torch.tensor([features[:128]], dtype=torch.float32)
     
-    async def process_multimodal(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        async def process_multimodal(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """Process multi-modal inputs"""
         start_time = time.time()
         self.stats['total_requests'] += 1
@@ -270,6 +271,7 @@ class RealMultiModalProcessor:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get multimodal processing statistics"""
+        pass
         return {
             'total_requests': self.stats['total_requests'],
             'modality_distribution': self.stats['modality_counts'],
@@ -278,5 +280,5 @@ class RealMultiModalProcessor:
             'supported_modalities': ['vision', 'text', 'neural_state']
         }
 
-def get_multimodal_processor():
-    return RealMultiModalProcessor()
+    def get_multimodal_processor():
+        return RealMultiModalProcessor()

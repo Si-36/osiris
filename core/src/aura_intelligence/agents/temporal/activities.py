@@ -85,7 +85,7 @@ class AgentActivity:
                 )
                 
                 async def process_with_agent():
-                    # Convert state if needed
+        # Convert state if needed
                     if hasattr(agent, 'process_state'):
                         return await agent.process_state(state)
                     else:
@@ -326,6 +326,7 @@ class KafkaProducerActivity:
     @classmethod
     async def _get_producer(cls) -> AIOKafkaProducer:
         """Get or create Kafka producer."""
+        pass
         if cls._producer is None:
             cls._producer = AIOKafkaProducer(
                 bootstrap_servers='localhost:9092',

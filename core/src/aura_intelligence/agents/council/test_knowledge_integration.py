@@ -31,11 +31,12 @@ class MockNeo4jAdapter:
         self.query_count = 0
         self.initialized = False
     
-    async def initialize(self):
+        async def initialize(self):
         """Mock initialization."""
+        pass
         self.initialized = True
     
-    async def query(self, cypher: str, params=None, database=None):
+        async def query(self, cypher: str, params=None, database=None):
         """Mock query execution."""
         self.query_count += 1
         
@@ -53,60 +54,60 @@ class MockNeo4jAdapter:
         else:
             return []
     
-    async def write(self, cypher: str, params=None, database=None):
+        async def write(self, cypher: str, params=None, database=None):
         """Mock write operation."""
         return {"nodes_created": 1, "relationships_created": 0}
     
-    async def close(self):
+        async def close(self):
         """Mock close."""
         pass
 
 
 async def test_knowledge_provider_initialization():
-    """Test knowledge graph provider initialization."""
-    print("🧪 Testing Knowledge Graph Provider Initialization")
+        """Test knowledge graph provider initialization."""
+        print("🧪 Testing Knowledge Graph Provider Initialization")
     
-    if not IMPORTS_AVAILABLE:
+        if not IMPORTS_AVAILABLE:
         print("✅ Skipped - imports not available")
         return True
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
+        kg_provider = KnowledgeGraphContextProvider(config)
     
     # Test with mock adapter
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
-    print("✅ Knowledge Graph Provider initialized")
-    print(f"   Config input size: {config.input_size}")
-    print(f"   Neo4j adapter connected: {kg_provider.neo4j_adapter is not None}")
+        print("✅ Knowledge Graph Provider initialized")
+        print(f"   Config input size: {config.input_size}")
+        print(f"   Neo4j adapter connected: {kg_provider.neo4j_adapter is not None}")
     
-    return True
+        return True
 
 
 async def test_real_context_retrieval():
-    """Test real context retrieval with production classes."""
-    print("\n🧪 Testing Real Context Retrieval")
+        """Test real context retrieval with production classes."""
+        print("\n🧪 Testing Real Context Retrieval")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
     # Create test state
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         request_id="test_123",
         user_id="user_123",
         project_id="proj_456",
@@ -116,43 +117,43 @@ async def test_real_context_retrieval():
         compute_hours=8.0,
         priority=7,
         created_at=datetime.now(timezone.utc)
-    )
+        )
     
-    state = LNNCouncilState(current_request=request)
+        state = LNNCouncilState(current_request=request)
     
     # Get knowledge context
-    context = await kg_provider.get_knowledge_context(state)
+        context = await kg_provider.get_knowledge_context(state)
     
-    print("✅ Real context retrieval completed")
-    if context is not None:
+        print("✅ Real context retrieval completed")
+        if context is not None:
         print(f"   Context shape: {context.shape}")
         print(f"   Context dtype: {context.dtype}")
         print(f"   Non-zero features: {(context != 0).sum().item()}")
         print(f"   Feature range: [{context.min().item():.3f}, {context.max().item():.3f}]")
-    else:
+        else:
         print("   Context is None (expected for mock)")
     
-    print(f"   Neo4j queries executed: {mock_adapter.query_count}")
+        print(f"   Neo4j queries executed: {mock_adapter.query_count}")
     
-    return True
+        return True
 
 
 async def test_entity_context_integration():
-    """Test entity context integration with Neo4j queries."""
-    print("\n🧪 Testing Entity Context Integration")
+        """Test entity context integration with Neo4j queries."""
+        print("\n🧪 Testing Entity Context Integration")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         request_id="test_123",
         user_id="user_123",
         project_id="proj_456",
@@ -162,34 +163,34 @@ async def test_entity_context_integration():
         compute_hours=8.0,
         priority=7,
         created_at=datetime.now(timezone.utc)
-    )
+        )
     
     # Test entity context retrieval
-    entity_context = await kg_provider._get_entity_context(request)
+        entity_context = await kg_provider._get_entity_context(request)
     
-    print("✅ Entity context integration tested")
-    print(f"   Entity context keys: {list(entity_context.keys()) if entity_context else 'None'}")
-    print(f"   Neo4j queries: {mock_adapter.query_count}")
+        print("✅ Entity context integration tested")
+        print(f"   Entity context keys: {list(entity_context.keys()) if entity_context else 'None'}")
+        print(f"   Neo4j queries: {mock_adapter.query_count}")
     
-    return True
+        return True
 
 
 async def test_relationship_context_integration():
-    """Test relationship context integration."""
-    print("\n🧪 Testing Relationship Context Integration")
+        """Test relationship context integration."""
+        print("\n🧪 Testing Relationship Context Integration")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         request_id="test_123",
         user_id="user_123",
         project_id="proj_456",
@@ -199,33 +200,33 @@ async def test_relationship_context_integration():
         compute_hours=8.0,
         priority=7,
         created_at=datetime.now(timezone.utc)
-    )
+        )
     
     # Test relationship context
-    relationship_context = await kg_provider._get_relationship_context(request)
+        relationship_context = await kg_provider._get_relationship_context(request)
     
-    print("✅ Relationship context integration tested")
-    print(f"   Relationship context keys: {list(relationship_context.keys()) if relationship_context else 'None'}")
+        print("✅ Relationship context integration tested")
+        print(f"   Relationship context keys: {list(relationship_context.keys()) if relationship_context else 'None'}")
     
-    return True
+        return True
 
 
 async def test_multihop_reasoning_integration():
-    """Test multi-hop reasoning integration."""
-    print("\n🧪 Testing Multi-hop Reasoning Integration")
+        """Test multi-hop reasoning integration."""
+        print("\n🧪 Testing Multi-hop Reasoning Integration")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         request_id="test_123",
         user_id="user_123",
         project_id="proj_456",
@@ -235,84 +236,84 @@ async def test_multihop_reasoning_integration():
         compute_hours=8.0,
         priority=7,
         created_at=datetime.now(timezone.utc)
-    )
+        )
     
     # Test multi-hop context
-    multihop_context = await kg_provider._get_multihop_context(request)
+        multihop_context = await kg_provider._get_multihop_context(request)
     
-    print("✅ Multi-hop reasoning integration tested")
-    print(f"   Multi-hop context keys: {list(multihop_context.keys()) if multihop_context else 'None'}")
+        print("✅ Multi-hop reasoning integration tested")
+        print(f"   Multi-hop context keys: {list(multihop_context.keys()) if multihop_context else 'None'}")
     
-    return True
+        return True
 
 
 async def test_caching_mechanisms():
-    """Test caching mechanisms."""
-    print("\n🧪 Testing Caching Mechanisms")
+        """Test caching mechanisms."""
+        print("\n🧪 Testing Caching Mechanisms")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
     # Test cache initialization
-    print("✅ Cache mechanisms tested")
-    print(f"   Entity cache size: {len(kg_provider.entity_cache)}")
-    print(f"   Relationship cache size: {len(kg_provider.relationship_cache)}")
-    print(f"   Query cache size: {len(kg_provider.query_cache)}")
-    print(f"   Topology cache size: {len(kg_provider.topology_cache)}")
+        print("✅ Cache mechanisms tested")
+        print(f"   Entity cache size: {len(kg_provider.entity_cache)}")
+        print(f"   Relationship cache size: {len(kg_provider.relationship_cache)}")
+        print(f"   Query cache size: {len(kg_provider.query_cache)}")
+        print(f"   Topology cache size: {len(kg_provider.topology_cache)}")
     
-    return True
+        return True
 
 
 async def test_graph_neural_components():
-    """Test graph neural network components."""
-    print("\n🧪 Testing Graph Neural Components")
+        """Test graph neural network components."""
+        print("\n🧪 Testing Graph Neural Components")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
+        kg_provider = KnowledgeGraphContextProvider(config)
     
     # Test component initialization
-    print("✅ Graph neural components tested")
-    print(f"   Entity embedder: {type(kg_provider.entity_embedder).__name__}")
-    print(f"   Relationship encoder: {type(kg_provider.relationship_encoder).__name__}")
-    print(f"   Graph aggregator: {type(kg_provider.graph_aggregator).__name__}")
+        print("✅ Graph neural components tested")
+        print(f"   Entity embedder: {type(kg_provider.entity_embedder).__name__}")
+        print(f"   Relationship encoder: {type(kg_provider.relationship_encoder).__name__}")
+        print(f"   Graph aggregator: {type(kg_provider.graph_aggregator).__name__}")
     
-    return True
+        return True
 
 
 async def test_performance_tracking():
-    """Test performance tracking."""
-    print("\n🧪 Testing Performance Tracking")
+        """Test performance tracking."""
+        print("\n🧪 Testing Performance Tracking")
     
-    config = LNNCouncilConfig(
+        config = LNNCouncilConfig(
         name="test_kg_agent",
         input_size=64,
         output_size=16
-    )
+        )
     
-    kg_provider = KnowledgeGraphContextProvider(config)
-    mock_adapter = MockNeo4jAdapter()
-    await mock_adapter.initialize()
-    kg_provider.set_neo4j_adapter(mock_adapter)
+        kg_provider = KnowledgeGraphContextProvider(config)
+        mock_adapter = MockNeo4jAdapter()
+        await mock_adapter.initialize()
+        kg_provider.set_neo4j_adapter(mock_adapter)
     
     # Initial stats
-    initial_query_count = kg_provider.query_count
-    initial_cache_hits = kg_provider.cache_hits
+        initial_query_count = kg_provider.query_count
+        initial_cache_hits = kg_provider.cache_hits
     
     # Perform some operations
-    request = GPUAllocationRequest(
+        request = GPUAllocationRequest(
         request_id="test_123",
         user_id="user_123",
         project_id="proj_456",
@@ -322,45 +323,45 @@ async def test_performance_tracking():
         compute_hours=8.0,
         priority=7,
         created_at=datetime.now(timezone.utc)
-    )
+        )
     
-    state = LNNCouncilState(current_request=request)
-    await kg_provider.get_knowledge_context(state)
+        state = LNNCouncilState(current_request=request)
+        await kg_provider.get_knowledge_context(state)
     
-    print("✅ Performance tracking tested")
-    print(f"   Query count: {kg_provider.query_count}")
-    print(f"   Cache hits: {kg_provider.cache_hits}")
-    print(f"   Average query time: {kg_provider.avg_query_time:.3f}s")
+        print("✅ Performance tracking tested")
+        print(f"   Query count: {kg_provider.query_count}")
+        print(f"   Cache hits: {kg_provider.cache_hits}")
+        print(f"   Average query time: {kg_provider.avg_query_time:.3f}s")
     
-    return True
+        return True
 
 
 async def test_neo4j_config_integration():
-    """Test Neo4j configuration integration."""
-    print("\n🧪 Testing Neo4j Config Integration")
+        """Test Neo4j configuration integration."""
+        print("\n🧪 Testing Neo4j Config Integration")
     
     # Test Neo4j config
-    neo4j_config = Neo4jConfig(
+        neo4j_config = Neo4jConfig(
         uri="bolt://localhost:7687",
         username="neo4j",
         password="test_password",
         database="neo4j"
-    )
+        )
     
-    print("✅ Neo4j config integration tested")
-    print(f"   URI: {neo4j_config.uri}")
-    print(f"   Database: {neo4j_config.database}")
-    print(f"   Connection pool size: {neo4j_config.max_connection_pool_size}")
-    print(f"   Query timeout: {neo4j_config.query_timeout}s")
+        print("✅ Neo4j config integration tested")
+        print(f"   URI: {neo4j_config.uri}")
+        print(f"   Database: {neo4j_config.database}")
+        print(f"   Connection pool size: {neo4j_config.max_connection_pool_size}")
+        print(f"   Query timeout: {neo4j_config.query_timeout}s")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all knowledge graph integration tests."""
-    print("🚀 Knowledge Graph Integration Tests (2025)\n")
+        """Run all knowledge graph integration tests."""
+        print("🚀 Knowledge Graph Integration Tests (2025)\n")
     
-    tests = [
+        tests = [
         test_knowledge_provider_initialization,
         test_real_context_retrieval,
         test_entity_context_integration,
@@ -370,10 +371,10 @@ async def main():
         test_graph_neural_components,
         test_performance_tracking,
         test_neo4j_config_integration
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -383,9 +384,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All knowledge graph integration tests passed!")
         print("\n🎯 Integration Features Demonstrated:")
         print("   • Production KnowledgeGraphContextProvider class ✅")
@@ -401,11 +402,11 @@ async def main():
         print("   • Implement TDA-enhanced topology features")
         print("   • Add relevance scoring with graph embeddings")
         return 0
-    else:
+        else:
         print("❌ Some integration tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

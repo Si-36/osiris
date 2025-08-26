@@ -13,7 +13,7 @@ class RealPolicyEngine:
         self.opa_url = opa_url
         self.opa_available = OPA_AVAILABLE
     
-    async def evaluate_policy(self, policy_name: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def evaluate_policy(self, policy_name: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate policy using OPA"""
         if self.opa_available:
             try:
@@ -24,7 +24,7 @@ class RealPolicyEngine:
                 )
                 return response.json()
             except Exception:
-                pass
+        pass
         
         # Fallback policy evaluation
         return {
@@ -34,5 +34,5 @@ class RealPolicyEngine:
             "engine": "fallback"
         }
 
-def get_real_policy_engine():
-    return RealPolicyEngine()
+    def get_real_policy_engine():
+        return RealPolicyEngine()

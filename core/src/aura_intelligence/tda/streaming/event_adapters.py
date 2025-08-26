@@ -87,11 +87,12 @@ class PointCloudAdapter(EventAdapter):
             
     def _init_serializers(self) -> None:
         """Initialize protobuf serializers"""
+        pass
         # This would be replaced with actual protobuf schema
         # For now, we'll use JSON
         pass
         
-    async def process_event(self, event: EventMessage) -> Optional[PointCloudEvent]:
+        async def process_event(self, event: EventMessage) -> Optional[PointCloudEvent]:
         """Convert Kafka event to PointCloudEvent"""
         with self.tracer.start_as_current_span("point_cloud_adapter") as span:
             span.set_attribute("event_id", event.key)
@@ -172,8 +173,9 @@ class TDAEventProcessor:
         """Add post-processing hook"""
         self.post_process_hooks.append(hook)
         
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start processing events"""
+        pass
         logger.info("tda_event_processor_started")
         
         # Subscribe to input topic
@@ -200,7 +202,7 @@ class TDAEventProcessor:
             )
             raise
             
-    async def _process_batch(self, events: List[EventMessage]) -> None:
+        async def _process_batch(self, events: List[EventMessage]) -> None:
         """Process a batch of events"""
         with self.tracer.start_as_current_span("process_event_batch") as span:
             span.set_attribute("batch_size", len(events))
@@ -279,7 +281,7 @@ class TDAEventProcessor:
             latency = (datetime.now() - start_time).total_seconds()
             EVENT_LATENCY.labels(event_type='batch').observe(latency)
             
-    async def _send_result(self, result: TDAResultEvent) -> None:
+        async def _send_result(self, result: TDAResultEvent) -> None:
         """Send TDA result to output topic"""
         # Run post-process hooks
         for hook in self.post_process_hooks:
@@ -309,12 +311,12 @@ class SchemaEvolutionHandler:
         self.schema_registry = schema_registry
         self.schema_cache: Dict[str, Any] = {}
         
-    async def handle_evolution(
+        async def handle_evolution(
         self,
         old_schema: str,
         new_schema: str,
         migration_fn: Optional[Callable] = None
-    ) -> None:
+        ) -> None:
         """Handle schema evolution"""
         logger.info(
             "handling_schema_evolution",
@@ -336,44 +338,44 @@ class SchemaEvolutionHandler:
 
 # Example usage
 async def example_usage():
-    """Example of using TDA event processor"""
+        """Example of using TDA event processor"""
     
     # Create Kafka mesh
-    kafka_mesh = KafkaEventMesh(
+        kafka_mesh = KafkaEventMesh(
         producer_id=1,
         bootstrap_servers="localhost:9092",
         max_concurrent_sends=100
-    )
+        )
     
     # Create multi-scale TDA processor
-    scales = [
+        scales = [
         ScaleConfig("1min", window_size=1000, slide_interval=100),
         ScaleConfig("5min", window_size=5000, slide_interval=500),
         ScaleConfig("15min", window_size=15000, slide_interval=1500),
-    ]
-    tda_processor = MultiScaleProcessor(scales)
+        ]
+        tda_processor = MultiScaleProcessor(scales)
     
     # Create event processor
-    event_processor = TDAEventProcessor(
+        event_processor = TDAEventProcessor(
         kafka_mesh=kafka_mesh,
         tda_processor=tda_processor,
         input_topic="point_clouds",
         output_topic="tda_results"
-    )
+        )
     
     # Add hooks for custom processing
-    async def log_event(event):
+        async def log_event(event):
         logger.info("processing_event", event_id=event.key)
         return event
         
-    event_processor.add_pre_process_hook(log_event)
+        event_processor.add_pre_process_hook(log_event)
     
     # Start processing
-    await event_processor.start()
+        await event_processor.start()
     
 
-if __name__ == "__main__":
-    asyncio.run(example_usage())
+        if __name__ == "__main__":
+        asyncio.run(example_usage())
 
 
 # Aliases for compatibility

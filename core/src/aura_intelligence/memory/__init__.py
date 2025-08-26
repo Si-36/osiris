@@ -19,9 +19,9 @@ except ImportError:
             self.persistence_enabled = True
             self.cache_size = 10000
 
-__all__ = [
-    'HybridKNNIndex',
-    'KNNConfig', 
-    'create_knn_index',
-    'MemorySettings',
-]
+            __all__ = [
+            'HybridKNNIndex',
+            'KNNConfig',
+            'create_knn_index',
+            'MemorySettings',
+            ]

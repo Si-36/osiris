@@ -66,16 +66,16 @@ class LNNCouncilAgent(AgentBase):
         # Initialize LNN with context awareness
         lnn_config = config.get("lnn_config", self._default_lnn_config())
         self.lnn = ContextAwareLNN(
-            lnn_config=lnn_config,
-            memory_manager=getattr(self, "memory", None),
-            knowledge_graph=getattr(self, "graph", None),
-            event_producer=getattr(self, "events", None),
-            feature_flags=config.get("feature_flags", {})
+        lnn_config=lnn_config,
+        memory_manager=getattr(self, "memory", None),
+        knowledge_graph=getattr(self, "graph", None),
+        event_producer=getattr(self, "events", None),
+        feature_flags=config.get("feature_flags", {})
         )
         
         # Memory hooks for background indexing
         self.memory_hooks = LNNMemoryHooks(
-            memory_manager=getattr(self, "memory", None)
+        memory_manager=getattr(self, "memory", None)
         )
         
         # Council-specific configuration
@@ -90,6 +90,7 @@ class LNNCouncilAgent(AgentBase):
         
     def _default_lnn_config(self) -> LNNConfig:
         """Default LNN configuration for council agent."""
+        pass
         return LNNConfig(
             input_size=256,  # Suitable for encoded council tasks
             hidden_sizes=[128, 64],
@@ -102,6 +103,7 @@ class LNNCouncilAgent(AgentBase):
         
     def build_graph(self) -> StateGraph:
         """Build the LangGraph workflow for council participation."""
+        pass
         workflow = StateGraph(AgentState)
         
         # Define nodes
@@ -125,7 +127,7 @@ class LNNCouncilAgent(AgentBase):
         
         return workflow
         
-    async def process(self, task: CouncilTask) -> CouncilVote:
+        async def process(self, task: CouncilTask) -> CouncilVote:
         """Process a council task and return a vote."""
         with tracer.start_as_current_span("process_council_task") as span:
             span.set_attribute("task.id", task.task_id)
@@ -140,19 +142,19 @@ class LNNCouncilAgent(AgentBase):
                 return await self._legacy_process(task)
                 
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def _process_with_lnn(self, task: CouncilTask) -> CouncilVote:
+        async def _process_with_lnn(self, task: CouncilTask) -> CouncilVote:
         """Process task using LNN inference."""
         # Initialize state
         initial_state = AgentState(
-            messages=[],
-            task=task.payload,
-            context=task.context,
-            metadata={
-                "task_id": task.task_id,
-                "task_type": task.task_type,
-                "priority": task.priority,
-                "start_time": datetime.now(timezone.utc)
-            }
+        messages=[],
+        task=task.payload,
+        context=task.context,
+        metadata={
+        "task_id": task.task_id,
+        "task_type": task.task_type,
+        "priority": task.priority,
+        "start_time": datetime.now(timezone.utc)
+        }
         )
         
         # Run workflow
@@ -161,24 +163,24 @@ class LNNCouncilAgent(AgentBase):
         # Extract vote from result
         vote_data = result.get("vote", {})
         vote = CouncilVote(
-            agent_id=self.agent_id,
-            vote=vote_data.get("vote_type", VoteType.ABSTAIN),
-            confidence=vote_data.get("confidence", 0.0),
-            reasoning=vote_data.get("reasoning", ""),
-            supporting_evidence=vote_data.get("evidence", []),
-            timestamp=datetime.now(timezone.utc)
+        agent_id=self.agent_id,
+        vote=vote_data.get("vote_type", VoteType.ABSTAIN),
+        confidence=vote_data.get("confidence", 0.0),
+        reasoning=vote_data.get("reasoning", ""),
+        supporting_evidence=vote_data.get("evidence", []),
+        timestamp=datetime.now(timezone.utc)
         )
         
         # Update metrics
         self._votes_cast += 1
         self._average_confidence = (
-            (self._average_confidence * (self._votes_cast - 1) + vote.confidence) 
-            / self._votes_cast
+        (self._average_confidence * (self._votes_cast - 1) + vote.confidence)
+        / self._votes_cast
         )
         
         return vote
         
-    async def _analyze_task(self, state: AgentState) -> AgentState:
+        async def _analyze_task(self, state: AgentState) -> AgentState:
         """Analyze the council task."""
         task = state["task"]
         
@@ -198,35 +200,35 @@ class LNNCouncilAgent(AgentBase):
         
         return state
         
-    async def _retrieve_context(self, state: AgentState) -> AgentState:
+        async def _retrieve_context(self, state: AgentState) -> AgentState:
         """Retrieve relevant context for decision making."""
         # Query context based on task
         query_context = {
-            "entities": self._extract_entities(state["task"]),
-            "temporal": {
-                "deadline": state["metadata"].get("deadline"),
-                "created": state["metadata"].get("start_time")
-            }
+        "entities": self._extract_entities(state["task"]),
+        "temporal": {
+        "deadline": state["metadata"].get("deadline"),
+        "created": state["metadata"].get("start_time")
+        }
         }
         
         # Search for similar past decisions
         if self.memory_hooks:
             similar_decisions = await self.memory_hooks.search_similar_decisions(
-                query_features=self._encode_task(state["task"]),
-                limit=5,
-                time_window_hours=168  # Last week
-            )
-            state["similar_decisions"] = similar_decisions
+        query_features=self._encode_task(state["task"]),
+        limit=5,
+        time_window_hours=168  # Last week
+        )
+        state["similar_decisions"] = similar_decisions
             
         state["query_context"] = query_context
         state["messages"].append({
-            "role": "system",
-            "content": f"Retrieved {len(state.get('similar_decisions', []))} similar decisions"
+        "role": "system",
+        "content": f"Retrieved {len(state.get('similar_decisions', []))} similar decisions"
         })
         
         return state
         
-    async def _lnn_inference(self, state: AgentState) -> AgentState:
+        async def _lnn_inference(self, state: AgentState) -> AgentState:
         """Run LNN inference on the task."""
         # Encode task for LNN
         import torch
@@ -254,7 +256,7 @@ class LNNCouncilAgent(AgentBase):
             
         return state
         
-    async def _formulate_vote(self, state: AgentState) -> AgentState:
+        async def _formulate_vote(self, state: AgentState) -> AgentState:
         """Formulate vote based on LNN inference."""
         lnn_result = state["lnn_result"]
         analysis = state["analysis"]
@@ -263,18 +265,18 @@ class LNNCouncilAgent(AgentBase):
         predictions = lnn_result["predictions"]
         if isinstance(predictions, list) and len(predictions) >= 4:
             vote_probs = {
-                VoteType.APPROVE: predictions[0],
-                VoteType.REJECT: predictions[1],
-                VoteType.ABSTAIN: predictions[2],
-                VoteType.DELEGATE: predictions[3]
-            }
+        VoteType.APPROVE: predictions[0],
+        VoteType.REJECT: predictions[1],
+        VoteType.ABSTAIN: predictions[2],
+        VoteType.DELEGATE: predictions[3]
+        }
         else:
-            # Fallback interpretation
-            confidence = lnn_result["confidence"]
-            if confidence > self.vote_threshold:
-                vote_probs = {VoteType.APPROVE: confidence, VoteType.REJECT: 1-confidence}
-            else:
-                vote_probs = {VoteType.ABSTAIN: 1.0}
+        # Fallback interpretation
+        confidence = lnn_result["confidence"]
+        if confidence > self.vote_threshold:
+            vote_probs = {VoteType.APPROVE: confidence, VoteType.REJECT: 1-confidence}
+        else:
+        vote_probs = {VoteType.ABSTAIN: 1.0}
                 
         # Select vote with highest probability
         vote_type = max(vote_probs, key=vote_probs.get)
@@ -286,11 +288,11 @@ class LNNCouncilAgent(AgentBase):
             
         # Generate reasoning
         reasoning = self._generate_reasoning(
-            vote_type=vote_type,
-            confidence=confidence,
-            analysis=analysis,
-            lnn_result=lnn_result,
-            similar_decisions=state.get("similar_decisions", [])
+        vote_type=vote_type,
+        confidence=confidence,
+        analysis=analysis,
+        lnn_result=lnn_result,
+        similar_decisions=state.get("similar_decisions", [])
         )
         
         # Collect supporting evidence
@@ -299,24 +301,24 @@ class LNNCouncilAgent(AgentBase):
             evidence.extend(lnn_result["similar_patterns"])
         if state.get("similar_decisions"):
             evidence.extend([
-                {
-                    "type": "historical_decision",
-                    "decision": d["content"],
-                    "relevance": d.get("similarity", 0.0)
-                }
-                for d in state["similar_decisions"][:3]
-            ])
+        {
+        "type": "historical_decision",
+        "decision": d["content"],
+        "relevance": d.get("similarity", 0.0)
+        }
+        for d in state["similar_decisions"][:3]
+        ])
             
         state["vote"] = {
-            "vote_type": vote_type,
-            "confidence": confidence,
-            "reasoning": reasoning,
-            "evidence": evidence
+        "vote_type": vote_type,
+        "confidence": confidence,
+        "reasoning": reasoning,
+        "evidence": evidence
         }
         
         return state
         
-    async def _submit_vote(self, state: AgentState) -> AgentState:
+        async def _submit_vote(self, state: AgentState) -> AgentState:
         """Submit vote to the council."""
         vote_data = state["vote"]
         
@@ -348,27 +350,27 @@ class LNNCouncilAgent(AgentBase):
         
         return state
         
-    async def _update_memory(self, state: AgentState) -> AgentState:
+        async def _update_memory(self, state: AgentState) -> AgentState:
         """Update memory with decision outcome."""
         # Record pattern if high confidence
         if state["vote"]["confidence"] > 0.8:
             pattern = {
-                "type": "council_decision",
-                "features": self._encode_task(state["task"]),
-                "confidence": state["vote"]["confidence"],
-                "context": {
-                    "task_type": state["metadata"]["task_type"],
-                    "vote": state["vote"]["vote_type"].value,
-                    "domain_match": state["analysis"]["domain_match"]
-                }
-            }
+        "type": "council_decision",
+        "features": self._encode_task(state["task"]),
+        "confidence": state["vote"]["confidence"],
+        "context": {
+        "task_type": state["metadata"]["task_type"],
+        "vote": state["vote"]["vote_type"].value,
+        "domain_match": state["analysis"]["domain_match"]
+        }
+        }
             
-            if self.memory_hooks:
-                await self.memory_hooks.on_pattern_detected(pattern)
+        if self.memory_hooks:
+            await self.memory_hooks.on_pattern_detected(pattern)
                 
         return state
         
-    async def _legacy_process(self, task: CouncilTask) -> CouncilVote:
+        async def _legacy_process(self, task: CouncilTask) -> CouncilVote:
         """Legacy processing without LNN."""
         # Simple rule-based voting
         if task.priority > 8:
@@ -400,12 +402,12 @@ class LNNCouncilAgent(AgentBase):
         complexity += min(1.0, len(task_str) / 1000)
         
         # Factor in nested structure
-        def count_depth(obj, depth=0):
-            if isinstance(obj, dict):
-                return max([count_depth(v, depth+1) for v in obj.values()] + [depth])
-            elif isinstance(obj, list):
-                return max([count_depth(v, depth+1) for v in obj] + [depth])
-            return depth
+    def count_depth(obj, depth=0):
+        if isinstance(obj, dict):
+            return max([count_depth(v, depth+1) for v in obj.values()] + [depth])
+        elif isinstance(obj, list):
+        return max([count_depth(v, depth+1) for v in obj] + [depth])
+        return depth
             
         depth = count_depth(task)
         complexity += min(1.0, depth / 5)
@@ -426,13 +428,13 @@ class LNNCouncilAgent(AgentBase):
             
         time_remaining = (deadline - datetime.now(timezone.utc)).total_seconds()
         if time_remaining < 300:  # 5 minutes
-            return 1.0
+        return 1.0
         elif time_remaining < 3600:  # 1 hour
-            return 0.8
+        return 0.8
         elif time_remaining < 86400:  # 1 day
-            return 0.5
+        return 0.5
         else:
-            return 0.2
+        return 0.2
             
     def _assess_risk(self, task: Dict[str, Any]) -> float:
         """Assess risk level of the task."""
@@ -458,8 +460,8 @@ class LNNCouncilAgent(AgentBase):
         # ID fields
         if isinstance(task, dict):
             for key, value in task.items():
-                if "id" in key.lower() and isinstance(value, str):
-                    entities.append(value)
+        if "id" in key.lower() and isinstance(value, str):
+            entities.append(value)
                     
         return list(set(entities))[:10]  # Limit to 10
         
@@ -500,7 +502,7 @@ class LNNCouncilAgent(AgentBase):
         analysis: Dict[str, Any],
         lnn_result: Dict[str, Any],
         similar_decisions: List[Dict[str, Any]]
-    ) -> str:
+        ) -> str:
         """Generate human-readable reasoning for vote."""
         reasoning_parts = []
         
@@ -538,11 +540,11 @@ class LNNCouncilAgent(AgentBase):
             
         return " ".join(reasoning_parts)
         
-    async def participate_in_consensus(
+        async def participate_in_consensus(
         self,
         task: CouncilTask,
         other_votes: List[CouncilVote]
-    ) -> Optional[CouncilVote]:
+        ) -> Optional[CouncilVote]:
         """Participate in Byzantine consensus if needed."""
         # Check if consensus is required
         if len(other_votes) < 2:
@@ -572,15 +574,16 @@ class LNNCouncilAgent(AgentBase):
         
     def get_performance_metrics(self) -> Dict[str, Any]:
         """Get agent performance metrics."""
+        pass
         consensus_rate = (
-            self._votes_agreed_with_consensus / self._votes_cast 
-            if self._votes_cast > 0 else 0.0
+        self._votes_agreed_with_consensus / self._votes_cast
+        if self._votes_cast > 0 else 0.0
         )
         
         return {
-            "votes_cast": self._votes_cast,
-            "average_confidence": self._average_confidence,
-            "consensus_agreement_rate": consensus_rate,
-            "expertise_domains": self.expertise_domains,
-            "lnn_metrics": self.lnn.lnn.get_metrics().to_dict() if hasattr(self.lnn.lnn, 'get_metrics') else {}
+        "votes_cast": self._votes_cast,
+        "average_confidence": self._average_confidence,
+        "consensus_agreement_rate": consensus_rate,
+        "expertise_domains": self.expertise_domains,
+        "lnn_metrics": self.lnn.lnn.get_metrics().to_dict() if hasattr(self.lnn.lnn, 'get_metrics') else {}
         }

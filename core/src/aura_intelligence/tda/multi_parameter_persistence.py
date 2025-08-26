@@ -111,6 +111,7 @@ class MultiParameterProcessor:
     
     def _extract_multiparameter_features(self, diagrams) -> Dict[str, Any]:
         """Extract multi-parameter topological features"""
+        pass
         
         features = {}
         
@@ -210,5 +211,5 @@ class MultiParameterProcessor:
         
         return embedded
 
-def get_multiparameter_processor(max_dimension=2, n_jobs=4):
-    return MultiParameterProcessor(max_dimension, n_jobs)
+    def get_multiparameter_processor(max_dimension=2, n_jobs=4):
+        return MultiParameterProcessor(max_dimension, n_jobs)

@@ -44,14 +44,14 @@ class TemporalConfig:
     def validate(self) -> None:
         """Validate configuration."""
         if not self.host:
-            raise ValueError("host required")
+        raise ValueError("host required")
         if not self.namespace:
-            raise ValueError("namespace required")
+        raise ValueError("namespace required")
         if not self.task_queue:
-            raise ValueError("task_queue required")
+        raise ValueError("task_queue required")
 
 
-@dataclass
+    @dataclass
 class WorkflowOptions:
     """Options for workflow execution."""
     
@@ -94,7 +94,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         self._client = None
         self._stub_mode = True  # Using stub for now
     
-    def _validate_config(self) -> None:
+        def _validate_config(self) -> None:
         """Validate Temporal configuration."""
         self.config.validate()
     
@@ -103,13 +103,13 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         Start a Temporal workflow.
         
         Args:
-            workflow_request: Dict containing:
-                - workflow_type: Name of workflow to start
-                - args: Workflow arguments
-                - options: Optional WorkflowOptions
+        workflow_request: Dict containing:
+        - workflow_type: Name of workflow to start
+        - args: Workflow arguments
+        - options: Optional WorkflowOptions
                 
         Returns:
-            WorkflowExecution details
+        WorkflowExecution details
         """
         # Extract request components
         workflow_type = workflow_request.get("workflow_type")
@@ -117,48 +117,48 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         options = workflow_request.get("options", {})
         
         if not workflow_type:
-            raise ValueError("workflow_type required")
+        raise ValueError("workflow_type required")
         
         # Generate workflow ID if not provided
         workflow_id = options.get("workflow_id") or f"{workflow_type}-{uuid.uuid4()}"
         
         # Initialize client if needed
         if self._client is None:
-            await self._connect()
+        await self._connect()
         
         try:
-            if self._stub_mode:
-                # Stub implementation
-                self.logger.info(
-                    f"Starting workflow (stub mode)",
-                    workflow_type=workflow_type,
-                    workflow_id=workflow_id,
-                    args=args
-                )
+        if self._stub_mode:
+        # Stub implementation
+        self.logger.info(
+        f"Starting workflow (stub mode)",
+        workflow_type=workflow_type,
+        workflow_id=workflow_id,
+        args=args
+        )
                 
-                # Simulate workflow start
-                run_id = str(uuid.uuid4())
+        # Simulate workflow start
+        run_id = str(uuid.uuid4())
                 
-                return WorkflowExecution(
-                    workflow_id=workflow_id,
-                    run_id=run_id,
-                    status=WorkflowStatus.RUNNING,
-                    start_time="2025-07-31T12:00:00Z"
-                )
+        return WorkflowExecution(
+        workflow_id=workflow_id,
+        run_id=run_id,
+        status=WorkflowStatus.RUNNING,
+        start_time="2025-07-31T12:00:00Z"
+        )
             
-            else:
-                # Real implementation would use temporal-sdk
-                # handle = await self._client.start_workflow(...)
-                pass
+        else:
+        # Real implementation would use temporal-sdk
+        # handle = await self._client.start_workflow(...)
+        pass
                 
         except Exception as e:
-            self.logger.error(f"Failed to start workflow: {e}")
-            raise ProcessingError(
-                f"Workflow start failed: {str(e)}",
-                component_name=self.name
-            )
+        self.logger.error(f"Failed to start workflow: {e}")
+        raise ProcessingError(
+        f"Workflow start failed: {str(e)}",
+        component_name=self.name
+        )
     
-    async def _connect(self) -> None:
+        async def _connect(self) -> None:
         """Connect to Temporal server."""
         self.logger.info(
             "Connecting to Temporal",
@@ -170,7 +170,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
             self._client = MockTemporalClient()
         else:
             # Real implementation would create Temporal client
-            pass
+        pass
 
 
 class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalConfig]):
@@ -189,7 +189,7 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         self._client = None
         self._stub_mode = True
     
-    def _validate_config(self) -> None:
+        def _validate_config(self) -> None:
         """Validate configuration."""
         self.config.validate()
     
@@ -198,41 +198,41 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         Get workflow execution status.
         
         Args:
-            workflow_id: Workflow ID to check
+        workflow_id: Workflow ID to check
             
         Returns:
-            Current WorkflowExecution status
+        Current WorkflowExecution status
         """
         if not workflow_id:
-            raise ValueError("workflow_id required")
+        raise ValueError("workflow_id required")
         
         # Initialize client if needed
         if self._client is None:
-            await self._connect()
+        await self._connect()
         
         try:
-            if self._stub_mode:
-                # Stub implementation
-                return WorkflowExecution(
-                    workflow_id=workflow_id,
-                    run_id=str(uuid.uuid4()),
-                    status=WorkflowStatus.COMPLETED,
-                    result={"status": "success", "data": "stub_result"},
-                    start_time="2025-07-31T12:00:00Z",
-                    close_time="2025-07-31T12:01:00Z"
-                )
-            else:
-                # Real implementation would query workflow
-                pass
+        if self._stub_mode:
+        # Stub implementation
+        return WorkflowExecution(
+        workflow_id=workflow_id,
+        run_id=str(uuid.uuid4()),
+        status=WorkflowStatus.COMPLETED,
+        result={"status": "success", "data": "stub_result"},
+        start_time="2025-07-31T12:00:00Z",
+        close_time="2025-07-31T12:01:00Z"
+        )
+        else:
+        # Real implementation would query workflow
+        pass
                 
         except Exception as e:
-            self.logger.error(f"Failed to get workflow status: {e}")
-            raise ProcessingError(
-                f"Workflow query failed: {str(e)}",
-                component_name=self.name
-            )
+        self.logger.error(f"Failed to get workflow status: {e}")
+        raise ProcessingError(
+        f"Workflow query failed: {str(e)}",
+        component_name=self.name
+        )
     
-    async def _connect(self) -> None:
+        async def _connect(self) -> None:
         """Connect to Temporal server."""
         self.logger.info("Connecting to Temporal")
         
@@ -240,20 +240,20 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
             self._client = MockTemporalClient()
         else:
             # Real implementation
-            pass
+        pass
     
     async def cancel_workflow(self, workflow_id: str) -> bool:
         """Cancel a running workflow."""
         try:
-            if self._stub_mode:
-                self.logger.info(f"Cancelling workflow: {workflow_id}")
-                return True
-            else:
-                # Real implementation
-                pass
+        if self._stub_mode:
+        self.logger.info(f"Cancelling workflow: {workflow_id}")
+        return True
+        else:
+        # Real implementation
+        pass
         except Exception as e:
-            self.logger.error(f"Failed to cancel workflow: {e}")
-            return False
+        self.logger.error(f"Failed to cancel workflow: {e}")
+        return False
 
 
 class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConfig]):
@@ -271,7 +271,7 @@ class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConf
         super().__init__(name, config, **kwargs)
         self._activities: Dict[str, Callable] = {}
     
-    def _validate_config(self) -> None:
+        def _validate_config(self) -> None:
         """Validate configuration."""
         self.config.validate()
     
@@ -280,7 +280,7 @@ class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConf
         self._activities[name] = handler
         self.logger.info(f"Registered activity: {name}")
     
-    async def _process(self, activity_request: Dict[str, Any]) -> Any:
+        async def _process(self, activity_request: Dict[str, Any]) -> Any:
         """
         Execute a Temporal activity.
         
@@ -333,11 +333,11 @@ class MockTemporalClient:
     async def start_workflow(self, workflow_type: str, args: List[Any], **kwargs):
         """Mock workflow start."""
         return MockWorkflowHandle(
-            workflow_id=kwargs.get("id", str(uuid.uuid4())),
-            run_id=str(uuid.uuid4())
+        workflow_id=kwargs.get("id", str(uuid.uuid4())),
+        run_id=str(uuid.uuid4())
         )
     
-    async def get_workflow_handle(self, workflow_id: str):
+        async def get_workflow_handle(self, workflow_id: str):
         """Mock get workflow handle."""
         return MockWorkflowHandle(workflow_id, str(uuid.uuid4()))
 
@@ -349,7 +349,7 @@ class MockWorkflowHandle:
         self.workflow_id = workflow_id
         self.run_id = run_id
     
-    async def result(self):
+        async def result(self):
         """Mock get result."""
         return {"status": "success", "data": "mock_result"}
     

@@ -19,7 +19,7 @@ class ODESolver(ABC):
     
     @abstractmethod
     def step(self, 
-             state: torch.Tensor, 
+        state: torch.Tensor,
              dynamics_fn: Callable[[torch.Tensor], torch.Tensor],
              **kwargs) -> torch.Tensor:
         """Take one integration step."""
@@ -30,7 +30,7 @@ class RungeKutta4(ODESolver):
     """Fourth-order Runge-Kutta ODE solver."""
     
     def step(self, 
-             state: torch.Tensor, 
+        state: torch.Tensor,
              dynamics_fn: Callable[[torch.Tensor], torch.Tensor],
              **kwargs) -> torch.Tensor:
         """RK4 integration step."""
@@ -48,7 +48,7 @@ class EulerSolver(ODESolver):
     """Simple Euler ODE solver."""
     
     def step(self, 
-             state: torch.Tensor, 
+        state: torch.Tensor,
              dynamics_fn: Callable[[torch.Tensor], torch.Tensor],
              **kwargs) -> torch.Tensor:
         """Euler integration step."""
@@ -65,7 +65,7 @@ class AdaptiveRK45(ODESolver):
         self.atol = atol
     
     def step(self, 
-             state: torch.Tensor, 
+        state: torch.Tensor,
              dynamics_fn: Callable[[torch.Tensor], torch.Tensor],
              **kwargs) -> torch.Tensor:
         """Adaptive RK45 step with error control."""
@@ -94,7 +94,7 @@ class LiquidDynamics:
     """Implements liquid neural network continuous-time dynamics."""
     
     def __init__(self, 
-                 tau: float = 1.0,
+        tau: float = 1.0,
                  solver: ODESolver = None,
                  nonlinearity: str = "tanh"):
         self.tau = tau  # Time constant
@@ -113,7 +113,7 @@ class LiquidDynamics:
         return nonlinearities.get(name, torch.tanh)
     
     def dynamics_fn(self, 
-                   state: torch.Tensor, 
+        state: torch.Tensor,
                    input_current: torch.Tensor,
                    weights: torch.Tensor,
                    bias: torch.Tensor) -> torch.Tensor:
@@ -125,7 +125,7 @@ class LiquidDynamics:
         return (-state + self.nonlinearity(total_input)) / self.tau
     
     def step(self, 
-             state: torch.Tensor,
+        state: torch.Tensor,
              input_current: torch.Tensor,
              weights: torch.Tensor,
              bias: torch.Tensor,
@@ -139,7 +139,7 @@ class ContinuousTimeRNN(nn.Module):
     """Continuous-time RNN using liquid dynamics."""
     
     def __init__(self, 
-                 input_size: int,
+        input_size: int,
                  hidden_size: int,
                  tau: float = 1.0,
                  dt: float = 0.01,
@@ -206,26 +206,26 @@ class ContinuousTimeRNN(nn.Module):
 # Aliases for compatibility
 AdaptiveStepSolver = AdaptiveRK45
 
-def liquid_dynamics(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
-    """Compatibility function for liquid dynamics."""
-    dynamics = LiquidDynamics()
-    if len(args) >= 3:
+    def liquid_dynamics(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+        """Compatibility function for liquid dynamics."""
+        dynamics = LiquidDynamics()
+        if len(args) >= 3:
         return dynamics.dynamics_fn(state, args[0], args[1], args[2])
-    return state
+        return state
 
-def compute_gradients(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
-    """Compatibility function for gradient computation."""
-    return torch.autograd.grad(state.sum(), state, create_graph=True)[0] if state.requires_grad else torch.zeros_like(state)
+    def compute_gradients(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+        """Compatibility function for gradient computation."""
+        return torch.autograd.grad(state.sum(), state, create_graph=True)[0] if state.requires_grad else torch.zeros_like(state)
 
 # Export main classes
 __all__ = [
-    'ODESolver',
-    'RungeKutta4', 
-    'EulerSolver',
-    'AdaptiveRK45',
-    'AdaptiveStepSolver',  # Alias
-    'LiquidDynamics',
-    'ContinuousTimeRNN',
-    'liquid_dynamics',
-    'compute_gradients'
+        'ODESolver',
+        'RungeKutta4',
+        'EulerSolver',
+        'AdaptiveRK45',
+        'AdaptiveStepSolver',  # Alias
+        'LiquidDynamics',
+        'ContinuousTimeRNN',
+        'liquid_dynamics',
+        'compute_gradients'
 ]

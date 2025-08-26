@@ -64,11 +64,11 @@ class ContextAwareLNN(nn.Module):
         
         logger.info("Context-Aware LNN initialized")
     
-    async def forward_with_context(
+        async def forward_with_context(
         self, 
         state: LNNCouncilState,
         return_attention: bool = False
-    ) -> Tuple[torch.Tensor, Optional[Dict[str, Any]]]:
+        ) -> Tuple[torch.Tensor, Optional[Dict[str, Any]]]:
         """
         Forward pass with context integration.
         
@@ -114,7 +114,7 @@ class ContextAwareLNN(nn.Module):
         """Encode the GPU allocation request."""
         return self.context_encoder.encode_request(state.current_request)
     
-    async def _gather_context(self, state: LNNCouncilState) -> List[torch.Tensor]:
+        async def _gather_context(self, state: LNNCouncilState) -> List[torch.Tensor]:
         """Gather context from multiple sources."""
         context_features = []
         
@@ -141,7 +141,7 @@ class ContextAwareLNN(nn.Module):
         self, 
         request_features: torch.Tensor,
         context_features: List[torch.Tensor]
-    ) -> Dict[str, torch.Tensor]:
+        ) -> Dict[str, torch.Tensor]:
         """Apply multi-head attention over context features."""
         
         if not context_features:
@@ -166,7 +166,7 @@ class ContextAwareLNN(nn.Module):
         self, 
         request_features: torch.Tensor,
         attended_context: Dict[str, torch.Tensor]
-    ) -> torch.Tensor:
+        ) -> torch.Tensor:
         """Fuse request and context features."""
         
         context_features = attended_context["features"]

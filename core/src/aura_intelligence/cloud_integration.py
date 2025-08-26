@@ -17,24 +17,26 @@ class CloudProvider:
         self.config = config or {}
         self.connected = False
         
-    async def connect(self):
+        async def connect(self):
         """Connect to cloud provider."""
+        pass
         self.connected = True
         logger.info(f"Connected to {self.__class__.__name__}")
         
-    async def disconnect(self):
+        async def disconnect(self):
         """Disconnect from cloud provider."""
+        pass
         self.connected = False
         logger.info(f"Disconnected from {self.__class__.__name__}")
         
-    async def upload(self, key: str, data: bytes) -> str:
+        async def upload(self, key: str, data: bytes) -> str:
         """Upload data to cloud storage."""
         if not self.connected:
             await self.connect()
         # Stub implementation
         return f"cloud://{key}"
         
-    async def download(self, key: str) -> bytes:
+        async def download(self, key: str) -> bytes:
         """Download data from cloud storage."""
         if not self.connected:
             await self.connect()
@@ -71,7 +73,7 @@ class CloudManager:
         """Get a specific cloud provider."""
         return self.providers.get(name)
         
-    async def upload_to_all(self, key: str, data: bytes) -> Dict[str, str]:
+        async def upload_to_all(self, key: str, data: bytes) -> Dict[str, str]:
         """Upload data to all configured providers."""
         results = {}
         for name, provider in self.providers.items():
@@ -95,12 +97,13 @@ class GoogleA2AClient:
         self.config = config or {}
         self.authenticated = False
         
-    async def authenticate(self):
+        async def authenticate(self):
         """Authenticate with Google services."""
+        pass
         self.authenticated = True
         return True
         
-    async def call_api(self, endpoint: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def call_api(self, endpoint: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """Call Google API endpoint."""
         if not self.authenticated:
             await self.authenticate()

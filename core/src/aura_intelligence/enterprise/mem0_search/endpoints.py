@@ -278,6 +278,7 @@ def create_search_router() -> APIRouter:
         - Redis semantic memory
         - All services and background processes
         """
+        pass
         
         try:
             check_start = time.time()

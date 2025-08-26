@@ -27,7 +27,7 @@ class SwitchTransformerMoE(nn.Module):
     """
     
     def __init__(self, d_model: int, num_experts: int, capacity_factor: float = 1.25, 
-                 expert_dropout: float = 0.1):
+        expert_dropout: float = 0.1):
         super().__init__()
         self.d_model = d_model
         self.num_experts = num_experts
@@ -197,7 +197,7 @@ class GoogleSwitchMoESystem:
         
         return torch.tensor([features], dtype=torch.float32)
     
-    async def route_with_switch_transformer(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def route_with_switch_transformer(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """Route request using Google Switch Transformer"""
         start_time = time.time()
         
@@ -260,6 +260,7 @@ class GoogleSwitchMoESystem:
     
     def get_switch_stats(self) -> Dict[str, Any]:
         """Get Switch Transformer statistics"""
+        pass
         expert_stats = self.switch_moe.get_expert_stats()
         
         avg_load_loss = np.mean(self.routing_stats['load_balancing_losses']) if self.routing_stats['load_balancing_losses'] else 0.0
@@ -278,6 +279,6 @@ class GoogleSwitchMoESystem:
         }
 
 
-def get_google_switch_moe():
-    """Get Google Switch Transformer MoE system"""
-    return GoogleSwitchMoESystem()
+    def get_google_switch_moe():
+        """Get Google Switch Transformer MoE system"""
+        return GoogleSwitchMoESystem()

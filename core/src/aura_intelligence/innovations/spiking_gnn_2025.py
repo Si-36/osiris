@@ -132,7 +132,7 @@ class SpikingGNN(nn.Module):
         self.metrics = SpikeMetrics()
         
     def forward(self, x: torch.Tensor, adjacency: Optional[torch.Tensor] = None, 
-                time_steps: int = 10) -> torch.Tensor:
+        time_steps: int = 10) -> torch.Tensor:
         """
         Forward pass with temporal dynamics
         x: [batch_size, num_nodes, input_dim]
@@ -181,6 +181,7 @@ class SpikingGNN(nn.Module):
         
     def get_metrics(self) -> Dict[str, Any]:
         """Get energy and performance metrics"""
+        pass
         return {
             'total_spikes': self.metrics.total_spikes,
             'energy_consumed_pj': self.metrics.energy_consumed * 1e12,
@@ -191,6 +192,7 @@ class SpikingGNN(nn.Module):
     
     def _calculate_sparsity(self) -> float:
         """Calculate network sparsity (percentage of zero activations)"""
+        pass
         total_params = sum(p.numel() for p in self.parameters())
         zero_params = sum((p.abs() < 1e-6).sum().item() for p in self.parameters())
         return zero_params / total_params if total_params > 0 else 0.0
@@ -216,6 +218,7 @@ class SpikingGNNCouncil:
         
     def _create_grid_adjacency(self) -> torch.Tensor:
         """Create 8-connected grid adjacency matrix"""
+        pass
         adj = torch.zeros(self.num_nodes, self.num_nodes)
         
         for i in range(self.grid_size):
@@ -308,6 +311,7 @@ class SpikingGNNCouncil:
     
     def _calculate_efficiency_improvement(self) -> float:
         """Calculate efficiency improvement over traditional GNN"""
+        pass
         # Spiking GNNs are ~1000x more energy efficient
         baseline_energy = 1.0  # Traditional GNN energy
         spiking_energy = self.sgnn.metrics.energy_consumed * 1e12  # Convert to comparable units
@@ -319,15 +323,15 @@ class SpikingGNNCouncil:
             return 1000.0
 
 
-def test_spiking_gnn():
-    """Test spiking GNN system"""
-    print("🧪 Testing Spiking GNN System...")
+    def test_spiking_gnn():
+        """Test spiking GNN system"""
+        print("🧪 Testing Spiking GNN System...")
     
-    council = SpikingGNNCouncil(grid_size=8)
+        council = SpikingGNNCouncil(grid_size=8)
     
     # Create test component states
-    component_states = []
-    for i in range(64):  # 8x8 grid
+        component_states = []
+        for i in range(64):  # 8x8 grid
         state = {
             'health': 0.8 + np.random.random() * 0.2,
             'load': np.random.random() * 0.5,
@@ -340,17 +344,17 @@ def test_spiking_gnn():
         component_states.append(state)
     
     # Process through spiking GNN
-    result = council.process_components(component_states)
+        result = council.process_components(component_states)
     
-    print(f"✅ Processed {len(result['decisions'])} components")
-    print(f"✅ Total spikes: {result['metrics']['total_spikes']}")
-    print(f"✅ Energy consumed: {result['metrics']['energy_consumed_pj']:.2f} pJ")
-    print(f"✅ Inference time: {result['metrics']['inference_time_ms']:.2f} ms")
-    print(f"✅ Efficiency improvement: {result['energy_efficiency']:.0f}x")
-    print(f"✅ Network sparsity: {result['metrics']['sparsity']:.2%}")
+        print(f"✅ Processed {len(result['decisions'])} components")
+        print(f"✅ Total spikes: {result['metrics']['total_spikes']}")
+        print(f"✅ Energy consumed: {result['metrics']['energy_consumed_pj']:.2f} pJ")
+        print(f"✅ Inference time: {result['metrics']['inference_time_ms']:.2f} ms")
+        print(f"✅ Efficiency improvement: {result['energy_efficiency']:.0f}x")
+        print(f"✅ Network sparsity: {result['metrics']['sparsity']:.2%}")
     
-    print("🎉 Spiking GNN system working!")
+        print("🎉 Spiking GNN system working!")
 
 
-if __name__ == "__main__":
-    test_spiking_gnn()
+        if __name__ == "__main__":
+        test_spiking_gnn()

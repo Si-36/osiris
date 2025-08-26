@@ -179,9 +179,9 @@ class AURAComponentRegistry:
 
 _global_registry: Optional[AURAComponentRegistry] = None
 
-def get_component_registry() -> AURAComponentRegistry:
-    global _global_registry
-    if _global_registry is None:
+    def get_component_registry() -> AURAComponentRegistry:
+        global _global_registry
+        if _global_registry is None:
         _global_registry = AURAComponentRegistry()
         _global_registry.discover_components()
-    return _global_registry
+        return _global_registry

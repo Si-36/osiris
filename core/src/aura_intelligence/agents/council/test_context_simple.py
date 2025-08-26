@@ -24,6 +24,7 @@ class SimpleContextEncoder:
     
     def encode_request(self, request):
         """Encode request into features."""
+        pass
         features = []
         
         # GPU type embedding
@@ -58,8 +59,9 @@ class SimpleContextProvider:
     def __init__(self, input_size=64):
         self.input_size = input_size
     
-    async def get_user_context(self, user_id):
+        async def get_user_context(self, user_id):
         """Get mock user context."""
+        pass
         # Simulate user history
         features = [
             0.8,   # approval_rate
@@ -75,8 +77,9 @@ class SimpleContextProvider:
         
         return torch.tensor(features, dtype=torch.float32).unsqueeze(0)
     
-    async def get_system_context(self):
+        async def get_system_context(self):
         """Get mock system context."""
+        pass
         features = [
             0.75,  # gpu_usage
             0.6,   # queue_length_norm
@@ -106,8 +109,9 @@ class SimpleContextAwareLNN:
         # Mock attention
         self.attention = torch.nn.MultiheadAttention(input_size, num_heads=4, batch_first=True)
     
-    async def forward_with_context(self, request_features, user_context, system_context):
+        async def forward_with_context(self, request_features, user_context, system_context):
         """Forward pass with context integration."""
+        pass
         
         # Stack contexts for attention (fix dimensions)
         contexts = torch.stack([user_context.squeeze(0), system_context.squeeze(0)], dim=0)  # [2, features]
@@ -135,113 +139,114 @@ class SimpleContextAwareLNN:
     
     def _assess_quality(self, contexts):
         """Assess context quality."""
+        pass
         non_zero = (contexts != 0).float().mean().item()
         return non_zero
 
 
 async def test_context_encoding():
-    """Test context encoding."""
-    print("🧪 Testing Context Encoding")
+        """Test context encoding."""
+        print("🧪 Testing Context Encoding")
     
-    encoder = SimpleContextEncoder(input_size=32)
+        encoder = SimpleContextEncoder(input_size=32)
     
-    request = {
+        request = {
         "gpu_type": "A100",
         "gpu_count": 2,
         "memory_gb": 40,
         "compute_hours": 8.0,
         "priority": 7
-    }
+        }
     
-    features = encoder.encode_request(request)
+        features = encoder.encode_request(request)
     
-    print(f"✅ Request encoded: shape {features.shape}")
-    print(f"   Non-zero features: {(features != 0).sum().item()}")
-    print(f"   Feature range: [{features.min().item():.3f}, {features.max().item():.3f}]")
+        print(f"✅ Request encoded: shape {features.shape}")
+        print(f"   Non-zero features: {(features != 0).sum().item()}")
+        print(f"   Feature range: [{features.min().item():.3f}, {features.max().item():.3f}]")
     
-    return True
+        return True
 
 
 async def test_context_providers():
-    """Test context providers."""
-    print("\n🧪 Testing Context Providers")
+        """Test context providers."""
+        print("\n🧪 Testing Context Providers")
     
-    provider = SimpleContextProvider(input_size=32)
+        provider = SimpleContextProvider(input_size=32)
     
-    user_context = await provider.get_user_context("user_123")
-    system_context = await provider.get_system_context()
+        user_context = await provider.get_user_context("user_123")
+        system_context = await provider.get_system_context()
     
-    print(f"✅ User context: shape {user_context.shape}")
-    print(f"✅ System context: shape {system_context.shape}")
+        print(f"✅ User context: shape {user_context.shape}")
+        print(f"✅ System context: shape {system_context.shape}")
     
-    return True
+        return True
 
 
 async def test_context_aware_inference():
-    """Test context-aware inference."""
-    print("\n🧪 Testing Context-Aware Inference")
+        """Test context-aware inference."""
+        print("\n🧪 Testing Context-Aware Inference")
     
     # Initialize components
-    encoder = SimpleContextEncoder(input_size=32)
-    provider = SimpleContextProvider(input_size=32)
-    lnn = SimpleContextAwareLNN(input_size=32, output_size=8)
+        encoder = SimpleContextEncoder(input_size=32)
+        provider = SimpleContextProvider(input_size=32)
+        lnn = SimpleContextAwareLNN(input_size=32, output_size=8)
     
     # Create request
-    request = {
+        request = {
         "gpu_type": "H100",
         "gpu_count": 4,
         "memory_gb": 80,
         "compute_hours": 24.0,
         "priority": 9
-    }
+        }
     
     # Encode request
-    request_features = encoder.encode_request(request)
+        request_features = encoder.encode_request(request)
     
     # Get contexts
-    user_context = await provider.get_user_context("user_456")
-    system_context = await provider.get_system_context()
+        user_context = await provider.get_user_context("user_456")
+        system_context = await provider.get_system_context()
     
     # Run context-aware inference
-    output, attention_info = await lnn.forward_with_context(
+        output, attention_info = await lnn.forward_with_context(
         request_features, user_context, system_context
-    )
+        )
     
     # Decode decision
-    decision_logits = output.squeeze()
-    confidence = torch.sigmoid(decision_logits).max().item()
-    decision_idx = torch.argmax(decision_logits).item()
-    decisions = ["deny", "defer", "approve"]
-    decision = decisions[min(decision_idx, len(decisions) - 1)]
+        decision_logits = output.squeeze()
+        confidence = torch.sigmoid(decision_logits).max().item()
+        decision_idx = torch.argmax(decision_logits).item()
+        decisions = ["deny", "defer", "approve"]
+        decision = decisions[min(decision_idx, len(decisions) - 1)]
     
-    print(f"✅ Context-aware inference completed")
-    print(f"   Decision: {decision}")
-    print(f"   Confidence: {confidence:.3f}")
-    print(f"   Context quality: {attention_info['context_quality']:.3f}")
-    print(f"   Attention shape: {attention_info['attention_weights'].shape}")
+        print(f"✅ Context-aware inference completed")
+        print(f"   Decision: {decision}")
+        print(f"   Confidence: {confidence:.3f}")
+        print(f"   Context quality: {attention_info['context_quality']:.3f}")
+        print(f"   Attention shape: {attention_info['attention_weights'].shape}")
     
-    return True
+        return True
 
 
 async def test_performance():
-    """Test performance characteristics."""
-    print("\n🧪 Testing Performance")
+        """Test performance characteristics."""
+        print("\n🧪 Testing Performance")
     
-    encoder = SimpleContextEncoder(input_size=64)
-    provider = SimpleContextProvider(input_size=64)
-    lnn = SimpleContextAwareLNN(input_size=64, output_size=16)
+        encoder = SimpleContextEncoder(input_size=64)
+        provider = SimpleContextProvider(input_size=64)
+        lnn = SimpleContextAwareLNN(input_size=64, output_size=16)
     
     # Test batch processing
-    requests = [
+        requests = [
         {"gpu_type": "A100", "gpu_count": i+1, "memory_gb": 20*(i+1), 
          "compute_hours": 4.0*(i+1), "priority": 5+i}
         for i in range(5)
-    ]
+        ]
     
-    start_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
     
-    results = []
-    for request in requests:
+        results = []
+        for request in requests:
         request_features = encoder.encode_request(request)
         user_context = await provider.get_user_context(f"user_{request['gpu_count']}")
         system_context = await provider.get_system_context()
@@ -253,30 +258,30 @@ async def test_performance():
         confidence = torch.sigmoid(output).max().item()
         results.append(confidence)
     
-    end_time = asyncio.get_event_loop().time()
-    total_time = end_time - start_time
+        end_time = asyncio.get_event_loop().time()
+        total_time = end_time - start_time
     
-    print(f"✅ Batch processing: {len(requests)} requests")
-    print(f"   Total time: {total_time*1000:.1f}ms")
-    print(f"   Avg time per request: {total_time*1000/len(requests):.1f}ms")
-    print(f"   Confidence range: [{min(results):.3f}, {max(results):.3f}]")
+        print(f"✅ Batch processing: {len(requests)} requests")
+        print(f"   Total time: {total_time*1000:.1f}ms")
+        print(f"   Avg time per request: {total_time*1000/len(requests):.1f}ms")
+        print(f"   Confidence range: [{min(results):.3f}, {max(results):.3f}]")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all context-aware tests."""
-    print("🚀 Context-Aware LNN Engine Tests (2025)\n")
+        """Run all context-aware tests."""
+        print("🚀 Context-Aware LNN Engine Tests (2025)\n")
     
-    tests = [
+        tests = [
         test_context_encoding,
         test_context_providers,
         test_context_aware_inference,
         test_performance
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -286,9 +291,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All context-aware tests passed!")
         print("\n🎯 Context-Aware Features Demonstrated:")
         print("   • Multi-source context encoding ✅")
@@ -298,11 +303,11 @@ async def main():
         print("   • Performance optimization ✅")
         print("   • Ready for Mem0/Neo4j integration ✅")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

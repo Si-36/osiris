@@ -51,7 +51,8 @@ class JaegerTracer:
         self._tracer = self._init_tracer() if OTEL_AVAILABLE else None
     
     def _init_tracer(self):
-        """Initialize Jaeger tracer"""
+            """Initialize Jaeger tracer"""
+        pass
         jaeger_exporter = JaegerExporter(
             agent_host_name=self._config.agent_host,
             agent_port=self._config.agent_port,
@@ -66,22 +67,22 @@ class JaegerTracer:
     def start_span(self, name: str) -> Effect[SpanContext]:
         """Start distributed span"""
         async def _start_span():
-            if not self._tracer:
-                # Fallback span context
-                return SpanContext(
-                    span_id=str(uuid.uuid4()),
-                    trace_id=str(uuid.uuid4()),
-                    start_time=datetime.now(timezone.utc)
-                )
+        if not self._tracer:
+            # Fallback span context
+        return SpanContext(
+        span_id=str(uuid.uuid4()),
+        trace_id=str(uuid.uuid4()),
+        start_time=datetime.now(timezone.utc)
+        )
             
-            span = self._tracer.start_span(name)
-            span_context = span.get_span_context()
+        span = self._tracer.start_span(name)
+        span_context = span.get_span_context()
             
-            return SpanContext(
-                span_id=format(span_context.span_id, '016x'),
-                trace_id=format(span_context.trace_id, '032x'),
-                start_time=datetime.now(timezone.utc)
-            )
+        return SpanContext(
+        span_id=format(span_context.span_id, '016x'),
+        trace_id=format(span_context.trace_id, '032x'),
+        start_time=datetime.now(timezone.utc)
+        )
         
         return Effect(_start_span)
 
@@ -92,11 +93,11 @@ class NoOpTracer:
     def start_span(self, name: str) -> Effect[SpanContext]:
         """Create mock span context"""
         async def _mock_span():
-            return SpanContext(
-                span_id=str(uuid.uuid4()),
-                trace_id=str(uuid.uuid4()),
-                start_time=datetime.now(timezone.utc)
-            )
+        return SpanContext(
+        span_id=str(uuid.uuid4()),
+        trace_id=str(uuid.uuid4()),
+        start_time=datetime.now(timezone.utc)
+        )
         
         return Effect(_mock_span)
 
@@ -108,8 +109,8 @@ class SpanManager:
         self._tracer = tracer
         self._context = context
     
-    @asynccontextmanager
-    async def managed_span(self, name: str) -> AsyncContextManager[SpanContext]:
+        @asynccontextmanager
+        async def managed_span(self, name: str) -> AsyncContextManager[SpanContext]:
         """Context manager for automatic span cleanup"""
         span_effect = self._tracer.start_span(name)
         span_context = await span_effect.run()
@@ -121,20 +122,20 @@ class SpanManager:
             await asyncio.sleep(0.001)  # Simulate cleanup
 
 # Factory functions
-def create_jaeger_tracer(config: JaegerConfig) -> SpanTracer:
-    """Create Jaeger tracer with graceful fallback"""
-    return JaegerTracer(config) if OTEL_AVAILABLE else NoOpTracer()
+    def create_jaeger_tracer(config: JaegerConfig) -> SpanTracer:
+        """Create Jaeger tracer with graceful fallback"""
+        return JaegerTracer(config) if OTEL_AVAILABLE else NoOpTracer()
 
-def create_otel_tracer(config: OtelConfig) -> SpanTracer:
-    """Create OpenTelemetry tracer with graceful fallback"""
+    def create_otel_tracer(config: OtelConfig) -> SpanTracer:
+        """Create OpenTelemetry tracer with graceful fallback"""
     # Similar implementation to Jaeger but with different config
-    return NoOpTracer()  # Simplified for brevity
+        return NoOpTracer()  # Simplified for brevity
 
-def create_span_manager(tracer: SpanTracer) -> SpanManager:
-    """Create span manager for resource-safe operations"""
-    mock_context = SpanContext(
+    def create_span_manager(tracer: SpanTracer) -> SpanManager:
+        """Create span manager for resource-safe operations"""
+        mock_context = SpanContext(
         span_id=str(uuid.uuid4()),
         trace_id=str(uuid.uuid4()),
         start_time=datetime.now(timezone.utc)
-    )
-    return SpanManager(tracer, mock_context)
+        )
+        return SpanManager(tracer, mock_context)

@@ -85,6 +85,7 @@ class CircularBuffer:
             
     def get_all(self) -> np.ndarray:
         """Get all points in order"""
+        pass
         with self.lock:
             if self.size == 0:
                 return np.array([], dtype=np.float32).reshape(0, self.dim)
@@ -100,6 +101,7 @@ class CircularBuffer:
                 
     def clear(self) -> None:
         """Clear buffer"""
+        pass
         with self.lock:
             self.head = 0
             self.size = 0
@@ -145,6 +147,7 @@ class SlidingWindow:
         
     def get_points(self) -> np.ndarray:
         """Get all points in window"""
+        pass
         return self.buffer.get_all()
         
     def slide(self, n_points: int) -> np.ndarray:
@@ -167,10 +170,12 @@ class SlidingWindow:
     @property
     def size(self) -> int:
         """Current number of points"""
+        pass
         return self.buffer.size
         
     def _update_metrics(self) -> None:
         """Update Prometheus metrics"""
+        pass
         WINDOW_SIZE.labels(scale=str(self.capacity)).set(self.size)
         
         # Estimate memory usage
@@ -192,6 +197,7 @@ class MultiScaleWindows:
             base_slide_ratio: Slide size as ratio of window size
             dim: Dimension of points
         """
+        pass
         self.scales = sorted(scales)
         self.windows: Dict[int, SlidingWindow] = {}
         
@@ -217,14 +223,17 @@ class MultiScaleWindows:
         
     def get_windows_data(self) -> Dict[int, np.ndarray]:
         """Get data from all windows"""
+        pass
         return {scale: window.get_points() for scale, window in self.windows.items()}
         
     def get_statistics(self) -> Dict[int, WindowStats]:
         """Get statistics for all windows"""
+        pass
         return {scale: window.stats for scale, window in self.windows.items()}
         
     def get_total_memory_usage(self) -> int:
         """Get total memory usage across all windows"""
+        pass
         return sum(window.stats.memory_bytes for window in self.windows.values())
 
 

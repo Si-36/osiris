@@ -120,7 +120,7 @@ class ObservabilityEngine:
         logger.info("ObservabilityEngine initialized", config=self.config)
     
     def record_metric(self, name: str, value: float, metric_type: MetricType, 
-                     labels: Optional[Dict[str, str]] = None, unit: str = "") -> None:
+        labels: Optional[Dict[str, str]] = None, unit: str = "") -> None:
         """Record a performance metric (Requirement 6.1)"""
         metric = PerformanceMetric(
             name=name,
@@ -161,7 +161,7 @@ class ObservabilityEngine:
         return trace
     
     def add_trace_step(self, request_id: str, step_name: str, 
-                      step_data: Dict[str, Any]) -> None:
+        step_data: Dict[str, Any]) -> None:
         """Add a step to the decision trace"""
         if request_id in self.decision_traces:
             step_info = {
@@ -179,7 +179,7 @@ class ObservabilityEngine:
             )
     
     def complete_decision_trace(self, request_id: str, final_decision: str,
-                              confidence_score: float, reasoning_path: List[str],
+        confidence_score: float, reasoning_path: List[str],
                               fallback_triggered: bool = False) -> None:
         """Complete a decision trace (Requirement 6.2)"""
         if request_id in self.decision_traces:
@@ -273,7 +273,7 @@ class ObservabilityEngine:
                 metrics.error_rate = metrics.failed_calls / metrics.total_calls
     
     def record_error(self, component: str, error: Exception, 
-                    context: Optional[Dict[str, Any]] = None) -> None:
+        context: Optional[Dict[str, Any]] = None) -> None:
         """Record detailed error information (Requirement 6.4)"""
         error_info = {
             "component": component,
@@ -301,7 +301,7 @@ class ObservabilityEngine:
         self._check_error_patterns(component, error_info)
     
     def generate_alert(self, level: AlertLevel, message: str, 
-                      context: Optional[Dict[str, Any]] = None,
+        context: Optional[Dict[str, Any]] = None,
                       actionable_info: Optional[List[str]] = None) -> SystemAlert:
         """Generate a system alert (Requirement 6.5)"""
         alert = SystemAlert(
@@ -343,6 +343,7 @@ class ObservabilityEngine:
     
     def get_performance_summary(self) -> Dict[str, Any]:
         """Get comprehensive performance summary"""
+        pass
         current_time = time.time()
         
         # Calculate overall metrics
@@ -484,6 +485,7 @@ class ObservabilityEngine:
     
     def _calculate_health_status(self) -> str:
         """Calculate overall system health status"""
+        pass
         recent_alerts = self.get_recent_alerts(1)  # Last hour
         critical_alerts = [a for a in recent_alerts if a.level == AlertLevel.CRITICAL]
         error_alerts = [a for a in recent_alerts if a.level == AlertLevel.ERROR]
@@ -499,6 +501,7 @@ class ObservabilityEngine:
     
     def reset_metrics(self) -> None:
         """Reset all metrics (useful for testing)"""
+        pass
         self.metrics.clear()
         self.component_metrics.clear()
         self.decision_traces.clear()

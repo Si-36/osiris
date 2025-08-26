@@ -96,7 +96,7 @@ class AlertManager:
         self.notification_channels[channel.channel_id] = channel
         logger.info(f"Added notification channel: {channel.channel_id}")
     
-    async def create_alert(self, alert: Alert) -> str:
+        async def create_alert(self, alert: Alert) -> str:
         """Create new alert"""
         # Check for suppression
         if self._is_suppressed(alert):
@@ -127,7 +127,7 @@ class AlertManager:
         
         return alert.alert_id
     
-    async def acknowledge_alert(self, alert_id: str, acknowledged_by: str) -> bool:
+        async def acknowledge_alert(self, alert_id: str, acknowledged_by: str) -> bool:
         """Acknowledge alert"""
         if alert_id not in self.active_alerts:
             return False
@@ -143,7 +143,7 @@ class AlertManager:
         
         return True
     
-    async def resolve_alert(self, alert_id: str, resolved_by: str) -> bool:
+        async def resolve_alert(self, alert_id: str, resolved_by: str) -> bool:
         """Resolve alert"""
         if alert_id not in self.active_alerts:
             return False
@@ -190,7 +190,7 @@ class AlertManager:
         
         return False
     
-    async def _remove_suppression(self, suppression_key: str, duration: timedelta) -> None:
+        async def _remove_suppression(self, suppression_key: str, duration: timedelta) -> None:
         """Remove suppression after duration"""
         await asyncio.sleep(duration.total_seconds())
         self.suppressed_alerts.discard(suppression_key)
@@ -204,7 +204,7 @@ class AlertManager:
                 return existing_alert
         return None
     
-    async def _handle_escalation(self, alert: Alert) -> None:
+        async def _handle_escalation(self, alert: Alert) -> None:
         """Handle alert escalation"""
         escalation_rule = self.escalation_rules[alert.severity]
         escalate_after = escalation_rule['escalate_after_minutes'] * 60  # Convert to seconds
@@ -229,7 +229,7 @@ class AlertManager:
                 # Send escalation notification
                 await self._send_escalation_notification(alert, escalation_count)
     
-    async def _send_notifications(self, alert: Alert) -> None:
+        async def _send_notifications(self, alert: Alert) -> None:
         """Send alert notifications to all channels"""
         for channel in self.notification_channels.values():
             if not channel.enabled:
@@ -240,7 +240,7 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Failed to send notification to {channel.channel_id}: {e}")
     
-    async def _send_acknowledgment_notification(self, alert: Alert, acknowledged_by: str) -> None:
+        async def _send_acknowledgment_notification(self, alert: Alert, acknowledged_by: str) -> None:
         """Send acknowledgment notification"""
         for channel in self.notification_channels.values():
             if channel.enabled:
@@ -250,7 +250,7 @@ class AlertManager:
                 except Exception as e:
                     logger.error(f"Failed to send acknowledgment to {channel.channel_id}: {e}")
     
-    async def _send_resolution_notification(self, alert: Alert, resolved_by: str) -> None:
+        async def _send_resolution_notification(self, alert: Alert, resolved_by: str) -> None:
         """Send resolution notification"""
         for channel in self.notification_channels.values():
             if channel.enabled:
@@ -260,7 +260,7 @@ class AlertManager:
                 except Exception as e:
                     logger.error(f"Failed to send resolution to {channel.channel_id}: {e}")
     
-    async def _send_escalation_notification(self, alert: Alert, escalation_level: int) -> None:
+        async def _send_escalation_notification(self, alert: Alert, escalation_level: int) -> None:
         """Send escalation notification"""
         for channel in self.notification_channels.values():
             if channel.enabled:
@@ -270,8 +270,8 @@ class AlertManager:
                 except Exception as e:
                     logger.error(f"Failed to send escalation to {channel.channel_id}: {e}")
     
-    async def _send_to_channel(self, channel: NotificationChannel, alert: Alert, 
-                             notification_type: str, extra_data: Dict[str, Any] = None) -> None:
+        async def _send_to_channel(self, channel: NotificationChannel, alert: Alert,
+        notification_type: str, extra_data: Dict[str, Any] = None) -> None:
         """Send notification to specific channel"""
         message_data = {
             'alert_id': alert.alert_id,
@@ -295,19 +295,19 @@ class AlertManager:
         else:
             logger.warning(f"Unsupported channel type: {channel.channel_type}")
     
-    async def _send_webhook(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
+        async def _send_webhook(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
         """Send webhook notification (mock implementation)"""
         webhook_url = channel.config.get('url')
         logger.info(f"Webhook notification to {webhook_url}: {data['title']}")
         # In production, this would make actual HTTP request
     
-    async def _send_email(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
+        async def _send_email(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
         """Send email notification (mock implementation)"""
         email_address = channel.config.get('email')
         logger.info(f"Email notification to {email_address}: {data['title']}")
         # In production, this would send actual email
     
-    async def _send_slack(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
+        async def _send_slack(self, channel: NotificationChannel, data: Dict[str, Any]) -> None:
         """Send Slack notification (mock implementation)"""
         slack_channel = channel.config.get('channel')
         logger.info(f"Slack notification to {slack_channel}: {data['title']}")
@@ -320,6 +320,7 @@ class AlertManager:
     
     def get_alert_status(self) -> Dict[str, Any]:
         """Get alert system status"""
+        pass
         # Calculate alert resolution time
         resolved_alerts = [a for a in self.alert_history if a.resolved_at]
         if resolved_alerts:
@@ -342,6 +343,6 @@ class AlertManager:
         }
 
 # Factory function
-def create_alert_manager() -> AlertManager:
-    """Create alert manager"""
-    return AlertManager()
+    def create_alert_manager() -> AlertManager:
+        """Create alert manager"""
+        return AlertManager()

@@ -68,6 +68,7 @@ class AttentionMechanism:
     
     def get_attention_state(self) -> Dict[str, Any]:
         """Get attention state from workspace."""
+        pass
         return self.workspace_controller.get_state()
     
     def _get_priority(self, event_data: Dict[str, Any]) -> int:
@@ -83,14 +84,14 @@ class AttentionMechanism:
 
 
 # Factory functions - just return workspace-based attention
-def create_attention_mechanism() -> AttentionMechanism:
-    """Create attention mechanism using existing workspace."""
-    return AttentionMechanism()
+    def create_attention_mechanism() -> AttentionMechanism:
+        """Create attention mechanism using existing workspace."""
+        return AttentionMechanism()
 
 
-def get_attention_mechanism() -> AttentionMechanism:
-    """Get attention mechanism (workspace-based)."""
-    return create_attention_mechanism()
+    def get_attention_mechanism() -> AttentionMechanism:
+        """Get attention mechanism (workspace-based)."""
+        return create_attention_mechanism()
 
 
 # Aliases for compatibility

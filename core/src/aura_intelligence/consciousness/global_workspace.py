@@ -73,6 +73,7 @@ class ConsciousnessStream:
     
     def get_current_state(self) -> Dict[str, Any]:
         """Get current consciousness state."""
+        pass
         return {
             "level": self.consciousness_level.name,
             "focus": self.current_focus,
@@ -96,7 +97,7 @@ class GlobalWorkspace:
                 self.subscribers[content_type] = set()
             self.subscribers[content_type].add(component_id)
     
-    async def broadcast(self, content: WorkspaceContent) -> None:
+        async def broadcast(self, content: WorkspaceContent) -> None:
         """Broadcast content to subscribers."""
         self.content[content.content_id] = content
         await self.broadcast_queue.put(content)
@@ -119,24 +120,26 @@ class MetaCognitiveController:
         self.decisions: List[ConsciousDecision] = []
         self.active = False
     
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start the controller."""
+        pass
         self.active = True
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop the controller."""
+        pass
         self.active = False
     
-    async def process_content(self, content: WorkspaceContent) -> None:
+        async def process_content(self, content: WorkspaceContent) -> None:
         """Process content through workspace and stream."""
         await self.workspace.broadcast(content)
         self.stream.add_content(content)
     
-    async def make_decision(
+        async def make_decision(
         self,
         options: List[Dict[str, Any]],
         context: Dict[str, Any] = None
-    ) -> ConsciousDecision:
+        ) -> ConsciousDecision:
         """Make a conscious decision."""
         # Simple scoring: choose option with highest 'score' or first one
         best_option = max(options, key=lambda x: x.get('score', 0))
@@ -158,6 +161,7 @@ class MetaCognitiveController:
     
     def get_state(self) -> Dict[str, Any]:
         """Get controller state."""
+        pass
         return {
             "active": self.active,
             "workspace_content_count": len(self.workspace.content),
@@ -167,17 +171,17 @@ class MetaCognitiveController:
 
 
 # Factory functions
-def create_metacognitive_controller() -> MetaCognitiveController:
-    """Create metacognitive controller."""
-    return MetaCognitiveController()
+    def create_metacognitive_controller() -> MetaCognitiveController:
+        """Create metacognitive controller."""
+        return MetaCognitiveController()
 
 
 _global_controller: Optional[MetaCognitiveController] = None
 
 
-def get_global_workspace() -> MetaCognitiveController:
-    """Get global controller instance."""
-    global _global_controller
-    if _global_controller is None:
+    def get_global_workspace() -> MetaCognitiveController:
+        """Get global controller instance."""
+        global _global_controller
+        if _global_controller is None:
         _global_controller = create_metacognitive_controller()
-    return _global_controller
+        return _global_controller

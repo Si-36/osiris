@@ -31,7 +31,7 @@ except ImportError:
             self._compiled = False
             
         def add_node(self, name: str, func: Callable):
-            """Add a processing node to the graph"""
+                """Add a processing node to the graph"""
             if self._compiled:
                 raise RuntimeError("Cannot modify compiled graph")
             
@@ -62,7 +62,7 @@ except ImportError:
             logging.info(f"Added edge: {from_node} -> {to_node}")
             
         def add_conditional_edges(self, from_node: str, condition: Callable, mapping: Dict[str, str]):
-            """Add conditional routing based on condition function output"""
+                """Add conditional routing based on condition function output"""
             if self._compiled:
                 raise RuntimeError("Cannot modify compiled graph")
                 
@@ -91,7 +91,7 @@ except ImportError:
             logging.info(f"Set entry point: {node}")
             
         def compile(self, checkpointer=None, interrupt_before=None, interrupt_after=None):
-            """Compile the graph into an executable workflow"""
+                """Compile the graph into an executable workflow"""
             if not self.entry_point:
                 raise ValueError("No entry point set")
                 
@@ -125,157 +125,158 @@ except ImportError:
             to_visit = [self.entry_point]
             
             while to_visit:
-                node = to_visit.pop()
-                if node in reachable or node == END:
-                    continue
+            node = to_visit.pop()
+            if node in reachable or node == END:
+                continue
                     
-                reachable.add(node)
+            reachable.add(node)
                 
-                # Add direct edges
-                if node in self.edges:
-                    to_visit.extend(self.edges[node])
+            # Add direct edges
+            if node in self.edges:
+                to_visit.extend(self.edges[node])
                     
-                # Add conditional edges
-                if node in self.conditional_edges:
-                    to_visit.extend(self.conditional_edges[node]['mapping'].values())
+            # Add conditional edges
+            if node in self.conditional_edges:
+                to_visit.extend(self.conditional_edges[node]['mapping'].values())
                     
             unreachable = set(self.nodes.keys()) - reachable
             if unreachable:
                 logging.warning(f"Unreachable nodes detected: {unreachable}")
     
-    class ExecutableWorkflow:
-        """Executable workflow compiled from StateGraph"""
+            class ExecutableWorkflow:
+            """Executable workflow compiled from StateGraph"""
         
-        def __init__(self, workflow_config):
-            self.config = workflow_config
-            self.state = None
-            self.execution_history = []
+                def __init__(self, workflow_config):
+                    self.config = workflow_config
+                    self.state = None
+                    self.execution_history = []
             
-        def invoke(self, input_data: Dict[str, Any], config: Dict[str, Any] = None):
-            """Execute the workflow with given input"""
-            import time
-            start_time = time.time()
+                def invoke(self, input_data: Dict[str, Any], config: Dict[str, Any] = None):
+                    """Execute the workflow with given input"""
+                    import time
+                    start_time = time.time()
             
             # Initialize state with input
-            self.state = {
-                'input': input_data,
-                'current_node': self.config['entry_point'],
-                'history': [],
-                'metadata': config or {}
-            }
+                    self.state = {
+                    'input': input_data,
+                    'current_node': self.config['entry_point'],
+                    'history': [],
+                    'metadata': config or {}
+                    }
             
             # Execute workflow
-            while self.state['current_node'] != END:
-                node_name = self.state['current_node']
-                node = self.config['nodes'].get(node_name)
+                    while self.state['current_node'] != END:
+                    node_name = self.state['current_node']
+                    node = self.config['nodes'].get(node_name)
                 
-                if not node:
+                    if not node:
                     raise RuntimeError(f"Node '{node_name}' not found")
                 
-                # Execute node function
-                result = node['func'](self.state)
-                self.state['history'].append({
+            # Execute node function
+                    result = node['func'](self.state)
+                    self.state['history'].append({
                     'node': node_name,
                     'result': result,
                     'timestamp': time.time()
-                })
+                    })
                 
-                # Determine next node
-                if node_name in self.config['conditional_edges']:
-                    # Conditional routing
+            # Determine next node
+                    if node_name in self.config['conditional_edges']:
+                # Conditional routing
                     condition_result = self.config['conditional_edges'][node_name]['condition'](self.state)
                     next_node = self.config['conditional_edges'][node_name]['mapping'].get(condition_result)
                     if not next_node:
-                        raise ValueError(f"No mapping for condition result: {condition_result}")
+                    raise ValueError(f"No mapping for condition result: {condition_result}")
                     self.state['current_node'] = next_node
-                elif node_name in self.config['edges']:
-                    # Direct edge
+                    elif node_name in self.config['edges']:
+            # Direct edge
                     self.state['current_node'] = self.config['edges'][node_name][0]
-                else:
-                    # No outgoing edges, end
+                    else:
+            # No outgoing edges, end
                     self.state['current_node'] = END
             
             # Return final state
-            return {
-                'output': self.state.get('output', {}),
-                'execution_time': time.time() - start_time,
-                'nodes_executed': len(self.state['history']),
-                'final_state': self.state
-            }
+                    return {
+                    'output': self.state.get('output', {}),
+                    'execution_time': time.time() - start_time,
+                    'nodes_executed': len(self.state['history']),
+                    'final_state': self.state
+                    }
     
-    class SqliteSaver:
-        """SQLite-based checkpointer for workflow state persistence"""
+            class SqliteSaver:
+            """SQLite-based checkpointer for workflow state persistence"""
         
-        def __init__(self, conn_string=None):
-            import sqlite3
-            self.conn_string = conn_string or ":memory:"
-            self.conn = sqlite3.connect(self.conn_string)
-            self._setup_tables()
+                def __init__(self, conn_string=None):
+                    import sqlite3
+                    self.conn_string = conn_string or ":memory:"
+                    self.conn = sqlite3.connect(self.conn_string)
+                    self._setup_tables()
             
         @classmethod
-        def from_conn_string(cls, conn_string):
-            """Create SqliteSaver from connection string"""
-            return cls(conn_string)
+                def from_conn_string(cls, conn_string):
+                    """Create SqliteSaver from connection string"""
+                    return cls(conn_string)
             
-        def _setup_tables(self):
-            """Setup checkpoint tables"""
-            self.conn.execute("""
-                CREATE TABLE IF NOT EXISTS checkpoints (
+                def _setup_tables(self):
+                    """Setup checkpoint tables"""
+                    self.conn.execute("""
+                    CREATE TABLE IF NOT EXISTS checkpoints (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     workflow_id TEXT NOT NULL,
                     node_id TEXT NOT NULL,
                     state TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-            self.conn.commit()
+                    )
+                    """)
+                    self.conn.commit()
             
-        def save(self, workflow_id: str, node_id: str, state: Dict[str, Any]):
-            """Save checkpoint"""
-            import json
-            state_json = json.dumps(state)
-            self.conn.execute(
-                "INSERT INTO checkpoints (workflow_id, node_id, state) VALUES (?, ?, ?)",
-                (workflow_id, node_id, state_json)
-            )
-            self.conn.commit()
+                def save(self, workflow_id: str, node_id: str, state: Dict[str, Any]):
+                    """Save checkpoint"""
+                    import json
+                    state_json = json.dumps(state)
+                    self.conn.execute(
+                    "INSERT INTO checkpoints (workflow_id, node_id, state) VALUES (?, ?, ?)",
+                    (workflow_id, node_id, state_json)
+                    )
+                    self.conn.commit()
             
-        def load(self, workflow_id: str, node_id: str = None):
-            """Load checkpoint"""
-            import json
-            if node_id:
-                cursor = self.conn.execute(
+                def load(self, workflow_id: str, node_id: str = None):
+                    """Load checkpoint"""
+                    import json
+                    if node_id:
+                    cursor = self.conn.execute(
                     "SELECT state FROM checkpoints WHERE workflow_id = ? AND node_id = ? ORDER BY created_at DESC LIMIT 1",
                     (workflow_id, node_id)
-                )
-            else:
-                cursor = self.conn.execute(
+                    )
+                    else:
+                    cursor = self.conn.execute(
                     "SELECT state FROM checkpoints WHERE workflow_id = ? ORDER BY created_at DESC LIMIT 1",
                     (workflow_id,)
-                )
+                    )
             
-            row = cursor.fetchone()
-            if row:
-                return json.loads(row[0])
-            return None
+                    row = cursor.fetchone()
+                    if row:
+                    return json.loads(row[0])
+                    return None
     
-    END = "END"
+                    END = "END"
 
 # Import schemas
 schema_dir = Path(__file__).parent.parent / "agents" / "schemas"
 sys.path.insert(0, str(schema_dir))
 
-try:
-    import enums
-    import base
-    from production_observer_agent import ProductionAgentState
-except ImportError:
+                    try:
+                    import enums
+                    import base
+                    from production_observer_agent import ProductionAgentState
+                    except ImportError:
     # Fallback for testing
     class ProductionAgentState:
-        def __init__(self): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-logger = logging.getLogger(__name__)
+        def __init__(self):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+            logger = logging.getLogger(__name__)
 
 
 class CollectiveGraphBuilder:
@@ -300,7 +301,7 @@ class CollectiveGraphBuilder:
         self.db_path = config.get("db_path", "sqlite:///collective_workflows.db")
         self.enable_human_loop = config.get("enable_human_loop", True)
         
-        logger.info("🧠 Collective Graph Builder initialized")
+            logger.info("🧠 Collective Graph Builder initialized")
     
     def build_graph(self, agents: Dict[str, Any], supervisor, memory_manager) -> Any:
         """
@@ -315,9 +316,9 @@ class CollectiveGraphBuilder:
             Compiled LangGraph application
         """
         
-        logger.info("🧠 Building collective intelligence graph")
+            logger.info("🧠 Building collective intelligence graph")
         
-        try:
+            try:
             # Step 1: Initialize StateGraph with your proven schema
             self.graph = StateGraph(ProductionAgentState)
             
@@ -343,7 +344,7 @@ class CollectiveGraphBuilder:
             logger.info("✅ Collective intelligence graph built successfully")
             return self.app
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"❌ Graph building failed: {e}")
             raise
     
@@ -351,34 +352,37 @@ class CollectiveGraphBuilder:
         """Add specialized agent nodes to the graph."""
         
         # Observer agent node
-        if "observer" in agents:
+            if "observer" in agents:
             self.graph.add_node("observe", agents["observer"].process_event)
             logger.info("✅ Added observer node")
         
         # Analyst agent node
-        if "analyst" in agents:
+            if "analyst" in agents:
             self.graph.add_node("analyze", agents["analyst"].analyze_state)
             logger.info("✅ Added analyst node")
         
         # Executor agent node
-        if "executor" in agents:
+            if "executor" in agents:
             self.graph.add_node("execute", agents["executor"].execute_action)
             logger.info("✅ Added executor node")
     
     def _add_supervisor_node(self, supervisor) -> None:
         """Add the supervisor node - the brain of the collective."""
+        pass
         
         self.graph.add_node("supervisor", supervisor.supervisor_node)
-        logger.info("✅ Added supervisor node")
+            logger.info("✅ Added supervisor node")
     
     def _add_human_loop_node(self) -> None:
         """Add human-in-the-loop node for escalation."""
+        pass
         
         self.graph.add_node("human_approval", self._human_approval_node)
-        logger.info("✅ Added human-in-the-loop node")
+            logger.info("✅ Added human-in-the-loop node")
     
     def _define_workflow_edges(self, supervisor) -> None:
         """Define the workflow edges and routing logic."""
+        pass
         
         # Entry point: Always start with observation
         self.graph.set_entry_point("observe")
@@ -403,13 +407,14 @@ class CollectiveGraphBuilder:
         self.graph.add_edge("analyze", "supervisor")
         self.graph.add_edge("execute", "supervisor")
         
-        if self.enable_human_loop:
+            if self.enable_human_loop:
             self.graph.add_edge("human_approval", "supervisor")
         
-        logger.info("✅ Workflow edges defined")
+            logger.info("✅ Workflow edges defined")
     
     def _add_error_handling(self) -> None:
         """Add error handling and recovery nodes."""
+        pass
         
         # Add error recovery node
         self.graph.add_node("error_recovery", self._error_recovery_node)
@@ -417,15 +422,16 @@ class CollectiveGraphBuilder:
         # Note: In production, you'd add error edges from each node
         # For now, we rely on try/catch within each node
         
-        logger.info("✅ Error handling added")
+            logger.info("✅ Error handling added")
     
     def _compile_graph(self, memory_manager) -> None:
         """Compile the graph with persistence and memory integration."""
+        pass
         
-        compile_kwargs = {}
+            compile_kwargs = {}
         
         # Add persistence if enabled
-        if self.enable_persistence:
+            if self.enable_persistence:
             checkpointer = SqliteSaver.from_conn_string(self.db_path)
             compile_kwargs["checkpointer"] = checkpointer
             logger.info(f"✅ Persistence enabled: {self.db_path}")
@@ -434,12 +440,12 @@ class CollectiveGraphBuilder:
         self.app = self.graph.compile(**compile_kwargs)
         
         # Store memory manager reference for workflow completion
-        if hasattr(self.app, '__dict__'):
+            if hasattr(self.app, '__dict__'):
             self.app.memory_manager = memory_manager
         
-        logger.info("✅ Graph compiled successfully")
+            logger.info("✅ Graph compiled successfully")
     
-    async def _human_approval_node(self, state: Any) -> Any:
+        async def _human_approval_node(self, state: Any) -> Any:
         """
         Human-in-the-loop node for high-risk situations.
         
@@ -449,51 +455,51 @@ class CollectiveGraphBuilder:
         - Escalation policies
         """
         
-        logger.info(f"👤 Human approval requested: {getattr(state, 'workflow_id', 'unknown')}")
+            logger.info(f"👤 Human approval requested: {getattr(state, 'workflow_id', 'unknown')}")
         
-        try:
+            try:
             # For now, simulate human approval
-            # In production, this would wait for actual human input
+        # In production, this would wait for actual human input
             
-            # Add human approval evidence
-            from production_observer_agent import ProductionEvidence, AgentConfig
+        # Add human approval evidence
+        from production_observer_agent import ProductionEvidence, AgentConfig
             
             approval_evidence = ProductionEvidence(
-                evidence_type=enums.EvidenceType.OBSERVATION,
-                content={
-                    "approval_type": "human_escalation",
-                    "status": "approved",  # In production: wait for real approval
-                    "approver": "system_simulation",
-                    "approval_reason": "High risk situation escalated",
-                    "approval_timestamp": base.utc_now().isoformat(),
-                    "escalation_node": "human_approval"
-                },
-                workflow_id=getattr(state, 'workflow_id', 'unknown'),
-                task_id=getattr(state, 'task_id', 'unknown'),
-                config=AgentConfig()
-            )
+        evidence_type=enums.EvidenceType.OBSERVATION,
+        content={
+        "approval_type": "human_escalation",
+        "status": "approved",  # In production: wait for real approval
+        "approver": "system_simulation",
+        "approval_reason": "High risk situation escalated",
+        "approval_timestamp": base.utc_now().isoformat(),
+        "escalation_node": "human_approval"
+        },
+        workflow_id=getattr(state, 'workflow_id', 'unknown'),
+        task_id=getattr(state, 'task_id', 'unknown'),
+        config=AgentConfig()
+        )
             
-            # Add evidence to state
+        # Add evidence to state
             if hasattr(state, 'add_evidence'):
-                new_state = state.add_evidence(approval_evidence, AgentConfig())
-            else:
-                new_state = state
+            new_state = state.add_evidence(approval_evidence, AgentConfig())
+        else:
+            new_state = state
             
             logger.info("✅ Human approval completed (simulated)")
             return new_state
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"❌ Human approval failed: {e}")
             return state
     
-    async def _error_recovery_node(self, state: Any) -> Any:
+        async def _error_recovery_node(self, state: Any) -> Any:
         """
         Error recovery node for handling failures.
         """
         
-        logger.info(f"🔧 Error recovery initiated: {getattr(state, 'workflow_id', 'unknown')}")
+            logger.info(f"🔧 Error recovery initiated: {getattr(state, 'workflow_id', 'unknown')}")
         
-        try:
+            try:
             # Add error recovery evidence
             from production_observer_agent import ProductionEvidence, AgentConfig
             
@@ -520,7 +526,7 @@ class CollectiveGraphBuilder:
             logger.info("✅ Error recovery completed")
             return new_state
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"❌ Error recovery failed: {e}")
             return state
     
@@ -529,43 +535,44 @@ class CollectiveGraphBuilder:
         Get a text visualization of the graph structure.
         
         Returns:
-            String representation of the graph
+        String representation of the graph
         """
+        pass
         
-        if not self.graph:
+            if not self.graph:
             return "Graph not built yet"
         
-        visualization = """
-🧠 Collective Intelligence Graph Structure:
+            visualization = """
+        🧠 Collective Intelligence Graph Structure:
 
-┌─────────────┐
-│   observe   │ ← Entry Point
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│ supervisor  │ ← Central Intelligence
-└─────┬───────┘
-      │
-      ▼ (Conditional Routing)
-┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-│   analyze   │  │   execute   │  │human_approval│  │     END     │
-└─────┬───────┘  └─────┬───────┘  └─────┬───────┘  └─────────────┘
-      │                │                │
-      └────────────────┼────────────────┘
-                       │
-                       ▼
-                 ┌─────────────┐
-                 │ supervisor  │ ← Return for next decision
-                 └─────────────┘
+        ┌─────────────┐
+        │   observe   │ ← Entry Point
+        └─────┬───────┘
+        │
+        ▼
+        ┌─────────────┐
+        │ supervisor  │ ← Central Intelligence
+        └─────┬───────┘
+        │
+        ▼ (Conditional Routing)
+        ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+        │   analyze   │  │   execute   │  │human_approval│  │     END     │
+        └─────┬───────┘  └─────┬───────┘  └─────┬───────┘  └─────────────┘
+        │                │                │
+        └────────────────┼────────────────┘
+        │
+        ▼
+        ┌─────────────┐
+        │ supervisor  │ ← Return for next decision
+        └─────────────┘
 
-Key Features:
-✅ Supervisor-based intelligent routing
-✅ Context engineering with LangMem
-✅ Human-in-the-loop escalation
-✅ State persistence with SQLite
-✅ Error handling and recovery
-✅ Your proven schema foundation
+        Key Features:
+        ✅ Supervisor-based intelligent routing
+        ✅ Context engineering with LangMem
+        ✅ Human-in-the-loop escalation
+        ✅ State persistence with SQLite
+        ✅ Error handling and recovery
+        ✅ Your proven schema foundation
         """
         
-        return visualization
+            return visualization

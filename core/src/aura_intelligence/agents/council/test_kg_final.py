@@ -66,11 +66,11 @@ class MockNeo4jAdapter:
             "eigenvector_centrality": 0.58
         }
     
-    async def initialize(self):
+        async def initialize(self):
         self.initialized = True
         print("   Neo4j adapter initialized with TDA features")
     
-    async def query(self, cypher: str, params=None, database=None):
+        async def query(self, cypher: str, params=None, database=None):
         """Enhanced mock with TDA-aware responses."""
         self.query_count += 1
         
@@ -153,7 +153,7 @@ class MockNeo4jAdapter:
         else:
             return []
     
-    async def close(self):
+        async def close(self):
         self.initialized = False
 
 
@@ -186,10 +186,11 @@ class TDAEnhancedKnowledgeProvider:
     
     def set_neo4j_adapter(self, adapter):
         """Inject Neo4j adapter (Task 5 requirement)."""
+        pass
         self.neo4j_adapter = adapter
         print("Neo4j adapter connected with TDA enhancement")
     
-    async def get_knowledge_context(self, state: MockLNNCouncilState) -> torch.Tensor:
+        async def get_knowledge_context(self, state: MockLNNCouncilState) -> torch.Tensor:
         """
         Get knowledge context with TDA-enhanced relevance scoring.
         
@@ -226,8 +227,9 @@ class TDAEnhancedKnowledgeProvider:
         
         return context_tensor
     
-    async def _get_entity_context(self, request) -> dict:
+        async def _get_entity_context(self, request) -> dict:
         """Get entity context using Neo4j adapter."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})
@@ -266,8 +268,9 @@ class TDAEnhancedKnowledgeProvider:
         
         return {"user_authority": 0.5, "project_priority": 0.5}
     
-    async def _get_relationship_context(self, request) -> dict:
+        async def _get_relationship_context(self, request) -> dict:
         """Get relationship context using Neo4j adapter."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[r1]->(p:Project {id: $project_id})
@@ -294,8 +297,9 @@ class TDAEnhancedKnowledgeProvider:
         
         return {"collaboration_strength": 0.3, "dependency_strength": 0.2}
     
-    async def _get_topology_context(self, request) -> dict:
+        async def _get_topology_context(self, request) -> dict:
         """Get topology context with TDA features using Neo4j adapter."""
+        pass
         
         # Standard graph topology query
         topology_cypher = """
@@ -353,12 +357,13 @@ class TDAEnhancedKnowledgeProvider:
         
         return context
     
-    async def _compute_tda_relevance_scores(self, entity_ctx, rel_ctx, topo_ctx, request) -> dict:
+        async def _compute_tda_relevance_scores(self, entity_ctx, rel_ctx, topo_ctx, request) -> dict:
         """
         Compute TDA-enhanced relevance scores.
         
         Task 5 Implementation: Relevance scoring using TDA features
         """
+        pass
         
         scores = {}
         
@@ -385,6 +390,7 @@ class TDAEnhancedKnowledgeProvider:
     
     def _apply_relevance_weighting(self, contexts, relevance_scores) -> list:
         """Apply TDA-based relevance weighting to contexts."""
+        pass
         
         weights = [
             relevance_scores.get("entity_relevance", 0.5),
@@ -408,6 +414,7 @@ class TDAEnhancedKnowledgeProvider:
     
     def _aggregate_contexts(self, weighted_contexts) -> torch.Tensor:
         """Aggregate weighted contexts into final tensor."""
+        pass
         
         all_features = []
         for ctx in weighted_contexts:
@@ -422,6 +429,7 @@ class TDAEnhancedKnowledgeProvider:
     
     def _calculate_success_rate(self, history) -> float:
         """Calculate success rate from historical data."""
+        pass
         if not history:
             return 0.5
         
@@ -430,6 +438,7 @@ class TDAEnhancedKnowledgeProvider:
     
     def get_stats(self):
         """Get provider statistics."""
+        pass
         return {
             "query_count": self.query_count,
             "cache_hits": self.cache_hits,
@@ -440,189 +449,189 @@ class TDAEnhancedKnowledgeProvider:
 
 
 async def test_task5_complete_implementation():
-    """Test complete Task 5 implementation."""
-    print("🧪 Testing Task 5 Complete Implementation")
+        """Test complete Task 5 implementation."""
+        print("🧪 Testing Task 5 Complete Implementation")
     
     # Initialize components
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
     # Setup Neo4j adapter (Task 5 requirement)
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
     # Create test state
-    state = MockLNNCouncilState()
+        state = MockLNNCouncilState()
     
     # Get knowledge context with TDA relevance scoring
-    context = await kg_provider.get_knowledge_context(state)
+        context = await kg_provider.get_knowledge_context(state)
     
-    print("✅ Task 5 implementation completed")
-    print(f"   Context shape: {context.shape}")
-    print(f"   Context dtype: {context.dtype}")
-    print(f"   Non-zero features: {(context != 0).sum().item()}")
-    print(f"   Feature range: [{context.min().item():.3f}, {context.max().item():.3f}]")
+        print("✅ Task 5 implementation completed")
+        print(f"   Context shape: {context.shape}")
+        print(f"   Context dtype: {context.dtype}")
+        print(f"   Non-zero features: {(context != 0).sum().item()}")
+        print(f"   Feature range: [{context.min().item():.3f}, {context.max().item():.3f}]")
     
     # Get statistics
-    stats = kg_provider.get_stats()
-    print(f"   Neo4j queries executed: {stats['neo4j_queries']}")
-    print(f"   TDA computations: {stats['tda_computations']}")
+        stats = kg_provider.get_stats()
+        print(f"   Neo4j queries executed: {stats['neo4j_queries']}")
+        print(f"   TDA computations: {stats['tda_computations']}")
     
-    return True
+        return True
 
 
 async def test_neo4j_adapter_integration():
-    """Test Neo4j adapter integration (Task 5 requirement)."""
-    print("\n🧪 Testing Neo4j Adapter Integration")
+        """Test Neo4j adapter integration (Task 5 requirement)."""
+        print("\n🧪 Testing Neo4j Adapter Integration")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
     # Test adapter injection
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    print("✅ Neo4j adapter integration tested")
-    print(f"   Adapter initialized: {neo4j_adapter.initialized}")
-    print(f"   Provider has adapter: {kg_provider.neo4j_adapter is not None}")
+        print("✅ Neo4j adapter integration tested")
+        print(f"   Adapter initialized: {neo4j_adapter.initialized}")
+        print(f"   Provider has adapter: {kg_provider.neo4j_adapter is not None}")
     
-    return True
+        return True
 
 
 async def test_context_retrieval_functionality():
-    """Test context retrieval functionality (Task 5 requirement)."""
-    print("\n🧪 Testing Context Retrieval Functionality")
+        """Test context retrieval functionality (Task 5 requirement)."""
+        print("\n🧪 Testing Context Retrieval Functionality")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
+        request = MockGPURequest()
     
     # Test individual context retrievals
-    entity_context = await kg_provider._get_entity_context(request)
-    relationship_context = await kg_provider._get_relationship_context(request)
-    topology_context = await kg_provider._get_topology_context(request)
+        entity_context = await kg_provider._get_entity_context(request)
+        relationship_context = await kg_provider._get_relationship_context(request)
+        topology_context = await kg_provider._get_topology_context(request)
     
-    print("✅ Context retrieval functionality tested")
-    print(f"   Entity context keys: {list(entity_context.keys())}")
-    print(f"   Relationship context keys: {list(relationship_context.keys())}")
-    print(f"   Topology context keys: {list(topology_context.keys())}")
+        print("✅ Context retrieval functionality tested")
+        print(f"   Entity context keys: {list(entity_context.keys())}")
+        print(f"   Relationship context keys: {list(relationship_context.keys())}")
+        print(f"   Topology context keys: {list(topology_context.keys())}")
     
-    return True
+        return True
 
 
 async def test_tda_relevance_scoring():
-    """Test TDA-enhanced relevance scoring (Task 5 requirement)."""
-    print("\n🧪 Testing TDA Relevance Scoring")
+        """Test TDA-enhanced relevance scoring (Task 5 requirement)."""
+        print("\n🧪 Testing TDA Relevance Scoring")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
+        request = MockGPURequest()
     
     # Get contexts
-    entity_context = await kg_provider._get_entity_context(request)
-    relationship_context = await kg_provider._get_relationship_context(request)
-    topology_context = await kg_provider._get_topology_context(request)
+        entity_context = await kg_provider._get_entity_context(request)
+        relationship_context = await kg_provider._get_relationship_context(request)
+        topology_context = await kg_provider._get_topology_context(request)
     
     # Compute TDA relevance scores
-    relevance_scores = await kg_provider._compute_tda_relevance_scores(
+        relevance_scores = await kg_provider._compute_tda_relevance_scores(
         entity_context, relationship_context, topology_context, request
-    )
+        )
     
-    print("✅ TDA relevance scoring tested")
-    print(f"   Entity relevance: {relevance_scores['entity_relevance']:.3f}")
-    print(f"   Relationship relevance: {relevance_scores['relationship_relevance']:.3f}")
-    print(f"   Topology relevance: {relevance_scores['topology_relevance']:.3f}")
-    print(f"   Overall relevance: {relevance_scores['overall_relevance']:.3f}")
+        print("✅ TDA relevance scoring tested")
+        print(f"   Entity relevance: {relevance_scores['entity_relevance']:.3f}")
+        print(f"   Relationship relevance: {relevance_scores['relationship_relevance']:.3f}")
+        print(f"   Topology relevance: {relevance_scores['topology_relevance']:.3f}")
+        print(f"   Overall relevance: {relevance_scores['overall_relevance']:.3f}")
     
-    return True
+        return True
 
 
 async def test_tda_features_integration():
-    """Test TDA features integration."""
-    print("\n🧪 Testing TDA Features Integration")
+        """Test TDA features integration."""
+        print("\n🧪 Testing TDA Features Integration")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    topology_context = await kg_provider._get_topology_context(request)
+        request = MockGPURequest()
+        topology_context = await kg_provider._get_topology_context(request)
     
-    print("✅ TDA features integration tested")
-    print(f"   Topological complexity: {topology_context.get('topological_complexity', 'N/A')}")
-    print(f"   Persistence entropy: {topology_context.get('persistence_entropy', 'N/A')}")
-    print(f"   Betti numbers: {topology_context.get('betti_numbers', 'N/A')}")
-    print(f"   User centrality: {topology_context.get('user_centrality', 'N/A')}")
+        print("✅ TDA features integration tested")
+        print(f"   Topological complexity: {topology_context.get('topological_complexity', 'N/A')}")
+        print(f"   Persistence entropy: {topology_context.get('persistence_entropy', 'N/A')}")
+        print(f"   Betti numbers: {topology_context.get('betti_numbers', 'N/A')}")
+        print(f"   User centrality: {topology_context.get('user_centrality', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_performance_and_caching():
-    """Test performance and caching mechanisms."""
-    print("\n🧪 Testing Performance and Caching")
+        """Test performance and caching mechanisms."""
+        print("\n🧪 Testing Performance and Caching")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = TDAEnhancedKnowledgeProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = TDAEnhancedKnowledgeProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
     # Test multiple requests
-    states = [MockLNNCouncilState() for _ in range(3)]
+        states = [MockLNNCouncilState() for _ in range(3)]
     
-    start_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
     
-    contexts = []
-    for state in states:
+        contexts = []
+        for state in states:
         context = await kg_provider.get_knowledge_context(state)
         contexts.append(context)
     
-    end_time = asyncio.get_event_loop().time()
-    total_time = end_time - start_time
+        end_time = asyncio.get_event_loop().time()
+        total_time = end_time - start_time
     
-    print("✅ Performance and caching tested")
-    print(f"   Contexts processed: {len(contexts)}")
-    print(f"   Total time: {total_time*1000:.1f}ms")
-    print(f"   Avg time per context: {total_time*1000/len(contexts):.1f}ms")
+        print("✅ Performance and caching tested")
+        print(f"   Contexts processed: {len(contexts)}")
+        print(f"   Total time: {total_time*1000:.1f}ms")
+        print(f"   Avg time per context: {total_time*1000/len(contexts):.1f}ms")
     
-    stats = kg_provider.get_stats()
-    print(f"   Cache hit rate: {stats['cache_hit_rate']:.3f}")
-    print(f"   TDA computations: {stats['tda_computations']}")
+        stats = kg_provider.get_stats()
+        print(f"   Cache hit rate: {stats['cache_hit_rate']:.3f}")
+        print(f"   TDA computations: {stats['tda_computations']}")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all Task 5 completion tests."""
-    print("🚀 Task 5: Knowledge Graph Context Provider - Final Tests\n")
+        """Run all Task 5 completion tests."""
+        print("🚀 Task 5: Knowledge Graph Context Provider - Final Tests\n")
     
-    tests = [
+        tests = [
         test_task5_complete_implementation,
         test_neo4j_adapter_integration,
         test_context_retrieval_functionality,
         test_tda_relevance_scoring,
         test_tda_features_integration,
         test_performance_and_caching
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -632,9 +641,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 Task 5 Complete - All tests passed!")
         print("\n✅ Task 5 Requirements Fulfilled:")
         print("   • KnowledgeGraphContext class using existing Neo4j adapter ✅")
@@ -650,11 +659,11 @@ async def main():
         print("   • Production-ready Cypher queries")
         print("\n🚀 Ready for Task 6: Decision Processing Pipeline")
         return 0
-    else:
+        else:
         print("❌ Some Task 5 tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

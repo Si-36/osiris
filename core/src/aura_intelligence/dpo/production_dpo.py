@@ -362,7 +362,7 @@ class ProductionDPOTrainer:
         
         return torch.stack(losses).mean()
     
-    async def train_batch(self, batch_size: int = 32) -> Dict[str, Any]:
+        async def train_batch(self, batch_size: int = 32) -> Dict[str, Any]:
         """Train on batch of preferences"""
         if len(self.preference_buffer) < batch_size:
             return {
@@ -422,6 +422,7 @@ class ProductionDPOTrainer:
     
     def get_training_stats(self) -> Dict[str, Any]:
         """Get comprehensive training statistics"""
+        pass
         return {
             'training_metrics': self.training_metrics,
             'preference_buffer_size': len(self.preference_buffer),
@@ -434,9 +435,9 @@ class ProductionDPOTrainer:
 # Global instance
 _dpo_trainer = None
 
-def get_production_dpo() -> ProductionDPOTrainer:
-    """Get global DPO trainer instance"""
-    global _dpo_trainer
-    if _dpo_trainer is None:
+    def get_production_dpo() -> ProductionDPOTrainer:
+        """Get global DPO trainer instance"""
+        global _dpo_trainer
+        if _dpo_trainer is None:
         _dpo_trainer = ProductionDPOTrainer()
-    return _dpo_trainer
+        return _dpo_trainer

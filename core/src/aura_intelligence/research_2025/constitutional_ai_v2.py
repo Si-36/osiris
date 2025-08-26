@@ -72,7 +72,7 @@ class ConstitutionalAI:
             )
         ]
     
-    async def evaluate_alignment(self, action: Dict[str, Any]) -> AlignmentScore:
+        async def evaluate_alignment(self, action: Dict[str, Any]) -> AlignmentScore:
         """Evaluate action against constitutional rules"""
         start_time = time.time()
         
@@ -112,7 +112,7 @@ class ConstitutionalAI:
         
         return alignment_score
     
-    async def _evaluate_rule(self, action: Dict[str, Any], rule: ConstitutionalRule) -> float:
+        async def _evaluate_rule(self, action: Dict[str, Any], rule: ConstitutionalRule) -> float:
         """Evaluate specific constitutional rule"""
         # Simulate rule evaluation based on action content
         base_score = 0.7 + np.random.random() * 0.25
@@ -137,7 +137,7 @@ class ConstitutionalAI:
                 
         return max(0.0, min(1.0, base_score))
     
-    async def _self_improve(self, alignment_score: AlignmentScore):
+        async def _self_improve(self, alignment_score: AlignmentScore):
         """Self-improvement through RLAIF"""
         self.alignment_history.append(alignment_score)
         
@@ -162,6 +162,7 @@ class ConstitutionalAI:
     
     def get_alignment_stats(self) -> Dict[str, Any]:
         """Get constitutional AI statistics"""
+        pass
         if not self.alignment_history:
             return {'status': 'no_data'}
             
@@ -176,7 +177,7 @@ class ConstitutionalAI:
             'self_improvement_iterations': len(self.alignment_history) // 10
         }
     
-    async def constitutional_check(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        async def constitutional_check(self, action: Dict[str, Any]) -> Dict[str, Any]:
         """Main constitutional check interface"""
         alignment_score = await self.evaluate_alignment(action)
         
@@ -197,5 +198,5 @@ class ConstitutionalAI:
         }
 
 
-def get_constitutional_ai() -> ConstitutionalAI:
-    return ConstitutionalAI()
+    def get_constitutional_ai() -> ConstitutionalAI:
+        return ConstitutionalAI()

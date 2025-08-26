@@ -41,6 +41,7 @@ class SignatureVectorizer:
     
     def __init__(self, vector_dimension: int = 128):
         """Initialize the signature vectorizer."""
+        pass
         
         self.vector_dimension = vector_dimension
         self.logger = get_logger(__name__)
@@ -58,7 +59,7 @@ class SignatureVectorizer:
         
         self.logger.info(f"🔢 Signature Vectorizer initialized (dim={vector_dimension})")
     
-    async def vectorize_signature(self, signature: TopologicalSignature) -> np.ndarray:
+        async def vectorize_signature(self, signature: TopologicalSignature) -> np.ndarray:
         """
         Convert a topological signature to vector embedding.
         
@@ -132,67 +133,67 @@ class SignatureVectorizer:
         Synchronous version of vectorize_signature for thread pool execution.
 
         Args:
-            signature: TopologicalSignature to vectorize
+        signature: TopologicalSignature to vectorize
 
         Returns:
-            Dense vector embedding of specified dimension
+        Dense vector embedding of specified dimension
         """
 
         try:
             vector = np.zeros(self.vector_dimension, dtype=np.float32)
-            idx = 0
+        idx = 0
 
-            # 1. Betti number features (normalized)
-            # Handle both old format (betti_0, betti_1, betti_2) and new format (betti_numbers list)
-            if hasattr(signature, 'betti_0'):
-                vector[idx] = self._normalize_betti(signature.betti_0, max_val=100)
-                vector[idx + 1] = self._normalize_betti(signature.betti_1, max_val=50)
-                vector[idx + 2] = self._normalize_betti(signature.betti_2, max_val=20)
-            else:
-                # New format with betti_numbers list
-                betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
-                vector[idx] = self._normalize_betti(betti_nums[0], max_val=100)
-                vector[idx + 1] = self._normalize_betti(betti_nums[1], max_val=50)
-                vector[idx + 2] = self._normalize_betti(betti_nums[2], max_val=20)
-            idx += self.betti_features
+        # 1. Betti number features (normalized)
+        # Handle both old format (betti_0, betti_1, betti_2) and new format (betti_numbers list)
+        if hasattr(signature, 'betti_0'):
+            vector[idx] = self._normalize_betti(signature.betti_0, max_val=100)
+        vector[idx + 1] = self._normalize_betti(signature.betti_1, max_val=50)
+        vector[idx + 2] = self._normalize_betti(signature.betti_2, max_val=20)
+        else:
+        # New format with betti_numbers list
+        betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
+        vector[idx] = self._normalize_betti(betti_nums[0], max_val=100)
+        vector[idx + 1] = self._normalize_betti(betti_nums[1], max_val=50)
+        vector[idx + 2] = self._normalize_betti(betti_nums[2], max_val=20)
+        idx += self.betti_features
 
-            # 2. Anomaly score feature (use consciousness_level if anomaly_score not available)
-            if hasattr(signature, 'anomaly_score'):
-                vector[idx] = np.clip(signature.anomaly_score, 0.0, 1.0)
-            else:
-                vector[idx] = np.clip(signature.consciousness_level, 0.0, 1.0)
-            idx += self.anomaly_features
+        # 2. Anomaly score feature (use consciousness_level if anomaly_score not available)
+        if hasattr(signature, 'anomaly_score'):
+            vector[idx] = np.clip(signature.anomaly_score, 0.0, 1.0)
+        else:
+        vector[idx] = np.clip(signature.consciousness_level, 0.0, 1.0)
+        idx += self.anomaly_features
 
-            # 3. Hash-based uniqueness features
-            signature_hash = getattr(signature, 'hash', None) or signature.signature_hash
-            hash_features = self._extract_hash_features(signature_hash)
-            vector[idx:idx + self.hash_features] = hash_features
-            idx += self.hash_features
+        # 3. Hash-based uniqueness features
+        signature_hash = getattr(signature, 'hash', None) or signature.signature_hash
+        hash_features = self._extract_hash_features(signature_hash)
+        vector[idx:idx + self.hash_features] = hash_features
+        idx += self.hash_features
 
-            # 4. Persistence diagram features (if available)
-            if hasattr(signature, 'persistence_diagram') and signature.persistence_diagram:
-                persistence_features = self._extract_persistence_features(signature.persistence_diagram)
-                vector[idx:idx + len(persistence_features)] = persistence_features[:self.persistence_features]
-            else:
-                # Use Betti-based approximation
-                persistence_features = self._approximate_persistence_features(signature)
-                vector[idx:idx + len(persistence_features)] = persistence_features
-            idx += self.persistence_features
+        # 4. Persistence diagram features (if available)
+        if hasattr(signature, 'persistence_diagram') and signature.persistence_diagram:
+            persistence_features = self._extract_persistence_features(signature.persistence_diagram)
+        vector[idx:idx + len(persistence_features)] = persistence_features[:self.persistence_features]
+        else:
+        # Use Betti-based approximation
+        persistence_features = self._approximate_persistence_features(signature)
+        vector[idx:idx + len(persistence_features)] = persistence_features
+        idx += self.persistence_features
 
-            # 5. Random features for diversity (seeded by hash)
-            if self.random_features > 0:
-                random_features = self._generate_random_features(signature_hash)
-                vector[idx:idx + self.random_features] = random_features
+        # 5. Random features for diversity (seeded by hash)
+        if self.random_features > 0:
+            random_features = self._generate_random_features(signature_hash)
+        vector[idx:idx + self.random_features] = random_features
 
-            # Normalize vector to unit length for cosine similarity
-            vector = self._normalize_vector(vector)
+        # Normalize vector to unit length for cosine similarity
+        vector = self._normalize_vector(vector)
 
-            return vector
+        return vector
 
         except Exception as e:
-            self.logger.error(f"❌ Sync vectorization failed for signature {signature.signature_hash[:8]}...: {e}")
-            # Return zero vector as fallback
-            return np.zeros(self.vector_dimension, dtype=np.float32)
+        self.logger.error(f"❌ Sync vectorization failed for signature {signature.signature_hash[:8]}...: {e}")
+        # Return zero vector as fallback
+        return np.zeros(self.vector_dimension, dtype=np.float32)
     
     def _normalize_betti(self, betti_value: int, max_val: int = 100) -> float:
         """Normalize Betti number to [0, 1] range."""
@@ -209,18 +210,19 @@ class SignatureVectorizer:
         try:
             hash_int = int(signature_hash[:16], 16) if len(signature_hash) >= 16 else 0
         except ValueError:
-            # Fallback to Python's hash function for non-hex strings
-            hash_int = abs(hash(signature_hash)) % (2**32)
+        # Fallback to Python's hash function for non-hex strings
+        hash_int = abs(hash(signature_hash)) % (2**32)
         
         # Extract binary features
         features = np.zeros(self.hash_features, dtype=np.float32)
         for i in range(self.hash_features):
-            features[i] = float((hash_int >> i) & 1) * 0.1  # Scale to [0, 0.1]
+        features[i] = float((hash_int >> i) & 1) * 0.1  # Scale to [0, 0.1]
         
         return features
     
     def _extract_persistence_features(self, persistence_diagram) -> np.ndarray:
         """Extract features from persistence diagram."""
+        pass
 
         features = np.zeros(self.persistence_features, dtype=np.float32)
 
@@ -252,7 +254,7 @@ class SignatureVectorizer:
                     features[i * 2 + 1] = min(death - birth, 1.0)  # Normalize persistence
         except (ValueError, TypeError, IndexError):
             # Return zeros if parsing fails
-            pass
+        pass
 
         return features
     
@@ -268,30 +270,30 @@ class SignatureVectorizer:
         if hasattr(signature, 'betti_0'):
             betti_0, betti_1, betti_2 = signature.betti_0, signature.betti_1, signature.betti_2
         else:
-            betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
-            betti_0, betti_1, betti_2 = betti_nums[0], betti_nums[1], betti_nums[2]
+        betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
+        betti_0, betti_1, betti_2 = betti_nums[0], betti_nums[1], betti_nums[2]
 
         # Approximate birth times based on Betti numbers
         if betti_0 > 0:
             features[0] = 0.0  # Components born at time 0
-            features[1] = min(betti_0 / 10.0, 1.0)  # Persistence approximation
+        features[1] = min(betti_0 / 10.0, 1.0)  # Persistence approximation
 
         if betti_1 > 0:
             features[2] = 0.2  # Cycles born later
-            features[3] = min(betti_1 / 5.0, 1.0)
+        features[3] = min(betti_1 / 5.0, 1.0)
 
         if betti_2 > 0:
             features[4] = 0.4  # Voids born even later
-            features[5] = min(betti_2 / 2.0, 1.0)
+        features[5] = min(betti_2 / 2.0, 1.0)
 
         # Fill remaining with scaled Betti ratios
         for i in range(6, min(self.persistence_features, 12)):
-            if i % 3 == 0:
-                features[i] = betti_0 / (betti_0 + betti_1 + betti_2 + 1)
-            elif i % 3 == 1:
-                features[i] = betti_1 / (betti_0 + betti_1 + betti_2 + 1)
-            else:
-                features[i] = betti_2 / (betti_0 + betti_1 + betti_2 + 1)
+        if i % 3 == 0:
+            features[i] = betti_0 / (betti_0 + betti_1 + betti_2 + 1)
+        elif i % 3 == 1:
+        features[i] = betti_1 / (betti_0 + betti_1 + betti_2 + 1)
+        else:
+        features[i] = betti_2 / (betti_0 + betti_1 + betti_2 + 1)
         
         return features
     
@@ -323,9 +325,9 @@ class SignatureVectorizer:
         if norm > 0:
             return vector / norm
         else:
-            return vector
+        return vector
     
-    async def vectorize_batch(self, signatures: List[TopologicalSignature]) -> List[np.ndarray]:
+        async def vectorize_batch(self, signatures: List[TopologicalSignature]) -> List[np.ndarray]:
         """Vectorize a batch of signatures efficiently."""
         
         vectors = []
@@ -336,7 +338,7 @@ class SignatureVectorizer:
         return vectors
     
     def compute_similarity(self, vector1: np.ndarray, vector2: np.ndarray, 
-                          metric: str = "cosine") -> float:
+        metric: str = "cosine") -> float:
         """Compute similarity between two vectors."""
         
         if metric == "cosine":
@@ -350,15 +352,16 @@ class SignatureVectorizer:
     
     def get_embedding_info(self) -> Dict[str, Any]:
         """Get information about the embedding configuration."""
+        pass
         
         return {
-            "vector_dimension": self.vector_dimension,
-            "feature_allocation": {
-                "betti_features": self.betti_features,
-                "anomaly_features": self.anomaly_features,
-                "hash_features": self.hash_features,
-                "persistence_features": self.persistence_features,
-                "random_features": self.random_features
-            },
-            "embedding_method": "topological_signature_v1"
+        "vector_dimension": self.vector_dimension,
+        "feature_allocation": {
+        "betti_features": self.betti_features,
+        "anomaly_features": self.anomaly_features,
+        "hash_features": self.hash_features,
+        "persistence_features": self.persistence_features,
+        "random_features": self.random_features
+        },
+        "embedding_method": "topological_signature_v1"
         }

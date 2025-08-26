@@ -19,7 +19,7 @@ def get_logger(name):
 
 def with_correlation_id():
     def decorator(func):
-        return func
+    return func
     return decorator
 
 def is_feature_enabled(feature):
@@ -27,12 +27,12 @@ def is_feature_enabled(feature):
 
 def resilient_operation(**kwargs):
     def decorator(func):
-        return func
+    return func
     return decorator
 
-from ..state import CollectiveState, NodeResult, update_state_safely
+    from ..state import CollectiveState, NodeResult, update_state_safely
 
-logger = get_logger(__name__)
+    logger = get_logger(__name__)
 
 
 class ObserverNode:
@@ -51,22 +51,23 @@ class ObserverNode:
         Initialize observer node.
         
         Args:
-            llm: Optional LLM for advanced analysis
+        llm: Optional LLM for advanced analysis
         """
+        pass
         self.llm = llm
         self.name = "observer"
     
-    @with_correlation_id()
-    @resilient_operation(
+        @with_correlation_id()
+        @resilient_operation(
         max_retries=3,
         delay=1.0,
         backoff_factor=2.0
-    )
-    async def __call__(
+        )
+        async def __call__(
         self,
         state: CollectiveState,
         config: Optional[RunnableConfig] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute observer node logic.
         
@@ -153,10 +154,10 @@ class ObserverNode:
                 "current_step": "observer_error"
             }
     
-    async def _collect_evidence(
+        async def _collect_evidence(
         self,
         state: CollectiveState
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Collect evidence from various sources."""
         evidence = []
         
@@ -202,11 +203,11 @@ class ObserverNode:
         
         return evidence
     
-    async def _analyze_with_llm(
+        async def _analyze_with_llm(
         self,
         evidence: List[Dict[str, Any]],
         state: CollectiveState
-    ) -> Optional[Dict[str, Any]]:
+        ) -> Optional[Dict[str, Any]]:
         """Use LLM to analyze evidence."""
         if not self.llm:
             return None
@@ -218,7 +219,7 @@ class ObserverNode:
                 for e in evidence
             ])
             
-            prompt = f"""
+        prompt = f"""
             Analyze the following system evidence and provide insights:
             
             {evidence_summary}
@@ -227,7 +228,7 @@ class ObserverNode:
             1. Key observations
             2. Potential risks
             3. Recommended actions
-            """
+        """
             
             # Get LLM response
             response = await self.llm.ainvoke(prompt)
@@ -248,7 +249,7 @@ class ObserverNode:
         self,
         evidence: List[Dict[str, Any]],
         analysis: Optional[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Build observation from evidence and analysis."""
         observation = {
             "node": self.name,
@@ -279,27 +280,28 @@ class ObserverNode:
     
     def _get_system_health(self) -> Dict[str, Any]:
         """Get current system health metrics."""
+        pass
         # This would integrate with real monitoring
         # For now, return mock data
         return {
-            "cpu_usage": 0.45,
-            "memory_usage": 0.62,
-            "active_connections": 42,
-            "error_rate": 0.02,
-            "status": "healthy",
-            "timestamp": datetime.now(timezone.utc).isoformat()
+        "cpu_usage": 0.45,
+        "memory_usage": 0.62,
+        "active_connections": 42,
+        "error_rate": 0.02,
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
 
-# Factory function for node creation
-def create_observer_node(llm=None) -> ObserverNode:
-    """
-    Create an observer node instance.
+    # Factory function for node creation
+    def create_observer_node(llm=None) -> ObserverNode:
+        """
+        Create an observer node instance.
     
-    Args:
+        Args:
         llm: Optional LLM for analysis
         
-    Returns:
+        Returns:
         Configured observer node
-    """
-    return ObserverNode(llm=llm)
+        """
+        return ObserverNode(llm=llm)

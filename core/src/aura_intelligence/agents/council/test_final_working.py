@@ -60,7 +60,7 @@ class WorkingLNNCouncilState:
 
 class WorkingGPUAllocationDecision:
     def __init__(self, request_id: str, decision: str, confidence_score: float, 
-                 fallback_used: bool = False, inference_time_ms: float = 0.0):
+        fallback_used: bool = False, inference_time_ms: float = 0.0):
         self.request_id = request_id
         self.decision = decision
         self.confidence_score = confidence_score
@@ -79,7 +79,7 @@ class WorkingMemoryContextProvider:
         self.query_count = 0
         self.cache = {}
     
-    async def get_memory_context(self, state: WorkingLNNCouncilState) -> torch.Tensor:
+        async def get_memory_context(self, state: WorkingLNNCouncilState) -> torch.Tensor:
         """Get real memory context."""
         self.query_count += 1
         
@@ -125,7 +125,7 @@ class WorkingKnowledgeGraphContextProvider:
         self.query_count = 0
         self.cache = {}
     
-    async def get_knowledge_context(self, state: WorkingLNNCouncilState) -> torch.Tensor:
+        async def get_knowledge_context(self, state: WorkingLNNCouncilState) -> torch.Tensor:
         """Get real knowledge graph context."""
         self.query_count += 1
         
@@ -216,11 +216,11 @@ class WorkingContextAwareLNN(nn.Module):
         
         return torch.tensor(features, dtype=torch.float32).unsqueeze(0)
     
-    async def forward_with_context(
+        async def forward_with_context(
         self, 
         state: WorkingLNNCouncilState,
         return_attention: bool = False
-    ) -> tuple:
+        ) -> tuple:
         """Forward pass with context integration."""
         self.inference_count += 1
         
@@ -271,7 +271,7 @@ class WorkingNeuralDecisionEngine:
         self.memory_provider = WorkingMemoryContextProvider(config)
         self.knowledge_provider = WorkingKnowledgeGraphContextProvider(config)
     
-    async def make_decision(self, state: WorkingLNNCouncilState) -> Dict[str, Any]:
+        async def make_decision(self, state: WorkingLNNCouncilState) -> Dict[str, Any]:
         """Make a real context-aware decision."""
         
         # Gather context in parallel
@@ -319,10 +319,10 @@ class WorkingDecisionProcessingPipeline:
         self.decisions_made = 0
         self.total_time_ms = 0.0
     
-    async def process_decision(
+        async def process_decision(
         self, 
         request: WorkingGPURequest
-    ) -> tuple[WorkingGPUAllocationDecision, Dict[str, Any]]:
+        ) -> tuple[WorkingGPUAllocationDecision, Dict[str, Any]]:
         """Process a complete decision."""
         
         start_time = asyncio.get_event_loop().time()
@@ -385,31 +385,31 @@ class WorkingDecisionProcessingPipeline:
 
 
 async def test_working_components():
-    """Test all working components together."""
-    print("🧪 Testing Working Components Integration")
+        """Test all working components together."""
+        print("🧪 Testing Working Components Integration")
     
     # Create config
-    config = WorkingLNNCouncilConfig(
+        config = WorkingLNNCouncilConfig(
         name="working_integration_test",
         input_size=32,
         output_size=8,
         confidence_threshold=0.6
-    )
+        )
     
     # Create pipeline
-    pipeline = WorkingDecisionProcessingPipeline(config)
+        pipeline = WorkingDecisionProcessingPipeline(config)
     
     # Test scenarios
-    test_scenarios = [
+        test_scenarios = [
         ("High Priority Research", 9, 2, "A100", 40, 8.0),
         ("Medium Priority Training", 6, 4, "V100", 64, 16.0),
         ("Low Priority Experiment", 3, 8, "T4", 16, 24.0),
         ("Emergency Request", 10, 1, "H100", 80, 2.0),
         ("Large Scale Training", 7, 16, "A100", 80, 48.0),
-    ]
+        ]
     
-    results = []
-    for name, priority, gpu_count, gpu_type, memory_gb, compute_hours in test_scenarios:
+        results = []
+        for name, priority, gpu_count, gpu_type, memory_gb, compute_hours in test_scenarios:
         request = WorkingGPURequest(
             request_id=f"working_{name.lower().replace(' ', '_')}",
             user_id=f"user_{name.split()[0].lower()}",
@@ -433,37 +433,37 @@ async def test_working_components():
         print(f"     Reasoning: {len(decision.reasoning)} steps")
     
     # Pipeline statistics
-    stats = pipeline.get_pipeline_stats()
-    print(f"\n   Pipeline Statistics:")
-    print(f"     Total decisions: {stats['total_executions']}")
-    print(f"     Average time: {stats['avg_time_ms']:.1f}ms")
-    print(f"     Neural inferences: {stats['neural_inferences']}")
-    print(f"     Memory cache hit rate: {stats['memory_stats']['cache_hit_rate']:.3f}")
-    print(f"     Knowledge cache hit rate: {stats['knowledge_stats']['cache_hit_rate']:.3f}")
+        stats = pipeline.get_pipeline_stats()
+        print(f"\n   Pipeline Statistics:")
+        print(f"     Total decisions: {stats['total_executions']}")
+        print(f"     Average time: {stats['avg_time_ms']:.1f}ms")
+        print(f"     Neural inferences: {stats['neural_inferences']}")
+        print(f"     Memory cache hit rate: {stats['memory_stats']['cache_hit_rate']:.3f}")
+        print(f"     Knowledge cache hit rate: {stats['knowledge_stats']['cache_hit_rate']:.3f}")
     
     # Decision analysis
-    decisions = [r[1].decision for r in results]
-    decision_counts = {d: decisions.count(d) for d in set(decisions)}
-    print(f"     Decision distribution: {decision_counts}")
+        decisions = [r[1].decision for r in results]
+        decision_counts = {d: decisions.count(d) for d in set(decisions)}
+        print(f"     Decision distribution: {decision_counts}")
     
-    confidences = [r[1].confidence_score for r in results]
-    avg_confidence = sum(confidences) / len(confidences)
-    print(f"     Average confidence: {avg_confidence:.3f}")
+        confidences = [r[1].confidence_score for r in results]
+        avg_confidence = sum(confidences) / len(confidences)
+        print(f"     Average confidence: {avg_confidence:.3f}")
     
-    print("✅ Working Components Integration test passed")
-    return True
+        print("✅ Working Components Integration test passed")
+        return True
 
 
 async def test_performance_under_load():
-    """Test performance with multiple concurrent requests."""
-    print("\n🧪 Testing Performance Under Load")
+        """Test performance with multiple concurrent requests."""
+        print("\n🧪 Testing Performance Under Load")
     
-    config = WorkingLNNCouncilConfig()
-    pipeline = WorkingDecisionProcessingPipeline(config)
+        config = WorkingLNNCouncilConfig()
+        pipeline = WorkingDecisionProcessingPipeline(config)
     
     # Generate concurrent requests
-    requests = []
-    for i in range(20):
+        requests = []
+        for i in range(20):
         request = WorkingGPURequest(
             request_id=f"load_test_{i:03d}",
             user_id=f"user_{i % 5}",  # 5 different users
@@ -478,45 +478,45 @@ async def test_performance_under_load():
         requests.append(request)
     
     # Process requests concurrently
-    start_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
     
-    tasks = [pipeline.process_decision(request) for request in requests]
-    results = await asyncio.gather(*tasks)
+        tasks = [pipeline.process_decision(request) for request in requests]
+        results = await asyncio.gather(*tasks)
     
-    end_time = asyncio.get_event_loop().time()
-    total_time = (end_time - start_time) * 1000
+        end_time = asyncio.get_event_loop().time()
+        total_time = (end_time - start_time) * 1000
     
     # Analyze results
-    successful_results = [r for r in results if r is not None]
-    decisions = [r[0].decision for r in successful_results]
-    confidences = [r[0].confidence_score for r in successful_results]
+        successful_results = [r for r in results if r is not None]
+        decisions = [r[0].decision for r in successful_results]
+        confidences = [r[0].confidence_score for r in successful_results]
     
-    print(f"   Load test completed:")
-    print(f"     Total requests: {len(requests)}")
-    print(f"     Successful: {len(successful_results)}")
-    print(f"     Total time: {total_time:.1f}ms")
-    print(f"     Avg time per request: {total_time/len(requests):.1f}ms")
-    print(f"     Requests per second: {len(requests)/(total_time/1000):.1f}")
+        print(f"   Load test completed:")
+        print(f"     Total requests: {len(requests)}")
+        print(f"     Successful: {len(successful_results)}")
+        print(f"     Total time: {total_time:.1f}ms")
+        print(f"     Avg time per request: {total_time/len(requests):.1f}ms")
+        print(f"     Requests per second: {len(requests)/(total_time/1000):.1f}")
     
-    decision_counts = {d: decisions.count(d) for d in set(decisions)}
-    print(f"     Decision distribution: {decision_counts}")
-    print(f"     Average confidence: {sum(confidences)/len(confidences):.3f}")
+        decision_counts = {d: decisions.count(d) for d in set(decisions)}
+        print(f"     Decision distribution: {decision_counts}")
+        print(f"     Average confidence: {sum(confidences)/len(confidences):.3f}")
     
-    print("✅ Performance Under Load test passed")
-    return True
+        print("✅ Performance Under Load test passed")
+        return True
 
 
 async def main():
-    """Run all working component tests."""
-    print("🚀 Final Working Test - Real Components That Actually Work\n")
+        """Run all working component tests."""
+        print("🚀 Final Working Test - Real Components That Actually Work\n")
     
-    tests = [
+        tests = [
         test_working_components,
         test_performance_under_load
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -526,9 +526,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Final Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Final Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 ALL WORKING COMPONENT TESTS PASSED!")
         print("\n✅ REAL FUNCTIONALITY DEMONSTRATED:")
         print("   • Real PyTorch neural networks with context awareness")
@@ -555,11 +555,11 @@ async def main():
         print("   • Ready for production deployment")
         
         return 0
-    else:
+        else:
         print("❌ Some working component tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

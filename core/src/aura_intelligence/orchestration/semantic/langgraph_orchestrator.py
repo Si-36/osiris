@@ -149,10 +149,10 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
             
         return None
         
-    async def create_orchestrator_worker_graph(
+        async def create_orchestrator_worker_graph(
         self, 
         config: SemanticWorkflowConfig
-    ) -> Optional[Any]:
+        ) -> Optional[Any]:
         """
         Create LangGraph StateGraph with enhanced persistence and memory
         """
@@ -193,7 +193,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
             
         return workflow.compile(**compile_kwargs)
     
-    async def _enhanced_orchestrator_node(self, state: AgentState, *, store=None) -> AgentState:
+        async def _enhanced_orchestrator_node(self, state: AgentState, *, store=None) -> AgentState:
         """
         Enhanced orchestrator with semantic task decomposition and cross-thread memory
         """
@@ -235,7 +235,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         
         return state
     
-    async def _semantic_router_decision(self, state: AgentState) -> str:
+        async def _semantic_router_decision(self, state: AgentState) -> str:
         """
         2025 semantic routing with TDA-aware contextual decisions
         """
@@ -249,10 +249,10 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         else:
             return "sequential_execution"
     
-    async def _create_worker_node(self, agent_name: str) -> Callable:
+        async def _create_worker_node(self, agent_name: str) -> Callable:
         """Create worker node for specific agent"""
         async def worker_node(state: AgentState) -> AgentState:
-            # Execute agent with TDA context
+        # Execute agent with TDA context
             result = await self._execute_agent_with_context(
                 agent_name, 
                 state["context"],
@@ -270,7 +270,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         
         return worker_node
     
-    async def _aggregation_node(self, state: AgentState) -> AgentState:
+        async def _aggregation_node(self, state: AgentState) -> AgentState:
         """Aggregate results from all workers"""
         aggregated_result = {
             "workflow_id": state["workflow_metadata"].get("workflow_id"),
@@ -292,11 +292,11 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         state["final_result"] = aggregated_result
         return state
     
-    async def analyze_semantically(
+        async def analyze_semantically(
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext] = None
-    ) -> SemanticAnalysis:
+        ) -> SemanticAnalysis:
         """Perform semantic analysis with TDA correlation"""
         
         # Basic semantic analysis (can be enhanced with ML models)
@@ -332,7 +332,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         self, 
         input_data: Dict[str, Any], 
         tda_context: Optional[TDAContext]
-    ) -> UrgencyLevel:
+        ) -> UrgencyLevel:
         """Determine urgency level with TDA amplification"""
         base_urgency = input_data.get("urgency", "medium")
         
@@ -344,7 +344,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         
         return UrgencyLevel(base_urgency.lower())
     
-    async def _get_tda_context(self, state: AgentState) -> Optional[TDAContext]:
+        async def _get_tda_context(self, state: AgentState) -> Optional[TDAContext]:
         """Get TDA context for workflow"""
         if not self.tda_integration:
             return None
@@ -355,7 +355,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         
         return None
     
-    async def _enhance_with_memory(self, tda_context: TDAContext, store, state: AgentState) -> TDAContext:
+        async def _enhance_with_memory(self, tda_context: TDAContext, store, state: AgentState) -> TDAContext:
         """Enhance TDA context with historical patterns from cross-thread memory"""
         try:
             user_id = state.get("workflow_metadata", {}).get("user_id", "system")
@@ -399,7 +399,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
             
         return tda_context
     
-    async def _store_orchestration_context(self, store, state: AgentState, task_analysis, tda_context):
+        async def _store_orchestration_context(self, store, state: AgentState, task_analysis, tda_context):
         """Store current orchestration context for future learning"""
         try:
             user_id = state.get("workflow_metadata", {}).get("user_id", "system")
@@ -426,10 +426,10 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         except Exception as e:
             print(f"Warning: Failed to store orchestration context: {e}")
     
-    async def _create_enhanced_worker_node(self, agent_name: str) -> Callable:
+        async def _create_enhanced_worker_node(self, agent_name: str) -> Callable:
         """Create enhanced worker node with memory access"""
         async def enhanced_worker_node(state: AgentState, *, store=None) -> AgentState:
-            # Get relevant memory for this agent
+        # Get relevant memory for this agent
             agent_memory = None
             if store:
                 agent_memory = await self._get_agent_memory(store, agent_name, state)
@@ -458,7 +458,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         
         return enhanced_worker_node
     
-    async def _enhanced_aggregation_node(self, state: AgentState, *, store=None) -> AgentState:
+        async def _enhanced_aggregation_node(self, state: AgentState, *, store=None) -> AgentState:
         """Enhanced aggregation with memory storage and learning"""
         aggregated_result = {
             "workflow_id": state["workflow_metadata"].get("workflow_id"),
@@ -487,7 +487,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         state["final_result"] = aggregated_result
         return state
     
-    async def _get_agent_memory(self, store, agent_name: str, state: AgentState):
+        async def _get_agent_memory(self, store, agent_name: str, state: AgentState):
         """Get relevant memory for specific agent"""
         try:
             user_id = state.get("workflow_metadata", {}).get("user_id", "system")
@@ -507,7 +507,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
             print(f"Warning: Failed to get agent memory for {agent_name}: {e}")
             return None
     
-    async def _store_agent_result(self, store, agent_name: str, state: AgentState, result):
+        async def _store_agent_result(self, store, agent_name: str, state: AgentState, result):
         """Store agent result for future learning"""
         try:
             user_id = state.get("workflow_metadata", {}).get("user_id", "system")
@@ -529,7 +529,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         except Exception as e:
             print(f"Warning: Failed to store agent result for {agent_name}: {e}")
     
-    async def _store_successful_workflow_pattern(self, store, state: AgentState, result):
+        async def _store_successful_workflow_pattern(self, store, state: AgentState, result):
         """Store successful workflow patterns for future optimization"""
         try:
             user_id = state.get("workflow_metadata", {}).get("user_id", "system")
@@ -555,13 +555,13 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         except Exception as e:
             print(f"Warning: Failed to store workflow pattern: {e}")
     
-    async def _execute_agent_with_context_and_memory(
+        async def _execute_agent_with_context_and_memory(
         self, 
         agent_name: str, 
         context: Dict[str, Any], 
         tda_context: Optional[TDAContext],
         agent_memory: Optional[List[Dict[str, Any]]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute agent with enhanced context and memory"""
         # Enhanced execution with memory context
         execution_context = {
@@ -584,7 +584,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
             "execution_context": execution_context
         }
     
-    async def _fallback_orchestration(self, config: SemanticWorkflowConfig) -> Dict[str, Any]:
+        async def _fallback_orchestration(self, config: SemanticWorkflowConfig) -> Dict[str, Any]:
         """Fallback orchestration when LangGraph is not available"""
         return {
             "type": "fallback",

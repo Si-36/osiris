@@ -61,11 +61,12 @@ class HybridMemoryManager:
     
     def _get_memory_components(self):
         """Get all 40 memory components from registry"""
+        pass
         return [comp for comp in self.registry.components.values() 
                 if comp.type.value == 'memory']
     
-    async def store(self, key: str, data: Any, component_id: str, 
-                   tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
+        async def store(self, key: str, data: Any, component_id: str,
+        tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
         """Store data with automatic tier placement"""
         start_time = time.time()
         
@@ -109,7 +110,7 @@ class HybridMemoryManager:
             'component_id': component_id
         }
     
-    async def retrieve(self, key: str) -> Dict[str, Any]:
+        async def retrieve(self, key: str) -> Dict[str, Any]:
         """Retrieve data with automatic tier promotion"""
         start_time = time.time()
         
@@ -178,7 +179,7 @@ class HybridMemoryManager:
         # Cold tier for large data or when other tiers full
         return MemoryTier.COLD
     
-    async def _store_in_tier(self, segment: MemorySegment, tier: MemoryTier) -> bool:
+        async def _store_in_tier(self, segment: MemorySegment, tier: MemoryTier) -> bool:
         """Store segment in specific tier"""
         try:
             if tier == MemoryTier.HOT:
@@ -216,7 +217,7 @@ class HybridMemoryManager:
             print(f"Storage error: {e}")
             return False
     
-    async def _consider_promotion(self, segment: MemorySegment, current_tier: MemoryTier) -> bool:
+        async def _consider_promotion(self, segment: MemorySegment, current_tier: MemoryTier) -> bool:
         """Consider promoting segment to higher tier"""
         if segment.access_count < self.promotion_threshold:
             return False
@@ -230,7 +231,7 @@ class HybridMemoryManager:
         
         return False
     
-    async def _promote_segment(self, segment: MemorySegment, target_tier: MemoryTier) -> bool:
+        async def _promote_segment(self, segment: MemorySegment, target_tier: MemoryTier) -> bool:
         """Promote segment to higher tier"""
         try:
             # Remove from current tier
@@ -259,8 +260,9 @@ class HybridMemoryManager:
             print(f"Promotion error: {e}")
             return False
     
-    async def _evict_from_hot(self):
+        async def _evict_from_hot(self):
         """Evict least recently used items from hot tier"""
+        pass
         if not self.hot_storage:
             return
         
@@ -281,8 +283,9 @@ class HybridMemoryManager:
             segment.tier = MemoryTier.WARM
             await self._store_in_tier(segment, MemoryTier.WARM)
     
-    async def _evict_from_warm(self):
+        async def _evict_from_warm(self):
         """Evict least recently used items from warm tier"""
+        pass
         if not self.warm_storage:
             return
         
@@ -303,8 +306,9 @@ class HybridMemoryManager:
             segment.tier = MemoryTier.COLD
             await self._store_in_tier(segment, MemoryTier.COLD)
     
-    async def _maintenance_loop(self):
+        async def _maintenance_loop(self):
         """Background maintenance for tier management"""
+        pass
         while True:
             try:
                 await self._age_based_demotion()
@@ -313,8 +317,9 @@ class HybridMemoryManager:
                 print(f"Maintenance error: {e}")
                 await asyncio.sleep(600)  # Wait longer on error
     
-    async def _age_based_demotion(self):
+        async def _age_based_demotion(self):
         """Demote old data to lower tiers"""
+        pass
         current_time = time.time()
         demotion_threshold = current_time - (self.demotion_age_hours * 3600)
         
@@ -330,6 +335,7 @@ class HybridMemoryManager:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get comprehensive memory tier statistics"""
+        pass
         hot_count = len(self.hot_storage)
         warm_count = len(self.warm_storage)
         cold_count = len(self.cold_storage)
@@ -376,8 +382,8 @@ class HybridMemoryManager:
 # Global hybrid memory manager
 _hybrid_memory = None
 
-def get_hybrid_memory():
-    global _hybrid_memory
-    if _hybrid_memory is None:
+    def get_hybrid_memory():
+        global _hybrid_memory
+        if _hybrid_memory is None:
         _hybrid_memory = HybridMemoryManager()
-    return _hybrid_memory
+        return _hybrid_memory

@@ -48,12 +48,13 @@ class MockNeo4jAdapter:
         self.connection_pool_size = 50
         self.query_timeout = 30.0
     
-    async def initialize(self):
+        async def initialize(self):
         """Mock initialization."""
+        pass
         self.initialized = True
         print("   Neo4j adapter initialized (mock)")
     
-    async def query(self, cypher: str, params=None, database=None):
+        async def query(self, cypher: str, params=None, database=None):
         """Mock query execution with realistic responses."""
         self.query_count += 1
         
@@ -117,7 +118,7 @@ class MockNeo4jAdapter:
         else:
             return []
     
-    async def write(self, cypher: str, params=None, database=None):
+        async def write(self, cypher: str, params=None, database=None):
         """Mock write operation."""
         return {
             "nodes_created": 1,
@@ -125,8 +126,9 @@ class MockNeo4jAdapter:
             "properties_set": 3
         }
     
-    async def close(self):
+        async def close(self):
         """Mock close."""
+        pass
         self.initialized = False
 
 
@@ -156,10 +158,11 @@ class ProductionKnowledgeGraphProvider:
     
     def set_neo4j_adapter(self, adapter):
         """Inject Neo4j adapter (dependency injection pattern)."""
+        pass
         self.neo4j_adapter = adapter
         print("Neo4j adapter connected to Knowledge Graph Provider")
     
-    async def get_knowledge_context(self, state: MockLNNCouncilState) -> torch.Tensor:
+        async def get_knowledge_context(self, state: MockLNNCouncilState) -> torch.Tensor:
         """Get comprehensive knowledge graph context."""
         
         if not self.neo4j_adapter:
@@ -199,8 +202,9 @@ class ProductionKnowledgeGraphProvider:
         
         return torch.tensor(contexts, dtype=torch.float32).unsqueeze(0)
     
-    async def _get_entity_context(self, request) -> dict:
+        async def _get_entity_context(self, request) -> dict:
         """Get entity-centric context using Neo4j queries."""
+        pass
         
         # User entity query
         user_cypher = """
@@ -251,8 +255,9 @@ class ProductionKnowledgeGraphProvider:
         
         return context
     
-    async def _get_relationship_context(self, request) -> dict:
+        async def _get_relationship_context(self, request) -> dict:
         """Get relationship-aware context."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[r1]->(p:Project {id: $project_id})
@@ -278,8 +283,9 @@ class ProductionKnowledgeGraphProvider:
         
         return {"collaboration_strength": 0.3, "resource_dependency": 0.2}
     
-    async def _get_multihop_context(self, request) -> dict:
+        async def _get_multihop_context(self, request) -> dict:
         """Get multi-hop reasoning context."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[:MEMBER_OF*1..2]->(related)
@@ -303,8 +309,9 @@ class ProductionKnowledgeGraphProvider:
         
         return {"related_project_count": 0.3, "applicable_policy_count": 0.4}
     
-    async def _get_temporal_context(self, request) -> dict:
+        async def _get_temporal_context(self, request) -> dict:
         """Get temporal knowledge context."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[:SUBMITTED]->(req:Request)
@@ -333,8 +340,9 @@ class ProductionKnowledgeGraphProvider:
         
         return {"recent_activity": 0.4, "historical_success_rate": 0.8}
     
-    async def _get_topology_context(self, request) -> dict:
+        async def _get_topology_context(self, request) -> dict:
         """Get graph topology context."""
+        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})
@@ -364,6 +372,7 @@ class ProductionKnowledgeGraphProvider:
     
     def get_stats(self):
         """Get provider statistics."""
+        pass
         return {
             "query_count": self.query_count,
             "cache_hits": self.cache_hits,
@@ -374,184 +383,184 @@ class ProductionKnowledgeGraphProvider:
 
 
 async def test_production_integration():
-    """Test production knowledge graph integration."""
-    print("🧪 Testing Production Knowledge Graph Integration")
+        """Test production knowledge graph integration."""
+        print("🧪 Testing Production Knowledge Graph Integration")
     
     # Initialize components
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
     # Setup Neo4j adapter
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
     # Create test state
-    state = MockLNNCouncilState()
+        state = MockLNNCouncilState()
     
     # Get knowledge context
-    context = await kg_provider.get_knowledge_context(state)
+        context = await kg_provider.get_knowledge_context(state)
     
-    print("✅ Production integration test completed")
-    print(f"   Context shape: {context.shape}")
-    print(f"   Context dtype: {context.dtype}")
-    print(f"   Non-zero features: {(context != 0).sum().item()}")
-    print(f"   Feature range: [{context.min().item():.3f}, {context.max().item():.3f}]")
+        print("✅ Production integration test completed")
+        print(f"   Context shape: {context.shape}")
+        print(f"   Context dtype: {context.dtype}")
+        print(f"   Non-zero features: {(context != 0).sum().item()}")
+        print(f"   Feature range: [{context.min().item():.3f}, {context.max().item():.3f}]")
     
     # Get statistics
-    stats = kg_provider.get_stats()
-    print(f"   Provider queries: {stats['query_count']}")
-    print(f"   Neo4j queries: {stats['neo4j_queries']}")
+        stats = kg_provider.get_stats()
+        print(f"   Provider queries: {stats['query_count']}")
+        print(f"   Neo4j queries: {stats['neo4j_queries']}")
     
-    return True
+        return True
 
 
 async def test_entity_queries():
-    """Test entity-specific queries."""
-    print("\n🧪 Testing Entity Queries")
+        """Test entity-specific queries."""
+        print("\n🧪 Testing Entity Queries")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    entity_context = await kg_provider._get_entity_context(request)
+        request = MockGPURequest()
+        entity_context = await kg_provider._get_entity_context(request)
     
-    print("✅ Entity queries tested")
-    print(f"   Entity context keys: {list(entity_context.keys())}")
-    print(f"   User authority: {entity_context.get('user_authority', 'N/A')}")
-    print(f"   Project priority: {entity_context.get('project_priority', 'N/A')}")
+        print("✅ Entity queries tested")
+        print(f"   Entity context keys: {list(entity_context.keys())}")
+        print(f"   User authority: {entity_context.get('user_authority', 'N/A')}")
+        print(f"   Project priority: {entity_context.get('project_priority', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_relationship_queries():
-    """Test relationship queries."""
-    print("\n🧪 Testing Relationship Queries")
+        """Test relationship queries."""
+        print("\n🧪 Testing Relationship Queries")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    relationship_context = await kg_provider._get_relationship_context(request)
+        request = MockGPURequest()
+        relationship_context = await kg_provider._get_relationship_context(request)
     
-    print("✅ Relationship queries tested")
-    print(f"   Relationship context keys: {list(relationship_context.keys())}")
-    print(f"   Collaboration strength: {relationship_context.get('collaboration_strength', 'N/A')}")
+        print("✅ Relationship queries tested")
+        print(f"   Relationship context keys: {list(relationship_context.keys())}")
+        print(f"   Collaboration strength: {relationship_context.get('collaboration_strength', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_multihop_queries():
-    """Test multi-hop reasoning queries."""
-    print("\n🧪 Testing Multi-hop Queries")
+        """Test multi-hop reasoning queries."""
+        print("\n🧪 Testing Multi-hop Queries")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    multihop_context = await kg_provider._get_multihop_context(request)
+        request = MockGPURequest()
+        multihop_context = await kg_provider._get_multihop_context(request)
     
-    print("✅ Multi-hop queries tested")
-    print(f"   Multi-hop context keys: {list(multihop_context.keys())}")
-    print(f"   Related projects: {multihop_context.get('related_project_count', 'N/A')}")
+        print("✅ Multi-hop queries tested")
+        print(f"   Multi-hop context keys: {list(multihop_context.keys())}")
+        print(f"   Related projects: {multihop_context.get('related_project_count', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_temporal_queries():
-    """Test temporal knowledge queries."""
-    print("\n🧪 Testing Temporal Queries")
+        """Test temporal knowledge queries."""
+        print("\n🧪 Testing Temporal Queries")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    temporal_context = await kg_provider._get_temporal_context(request)
+        request = MockGPURequest()
+        temporal_context = await kg_provider._get_temporal_context(request)
     
-    print("✅ Temporal queries tested")
-    print(f"   Temporal context keys: {list(temporal_context.keys())}")
-    print(f"   Historical success rate: {temporal_context.get('historical_success_rate', 'N/A')}")
+        print("✅ Temporal queries tested")
+        print(f"   Temporal context keys: {list(temporal_context.keys())}")
+        print(f"   Historical success rate: {temporal_context.get('historical_success_rate', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_topology_queries():
-    """Test graph topology queries."""
-    print("\n🧪 Testing Topology Queries")
+        """Test graph topology queries."""
+        print("\n🧪 Testing Topology Queries")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
-    request = MockGPURequest()
-    topology_context = await kg_provider._get_topology_context(request)
+        request = MockGPURequest()
+        topology_context = await kg_provider._get_topology_context(request)
     
-    print("✅ Topology queries tested")
-    print(f"   Topology context keys: {list(topology_context.keys())}")
-    print(f"   User centrality: {topology_context.get('user_centrality', 'N/A')}")
+        print("✅ Topology queries tested")
+        print(f"   Topology context keys: {list(topology_context.keys())}")
+        print(f"   User centrality: {topology_context.get('user_centrality', 'N/A')}")
     
-    return True
+        return True
 
 
 async def test_performance_characteristics():
-    """Test performance characteristics."""
-    print("\n🧪 Testing Performance Characteristics")
+        """Test performance characteristics."""
+        print("\n🧪 Testing Performance Characteristics")
     
-    config = MockLNNCouncilConfig()
-    kg_provider = ProductionKnowledgeGraphProvider(config)
+        config = MockLNNCouncilConfig()
+        kg_provider = ProductionKnowledgeGraphProvider(config)
     
-    neo4j_adapter = MockNeo4jAdapter()
-    await neo4j_adapter.initialize()
-    kg_provider.set_neo4j_adapter(neo4j_adapter)
+        neo4j_adapter = MockNeo4jAdapter()
+        await neo4j_adapter.initialize()
+        kg_provider.set_neo4j_adapter(neo4j_adapter)
     
     # Test multiple requests
-    states = [MockLNNCouncilState() for _ in range(5)]
+        states = [MockLNNCouncilState() for _ in range(5)]
     
-    start_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
     
-    contexts = []
-    for state in states:
+        contexts = []
+        for state in states:
         context = await kg_provider.get_knowledge_context(state)
         contexts.append(context)
     
-    end_time = asyncio.get_event_loop().time()
-    total_time = end_time - start_time
+        end_time = asyncio.get_event_loop().time()
+        total_time = end_time - start_time
     
-    print("✅ Performance characteristics tested")
-    print(f"   Contexts processed: {len(contexts)}")
-    print(f"   Total time: {total_time*1000:.1f}ms")
-    print(f"   Avg time per context: {total_time*1000/len(contexts):.1f}ms")
+        print("✅ Performance characteristics tested")
+        print(f"   Contexts processed: {len(contexts)}")
+        print(f"   Total time: {total_time*1000:.1f}ms")
+        print(f"   Avg time per context: {total_time*1000/len(contexts):.1f}ms")
     
-    stats = kg_provider.get_stats()
-    print(f"   Total Neo4j queries: {stats['neo4j_queries']}")
+        stats = kg_provider.get_stats()
+        print(f"   Total Neo4j queries: {stats['neo4j_queries']}")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all knowledge graph integration tests."""
-    print("🚀 Knowledge Graph Integration Tests (2025 Production)\n")
+        """Run all knowledge graph integration tests."""
+        print("🚀 Knowledge Graph Integration Tests (2025 Production)\n")
     
-    tests = [
+        tests = [
         test_production_integration,
         test_entity_queries,
         test_relationship_queries,
@@ -559,10 +568,10 @@ async def main():
         test_temporal_queries,
         test_topology_queries,
         test_performance_characteristics
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -572,9 +581,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 All knowledge graph integration tests passed!")
         print("\n🎯 Production Features Demonstrated:")
         print("   • Neo4j adapter integration with dependency injection ✅")
@@ -591,11 +600,11 @@ async def main():
         print("   • Add TDA-enhanced topology features")
         print("   • Integrate with existing LNN Council Agent")
         return 0
-    else:
+        else:
         print("❌ Some integration tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

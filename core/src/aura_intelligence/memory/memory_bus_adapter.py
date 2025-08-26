@@ -58,6 +58,7 @@ class MemoryBusAdapter:
     
     async def start(self) -> None:
         """Start the adapter and subscribe to events."""
+        pass
         if self._running:
             return
         
@@ -87,6 +88,7 @@ class MemoryBusAdapter:
     
     async def stop(self) -> None:
         """Stop the adapter."""
+        pass
         self._running = False
         
         # Cancel background tasks
@@ -429,6 +431,7 @@ class MemoryBusAdapter:
     
     async def _periodic_stats(self) -> None:
         """Publish periodic memory statistics."""
+        pass
         while self._running:
             try:
                 # Gather stats

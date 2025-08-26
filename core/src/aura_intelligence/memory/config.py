@@ -246,6 +246,7 @@ class ShapeMemorySettings(BaseSettings):
     @validator("fusion_alpha", "fusion_beta")
     def validate_fusion_weights(cls, v, values):
         """Ensure fusion weights sum to 1.0."""
+        pass
         if "fusion_alpha" in values and "fusion_beta" in values:
             total = values["fusion_alpha"] + values["fusion_beta"]
             if not (0.99 <= total <= 1.01):  # Allow small floating point error
@@ -255,6 +256,7 @@ class ShapeMemorySettings(BaseSettings):
     @validator("redis_url")
     def validate_redis_url(cls, v):
         """Validate Redis URL format."""
+        pass
         if not v.startswith(("redis://", "rediss://")):
             raise ValueError("Redis URL must start with redis:// or rediss://")
         return v
@@ -262,6 +264,7 @@ class ShapeMemorySettings(BaseSettings):
     @validator("neo4j_url")
     def validate_neo4j_url(cls, v):
         """Validate Neo4j URL format."""
+        pass
         if not v.startswith(("bolt://", "neo4j://")):
             raise ValueError("Neo4j URL must start with bolt:// or neo4j://")
         return v
@@ -321,27 +324,27 @@ _settings: Optional[ShapeMemorySettings] = None
 _benchmark_settings: Optional[BenchmarkSettings] = None
 
 
-def get_settings() -> ShapeMemorySettings:
-    """Get or create settings singleton."""
-    global _settings
-    if _settings is None:
-        _settings = ShapeMemorySettings()
-    return _settings
+        def get_settings() -> ShapeMemorySettings:
+            """Get or create settings singleton."""
+            global _settings
+            if _settings is None:
+            _settings = ShapeMemorySettings()
+            return _settings
 
 
-def get_benchmark_settings() -> BenchmarkSettings:
-    """Get or create benchmark settings singleton."""
-    global _benchmark_settings
-    if _benchmark_settings is None:
-        _benchmark_settings = BenchmarkSettings()
-    return _benchmark_settings
+        def get_benchmark_settings() -> BenchmarkSettings:
+            """Get or create benchmark settings singleton."""
+            global _benchmark_settings
+            if _benchmark_settings is None:
+            _benchmark_settings = BenchmarkSettings()
+            return _benchmark_settings
 
 
-def reload_settings():
-    """Reload settings from environment."""
-    global _settings, _benchmark_settings
-    _settings = None
-    _benchmark_settings = None
+        def reload_settings():
+            """Reload settings from environment."""
+            global _settings, _benchmark_settings
+            _settings = None
+            _benchmark_settings = None
 
 
 # Export commonly used settings

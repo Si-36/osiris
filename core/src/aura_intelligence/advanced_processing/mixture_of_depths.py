@@ -54,7 +54,7 @@ class MixtureOfDepths:
         
         return depth
     
-    async def route_with_depth(self, request: Any) -> Dict[str, Any]:
+        async def route_with_depth(self, request: Any) -> Dict[str, Any]:
         """Route through components with variable depth"""
         depth = self.predict_depth(request)
         

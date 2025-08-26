@@ -59,73 +59,75 @@ class Neo4jETL:
     def __init__(self, config: ETLConfig):
         self.config = config
         self.driver = AsyncGraphDatabase.driver(
-            config.neo4j_uri,
-            auth=(config.neo4j_user, config.neo4j_password)
+        config.neo4j_uri,
+        auth=(config.neo4j_user, config.neo4j_password)
         )
         self.redis = redis.Redis.from_url(config.redis_url)
         
-    async def initialize_schema(self):
-        """Create Neo4j schema and indexes."""
+        async def initialize_schema(self):
+            """Create Neo4j schema and indexes."""
+        pass
         async with self.driver.session() as session:
             # Create indexes
-            await session.run("""
+        await session.run("""
                 CREATE INDEX shape_id IF NOT EXISTS FOR (s:Shape) ON (s.id)
-            """)
+        """)
             
-            await session.run("""
+        await session.run("""
                 CREATE INDEX shape_status IF NOT EXISTS FOR (s:Shape) ON (s.status)
-            """)
+        """)
             
-            await session.run("""
+        await session.run("""
                 CREATE INDEX shape_created IF NOT EXISTS FOR (s:Shape) ON (s.created_at)
-            """)
+        """)
             
             # Create constraints
-            await session.run("""
+        await session.run("""
                 CREATE CONSTRAINT shape_unique IF NOT EXISTS 
                 FOR (s:Shape) REQUIRE s.id IS UNIQUE
-            """)
+        """)
             
             logger.info("Neo4j schema initialized")
     
     @traced("etl_sync_shapes")
-    async def sync_shapes(self) -> int:
+        async def sync_shapes(self) -> int:
         """
         Sync shapes from Redis to Neo4j.
         
         Returns number of shapes synced.
         """
+        pass
         start_time = time.time()
         shapes_synced = 0
         
         async with self.driver.session() as session:
-            # Get all shape keys from Redis
-            cursor = 0
-            while True:
-                cursor, keys = self.redis.scan(
-                    cursor, 
-                    match=f"{KEY_PREFIX}*",
-                    count=self.config.batch_size
-                )
+        # Get all shape keys from Redis
+        cursor = 0
+        while True:
+        cursor, keys = self.redis.scan(
+        cursor,
+        match=f"{KEY_PREFIX}*",
+        count=self.config.batch_size
+        )
                 
-                if keys:
-                    shapes_synced += await self._process_batch(session, keys)
+        if keys:
+            shapes_synced += await self._process_batch(session, keys)
                 
-                if cursor == 0:
-                    break
+        if cursor == 0:
+            break
             
-            # Update metrics
-            duration = time.time() - start_time
-            observability.record_latency("etl_sync", "neo4j", duration)
-            logger.info(f"Synced {shapes_synced} shapes in {duration:.2f}s")
+        # Update metrics
+        duration = time.time() - start_time
+        observability.record_latency("etl_sync", "neo4j", duration)
+        logger.info(f"Synced {shapes_synced} shapes in {duration:.2f}s")
             
         return shapes_synced
     
-    async def _process_batch(
+        async def _process_batch(
         self, 
         session: AsyncSession, 
         keys: List[bytes]
-    ) -> int:
+        ) -> int:
         """Process a batch of Redis keys."""
         shapes = []
         
@@ -175,57 +177,59 @@ class Neo4jETL:
                     s.status = shape.status,
                     s.embedding = shape.embedding,
                     s.updated_at = timestamp()
-            """, shapes=shapes)
+        """, shapes=shapes)
         
         return len(shapes)
     
     @traced("etl_compute_similarities")
-    async def compute_similarities(self):
+        async def compute_similarities(self):
         """
         Compute similarity edges between shapes.
         
         Uses Neo4j GDS for efficient k-NN computation.
         """
+        pass
         async with self.driver.session() as session:
-            # Create in-memory graph projection
-            await session.run("""
-                CALL gds.graph.project.cypher(
-                    'shape-similarity',
-                    'MATCH (s:Shape) RETURN id(s) AS id, s.embedding AS embedding',
-                    'RETURN null AS source, null AS target'
-                )
-            """)
+        # Create in-memory graph projection
+        await session.run("""
+        CALL gds.graph.project.cypher(
+        'shape-similarity',
+        'MATCH (s:Shape) RETURN id(s) AS id, s.embedding AS embedding',
+        'RETURN null AS source, null AS target'
+        )
+        """)
             
-            # Run k-NN algorithm
-            await session.run(f"""
-                CALL gds.knn.write('shape-similarity', {{
-                    topK: {self.config.max_similar_edges},
-                    nodeProperties: ['embedding'],
-                    writeRelationshipType: 'SIMILAR',
-                    writeProperty: 'score',
-                    similarityCutoff: {self.config.similarity_threshold}
-                }})
-            """)
+        # Run k-NN algorithm
+        await session.run(f"""
+        CALL gds.knn.write('shape-similarity', {{
+        topK: {self.config.max_similar_edges},
+        nodeProperties: ['embedding'],
+        writeRelationshipType: 'SIMILAR',
+        writeProperty: 'score',
+        similarityCutoff: {self.config.similarity_threshold}
+        }})
+        """)
             
-            # Drop projection
-            await session.run("""
-                CALL gds.graph.drop('shape-similarity')
-            """)
+        # Drop projection
+        await session.run("""
+        CALL gds.graph.drop('shape-similarity')
+        """)
             
-            logger.info("Similarity computation complete")
+        logger.info("Similarity computation complete")
     
-    @traced("etl_detect_danger_rings")
-    async def detect_danger_rings(self) -> List[Dict[str, Any]]:
+        @traced("etl_detect_danger_rings")
+        async def detect_danger_rings(self) -> List[Dict[str, Any]]:
         """
         Detect danger rings - clusters of shapes near failures.
         
         Returns list of danger zones with risk scores.
         """
+        pass
         danger_zones = []
         
         async with self.driver.session() as session:
             # Find shapes within 2 hops of failures
-            result = await session.run("""
+        result = await session.run("""
                 MATCH (danger:Shape {status: 'failed'})
                 MATCH (s:Shape)-[:SIMILAR*1..2]-(danger)
                 WHERE s.status <> 'failed'
@@ -238,7 +242,7 @@ class Neo4jETL:
                        s.b0, s.b1, s.b2
                 ORDER BY danger_count DESC, avg_similarity DESC
                 LIMIT 100
-            """)
+        """)
             
             async for record in result:
                 danger_zones.append({
@@ -260,87 +264,89 @@ class Neo4jETL:
                     if z["risk_score"] > 0.8
                 ]
                 
-                await session.run("""
+        await session.run("""
                     UNWIND $ids AS id
                     MATCH (s:Shape {id: id})
                     SET s.risk_status = 'high_risk',
                         s.risk_updated_at = timestamp()
-                """, ids=high_risk_ids)
+        """, ids=high_risk_ids)
                 
                 logger.warning(f"Marked {len(high_risk_ids)} shapes as high risk")
         
         return danger_zones
     
     @traced("etl_run_graph_algorithms")
-    async def run_graph_algorithms(self):
+        async def run_graph_algorithms(self):
         """Run advanced graph algorithms for pattern detection."""
+        pass
         async with self.driver.session() as session:
-            # Create graph projection
-            await session.run("""
-                CALL gds.graph.project(
-                    'shape-analysis',
-                    'Shape',
-                    {
-                        SIMILAR: {
-                            properties: 'score'
-                        }
-                    }
-                )
-            """)
+        # Create graph projection
+        await session.run("""
+        CALL gds.graph.project(
+        'shape-analysis',
+        'Shape',
+        {
+        SIMILAR: {
+        properties: 'score'
+        }
+        }
+        )
+        """)
             
-            try:
-                # Run FastRP for new embeddings
-                if self.config.run_fastrp:
-                    await session.run("""
-                        CALL gds.fastRP.write('shape-analysis', {
-                            embeddingDimension: 128,
-                            iterationWeights: [0.0, 1.0, 1.0],
-                            writeProperty: 'fastrp_embedding'
-                        })
-                    """)
+        try:
+            # Run FastRP for new embeddings
+        if self.config.run_fastrp:
+            await session.run("""
+        CALL gds.fastRP.write('shape-analysis', {
+        embeddingDimension: 128,
+        iterationWeights: [0.0, 1.0, 1.0],
+        writeProperty: 'fastrp_embedding'
+        })
+        """)
                 
-                # Run community detection
-                if self.config.run_community_detection:
-                    await session.run("""
-                        CALL gds.louvain.write('shape-analysis', {
-                            writeProperty: 'community'
-                        })
-                    """)
+        # Run community detection
+        if self.config.run_community_detection:
+            await session.run("""
+        CALL gds.louvain.write('shape-analysis', {
+        writeProperty: 'community'
+        })
+        """)
                     
-                    # Analyze communities
-                    result = await session.run("""
-                        MATCH (s:Shape)
-                        WITH s.community as community, 
-                             collect(s.status) as statuses
-                        WITH community, 
-                             size([s IN statuses WHERE s = 'failed']) as failed_count,
-                             size(statuses) as total_count
-                        WHERE failed_count > 0
-                        RETURN community,
-                               failed_count,
-                               total_count,
-                               toFloat(failed_count) / total_count as failure_rate
-                        ORDER BY failure_rate DESC
-                    """)
+        # Analyze communities
+        result = await session.run("""
+        MATCH (s:Shape)
+        WITH s.community as community,
+        collect(s.status) as statuses
+        WITH community,
+        size([s IN statuses WHERE s = 'failed']) as failed_count,
+        size(statuses) as total_count
+        WHERE failed_count > 0
+        RETURN community,
+        failed_count,
+        total_count,
+        toFloat(failed_count) / total_count as failure_rate
+        ORDER BY failure_rate DESC
+        """)
                     
-                    async for record in result:
-                        if record["failure_rate"] > 0.3:
-                            logger.warning(
-                                f"High-risk community {record['community']}: "
-                                f"{record['failure_rate']:.1%} failure rate"
-                            )
+        async for record in result:
+        if record["failure_rate"] > 0.3:
+            logger.warning(
+        f"High-risk community {record['community']}: "
+        f"{record['failure_rate']:.1%} failure rate"
+        )
                 
-            finally:
-                # Clean up projection
-                await session.run("""
-                    CALL gds.graph.drop('shape-analysis', false)
-                """)
+        finally:
+        # Clean up projection
+        await session.run("""
+        CALL gds.graph.drop('shape-analysis', false)
+        """)
     
-    async def generate_report(self) -> Dict[str, Any]:
+        async def generate_report(self) -> Dict[str, Any]:
         """Generate ETL summary report."""
+        pass
         async with self.driver.session() as session:
             # Get statistics
-            stats_result = await session.run("""
+        stats_result = await session.run("""
                 MATCH (s:Shape)
                 WITH count(s) as total_shapes,
                      count(CASE WHEN s.status = 'failed' THEN 1 END) as failed_shapes,
@@ -348,16 +354,16 @@ class Neo4jETL:
                 MATCH ()-[r:SIMILAR]->()
                 WITH total_shapes, failed_shapes, high_risk_shapes, count(r) as similarity_edges
                 RETURN total_shapes, failed_shapes, high_risk_shapes, similarity_edges
-            """)
+        """)
             
             stats = await stats_result.single()
             
             # Get community statistics
-            community_result = await session.run("""
+        community_result = await session.run("""
                 MATCH (s:Shape)
                 WHERE s.community IS NOT NULL
                 RETURN count(DISTINCT s.community) as num_communities
-            """)
+        """)
             
             community_stats = await community_result.single()
             
@@ -371,82 +377,85 @@ class Neo4jETL:
                 "danger_zones": len(await self.detect_danger_rings())
             }
     
-    async def run_full_pipeline(self):
+        async def run_full_pipeline(self):
         """Run the complete ETL pipeline."""
+        pass
         logger.info("Starting Neo4j ETL pipeline")
         
         try:
             # Initialize schema
-            await self.initialize_schema()
+        await self.initialize_schema()
             
-            # Sync shapes
-            shapes_synced = await self.sync_shapes()
+        # Sync shapes
+        shapes_synced = await self.sync_shapes()
             
-            if shapes_synced > 0:
-                # Compute similarities
-                await self.compute_similarities()
+        if shapes_synced > 0:
+            # Compute similarities
+        await self.compute_similarities()
                 
-                # Run graph algorithms
-                await self.run_graph_algorithms()
+        # Run graph algorithms
+        await self.run_graph_algorithms()
                 
-                # Detect danger rings
-                danger_zones = await self.detect_danger_rings()
+        # Detect danger rings
+        danger_zones = await self.detect_danger_rings()
                 
-                # Generate report
-                report = await self.generate_report()
+        # Generate report
+        report = await self.generate_report()
                 
-                logger.info(f"ETL complete: {report}")
+        logger.info(f"ETL complete: {report}")
                 
-                # Update metrics
-                observability.update_memory_count("neo4j", report["total_shapes"])
+        # Update metrics
+        observability.update_memory_count("neo4j", report["total_shapes"])
                 
-                return report
-            else:
-                logger.info("No shapes to process")
-                return None
+        return report
+        else:
+        logger.info("No shapes to process")
+        return None
                 
         except Exception as e:
-            logger.error(f"ETL pipeline failed: {e}")
-            observability.increment_counter("etl_pipeline", "error")
-            raise
+        logger.error(f"ETL pipeline failed: {e}")
+        observability.increment_counter("etl_pipeline", "error")
+        raise
     
-    async def close(self):
-        """Clean up resources."""
+        async def close(self):
+            """Clean up resources."""
+        pass
         await self.driver.close()
 
 
-def schedule_etl(config: ETLConfig):
-    """Schedule nightly ETL runs."""
-    etl = Neo4jETL(config)
+    def schedule_etl(config: ETLConfig):
+        """Schedule nightly ETL runs."""
+        etl = Neo4jETL(config)
     
-    async def run_etl():
+        async def run_etl():
         """Async wrapper for ETL."""
+        pass
         try:
-            await etl.run_full_pipeline()
+        await etl.run_full_pipeline()
         finally:
-            await etl.close()
+        await etl.close()
     
     # Schedule nightly at 2 AM
-    schedule.every().day.at("02:00").do(
+        schedule.every().day.at("02:00").do(
         lambda: asyncio.run(run_etl())
-    )
+        )
     
-    logger.info("ETL scheduled for nightly execution at 02:00")
+        logger.info("ETL scheduled for nightly execution at 02:00")
     
     # Run scheduler
-    while True:
+        while True:
         schedule.run_pending()
         time.sleep(60)  # Check every minute
 
 
-if __name__ == "__main__":
-    # Example usage
-    config = ETLConfig(
+        if __name__ == "__main__":
+        # Example usage
+        config = ETLConfig(
         neo4j_uri="bolt://localhost:7687",
         neo4j_user="neo4j",
         neo4j_password="password",
         redis_url="redis://localhost:6379"
-    )
+        )
     
     # Run once
-    asyncio.run(Neo4jETL(config).run_full_pipeline())
+        asyncio.run(Neo4jETL(config).run_full_pipeline())

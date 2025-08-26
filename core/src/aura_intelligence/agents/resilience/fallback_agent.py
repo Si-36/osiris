@@ -63,6 +63,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
             config: Agent configuration
             circuit_breaker_config: Circuit breaker configuration
         """
+        pass
         if config is None:
             config = AgentConfig(
                 name=f"{primary_agent.name}_fallback",
@@ -115,9 +116,10 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
     
     def build_graph(self):
         """Use primary agent's graph."""
+        pass
         return self.primary_agent.build_graph()
     
-    async def _execute_step(self, state: TState, step_name: str) -> TState:
+        async def _execute_step(self, state: TState, step_name: str) -> TState:
         """Execute step with fallback."""
         try:
             # Try primary agent through circuit breaker
@@ -130,7 +132,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
             # Primary failed, use fallback
             return await self._execute_fallback(state, step_name, e)
     
-    async def _process(self, input_data: TInput) -> TOutput:
+        async def _process(self, input_data: TInput) -> TOutput:
         """Process with fallback handling."""
         with tracer.start_as_current_span(
             f"fallback_agent.{self.name}",
@@ -167,7 +169,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
                 # Execute fallback strategy
                 return await self._execute_fallback_strategy(input_data, e)
     
-    async def _execute_fallback_strategy(self, input_data: TInput, error: Exception) -> TOutput:
+        async def _execute_fallback_strategy(self, input_data: TInput, error: Exception) -> TOutput:
         """Execute the configured fallback strategy."""
         if self.fallback_strategy == FallbackStrategy.CACHED_RESPONSE:
             return await self._fallback_cached_response(input_data)
@@ -187,7 +189,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         else:
             raise ValueError(f"Unknown fallback strategy: {self.fallback_strategy}")
     
-    async def _fallback_cached_response(self, input_data: TInput) -> TOutput:
+        async def _fallback_cached_response(self, input_data: TInput) -> TOutput:
         """Return cached response if available."""
         cache_key = self._get_cache_key(input_data)
         
@@ -198,7 +200,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         # No cached response, try partial response
         return await self._fallback_partial_response(input_data)
     
-    async def _fallback_simplified_model(self, input_data: TInput) -> TOutput:
+        async def _fallback_simplified_model(self, input_data: TInput) -> TOutput:
         """Use a simplified model configuration."""
         # Create simplified agent with lower cost model
         simplified_config = AgentConfig(
@@ -220,7 +222,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
             )
             return await self._fallback_partial_response(input_data)
     
-    async def _fallback_default_response(self, input_data: TInput) -> TOutput:
+        async def _fallback_default_response(self, input_data: TInput) -> TOutput:
         """Return a default response."""
         # Try to find matching default
         for key, response in self.default_responses.items():
@@ -230,7 +232,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         # No matching default, return generic partial response
         return await self._fallback_partial_response(input_data)
     
-    async def _fallback_alternative_agent(self, input_data: TInput) -> TOutput:
+        async def _fallback_alternative_agent(self, input_data: TInput) -> TOutput:
         """Try alternative agents in order."""
         for agent in self.alternative_agents:
             try:
@@ -251,7 +253,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         return await self._fallback_partial_response(input_data)
     
     @abstractmethod
-    async def _fallback_partial_response(self, input_data: TInput) -> TOutput:
+        async def _fallback_partial_response(self, input_data: TInput) -> TOutput:
         """
         Generate a partial response as last resort.
         
@@ -281,8 +283,9 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         """Extract output using primary agent."""
         return self.primary_agent._extract_output(final_state)
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Check health of fallback system."""
+        pass
         health = await super().health_check()
         
         # Add circuit breaker status

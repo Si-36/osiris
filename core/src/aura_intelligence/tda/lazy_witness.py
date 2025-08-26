@@ -168,7 +168,7 @@ class LazyWitnessComplex:
         self, 
         X: np.ndarray, 
         landmarks: np.ndarray
-    ) -> List[Tuple[Tuple[int, ...], float]]:
+        ) -> List[Tuple[Tuple[int, ...], float]]:
         """
         Build Witness-Z-Rips complex for non-uniform data
         
@@ -231,7 +231,7 @@ class LazyWitnessComplex:
         self, 
         X: np.ndarray, 
         landmarks: np.ndarray
-    ) -> List[Tuple[Tuple[int, ...], float]]:
+        ) -> List[Tuple[Tuple[int, ...], float]]:
         """Standard lazy witness complex construction"""
         self.witness_tree = cKDTree(X)
         simplices = []
@@ -289,7 +289,7 @@ class LazyWitnessComplex:
         landmarks: np.ndarray,
         X: np.ndarray,
         witness_candidates: List[int]
-    ) -> float:
+        ) -> float:
         """
         Compute edge weight using Z-Rips criterion
         
@@ -321,7 +321,7 @@ class LazyWitnessComplex:
         edge: Tuple[int, int],
         edge_weight: float,
         landmarks: np.ndarray
-    ):
+        ):
         """
         Lazily add higher-dimensional simplices
         
@@ -362,7 +362,7 @@ class LazyWitnessComplex:
         simplices: List[Tuple[Tuple[int, ...], float]], 
         i: int, 
         j: int
-    ) -> float:
+        ) -> float:
         """Get weight of edge (i,j) from simplex list"""
         for simplex, weight in simplices:
             if len(simplex) == 2:
@@ -374,7 +374,7 @@ class LazyWitnessComplex:
     def _apply_early_termination(
         self, 
         simplices: List[Tuple[Tuple[int, ...], float]]
-    ) -> List[Tuple[Tuple[int, ...], float]]:
+        ) -> List[Tuple[Tuple[int, ...], float]]:
         """
         Apply early termination heuristics
         
@@ -407,6 +407,7 @@ class LazyWitnessComplex:
     
     def get_optimization_stats(self) -> Dict[str, Any]:
         """Get statistics about optimization performance"""
+        pass
         return {
             "device": str(self.device),
             "n_landmarks": len(self.landmark_indices),
@@ -418,11 +419,11 @@ class LazyWitnessComplex:
 
 
 # Factory function for feature flag integration
-def create_lazy_witness_complex(**kwargs) -> LazyWitnessComplex:
-    """Create LazyWitness complex with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+    def create_lazy_witness_complex(**kwargs) -> LazyWitnessComplex:
+        """Create LazyWitness complex with feature flag support"""
+        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.LAZY_WITNESS_ENABLED):
+        if not is_feature_enabled(FeatureFlag.LAZY_WITNESS_ENABLED):
         raise RuntimeError("Lazy Witness is not enabled. Enable with feature flag.")
     
-    return LazyWitnessComplex(**kwargs)
+        return LazyWitnessComplex(**kwargs)

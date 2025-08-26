@@ -142,7 +142,7 @@ class AURAMetricsCollector:
         self.last_update = time.time()
         
     def record_liquid_adaptation(self, component_id: str, complexity: float, active_neurons: int, layer: str = "main"):
-        """Record liquid neural network adaptation"""
+            """Record liquid neural network adaptation"""
         liquid_adaptations.labels(component_id=component_id).inc()
         liquid_complexity.labels(component_id=component_id).set(complexity)
         liquid_neurons.labels(component_id=component_id, layer=layer).set(active_neurons)
@@ -153,8 +153,8 @@ class AURAMetricsCollector:
         mamba_processing_time.observe(processing_time)
         mamba_throughput.set(throughput)
     
-    def record_constitutional_evaluation(self, rule_id: str, outcome: str, compliance_score: float, 
-                                       safety_score_val: float, corrections: Dict[str, int] = None):
+        def record_constitutional_evaluation(self, rule_id: str, outcome: str, compliance_score: float,
+        safety_score_val: float, corrections: Dict[str, int] = None):
         """Record Constitutional AI 3.0 evaluation"""
         constitutional_evaluations.labels(rule_id=rule_id, outcome=outcome).inc()
         constitutional_compliance.observe(compliance_score)
@@ -170,12 +170,12 @@ class AURAMetricsCollector:
         system_latency.labels(system_type=system_type).observe(latency)
     
     def update_enhancement_status(self, enhancements: Dict[str, bool]):
-        """Update enhancement status metrics"""
+            """Update enhancement status metrics"""
         for enhancement_name, is_active in enhancements.items():
             enhancement_status.labels(enhancement_name=enhancement_name).set(1 if is_active else 0)
     
     def record_component_health(self, component_id: str, component_type: str, 
-                              health_score: float, processing_time: float):
+        health_score: float, processing_time: float):
         """Record component health metrics"""
         component_health.labels(component_id=component_id, component_type=component_type).set(health_score)
         component_processing_time.labels(component_id=component_id, component_type=component_type).observe(processing_time)
@@ -188,107 +188,109 @@ class AURAMetricsCollector:
     
     def get_metrics(self) -> str:
         """Get all metrics in Prometheus format"""
+        pass
         return generate_latest(aura_registry).decode('utf-8')
     
     def get_summary_stats(self) -> Dict[str, Any]:
         """Get summary statistics"""
+        pass
         uptime = time.time() - self.start_time
         return {
-            'uptime_seconds': uptime,
-            'metrics_collected': len(aura_registry._collector_to_names),
-            'last_update': self.last_update,
-            'registry_name': 'aura_enhanced_systems'
+        'uptime_seconds': uptime,
+        'metrics_collected': len(aura_registry._collector_to_names),
+        'last_update': self.last_update,
+        'registry_name': 'aura_enhanced_systems'
         }
 
-# Decorator for automatic metrics collection
-def track_system_metrics(system_type: str):
-    """Decorator to automatically track system metrics"""
+    # Decorator for automatic metrics collection
+    def track_system_metrics(system_type: str):
+        """Decorator to automatically track system metrics"""
     def decorator(func):
-        @wraps(func)
+    @wraps(func)
         async def wrapper(*args, **kwargs):
-            start_time = time.time()
-            status = "success"
+        start_time = time.time()
+        status = "success"
             
-            try:
-                result = await func(*args, **kwargs)
-                return result
-            except Exception as e:
-                status = "error"
-                raise
-            finally:
-                latency = time.time() - start_time
-                metrics_collector.record_system_request(system_type, status, latency)
+        try:
+        result = await func(*args, **kwargs)
+        return result
+        except Exception as e:
+        status = "error"
+        raise
+        finally:
+        latency = time.time() - start_time
+        metrics_collector.record_system_request(system_type, status, latency)
         
         return wrapper
-    return decorator
+        return decorator
 
-# Global metrics collector
-metrics_collector = AURAMetricsCollector()
+    # Global metrics collector
+        metrics_collector = AURAMetricsCollector()
 
-# Convenience functions for enhanced systems
-def record_liquid_metrics(component_id: str, liquid_info: Dict[str, Any]):
-    """Record liquid neural network metrics"""
-    metrics_collector.record_liquid_adaptation(
+    # Convenience functions for enhanced systems
+    def record_liquid_metrics(component_id: str, liquid_info: Dict[str, Any]):
+        """Record liquid neural network metrics"""
+        metrics_collector.record_liquid_adaptation(
         component_id=component_id,
         complexity=liquid_info.get('complexity', 0.0),
         active_neurons=liquid_info.get('active_neurons', 0),
         layer=liquid_info.get('layer', 'main')
-    )
+        )
 
-def record_mamba_metrics(mamba_result: Dict[str, Any]):
-    """Record Mamba-2 metrics"""
-    metrics_collector.record_mamba_processing(
+    def record_mamba_metrics(mamba_result: Dict[str, Any]):
+        """Record Mamba-2 metrics"""
+        metrics_collector.record_mamba_processing(
         context_length=mamba_result.get('context_buffer_size', 0),
         processing_time=mamba_result.get('processing_time_ms', 0) / 1000.0,
         throughput=mamba_result.get('throughput', 0)
-    )
+        )
 
-def record_constitutional_metrics(constitutional_result: Dict[str, Any]):
-    """Record Constitutional AI 3.0 metrics"""
-    eval_result = constitutional_result.get('constitutional_evaluation', {})
+    def record_constitutional_metrics(constitutional_result: Dict[str, Any]):
+        """Record Constitutional AI 3.0 metrics"""
+        eval_result = constitutional_result.get('constitutional_evaluation', {})
     
     # Count corrections by type
-    corrections = {}
-    if eval_result.get('auto_corrected', False):
+        corrections = {}
+        if eval_result.get('auto_corrected', False):
         corrections['auto_correction'] = 1
     
-    metrics_collector.record_constitutional_evaluation(
+        metrics_collector.record_constitutional_evaluation(
         rule_id='overall',
         outcome='approved' if eval_result.get('approved', False) else 'rejected',
         compliance_score=eval_result.get('constitutional_compliance', 0.0),
         safety_score_val=eval_result.get('safety_score', 0.0),
         corrections=corrections
-    )
+        )
 
 async def update_system_metrics(enhanced_aura):
-    """Periodic update of system metrics"""
-    while True:
+        """Periodic update of system metrics"""
+        while True:
         try:
-            # Update enhancement status
-            status = enhanced_aura.get_enhancement_status()
-            enhancements = {
-                name: info.get('status') == 'active' 
-                for name, info in status.items() 
-                if isinstance(info, dict) and 'status' in info
-            }
-            metrics_collector.update_enhancement_status(enhancements)
+        # Update enhancement status
+        status = enhanced_aura.get_enhancement_status()
+        enhancements = {
+        name: info.get('status') == 'active'
+        for name, info in status.items()
+        if isinstance(info, dict) and 'status' in info
+        }
+        metrics_collector.update_enhancement_status(enhancements)
             
-            # Update component health from registry
-            component_stats = enhanced_aura.registry.get_component_stats()
-            for comp_id, component in enhanced_aura.registry.components.items():
-                health_score = 1.0 if component.status == 'active' else 0.0
-                processing_time = component.processing_time
+    # Update component health from registry
+        component_stats = enhanced_aura.registry.get_component_stats()
+        for comp_id, component in enhanced_aura.registry.components.items():
+        health_score = 1.0 if component.status == 'active' else 0.0
+        processing_time = component.processing_time
                 
-                metrics_collector.record_component_health(
-                    component_id=comp_id,
-                    component_type=component.type.value,
-                    health_score=health_score,
-                    processing_time=processing_time
-                )
+        metrics_collector.record_component_health(
+        component_id=comp_id,
+        component_type=component.type.value,
+        health_score=health_score,
+        processing_time=processing_time
+        )
             
-            metrics_collector.last_update = time.time()
+        metrics_collector.last_update = time.time()
             
         except Exception as e:
-            print(f"Metrics update error: {e}")
+        print(f"Metrics update error: {e}")
         
         await asyncio.sleep(30)  # Update every 30 seconds

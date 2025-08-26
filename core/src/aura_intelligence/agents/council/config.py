@@ -56,6 +56,7 @@ class LNNCouncilConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
+        pass
         if not self.name:
             raise ValueError("Agent name required")
         
@@ -67,6 +68,7 @@ class LNNCouncilConfig:
     
     def to_liquid_config(self) -> LiquidConfig:
         """Convert to LiquidConfig for neural network."""
+        pass
         return LiquidConfig(
             time_constants=TimeConstants(tau_min=0.1, tau_max=10.0),
             activation=self.activation_type,
@@ -79,6 +81,7 @@ class LNNCouncilConfig:
     
     def to_agent_config(self) -> AgentConfig:
         """Convert to base AgentConfig."""
+        pass
         return AgentConfig(
             name=self.name,
             model="lnn-council",

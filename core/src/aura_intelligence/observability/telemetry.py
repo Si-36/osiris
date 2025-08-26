@@ -92,6 +92,7 @@ class ModernTelemetry:
     
     def initialize(self) -> None:
         """Initialize OpenTelemetry with production-grade configuration."""
+        pass
         
         if self._initialized:
             return
@@ -171,6 +172,7 @@ class ModernTelemetry:
     
     def _create_adaptive_sampler(self):
         """Create adaptive sampler based on system load."""
+        pass
         from opentelemetry.sdk.trace.sampling import TraceIdRatioBasedSampler
         
         
@@ -181,6 +183,7 @@ class ModernTelemetry:
     
     def _create_custom_metrics(self) -> None:
         """Create Intelligence Flywheel specific metrics."""
+        pass
         
         # Search performance metrics
         self.search_latency = self.meter.create_histogram(
@@ -226,6 +229,7 @@ class ModernTelemetry:
     
     def _setup_auto_instrumentation(self) -> None:
         """Setup automatic instrumentation for common libraries."""
+        pass
         
         # Instrument asyncio for async operation tracing
         AsyncioInstrumentor().instrument()
@@ -237,6 +241,7 @@ class ModernTelemetry:
     
     def instrument_fastapi(self, app) -> None:
         """Instrument FastAPI application with semantic attributes."""
+        pass
         
         FastAPIInstrumentor.instrument_app(
             app,
@@ -248,12 +253,12 @@ class ModernTelemetry:
         print("🌐 FastAPI instrumentation enabled")
     
     @asynccontextmanager
-    async def trace_operation(
+        async def trace_operation(
         self, 
         operation_name: str, 
         attributes: Optional[Dict[str, Any]] = None,
         ai_operation: bool = False
-    ):
+        ):
         """Context manager for tracing operations with semantic attributes."""
         
         span_attributes = attributes or {}
@@ -296,7 +301,7 @@ class ModernTelemetry:
         duration_ms: float, 
         status: str = "success",
         result_count: int = 0
-    ) -> None:
+        ) -> None:
         """Record search operation metrics."""
         
         attributes = {
@@ -317,7 +322,7 @@ class ModernTelemetry:
         duration_ms: float, 
         confidence: float,
         decision_type: str = "unknown"
-    ) -> None:
+        ) -> None:
         """Record agent decision metrics with AI semantic attributes."""
         
         attributes = {
@@ -332,8 +337,8 @@ class ModernTelemetry:
         """Record archival job completion."""
         
         attributes = {
-            "status": status,
-            "records_bucket": self._get_count_bucket(records_processed)
+        "status": status,
+        "records_bucket": self._get_count_bucket(records_processed)
         }
         
         self.archival_jobs.add(1, attributes)
@@ -353,13 +358,13 @@ class ModernTelemetry:
         if count == 0:
             return "0"
         elif count <= 10:
-            return "1-10"
+        return "1-10"
         elif count <= 100:
-            return "11-100"
+        return "11-100"
         elif count <= 1000:
-            return "101-1000"
+        return "101-1000"
         else:
-            return "1000+"
+        return "1000+"
     
     def _get_confidence_bucket(self, confidence: float) -> str:
         """Get confidence bucket for cardinality reduction."""
@@ -375,51 +380,51 @@ class ModernTelemetry:
 _telemetry: Optional[ModernTelemetry] = None
 
 
-def get_telemetry() -> ModernTelemetry:
-    """Get global telemetry instance."""
-    global _telemetry
+    def get_telemetry() -> ModernTelemetry:
+        """Get global telemetry instance."""
+        global _telemetry
     
-    if _telemetry is None:
+        if _telemetry is None:
         config = TelemetryConfig()
         _telemetry = ModernTelemetry(config)
         _telemetry.initialize()
     
-    return _telemetry
+        return _telemetry
 
 
-def trace_ai_operation(operation_name: str):
-    """Decorator for tracing AI/ML operations."""
+    def trace_ai_operation(operation_name: str):
+        """Decorator for tracing AI/ML operations."""
     
     def decorator(func: Callable):
-        @wraps(func)
+    @wraps(func)
         async def async_wrapper(*args, **kwargs):
-            telemetry = get_telemetry()
+        telemetry = get_telemetry()
             
-            async with telemetry.trace_operation(
-                operation_name,
-                ai_operation=True
-            ) as span:
-                # Add function metadata
-                span.set_attribute("code.function", func.__name__)
-                span.set_attribute("code.namespace", func.__module__)
+        async with telemetry.trace_operation(
+        operation_name,
+        ai_operation=True
+        ) as span:
+    # Add function metadata
+        span.set_attribute("code.function", func.__name__)
+        span.set_attribute("code.namespace", func.__module__)
                 
-                return await func(*args, **kwargs)
+        return await func(*args, **kwargs)
         
-        @wraps(func)
-        def sync_wrapper(*args, **kwargs):
-            telemetry = get_telemetry()
+    @wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        telemetry = get_telemetry()
             
-            with telemetry.tracer.start_as_current_span(
-                operation_name,
-                attributes={
-                    AI_OPERATION_NAME: operation_name,
-                    "ai.system": "intelligence-flywheel",
-                    "code.function": func.__name__,
-                    "code.namespace": func.__module__
-                }
-            ):
-                return func(*args, **kwargs)
+        with telemetry.tracer.start_as_current_span(
+        operation_name,
+        attributes={
+        AI_OPERATION_NAME: operation_name,
+        "ai.system": "intelligence-flywheel",
+        "code.function": func.__name__,
+        "code.namespace": func.__module__
+        }
+        ):
+        return func(*args, **kwargs)
         
         return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
     
-    return decorator
+        return decorator

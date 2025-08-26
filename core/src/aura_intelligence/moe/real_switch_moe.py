@@ -27,20 +27,21 @@ class RealSwitchMoE(nn.Module):
         
         if TRANSFORMERS_AVAILABLE:
             # Use official Switch Transformer implementation
-            config = SwitchTransformersConfig(
-                d_model=d_model,
-                num_experts=num_experts,
-                expert_capacity=expert_capacity,
-                router_bias=False,
-                router_jitter_noise=0.01
-            )
-            self.switch_moe = SwitchTransformersSparseMLP(config)
+        config = SwitchTransformersConfig(
+        d_model=d_model,
+        num_experts=num_experts,
+        expert_capacity=expert_capacity,
+        router_bias=False,
+        router_jitter_noise=0.01
+        )
+        self.switch_moe = SwitchTransformersSparseMLP(config)
         else:
-            # Fallback: Implement core Switch logic
-            self.switch_moe = self._create_switch_fallback()
+        # Fallback: Implement core Switch logic
+        self.switch_moe = self._create_switch_fallback()
     
     def _create_switch_fallback(self):
-        """Fallback Switch MoE implementation"""
+            """Fallback Switch MoE implementation"""
+        pass
         
         class SwitchMoELayer(nn.Module):
             def __init__(self, d_model, num_experts, expert_capacity):
@@ -53,11 +54,11 @@ class RealSwitchMoE(nn.Module):
                 
                 # Experts (FFN layers)
                 self.experts = nn.ModuleList([
-                    nn.Sequential(
-                        nn.Linear(d_model, d_model * 4),
-                        nn.ReLU(),
-                        nn.Linear(d_model * 4, d_model)
-                    ) for _ in range(num_experts)
+                nn.Sequential(
+                nn.Linear(d_model, d_model * 4),
+                nn.ReLU(),
+                nn.Linear(d_model * 4, d_model)
+                ) for _ in range(num_experts)
                 ])
                 
                 # Load balancing
@@ -114,47 +115,48 @@ class RealSwitchMoE(nn.Module):
                     'expert_index': expert_index
                 }
         
-        return SwitchMoELayer(self.d_model, self.num_experts, self.expert_capacity)
+                return SwitchMoELayer(self.d_model, self.num_experts, self.expert_capacity)
     
-    def forward(self, hidden_states: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, Any]]:
-        """Forward pass through Switch MoE"""
+            def forward(self, hidden_states: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, Any]]:
+                """Forward pass through Switch MoE"""
         
-        if TRANSFORMERS_AVAILABLE:
+                if TRANSFORMERS_AVAILABLE:
             # Use official implementation
-            outputs = self.switch_moe(hidden_states)
-            return outputs.last_hidden_state, {
+                outputs = self.switch_moe(hidden_states)
+                return outputs.last_hidden_state, {
                 'load_balancing_loss': outputs.router_logits,
                 'library': 'transformers',
                 'google_research': True
-            }
-        else:
-            # Use fallback
-            output, aux_info = self.switch_moe(hidden_states)
-            aux_info['library'] = 'fallback_implementation'
-            aux_info['google_research'] = True
-            return output, aux_info
+                }
+                else:
+        # Use fallback
+                output, aux_info = self.switch_moe(hidden_states)
+                aux_info['library'] = 'fallback_implementation'
+                aux_info['google_research'] = True
+                return output, aux_info
     
-    def get_expert_stats(self) -> Dict[str, Any]:
-        """Get expert utilization statistics"""
-        if hasattr(self.switch_moe, 'expert_counts'):
-            expert_counts = self.switch_moe.expert_counts
-            total_assignments = expert_counts.sum()
+            def get_expert_stats(self) -> Dict[str, Any]:
+                """Get expert utilization statistics"""
+                pass
+                if hasattr(self.switch_moe, 'expert_counts'):
+                expert_counts = self.switch_moe.expert_counts
+                total_assignments = expert_counts.sum()
             
-            return {
+                return {
                 'num_experts': self.num_experts,
                 'expert_utilization': (expert_counts / (total_assignments + 1e-8)).cpu().numpy().tolist(),
                 'load_balance_coefficient': (expert_counts.std() / (expert_counts.mean() + 1e-8)).item(),
                 'active_experts': (expert_counts > 0).sum().item(),
                 'expert_capacity': self.expert_capacity,
                 'implementation': 'transformers' if TRANSFORMERS_AVAILABLE else 'fallback'
-            }
-        else:
-            return {
+                }
+                else:
+                return {
                 'num_experts': self.num_experts,
                 'expert_capacity': self.expert_capacity,
                 'implementation': 'transformers' if TRANSFORMERS_AVAILABLE else 'fallback',
                 'note': 'Statistics not available for transformers implementation'
-            }
+                }
 
 class RealMoESystem:
     """Real MoE system for routing through components"""
@@ -165,9 +167,9 @@ class RealMoESystem:
         
         # Initialize Switch MoE
         self.switch_moe = RealSwitchMoE(
-            d_model=d_model,
-            num_experts=self.num_experts,
-            expert_capacity=32
+        d_model=d_model,
+        num_experts=self.num_experts,
+        expert_capacity=32
         )
         
         # Component encoder
@@ -192,7 +194,7 @@ class RealMoESystem:
         
         return torch.tensor([features[:256]], dtype=torch.float32)
     
-    async def route_request(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def route_request(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """Route request through Switch MoE"""
         
         # Encode request
@@ -206,23 +208,23 @@ class RealMoESystem:
         # Get expert assignments
         if 'expert_index' in aux_info:
             expert_indices = aux_info['expert_index']
-            selected_experts = torch.unique(expert_indices)
-            selected_components = [self.components[i] for i in selected_experts if i < len(self.components)]
+        selected_experts = torch.unique(expert_indices)
+        selected_components = [self.components[i] for i in selected_experts if i < len(self.components)]
         else:
-            # Fallback selection
-            selected_components = self.components[:3]
+        # Fallback selection
+        selected_components = self.components[:3]
         
         return {
-            'switch_moe_routing': True,
-            'selected_components': [comp.id if hasattr(comp, 'id') else str(comp) for comp in selected_components],
-            'routing_info': {
-                'load_balancing_loss': aux_info.get('load_balancing_loss', 0.0),
-                'experts_used': len(selected_components),
-                'implementation': aux_info.get('library', 'unknown')
-            },
-            'google_research': True
+        'switch_moe_routing': True,
+        'selected_components': [comp.id if hasattr(comp, 'id') else str(comp) for comp in selected_components],
+        'routing_info': {
+        'load_balancing_loss': aux_info.get('load_balancing_loss', 0.0),
+        'experts_used': len(selected_components),
+        'implementation': aux_info.get('library', 'unknown')
+        },
+        'google_research': True
         }
 
-def get_real_switch_moe(d_model: int = 512, num_experts: int = 8):
-    """Get real Switch MoE instance"""
-    return RealSwitchMoE(d_model, num_experts)
+    def get_real_switch_moe(d_model: int = 512, num_experts: int = 8):
+        """Get real Switch MoE instance"""
+        return RealSwitchMoE(d_model, num_experts)

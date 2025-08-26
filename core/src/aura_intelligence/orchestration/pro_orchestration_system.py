@@ -109,6 +109,7 @@ class Command:
     
     def validate(self) -> bool:
         """Validate command before execution"""
+        pass
         return bool(self.type and self.payload)
 
 
@@ -265,7 +266,7 @@ class Saga:
         self.steps.append(step)
         return self
     
-    async def execute(self, initial_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        async def execute(self, initial_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute the saga with automatic compensation on failure"""
         self.context = initial_context or {}
         self.status = WorkflowStatus.RUNNING
@@ -307,7 +308,7 @@ class EventStore:
         self.retention_days = retention_days
         self.metrics = defaultdict(int)
     
-    async def append(self, stream_id: str, event: Event) -> None:
+        async def append(self, stream_id: str, event: Event) -> None:
         """Append event to stream"""
         self.events[stream_id].append(event)
         self.metrics['events_stored'] += 1
@@ -319,17 +320,17 @@ class EventStore:
             if e.timestamp > cutoff_time
         ]
     
-    async def get_events(
+        async def get_events(
         self,
         stream_id: str,
         from_version: int = 0,
         to_version: Optional[int] = None
-    ) -> List[Event]:
+        ) -> List[Event]:
         """Get events from stream"""
         events = self.events.get(stream_id, [])
         return events[from_version:to_version]
     
-    async def save_snapshot(self, stream_id: str, state: Any, version: int) -> None:
+        async def save_snapshot(self, stream_id: str, state: Any, version: int) -> None:
         """Save state snapshot"""
         self.snapshots[stream_id] = {
             'state': state,
@@ -338,7 +339,7 @@ class EventStore:
         }
         self.metrics['snapshots_saved'] += 1
     
-    async def get_snapshot(self, stream_id: str) -> Optional[Dict[str, Any]]:
+        async def get_snapshot(self, stream_id: str) -> Optional[Dict[str, Any]]:
         """Get latest snapshot"""
         return self.snapshots.get(stream_id)
 
@@ -384,6 +385,7 @@ class WorkflowEngine:
     
     def _setup_prometheus_metrics(self):
         """Setup Prometheus metrics"""
+        pass
         self.prom_workflow_duration = prometheus_client.Histogram(
             'workflow_duration_seconds',
             'Workflow execution duration',
@@ -401,7 +403,7 @@ class WorkflowEngine:
         name: str,
         graph: StateGraph,
         version: str = "1.0.0"
-    ) -> None:
+        ) -> None:
         """Register a workflow with versioning"""
         workflow_id = f"{name}:{version}"
         self.workflows[workflow_id] = graph
@@ -415,13 +417,13 @@ class WorkflowEngine:
         self.circuit_breakers[name] = cb
         return cb
     
-    async def execute_workflow(
+        async def execute_workflow(
         self,
         workflow_name: str,
         initial_state: WorkflowState,
         version: Optional[str] = None,
         timeout: Optional[float] = None
-    ) -> WorkflowState:
+        ) -> WorkflowState:
         """Execute a workflow with full production features"""
         # Get workflow
         if version:
@@ -510,11 +512,11 @@ class WorkflowEngine:
             if span:
                 span.end()
     
-    async def _execute_with_retry(
+        async def _execute_with_retry(
         self,
         app: Runnable,
         state: WorkflowState
-    ) -> WorkflowState:
+        ) -> WorkflowState:
         """Execute with retry logic"""
         last_error = None
         
@@ -540,7 +542,7 @@ class WorkflowEngine:
         
         raise last_error
     
-    async def _emit_event(self, event: Event) -> None:
+        async def _emit_event(self, event: Event) -> None:
         """Emit event to event store"""
         await self.event_store.append(f"workflow:{self.name}", event)
     
@@ -560,17 +562,17 @@ class WorkflowEngine:
                 status=state.status.name
             ).inc()
     
-    async def create_saga(self, name: str) -> Saga:
+        async def create_saga(self, name: str) -> Saga:
         """Create a new saga"""
         saga = Saga(name)
         self.sagas[name] = saga
         return saga
     
-    async def get_workflow_history(
+        async def get_workflow_history(
         self,
         workflow_id: str,
         limit: int = 100
-    ) -> List[Event]:
+        ) -> List[Event]:
         """Get workflow execution history"""
         events = await self.event_store.get_events(
             f"workflow:{workflow_id}",
@@ -588,8 +590,8 @@ class WorkflowEngine:
 
 
 # Example workflow implementations
-def create_aura_workflow() -> StateGraph:
-    """Create AURA intelligence workflow with LangGraph"""
+    def create_aura_workflow() -> StateGraph:
+        """Create AURA intelligence workflow with LangGraph"""
     
     # Define workflow state
     class AuraWorkflowState(WorkflowState):
@@ -699,7 +701,7 @@ def create_aura_workflow() -> StateGraph:
     # Set entry point
     workflow.set_entry_point("collect_topology")
     
-    return workflow
+        return workflow
 
 
 # Example saga implementation
@@ -738,7 +740,7 @@ async def create_cascade_prevention_saga(engine: WorkflowEngine) -> Saga:
     saga.add_step(SagaStep("isolate_nodes", isolate_nodes, reconnect_nodes))
     saga.add_step(SagaStep("scale_resources", scale_resources, descale_resources))
     
-    return saga
+        return saga
 
 
 # Example usage
@@ -765,7 +767,7 @@ async def test_pro_orchestration():
         context={"environment": "production"}
     )
     
-    try:
+        try:
         result = await engine.execute_workflow(
             "aura_intelligence",
             initial_state,
@@ -775,25 +777,25 @@ async def test_pro_orchestration():
         logger.info(f"Workflow completed: {result.workflow_id}")
         logger.info(f"Checkpoints: {result.checkpoints}")
         
-    except Exception as e:
+        except Exception as e:
         logger.error(f"Workflow failed: {e}")
     
     # Test saga
     saga = await create_cascade_prevention_saga(engine)
     
-    try:
+        try:
         saga_result = await saga.execute({"system_load": 0.9})
         logger.info(f"Saga completed: {saga_result}")
         
-    except Exception as e:
+        except Exception as e:
         logger.error(f"Saga failed (compensated): {e}")
     
     # Check metrics
-    logger.info(f"Engine metrics: {dict(engine.metrics)}")
+        logger.info(f"Engine metrics: {dict(engine.metrics)}")
     
     # Check dead letter queue
     dlq_items = engine.get_dlq_items()
-    if dlq_items:
+        if dlq_items:
         logger.warning(f"Dead letter queue has {len(dlq_items)} items")
 
 

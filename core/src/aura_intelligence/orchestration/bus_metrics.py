@@ -65,24 +65,27 @@ class EventBusMetrics:
         self._setup_routes()
         
     def _setup_routes(self):
-        """Setup HTTP routes."""
+            """Setup HTTP routes."""
+        pass
         self.app.router.add_get('/metrics', self.metrics_handler)
         self.app.router.add_get('/health', self.health_handler)
         
-    async def metrics_handler(self, request):
+        async def metrics_handler(self, request):
         """Prometheus metrics endpoint."""
+        pass
         # Collect current metrics
         await self._collect_metrics()
         
         # Generate Prometheus format
         metrics = generate_latest()
         return web.Response(
-            body=metrics,
-            content_type=CONTENT_TYPE_LATEST
+        body=metrics,
+        content_type=CONTENT_TYPE_LATEST
         )
         
-    async def health_handler(self, request):
-        """Health check endpoint."""
+        async def health_handler(self, request):
+            """Health check endpoint."""
+        pass
         healthy = await self.bus.health_check()
         status = 200 if healthy else 503
         return web.json_response(
@@ -90,66 +93,68 @@ class EventBusMetrics:
             status=status
         )
         
-    async def _collect_metrics(self):
+        async def _collect_metrics(self):
         """Collect current metrics from Redis."""
+        pass
         try:
             client = await self.bus._get_client()
             
-            # Get connection pool stats
-            pool_stats = self.bus.pool.get_connection_kwargs()
-            bus_connections_active.set(self.bus.pool.connection_kwargs.get('max_connections', 0))
+        # Get connection pool stats
+        pool_stats = self.bus.pool.get_connection_kwargs()
+        bus_connections_active.set(self.bus.pool.connection_kwargs.get('max_connections', 0))
             
-            # Collect metrics for known streams
-            streams = [
-                'topo:failures',
-                'evolver:patches', 
-                'langgraph:events',
-                'aura:dlq'
-            ]
+        # Collect metrics for known streams
+        streams = [
+        'topo:failures',
+        'evolver:patches',
+        'langgraph:events',
+        'aura:dlq'
+        ]
             
-            for stream in streams:
-                try:
-                    # Stream length
-                    length = await client.xlen(stream)
-                    bus_stream_length.labels(stream=stream).set(length)
+        for stream in streams:
+        try:
+            # Stream length
+        length = await client.xlen(stream)
+        bus_stream_length.labels(stream=stream).set(length)
                     
-                    # Consumer group info
-                    try:
-                        groups = await client.xinfo_groups(stream)
-                        for group in groups:
-                            group_name = group['name']
-                            pending = group['pending']
-                            bus_pel_size.labels(
-                                stream=stream,
-                                group=group_name
-                            ).set(pending)
+        # Consumer group info
+        try:
+            groups = await client.xinfo_groups(stream)
+        for group in groups:
+        group_name = group['name']
+        pending = group['pending']
+        bus_pel_size.labels(
+        stream=stream,
+        group=group_name
+        ).set(pending)
                             
-                            # Consumer lag
-                            try:
-                                consumers = await client.xinfo_consumers(stream, group_name)
-                                for consumer in consumers:
-                                    consumer_name = consumer['name']
-                                    consumer_pending = consumer['pending']
-                                    bus_consumer_lag.labels(
-                                        stream=stream,
-                                        group=group_name,
-                                        consumer=consumer_name
-                                    ).set(consumer_pending)
-                            except Exception:
-                                pass
+        # Consumer lag
+        try:
+            consumers = await client.xinfo_consumers(stream, group_name)
+        for consumer in consumers:
+        consumer_name = consumer['name']
+        consumer_pending = consumer['pending']
+        bus_consumer_lag.labels(
+        stream=stream,
+        group=group_name,
+        consumer=consumer_name
+        ).set(consumer_pending)
+        except Exception:
+        pass
                                 
-                    except Exception:
-                        # No consumer groups yet
-                        pass
+        except Exception:
+        # No consumer groups yet
+        pass
                         
-                except Exception as e:
-                    logger.debug(f"Stream {stream} not found: {e}")
+        except Exception as e:
+        logger.debug(f"Stream {stream} not found: {e}")
                     
         except Exception as e:
-            logger.error(f"Error collecting metrics: {e}")
+        logger.error(f"Error collecting metrics: {e}")
             
-    async def start(self):
-        """Start metrics server."""
+        async def start(self):
+            """Start metrics server."""
+        pass
         self.running = True
         runner = web.AppRunner(self.app)
         await runner.setup()
@@ -157,14 +162,15 @@ class EventBusMetrics:
         await site.start()
         logger.info(f"Metrics server started on port {self.port}")
         
-    async def stop(self):
+        async def stop(self):
         """Stop metrics server."""
+        pass
         self.running = False
         await self.app.shutdown()
         await self.app.cleanup()
 
 
-# Instrumented bus wrapper
+    # Instrumented bus wrapper
 class InstrumentedRedisBus(RedisBus):
     """Redis Bus with automatic metrics collection."""
     
@@ -173,15 +179,15 @@ class InstrumentedRedisBus(RedisBus):
         start = time.time()
         try:
             result = await super().publish(stream, data)
-            bus_messages_total.labels(stream=stream).inc()
-            return result
+        bus_messages_total.labels(stream=stream).inc()
+        return result
         finally:
-            bus_latency_seconds.labels(
-                operation='publish',
-                stream=stream
-            ).observe(time.time() - start)
+        bus_latency_seconds.labels(
+        operation='publish',
+        stream=stream
+        ).observe(time.time() - start)
             
-    async def ack(self, stream: str, group: str, event_id: str) -> bool:
+        async def ack(self, stream: str, group: str, event_id: str) -> bool:
         """Acknowledge with metrics."""
         start = time.time()
         try:
@@ -193,36 +199,36 @@ class InstrumentedRedisBus(RedisBus):
             ).observe(time.time() - start)
 
 
-def create_instrumented_bus(url: Optional[str] = None, **kwargs) -> InstrumentedRedisBus:
-    """Create an instrumented Redis bus."""
-    if url is None:
+    def create_instrumented_bus(url: Optional[str] = None, **kwargs) -> InstrumentedRedisBus:
+        """Create an instrumented Redis bus."""
+        if url is None:
         url = "redis://localhost:6379"
-    return InstrumentedRedisBus(url=url, **kwargs)
+        return InstrumentedRedisBus(url=url, **kwargs)
 
 
 async def main():
-    """Run standalone metrics server."""
-    bus = create_instrumented_bus()
-    metrics = EventBusMetrics(bus)
+        """Run standalone metrics server."""
+        bus = create_instrumented_bus()
+        metrics = EventBusMetrics(bus)
     
-    try:
+        try:
         await metrics.start()
         logger.info("Metrics server running on http://localhost:9102/metrics")
         
-        # Keep running
+    # Keep running
         while True:
-            await asyncio.sleep(60)
+        await asyncio.sleep(60)
             
-    except KeyboardInterrupt:
+        except KeyboardInterrupt:
         logger.info("Shutting down metrics server")
-    finally:
+        finally:
         await metrics.stop()
         await bus.close()
 
 
-if __name__ == "__main__":
-    logging.basicConfig(
+        if __name__ == "__main__":
+        logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s | %(name)s | %(levelname)s | %(message)s'
-    )
-    asyncio.run(main())
+        )
+        asyncio.run(main())

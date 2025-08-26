@@ -19,22 +19,27 @@ try:
 except ImportError:
     # Fallback for development
     class StateGraph:
-        def __init__(self, state_class): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-        def add_node(self, name, func): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-        def add_edge(self, from_node, to_node): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-        def add_conditional_edges(self, from_node, condition, mapping): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-        def set_entry_point(self, node): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-        def compile(self, **kwargs): return None
+        def __init__(self, state_class):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+        def add_node(self, name, func):
+                """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+        def add_edge(self, from_node, to_node):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+        def add_conditional_edges(self, from_node, condition, mapping):
+                """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+        def set_entry_point(self, node):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+            def compile(self, **kwargs): return None
     
     class SqliteSaver:
         @classmethod
@@ -53,10 +58,11 @@ try:
 except ImportError:
     # Fallback for testing
     class ProductionAgentState:
-        def __init__(self): 
-        """TODO: Implement this method"""
-        raise NotImplementedError("This method needs implementation")
-logger = logging.getLogger(__name__)
+        def __init__(self):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+            logger = logging.getLogger(__name__)
 
 
 class CollectiveGraphBuilder:
@@ -134,32 +140,35 @@ class CollectiveGraphBuilder:
         # Observer agent node
         if "observer" in agents:
             self.graph.add_node("observe", agents["observer"].process_event)
-            logger.info("✅ Added observer node")
+        logger.info("✅ Added observer node")
         
         # Analyst agent node
         if "analyst" in agents:
             self.graph.add_node("analyze", agents["analyst"].analyze_state)
-            logger.info("✅ Added analyst node")
+        logger.info("✅ Added analyst node")
         
         # Executor agent node
         if "executor" in agents:
             self.graph.add_node("execute", agents["executor"].execute_action)
-            logger.info("✅ Added executor node")
+        logger.info("✅ Added executor node")
     
     def _add_supervisor_node(self, supervisor) -> None:
         """Add the supervisor node - the brain of the collective."""
+        pass
         
         self.graph.add_node("supervisor", supervisor.supervisor_node)
         logger.info("✅ Added supervisor node")
     
     def _add_human_loop_node(self) -> None:
         """Add human-in-the-loop node for escalation."""
+        pass
         
         self.graph.add_node("human_approval", self._human_approval_node)
         logger.info("✅ Added human-in-the-loop node")
     
     def _define_workflow_edges(self, supervisor) -> None:
         """Define the workflow edges and routing logic."""
+        pass
         
         # Entry point: Always start with observation
         self.graph.set_entry_point("observe")
@@ -191,6 +200,7 @@ class CollectiveGraphBuilder:
     
     def _add_error_handling(self) -> None:
         """Add error handling and recovery nodes."""
+        pass
         
         # Add error recovery node
         self.graph.add_node("error_recovery", self._error_recovery_node)
@@ -202,6 +212,7 @@ class CollectiveGraphBuilder:
     
     def _compile_graph(self, memory_manager) -> None:
         """Compile the graph with persistence and memory integration."""
+        pass
         
         compile_kwargs = {}
         
@@ -220,7 +231,7 @@ class CollectiveGraphBuilder:
         
         logger.info("✅ Graph compiled successfully")
     
-    async def _human_approval_node(self, state: Any) -> Any:
+        async def _human_approval_node(self, state: Any) -> Any:
         """
         Human-in-the-loop node for high-risk situations.
         
@@ -234,40 +245,40 @@ class CollectiveGraphBuilder:
         
         try:
             # For now, simulate human approval
-            # In production, this would wait for actual human input
+        # In production, this would wait for actual human input
             
-            # Add human approval evidence
-            from production_observer_agent import ProductionEvidence, AgentConfig
+        # Add human approval evidence
+        from production_observer_agent import ProductionEvidence, AgentConfig
             
-            approval_evidence = ProductionEvidence(
-                evidence_type=enums.EvidenceType.OBSERVATION,
-                content={
-                    "approval_type": "human_escalation",
-                    "status": "approved",  # In production: wait for real approval
-                    "approver": "system_simulation",
-                    "approval_reason": "High risk situation escalated",
-                    "approval_timestamp": base.utc_now().isoformat(),
-                    "escalation_node": "human_approval"
-                },
-                workflow_id=getattr(state, 'workflow_id', 'unknown'),
-                task_id=getattr(state, 'task_id', 'unknown'),
-                config=AgentConfig()
-            )
+        approval_evidence = ProductionEvidence(
+        evidence_type=enums.EvidenceType.OBSERVATION,
+        content={
+        "approval_type": "human_escalation",
+        "status": "approved",  # In production: wait for real approval
+        "approver": "system_simulation",
+        "approval_reason": "High risk situation escalated",
+        "approval_timestamp": base.utc_now().isoformat(),
+        "escalation_node": "human_approval"
+        },
+        workflow_id=getattr(state, 'workflow_id', 'unknown'),
+        task_id=getattr(state, 'task_id', 'unknown'),
+        config=AgentConfig()
+        )
             
-            # Add evidence to state
-            if hasattr(state, 'add_evidence'):
-                new_state = state.add_evidence(approval_evidence, AgentConfig())
-            else:
-                new_state = state
+        # Add evidence to state
+        if hasattr(state, 'add_evidence'):
+            new_state = state.add_evidence(approval_evidence, AgentConfig())
+        else:
+        new_state = state
             
-            logger.info("✅ Human approval completed (simulated)")
-            return new_state
+        logger.info("✅ Human approval completed (simulated)")
+        return new_state
             
         except Exception as e:
-            logger.error(f"❌ Human approval failed: {e}")
-            return state
+        logger.error(f"❌ Human approval failed: {e}")
+        return state
     
-    async def _error_recovery_node(self, state: Any) -> Any:
+        async def _error_recovery_node(self, state: Any) -> Any:
         """
         Error recovery node for handling failures.
         """
@@ -310,43 +321,44 @@ class CollectiveGraphBuilder:
         Get a text visualization of the graph structure.
         
         Returns:
-            String representation of the graph
+        String representation of the graph
         """
+        pass
         
         if not self.graph:
             return "Graph not built yet"
         
         visualization = """
-🧠 Collective Intelligence Graph Structure:
+        🧠 Collective Intelligence Graph Structure:
 
-┌─────────────┐
-│   observe   │ ← Entry Point
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│ supervisor  │ ← Central Intelligence
-└─────┬───────┘
-      │
-      ▼ (Conditional Routing)
-┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-│   analyze   │  │   execute   │  │human_approval│  │     END     │
-└─────┬───────┘  └─────┬───────┘  └─────┬───────┘  └─────────────┘
-      │                │                │
-      └────────────────┼────────────────┘
-                       │
-                       ▼
-                 ┌─────────────┐
-                 │ supervisor  │ ← Return for next decision
-                 └─────────────┘
+        ┌─────────────┐
+        │   observe   │ ← Entry Point
+        └─────┬───────┘
+        │
+        ▼
+        ┌─────────────┐
+        │ supervisor  │ ← Central Intelligence
+        └─────┬───────┘
+        │
+        ▼ (Conditional Routing)
+        ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+        │   analyze   │  │   execute   │  │human_approval│  │     END     │
+        └─────┬───────┘  └─────┬───────┘  └─────┬───────┘  └─────────────┘
+        │                │                │
+        └────────────────┼────────────────┘
+        │
+        ▼
+        ┌─────────────┐
+        │ supervisor  │ ← Return for next decision
+        └─────────────┘
 
-Key Features:
-✅ Supervisor-based intelligent routing
-✅ Context engineering with LangMem
-✅ Human-in-the-loop escalation
-✅ State persistence with SQLite
-✅ Error handling and recovery
-✅ Your proven schema foundation
+        Key Features:
+        ✅ Supervisor-based intelligent routing
+        ✅ Context engineering with LangMem
+        ✅ Human-in-the-loop escalation
+        ✅ State persistence with SQLite
+        ✅ Error handling and recovery
+        ✅ Your proven schema foundation
         """
         
         return visualization

@@ -71,6 +71,7 @@ class CircuitBreakerConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
+        pass
         if self.failure_threshold <= 0:
             raise ValueError("failure_threshold must be positive")
         if self.success_threshold <= 0:
@@ -94,6 +95,7 @@ class CircuitBreakerStats:
     @property
     def failure_rate(self) -> float:
         """Calculate failure rate."""
+        pass
         if self.total_calls == 0:
             return 0.0
         return self.failed_calls / self.total_calls
@@ -112,6 +114,7 @@ class CircuitBreaker(Generic[T]):
     
     def __init__(self, config: CircuitBreakerConfig):
         """Initialize circuit breaker."""
+        pass
         config.validate()
         self.config = config
         self.state = CircuitState.CLOSED
@@ -125,6 +128,7 @@ class CircuitBreaker(Generic[T]):
     
     def _update_state_metric(self) -> None:
         """Update state metric."""
+        pass
         state_value = {
             CircuitState.CLOSED: 1,
             CircuitState.HALF_OPEN: 0,
@@ -136,16 +140,18 @@ class CircuitBreaker(Generic[T]):
             {"circuit.name": self.config.name, "state": self.state.value}
         )
     
-    async def _should_attempt_reset(self) -> bool:
+        async def _should_attempt_reset(self) -> bool:
         """Check if circuit should attempt reset."""
+        pass
         if self.state != CircuitState.OPEN:
             return False
         
         time_since_change = datetime.now() - self.state_changed_at
         return time_since_change >= self.config.timeout
     
-    async def _record_success(self) -> None:
+        async def _record_success(self) -> None:
         """Record a successful call."""
+        pass
         async with self._lock:
             self.stats.total_calls += 1
             self.stats.successful_calls += 1
@@ -158,8 +164,9 @@ class CircuitBreaker(Generic[T]):
                 if self.stats.consecutive_successes >= self.config.success_threshold:
                     await self._transition_to(CircuitState.CLOSED)
     
-    async def _record_failure(self) -> None:
+        async def _record_failure(self) -> None:
         """Record a failed call."""
+        pass
         async with self._lock:
             self.stats.total_calls += 1
             self.stats.failed_calls += 1
@@ -197,7 +204,7 @@ class CircuitBreaker(Generic[T]):
                 # Single failure in half-open returns to open
                 await self._transition_to(CircuitState.OPEN)
     
-    async def _transition_to(self, new_state: CircuitState) -> None:
+        async def _transition_to(self, new_state: CircuitState) -> None:
         """Transition to a new state."""
         old_state = self.state
         self.state = new_state
@@ -220,7 +227,7 @@ class CircuitBreaker(Generic[T]):
             }
         )
     
-    async def call(self, func: Callable[..., T], *args, **kwargs) -> T:
+        async def call(self, func: Callable[..., T], *args, **kwargs) -> T:
         """
         Execute function through circuit breaker.
         
@@ -277,12 +284,14 @@ class CircuitBreaker(Generic[T]):
                 span.record_exception(e)
                 raise
     
-    async def __aenter__(self):
+        async def __aenter__(self):
         """Context manager entry."""
+        pass
         return self
     
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit."""
+        pass
         if exc_type is None:
             await self._record_success()
         else:
@@ -291,19 +300,23 @@ class CircuitBreaker(Generic[T]):
     
     def get_state(self) -> CircuitState:
         """Get current circuit state."""
+        pass
         return self.state
     
     def get_stats(self) -> CircuitBreakerStats:
         """Get circuit statistics."""
+        pass
         return self.stats
     
-    async def reset(self) -> None:
+        async def reset(self) -> None:
         """Manually reset the circuit breaker."""
+        pass
         async with self._lock:
             await self._transition_to(CircuitState.CLOSED)
     
-    async def trip(self) -> None:
+        async def trip(self) -> None:
         """Manually trip the circuit breaker."""
+        pass
         async with self._lock:
             await self._transition_to(CircuitState.OPEN)
             circuit_trips_counter.add(

@@ -18,7 +18,8 @@ from .core.unified_interfaces import (
 from .infrastructure.gemini_client import GeminiClient, GeminiClientManager
 
 # Main orchestrator
-from .unified_brain import UnifiedAURABrain, UnifiedConfig as BrainConfig, AnalysisResult
+# Lazy import to avoid circular references
+# from .unified_brain import UnifiedAURABrain, UnifiedConfig as BrainConfig, AnalysisResult
 
 # Export main classes for easy import
 __all__ = [

@@ -22,7 +22,7 @@ class WorkflowStep(ABC):
         self.config = config
     
     @abstractmethod
-    async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
         """Execute the step."""
         pass
 
@@ -63,7 +63,7 @@ class GatherContextStep(WorkflowStep):
         self._memory_provider = None
         self._knowledge_provider = None
     
-    async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
         """Gather context for decision making using real providers."""
         from .memory_context import MemoryContextProvider
         from .knowledge_context import KnowledgeGraphContextProvider
@@ -113,7 +113,7 @@ class GatherContextStep(WorkflowStep):
         state.next_step = "neural_inference"
         return state
     
-    async def _gather_memory_context(self, state: LNNCouncilState):
+        async def _gather_memory_context(self, state: LNNCouncilState):
         """Gather memory context."""
         try:
             return await self._memory_provider.get_memory_context(state)
@@ -121,7 +121,7 @@ class GatherContextStep(WorkflowStep):
             logger.warning(f"Memory context failed: {e}")
             return None
     
-    async def _gather_knowledge_context(self, state: LNNCouncilState):
+        async def _gather_knowledge_context(self, state: LNNCouncilState):
         """Gather knowledge graph context."""
         try:
             return await self._knowledge_provider.get_knowledge_context(state)
@@ -129,7 +129,7 @@ class GatherContextStep(WorkflowStep):
             logger.warning(f"Knowledge context failed: {e}")
             return None
     
-    async def _gather_system_context(self, state: LNNCouncilState):
+        async def _gather_system_context(self, state: LNNCouncilState):
         """Gather system context."""
         return {
             "current_utilization": {"gpu_usage": 0.75, "queue_length": 12},

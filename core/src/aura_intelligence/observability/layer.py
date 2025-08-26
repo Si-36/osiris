@@ -72,6 +72,7 @@ class ObservabilityLayer:
         
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of recorded metrics."""
+        pass
         summary = {}
         for key, values in self.metrics.items():
             if values:
@@ -85,5 +86,6 @@ class ObservabilityLayer:
         
     def clear(self):
         """Clear all recorded data."""
+        pass
         self.metrics.clear()
         self.traces.clear()

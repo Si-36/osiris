@@ -18,7 +18,7 @@ class HyperOakAdapter:
     """
     
     def __init__(self, 
-                 host: str = None,
+        host: str = None,
                  port: int = 8080,
                  enable_entropy_compaction: bool = True):
         """
@@ -27,6 +27,7 @@ class HyperOakAdapter:
         CRITICAL: enable_entropy_compaction MUST be True for new deployments
         Once data exists, this cannot be changed!
         """
+        pass
         self.host = host or os.getenv('HYPEROAK_HOST', 'localhost')
         self.port = port
         self.base_url = f"http://{self.host}:{self.port}"
@@ -54,6 +55,7 @@ class HyperOakAdapter:
         
     def _verify_configuration(self):
         """Verify HyperOak configuration matches our requirements"""
+        pass
         try:
             response = httpx.get(f"{self.base_url}/admin/config")
             current_config = response.json()
@@ -74,6 +76,7 @@ class HyperOakAdapter:
             
     def _apply_configuration(self):
         """Apply our configuration to HyperOak"""
+        pass
         response = httpx.post(
             f"{self.base_url}/admin/config",
             json=self.db_config
@@ -82,8 +85,8 @@ class HyperOakAdapter:
             raise RuntimeError(f"Failed to apply HyperOak configuration: {response.text}")
         logger.info("Successfully applied entropy-aware compaction configuration")
         
-    async def store_topological_signature(self, 
-                                        signature_id: str,
+        async def store_topological_signature(self,
+        signature_id: str,
                                         topology_vector: np.ndarray,
                                         metadata: Dict[str, Any]) -> bool:
         """
@@ -113,8 +116,8 @@ class HyperOakAdapter:
             
         return response.status_code == 201
         
-    async def search_similar_topologies(self,
-                                      query_vector: np.ndarray,
+        async def search_similar_topologies(self,
+        query_vector: np.ndarray,
                                       k: int = 10,
                                       threshold: float = 0.8) -> List[Dict[str, Any]]:
         """
@@ -176,8 +179,9 @@ class HyperOakAdapter:
         hist = hist[hist > 0]  # Remove zeros
         return -np.sum(hist * np.log2(hist))
         
-    async def get_storage_stats(self) -> Dict[str, Any]:
+        async def get_storage_stats(self) -> Dict[str, Any]:
         """Get storage statistics showing compression effectiveness"""
+        pass
         async with httpx.AsyncClient() as client:
             response = await client.get(f"{self.base_url}/admin/stats")
             
@@ -197,8 +201,9 @@ class HyperOakAdapter:
             'average_query_latency_ms': stats.get('avg_query_latency_ms', 0)
         }
         
-    async def health_check(self) -> bool:
+        async def health_check(self) -> bool:
         """Verify HyperOak is healthy and entropy compaction is active"""
+        pass
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
@@ -223,10 +228,10 @@ class HyperOakAdapter:
 # Global instance with entropy compaction enabled
 _hyperoak_adapter = None
 
-def get_hyperoak_adapter() -> HyperOakAdapter:
-    """Get or create the global HyperOak adapter instance"""
-    global _hyperoak_adapter
-    if _hyperoak_adapter is None:
+    def get_hyperoak_adapter() -> HyperOakAdapter:
+        """Get or create the global HyperOak adapter instance"""
+        global _hyperoak_adapter
+        if _hyperoak_adapter is None:
         # CRITICAL: Always enable entropy compaction for new deployments
         _hyperoak_adapter = HyperOakAdapter(enable_entropy_compaction=True)
-    return _hyperoak_adapter
+        return _hyperoak_adapter

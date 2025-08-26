@@ -59,17 +59,17 @@ class ArizeCollector:
             
             # Transform to Arize format
             arize_data = {
-                'metric_name': point.name,
-                'value': point.value,
-                'timestamp': point.timestamp.isoformat(),
-                'tags': dict(point.tags),
-                'project': self._config.project_name
+            'metric_name': point.name,
+            'value': point.value,
+            'timestamp': point.timestamp.isoformat(),
+            'tags': dict(point.tags),
+            'project': self._config.project_name
             }
             
             # Send to Arize (mock implementation)
             await asyncio.sleep(0.001)  # Simulate network call
             
-        return Effect(_collect)
+            return Effect(_collect)
 
 class LangSmithCollector:
     """LangSmith metric collector"""
@@ -87,17 +87,17 @@ class LangSmithCollector:
             
             # Transform to LangSmith format
             langsmith_data = {
-                'name': point.name,
-                'value': point.value,
-                'timestamp': point.timestamp,
-                'metadata': dict(point.tags),
-                'project_name': self._config.project_name
+            'name': point.name,
+            'value': point.value,
+            'timestamp': point.timestamp,
+            'metadata': dict(point.tags),
+            'project_name': self._config.project_name
             }
             
             # Send to LangSmith (mock implementation)
             await asyncio.sleep(0.001)  # Simulate network call
             
-        return Effect(_collect)
+            return Effect(_collect)
 
 class NoOpCollector:
     """No-operation collector for graceful degradation"""
@@ -107,19 +107,19 @@ class NoOpCollector:
         """No-op collection"""
         return Effect(lambda: asyncio.sleep(0))
 
-# Factory functions (pure, functional style)
-def create_arize_collector(config: ArizeConfig) -> MetricCollector:
-    """Create Arize collector with graceful fallback"""
-    return ArizeCollector(config) if ARIZE_AVAILABLE else NoOpCollector()
+    # Factory functions (pure, functional style)
+    def create_arize_collector(config: ArizeConfig) -> MetricCollector:
+        """Create Arize collector with graceful fallback"""
+        return ArizeCollector(config) if ARIZE_AVAILABLE else NoOpCollector()
 
-def create_langsmith_collector(config: LangSmithConfig) -> MetricCollector:
-    """Create LangSmith collector with graceful fallback"""
-    return LangSmithCollector(config) if LANGSMITH_AVAILABLE else NoOpCollector()
+    def create_langsmith_collector(config: LangSmithConfig) -> MetricCollector:
+        """Create LangSmith collector with graceful fallback"""
+        return LangSmithCollector(config) if LANGSMITH_AVAILABLE else NoOpCollector()
 
-def create_multi_collector(*collectors: MetricCollector) -> MetricCollector:
-    """Compose multiple collectors into one"""
+    def create_multi_collector(*collectors: MetricCollector) -> MetricCollector:
+        """Compose multiple collectors into one"""
     class MultiCollector:
-        __slots__ = ('_collectors',)
+    __slots__ = ('_collectors',)
         
         def __init__(self, collectors: tuple[MetricCollector, ...]):
             self._collectors = collectors
@@ -127,9 +127,9 @@ def create_multi_collector(*collectors: MetricCollector) -> MetricCollector:
         def collect(self, point: MetricPoint) -> Effect[None]:
             """Collect to all collectors in parallel"""
             async def _collect_all():
-                effects = [collector.collect(point) for collector in self._collectors]
-                await asyncio.gather(*[effect.run() for effect in effects])
+            effects = [collector.collect(point) for collector in self._collectors]
+            await asyncio.gather(*[effect.run() for effect in effects])
             
             return Effect(_collect_all)
     
-    return MultiCollector(collectors)
+            return MultiCollector(collectors)

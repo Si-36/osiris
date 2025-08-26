@@ -20,7 +20,7 @@ def get_logger(name):
 
 def with_correlation_id():
     def decorator(func):
-        return func
+    return func
     return decorator
 
 def is_feature_enabled(feature):
@@ -28,13 +28,13 @@ def is_feature_enabled(feature):
 
 def resilient_operation(**kwargs):
     def decorator(func):
-        return func
+    return func
     return decorator
 
-from ..state import CollectiveState, NodeResult
-from aura_intelligence..tda.unified_engine import UnifiedTDAEngine, TDARequest
+    from ..state import CollectiveState, NodeResult
+    from aura_intelligence..tda.unified_engine import UnifiedTDAEngine, TDARequest
 
-logger = get_logger(__name__)
+    logger = get_logger(__name__)
 
 
 class AnalysisStrategy(Protocol):
@@ -79,6 +79,7 @@ class AnalystNode:
             tda_engine: TDA engine for topological analysis
             strategies: Custom analysis strategies
         """
+        pass
         self.llm = llm
         self.tda_engine = tda_engine or UnifiedTDAEngine()
         self.strategies = strategies or []
@@ -215,14 +216,14 @@ class AnalystNode:
         """Determine if TDA analysis should run."""
         # Run TDA if we have numerical data points
         for e in evidence:
-            if "data_points" in e or "metrics" in e:
-                return True
+        if "data_points" in e or "metrics" in e:
+        return True
         return False
     
-    async def _run_tda_analysis(
+        async def _run_tda_analysis(
         self,
         evidence: List[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
+        ) -> Optional[Dict[str, Any]]:
         """Run TDA analysis on evidence data."""
         try:
             # Extract numerical data
@@ -262,7 +263,7 @@ class AnalystNode:
     def _find_temporal_patterns(
         self,
         evidence: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Find temporal patterns in evidence."""
         # Placeholder - implement temporal analysis
         return [{"type": "periodic", "confidence": 0.8}]
@@ -270,7 +271,7 @@ class AnalystNode:
     def _find_statistical_patterns(
         self,
         evidence: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Find statistical patterns."""
         # Placeholder - implement statistical analysis
         return [{"type": "trending", "direction": "stable"}]
@@ -278,7 +279,7 @@ class AnalystNode:
     def _detect_anomalies(
         self,
         evidence: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Detect anomalies in evidence."""
         anomalies = []
         for e in evidence:
@@ -294,7 +295,7 @@ class AnalystNode:
         self,
         patterns: Dict[str, Any],
         tda_results: Optional[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Generate insights from analysis."""
         insights = []
         
@@ -320,7 +321,7 @@ class AnalystNode:
         self,
         insights: List[Dict[str, Any]],
         state: CollectiveState
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Create actionable recommendations."""
         recommendations = []
         

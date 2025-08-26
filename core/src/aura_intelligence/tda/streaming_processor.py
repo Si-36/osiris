@@ -133,6 +133,7 @@ class StreamingTDAProcessor:
     
     def _compute_temporal_features(self) -> Dict[str, float]:
         """Compute temporal stability metrics"""
+        pass
         
         if self.frame_count < 3:
             return {'stability': 1.0, 'change_rate': 0.0}
@@ -166,9 +167,10 @@ class StreamingTDAProcessor:
     
     def reset_stream(self):
         """Reset streaming state"""
+        pass
         self.data_buffer.clear()
         self.topology_cache.clear()
         self.frame_count = 0
 
-def get_streaming_processor(window_size=50, overlap=0.5):
-    return StreamingTDAProcessor(window_size, overlap)
+    def get_streaming_processor(window_size=50, overlap=0.5):
+        return StreamingTDAProcessor(window_size, overlap)

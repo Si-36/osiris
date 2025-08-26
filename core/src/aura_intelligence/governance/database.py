@@ -32,7 +32,8 @@ class GovernanceDatabase:
         logger.info(f"🗄️ Governance database initialized: {self.db_path}")
     
     def _init_database(self):
-        """Initialize database schema."""
+            """Initialize database schema."""
+        pass
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -82,43 +83,43 @@ class GovernanceDatabase:
         Store decision in database.
         
         Args:
-            decision: ActiveModeDecision to store
+        decision: ActiveModeDecision to store
             
         Returns:
-            True if successful, False otherwise
+        True if successful, False otherwise
         """
         try:
             conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        cursor = conn.cursor()
             
-            cursor.execute("""
-                INSERT OR REPLACE INTO active_decisions 
-                (decision_id, timestamp, evidence_log, proposed_action, risk_score, 
-                 risk_level, reasoning, status, human_reviewer, execution_result, execution_time)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                decision.decision_id,
-                decision.timestamp.isoformat(),
-                json.dumps(decision.evidence_log),
-                decision.proposed_action,
-                decision.risk_score,
-                decision.risk_level.value,
-                decision.reasoning,
-                decision.status.value,
-                decision.human_reviewer,
-                json.dumps(decision.execution_result) if decision.execution_result else None,
-                decision.execution_time.isoformat() if decision.execution_time else None
-            ))
+        cursor.execute("""
+        INSERT OR REPLACE INTO active_decisions
+        (decision_id, timestamp, evidence_log, proposed_action, risk_score,
+        risk_level, reasoning, status, human_reviewer, execution_result, execution_time)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+        decision.decision_id,
+        decision.timestamp.isoformat(),
+        json.dumps(decision.evidence_log),
+        decision.proposed_action,
+        decision.risk_score,
+        decision.risk_level.value,
+        decision.reasoning,
+        decision.status.value,
+        decision.human_reviewer,
+        json.dumps(decision.execution_result) if decision.execution_result else None,
+        decision.execution_time.isoformat() if decision.execution_time else None
+        ))
             
-            conn.commit()
-            conn.close()
+        conn.commit()
+        conn.close()
             
-            logger.debug(f"💾 Decision stored: {decision.decision_id}")
-            return True
+        logger.debug(f"💾 Decision stored: {decision.decision_id}")
+        return True
             
         except Exception as e:
-            logger.error(f"❌ Failed to store decision {decision.decision_id}: {e}")
-            return False
+        logger.error(f"❌ Failed to store decision {decision.decision_id}: {e}")
+        return False
     
     def get_decision(self, decision_id: str) -> Optional[ActiveModeDecision]:
         """
@@ -134,9 +135,9 @@ class GovernanceDatabase:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             
-            cursor.execute("""
+        cursor.execute("""
                 SELECT * FROM active_decisions WHERE decision_id = ?
-            """, (decision_id,))
+        """, (decision_id,))
             
             row = cursor.fetchone()
             conn.close()
@@ -154,29 +155,29 @@ class GovernanceDatabase:
         Get recent decisions for dashboard.
         
         Args:
-            limit: Maximum number of decisions to return
+        limit: Maximum number of decisions to return
             
         Returns:
-            List of recent ActiveModeDecisions
+        List of recent ActiveModeDecisions
         """
         try:
             conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        cursor = conn.cursor()
             
-            cursor.execute("""
-                SELECT * FROM active_decisions 
-                ORDER BY timestamp DESC 
-                LIMIT ?
-            """, (limit,))
+        cursor.execute("""
+        SELECT * FROM active_decisions
+        ORDER BY timestamp DESC
+        LIMIT ?
+        """, (limit,))
             
-            rows = cursor.fetchall()
-            conn.close()
+        rows = cursor.fetchall()
+        conn.close()
             
-            return [self._row_to_decision(row) for row in rows]
+        return [self._row_to_decision(row) for row in rows]
             
         except Exception as e:
-            logger.error(f"❌ Failed to retrieve recent decisions: {e}")
-            return []
+        logger.error(f"❌ Failed to retrieve recent decisions: {e}")
+        return []
     
     def store_metrics_snapshot(self, metrics: ProductionMetrics) -> bool:
         """
@@ -192,13 +193,13 @@ class GovernanceDatabase:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             
-            cursor.execute("""
+        cursor.execute("""
                 INSERT OR REPLACE INTO metrics_snapshots
                 (timestamp, total_decisions, auto_executed, human_approved,
                  blocked_actions, cost_savings, incidents_prevented,
                  average_response_time, accuracy_rate)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+        """, (
                 datetime.now().isoformat(),
                 metrics.total_decisions,
                 metrics.auto_executed,
@@ -222,35 +223,37 @@ class GovernanceDatabase:
     
     def get_decision_stats(self) -> dict:
         """Get decision statistics for reporting."""
+        pass
         try:
             conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        cursor = conn.cursor()
             
-            cursor.execute("""
-                SELECT 
-                    COUNT(*) as total,
-                    SUM(CASE WHEN status = 'executed' THEN 1 ELSE 0 END) as executed,
-                    SUM(CASE WHEN status = 'blocked' THEN 1 ELSE 0 END) as blocked,
-                    AVG(risk_score) as avg_risk_score
-                FROM active_decisions
-            """)
+        cursor.execute("""
+        SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'executed' THEN 1 ELSE 0 END) as executed,
+        SUM(CASE WHEN status = 'blocked' THEN 1 ELSE 0 END) as blocked,
+        AVG(risk_score) as avg_risk_score
+        FROM active_decisions
+        """)
             
-            row = cursor.fetchone()
-            conn.close()
+        row = cursor.fetchone()
+        conn.close()
             
-            return {
-                'total_decisions': row[0] or 0,
-                'executed_decisions': row[1] or 0,
-                'blocked_decisions': row[2] or 0,
-                'average_risk_score': row[3] or 0.0
-            }
+        return {
+        'total_decisions': row[0] or 0,
+        'executed_decisions': row[1] or 0,
+        'blocked_decisions': row[2] or 0,
+        'average_risk_score': row[3] or 0.0
+        }
             
         except Exception as e:
-            logger.error(f"❌ Failed to get decision stats: {e}")
-            return {}
+        logger.error(f"❌ Failed to get decision stats: {e}")
+        return {}
     
     def _row_to_decision(self, row) -> ActiveModeDecision:
         """Convert database row to ActiveModeDecision."""
+        pass
         from .schemas import RiskLevel, ActionStatus
         
         return ActiveModeDecision(

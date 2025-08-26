@@ -30,20 +30,20 @@ class LiquidTimeConstant(nn.Module):
         )
         
         # Liquid state update using real ODE
-        def liquid_ode(t, y):
+    def liquid_ode(t, y):
             y_tensor = torch.tensor(y.reshape(batch_size, self.units), dtype=torch.float32)
             dydt = (-y_tensor + sensory_activation) / self.tau.unsqueeze(0)
             return dydt.numpy().flatten()
         
-        # Solve ODE for liquid dynamics
-        t_span = (0, 0.1)  # 100ms integration
-        t_eval = [0.1]
+            # Solve ODE for liquid dynamics
+            t_span = (0, 0.1)  # 100ms integration
+            t_eval = [0.1]
         
-        states_np = states.detach().numpy().flatten()
-        sol = solve_ivp(liquid_ode, t_span, states_np, t_eval=t_eval, method='RK45')
+            states_np = states.detach().numpy().flatten()
+            sol = solve_ivp(liquid_ode, t_span, states_np, t_eval=t_eval, method='RK45')
         
-        new_states = torch.tensor(sol.y[:, -1].reshape(batch_size, self.units), dtype=torch.float32)
-        return new_states
+            new_states = torch.tensor(sol.y[:, -1].reshape(batch_size, self.units), dtype=torch.float32)
+            return new_states
 
 class RealLiquidNeuralNetwork(nn.Module):
     """Real LNN implementation with proper liquid dynamics"""
@@ -88,6 +88,7 @@ class RealLiquidNeuralNetwork(nn.Module):
     
     def reset_state(self):
         """Reset liquid state"""
+        pass
         self.liquid_state.zero_()
 
 class AdaptiveLiquidNetwork(RealLiquidNeuralNetwork):
@@ -129,8 +130,8 @@ class AdaptiveLiquidNetwork(RealLiquidNeuralNetwork):
         
         # Expand liquid layer
         new_tau = torch.cat([
-            self.liquid_layer.tau,
-            torch.rand(new_units - old_units) * 0.5 + 0.5
+        self.liquid_layer.tau,
+        torch.rand(new_units - old_units) * 0.5 + 0.5
         ])
         
         new_sensory_w = torch.zeros(new_units, new_units)
@@ -138,8 +139,8 @@ class AdaptiveLiquidNetwork(RealLiquidNeuralNetwork):
         new_sensory_w[old_units:, old_units:] = torch.randn(new_units - old_units, new_units - old_units) * 0.1
         
         new_sensory_sigma = torch.cat([
-            self.liquid_layer.sensory_sigma,
-            torch.randn(new_units - old_units) * 0.1
+        self.liquid_layer.sensory_sigma,
+        torch.randn(new_units - old_units) * 0.1
         ])
         
         # Update parameters
@@ -165,7 +166,7 @@ class AdaptiveLiquidNetwork(RealLiquidNeuralNetwork):
         self.liquid_units = new_units
     
     def _shrink_network(self, new_units: int):
-        """Shrink network by removing least active units"""
+            """Shrink network by removing least active units"""
         # Find least active units based on tau values
         _, keep_indices = torch.topk(self.liquid_layer.tau, new_units, largest=False)
         keep_indices = torch.sort(keep_indices)[0]
@@ -202,10 +203,10 @@ class AdaptiveLiquidNetwork(RealLiquidNeuralNetwork):
         adapted = self.adapt_structure(complexity)
         
         info = {
-            'complexity': complexity,
-            'current_units': self.current_units,
-            'adapted': adapted,
-            'avg_complexity': np.mean(self.complexity_history[-10:]) if len(self.complexity_history) >= 10 else complexity
+        'complexity': complexity,
+        'current_units': self.current_units,
+        'adapted': adapted,
+        'avg_complexity': np.mean(self.complexity_history[-10:]) if len(self.complexity_history) >= 10 else complexity
         }
         
         return output, info

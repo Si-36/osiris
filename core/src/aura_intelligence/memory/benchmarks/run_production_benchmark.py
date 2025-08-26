@@ -82,7 +82,7 @@ class TopologyDataGenerator:
         num_normal: int,
         num_anomaly: int,
         num_danger: int
-    ) -> List[Tuple[Dict[str, Any], TDAResult, str]]:
+        ) -> List[Tuple[Dict[str, Any], TDAResult, str]]:
         """Generate a full dataset for benchmarking."""
         dataset = []
         
@@ -141,12 +141,12 @@ class BenchmarkRunner:
         self.settings = get_benchmark_settings()
         self.results = {}
         
-    async def run_sync_benchmark(
+        async def run_sync_benchmark(
         self,
         memory: ShapeMemoryV2,
         dataset: List[Tuple[Dict[str, Any], TDAResult, str]],
         num_queries: int
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Benchmark synchronous implementation."""
         logger.info("Running synchronous benchmark...")
         
@@ -215,12 +215,12 @@ class BenchmarkRunner:
             }
         }
     
-    async def run_async_benchmark(
+        async def run_async_benchmark(
         self,
         memory: AsyncShapeMemoryV2,
         dataset: List[Tuple[Dict[str, Any], TDAResult, str]],
         num_queries: int
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Benchmark asynchronous implementation."""
         logger.info("Running asynchronous benchmark...")
         
@@ -266,269 +266,269 @@ class BenchmarkRunner:
                     
                     return elapsed, recall
                 
-                tasks.append(query_task(query_tda, expected_context))
+                    tasks.append(query_task(query_tda, expected_context))
             
-            # Execute batch
-            batch_results = await asyncio.gather(*tasks)
+                    # Execute batch
+                    batch_results = await asyncio.gather(*tasks)
             
-            for elapsed, recall in batch_results:
-                query_latencies.append(elapsed)
-                query_recalls.append(recall)
+                    for elapsed, recall in batch_results:
+                    query_latencies.append(elapsed)
+                    query_recalls.append(recall)
         
-        query_duration = time.time() - query_start
-        query_throughput = num_queries / query_duration
+                    query_duration = time.time() - query_start
+                    query_throughput = num_queries / query_duration
         
-        # Calculate metrics
-        query_latencies = np.array(query_latencies) * 1000  # Convert to ms
+                    # Calculate metrics
+                    query_latencies = np.array(query_latencies) * 1000  # Convert to ms
         
-        return {
-            "type": "asynchronous",
-            "store": {
-                "count": len(dataset),
-                "duration_s": store_duration,
-                "throughput_ops": store_throughput,
-                "batch_size": batch_size
-            },
-            "query": {
-                "count": num_queries,
-                "duration_s": query_duration,
-                "throughput_qps": query_throughput,
-                "latency_p50_ms": np.percentile(query_latencies, 50),
-                "latency_p95_ms": np.percentile(query_latencies, 95),
-                "latency_p99_ms": np.percentile(query_latencies, 99),
-                "recall_at_5": np.mean(query_recalls),
-                "batch_size": query_batch_size
-            }
-        }
+                    return {
+                    "type": "asynchronous",
+                    "store": {
+                    "count": len(dataset),
+                    "duration_s": store_duration,
+                    "throughput_ops": store_throughput,
+                    "batch_size": batch_size
+                    },
+                    "query": {
+                    "count": num_queries,
+                    "duration_s": query_duration,
+                    "throughput_qps": query_throughput,
+                    "latency_p50_ms": np.percentile(query_latencies, 50),
+                    "latency_p95_ms": np.percentile(query_latencies, 95),
+                    "latency_p99_ms": np.percentile(query_latencies, 99),
+                    "recall_at_5": np.mean(query_recalls),
+                    "batch_size": query_batch_size
+                    }
+                    }
     
     def generate_report(self, results: Dict[str, Any]) -> str:
-        """Generate comprehensive benchmark report."""
-        timestamp = datetime.now().isoformat()
+                    """Generate comprehensive benchmark report."""
+                    timestamp = datetime.now().isoformat()
         
-        report = f"""# Shape Memory V2 Production Benchmark Report
+                    report = f"""# Shape Memory V2 Production Benchmark Report
 
-Generated: {timestamp}
+        Generated: {timestamp}
 
-## Configuration
-- Vectors: {self.settings.num_vectors:,}
-- Queries: {self.settings.num_queries:,}
-- Dimensions: {self.settings.vector_dim}
+    ## Configuration
+        - Vectors: {self.settings.num_vectors:,}
+        - Queries: {self.settings.num_queries:,}
+        - Dimensions: {self.settings.vector_dim}
 
-## Results Summary
+    ## Results Summary
 
-### Synchronous Implementation
-"""
+    ### Synchronous Implementation
+        """
         
-        if "sync" in results:
-            sync = results["sync"]
-            report += f"""
-**Store Performance:**
-- Throughput: {sync['store']['throughput_ops']:.1f} ops/sec
-- P50 Latency: {sync['store']['latency_p50_ms']:.2f} ms
-- P95 Latency: {sync['store']['latency_p95_ms']:.2f} ms
-- P99 Latency: {sync['store']['latency_p99_ms']:.2f} ms
+                    if "sync" in results:
+                        sync = results["sync"]
+                    report += f"""
+        **Store Performance:**
+        - Throughput: {sync['store']['throughput_ops']:.1f} ops/sec
+        - P50 Latency: {sync['store']['latency_p50_ms']:.2f} ms
+        - P95 Latency: {sync['store']['latency_p95_ms']:.2f} ms
+        - P99 Latency: {sync['store']['latency_p99_ms']:.2f} ms
 
-**Query Performance:**
-- Throughput: {sync['query']['throughput_qps']:.1f} qps
-- P50 Latency: {sync['query']['latency_p50_ms']:.2f} ms
-- P95 Latency: {sync['query']['latency_p95_ms']:.2f} ms
-- P99 Latency: {sync['query']['latency_p99_ms']:.2f} ms
-- Recall@5: {sync['query']['recall_at_5']:.3f}
-"""
+        **Query Performance:**
+        - Throughput: {sync['query']['throughput_qps']:.1f} qps
+        - P50 Latency: {sync['query']['latency_p50_ms']:.2f} ms
+        - P95 Latency: {sync['query']['latency_p95_ms']:.2f} ms
+        - P99 Latency: {sync['query']['latency_p99_ms']:.2f} ms
+        - Recall@5: {sync['query']['recall_at_5']:.3f}
+        """
         
-        report += "\n### Asynchronous Implementation\n"
+                    report += "\n### Asynchronous Implementation\n"
         
-        if "async" in results:
-            async_res = results["async"]
-            report += f"""
-**Store Performance:**
-- Throughput: {async_res['store']['throughput_ops']:.1f} ops/sec
-- Batch Size: {async_res['store']['batch_size']}
-- Speedup: {async_res['store']['throughput_ops'] / sync['store']['throughput_ops']:.1f}x
+                    if "async" in results:
+                        async_res = results["async"]
+                    report += f"""
+        **Store Performance:**
+        - Throughput: {async_res['store']['throughput_ops']:.1f} ops/sec
+        - Batch Size: {async_res['store']['batch_size']}
+        - Speedup: {async_res['store']['throughput_ops'] / sync['store']['throughput_ops']:.1f}x
 
-**Query Performance:**
-- Throughput: {async_res['query']['throughput_qps']:.1f} qps
-- P50 Latency: {async_res['query']['latency_p50_ms']:.2f} ms
-- P95 Latency: {async_res['query']['latency_p95_ms']:.2f} ms
-- P99 Latency: {async_res['query']['latency_p99_ms']:.2f} ms
-- Recall@5: {async_res['query']['recall_at_5']:.3f}
-- Speedup: {async_res['query']['throughput_qps'] / sync['query']['throughput_qps']:.1f}x
-"""
+        **Query Performance:**
+        - Throughput: {async_res['query']['throughput_qps']:.1f} qps
+        - P50 Latency: {async_res['query']['latency_p50_ms']:.2f} ms
+        - P95 Latency: {async_res['query']['latency_p95_ms']:.2f} ms
+        - P99 Latency: {async_res['query']['latency_p99_ms']:.2f} ms
+        - Recall@5: {async_res['query']['recall_at_5']:.3f}
+        - Speedup: {async_res['query']['throughput_qps'] / sync['query']['throughput_qps']:.1f}x
+        """
         
-        # Production readiness assessment
-        report += "\n## Production Readiness Assessment\n\n"
+                    # Production readiness assessment
+                    report += "\n## Production Readiness Assessment\n\n"
         
-        p99_target = 5.0  # 5ms target
-        recall_target = 0.95
+                    p99_target = 5.0  # 5ms target
+                    recall_target = 0.95
         
-        sync_ready = (
-            sync['query']['latency_p99_ms'] <= p99_target and
-            sync['query']['recall_at_5'] >= recall_target
-        )
+                    sync_ready = (
+                    sync['query']['latency_p99_ms'] <= p99_target and
+                    sync['query']['recall_at_5'] >= recall_target
+                    )
         
-        async_ready = (
-            async_res['query']['latency_p99_ms'] <= p99_target and
-            async_res['query']['recall_at_5'] >= recall_target
-        )
+                    async_ready = (
+                    async_res['query']['latency_p99_ms'] <= p99_target and
+                    async_res['query']['recall_at_5'] >= recall_target
+                    )
         
-        if sync_ready:
-            report += "✅ **Synchronous implementation meets production requirements**\n"
-        else:
-            report += "❌ **Synchronous implementation does not meet requirements**\n"
+                    if sync_ready:
+                        report += "✅ **Synchronous implementation meets production requirements**\n"
+                    else:
+                    report += "❌ **Synchronous implementation does not meet requirements**\n"
             
-        if async_ready:
-            report += "✅ **Asynchronous implementation meets production requirements**\n"
-        else:
-            report += "❌ **Asynchronous implementation does not meet requirements**\n"
+                    if async_ready:
+                        report += "✅ **Asynchronous implementation meets production requirements**\n"
+                    else:
+                    report += "❌ **Asynchronous implementation does not meet requirements**\n"
         
-        # Prometheus metrics
-        report += "\n## Prometheus Metrics\n\n```\n"
-        report += generate_latest(PROMETHEUS_REGISTRY).decode('utf-8')
-        report += "```\n"
+                    # Prometheus metrics
+                    report += "\n## Prometheus Metrics\n\n```\n"
+                    report += generate_latest(PROMETHEUS_REGISTRY).decode('utf-8')
+                    report += "```\n"
         
-        return report
+                    return report
     
     def plot_results(self, results: Dict[str, Any], output_dir: Path):
-        """Generate visualization plots."""
-        # Latency comparison plot
-        plt.figure(figsize=(12, 6))
+                        """Generate visualization plots."""
+                    # Latency comparison plot
+                    plt.figure(figsize=(12, 6))
         
-        # Prepare data
-        categories = ['P50', 'P95', 'P99']
-        sync_latencies = [
-            results['sync']['query']['latency_p50_ms'],
-            results['sync']['query']['latency_p95_ms'],
-            results['sync']['query']['latency_p99_ms']
-        ]
-        async_latencies = [
-            results['async']['query']['latency_p50_ms'],
-            results['async']['query']['latency_p95_ms'],
-            results['async']['query']['latency_p99_ms']
-        ]
+                    # Prepare data
+                    categories = ['P50', 'P95', 'P99']
+                    sync_latencies = [
+                    results['sync']['query']['latency_p50_ms'],
+                    results['sync']['query']['latency_p95_ms'],
+                    results['sync']['query']['latency_p99_ms']
+                    ]
+                    async_latencies = [
+                    results['async']['query']['latency_p50_ms'],
+                    results['async']['query']['latency_p95_ms'],
+                    results['async']['query']['latency_p99_ms']
+                    ]
         
-        x = np.arange(len(categories))
-        width = 0.35
+                    x = np.arange(len(categories))
+                    width = 0.35
         
-        plt.bar(x - width/2, sync_latencies, width, label='Synchronous')
-        plt.bar(x + width/2, async_latencies, width, label='Asynchronous')
+                    plt.bar(x - width/2, sync_latencies, width, label='Synchronous')
+                    plt.bar(x + width/2, async_latencies, width, label='Asynchronous')
         
-        plt.xlabel('Percentile')
-        plt.ylabel('Latency (ms)')
-        plt.title('Query Latency Comparison')
-        plt.xticks(x, categories)
-        plt.legend()
-        plt.axhline(y=5.0, color='r', linestyle='--', label='Target (5ms)')
+                    plt.xlabel('Percentile')
+                    plt.ylabel('Latency (ms)')
+                    plt.title('Query Latency Comparison')
+                    plt.xticks(x, categories)
+                    plt.legend()
+                    plt.axhline(y=5.0, color='r', linestyle='--', label='Target (5ms)')
         
-        plt.tight_layout()
-        plt.savefig(output_dir / 'latency_comparison.png')
-        plt.close()
+                    plt.tight_layout()
+                    plt.savefig(output_dir / 'latency_comparison.png')
+                    plt.close()
         
-        # Throughput comparison
-        plt.figure(figsize=(10, 6))
+                    # Throughput comparison
+                    plt.figure(figsize=(10, 6))
         
-        metrics = ['Store Throughput\n(ops/sec)', 'Query Throughput\n(qps)']
-        sync_values = [
-            results['sync']['store']['throughput_ops'],
-            results['sync']['query']['throughput_qps']
-        ]
-        async_values = [
-            results['async']['store']['throughput_ops'],
-            results['async']['query']['throughput_qps']
-        ]
+                    metrics = ['Store Throughput\n(ops/sec)', 'Query Throughput\n(qps)']
+                    sync_values = [
+                    results['sync']['store']['throughput_ops'],
+                    results['sync']['query']['throughput_qps']
+                    ]
+                    async_values = [
+                    results['async']['store']['throughput_ops'],
+                    results['async']['query']['throughput_qps']
+                    ]
         
-        x = np.arange(len(metrics))
-        plt.bar(x - width/2, sync_values, width, label='Synchronous')
-        plt.bar(x + width/2, async_values, width, label='Asynchronous')
+                    x = np.arange(len(metrics))
+                    plt.bar(x - width/2, sync_values, width, label='Synchronous')
+                    plt.bar(x + width/2, async_values, width, label='Asynchronous')
         
-        plt.ylabel('Throughput')
-        plt.title('Throughput Comparison')
-        plt.xticks(x, metrics)
-        plt.legend()
+                    plt.ylabel('Throughput')
+                    plt.title('Throughput Comparison')
+                    plt.xticks(x, metrics)
+                    plt.legend()
         
-        plt.tight_layout()
-        plt.savefig(output_dir / 'throughput_comparison.png')
-        plt.close()
+                    plt.tight_layout()
+                    plt.savefig(output_dir / 'throughput_comparison.png')
+                    plt.close()
 
 
 async def main():
-    """Run the production benchmark."""
-    parser = argparse.ArgumentParser(description="Production benchmark for Shape Memory V2")
-    parser.add_argument("--vectors", type=int, default=100000, help="Number of vectors")
-    parser.add_argument("--queries", type=int, default=10000, help="Number of queries")
-    parser.add_argument("--output", type=Path, default=Path("benchmark_results"), help="Output directory")
+        """Run the production benchmark."""
+        parser = argparse.ArgumentParser(description="Production benchmark for Shape Memory V2")
+        parser.add_argument("--vectors", type=int, default=100000, help="Number of vectors")
+        parser.add_argument("--queries", type=int, default=10000, help="Number of queries")
+        parser.add_argument("--output", type=Path, default=Path("benchmark_results"), help="Output directory")
     
-    args = parser.parse_args()
+        args = parser.parse_args()
     
     # Create output directory
-    args.output.mkdir(exist_ok=True)
+        args.output.mkdir(exist_ok=True)
     
     # Initialize components
-    logger.info("Initializing benchmark...")
+        logger.info("Initializing benchmark...")
     
     # Generate dataset
-    generator = TopologyDataGenerator()
-    dataset = generator.generate_dataset(
+        generator = TopologyDataGenerator()
+        dataset = generator.generate_dataset(
         num_normal=int(args.vectors * 0.8),
         num_anomaly=int(args.vectors * 0.15),
         num_danger=int(args.vectors * 0.05)
-    )
+        )
     
-    logger.info(f"Generated {len(dataset)} topological patterns")
+        logger.info(f"Generated {len(dataset)} topological patterns")
     
     # Initialize storage
-    config = ShapeMemoryConfig(
+        config = ShapeMemoryConfig(
         storage_backend="redis",
         enable_fusion_scoring=True
-    )
+        )
     
     # Run synchronous benchmark
-    sync_memory = ShapeMemoryV2(config)
-    runner = BenchmarkRunner()
+        sync_memory = ShapeMemoryV2(config)
+        runner = BenchmarkRunner()
     
-    sync_results = await runner.run_sync_benchmark(
+        sync_results = await runner.run_sync_benchmark(
         sync_memory,
         dataset[:args.vectors],
         args.queries
-    )
+        )
     
     # Run asynchronous benchmark
-    redis_store = RedisVectorStore(RedisConfig())
-    async_store = AsyncRedisAdapter(redis_store)
-    async_memory = AsyncShapeMemoryV2(async_store)
+        redis_store = RedisVectorStore(RedisConfig())
+        async_store = AsyncRedisAdapter(redis_store)
+        async_memory = AsyncShapeMemoryV2(async_store)
     
-    async_results = await runner.run_async_benchmark(
+        async_results = await runner.run_async_benchmark(
         async_memory,
         dataset[:args.vectors],
         args.queries
-    )
+        )
     
     # Combine results
-    results = {
+        results = {
         "sync": sync_results,
         "async": async_results
-    }
+        }
     
     # Generate report
-    report = runner.generate_report(results)
-    report_path = args.output / "benchmark_report.md"
-    report_path.write_text(report)
-    logger.info(f"Report saved to {report_path}")
+        report = runner.generate_report(results)
+        report_path = args.output / "benchmark_report.md"
+        report_path.write_text(report)
+        logger.info(f"Report saved to {report_path}")
     
     # Save raw results
-    results_path = args.output / "benchmark_results.json"
-    with open(results_path, "w") as f:
+        results_path = args.output / "benchmark_results.json"
+        with open(results_path, "w") as f:
         json.dump(results, f, indent=2)
     
     # Generate plots
-    runner.plot_results(results, args.output)
-    logger.info(f"Plots saved to {args.output}")
+        runner.plot_results(results, args.output)
+        logger.info(f"Plots saved to {args.output}")
     
     # Clean up
-    sync_memory.close()
-    await async_memory.close()
+        sync_memory.close()
+        await async_memory.close()
     
-    logger.info("Benchmark complete!")
+        logger.info("Benchmark complete!")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+        if __name__ == "__main__":
+        asyncio.run(main())

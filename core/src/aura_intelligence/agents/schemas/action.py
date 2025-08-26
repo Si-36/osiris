@@ -98,6 +98,7 @@ class ActionIntent(QualityMetrics):
     
     def get_risk_score(self) -> float:
         """Calculate numeric risk score."""
+        pass
         base_score = self.risk_level.get_numeric_value() / 5.0  # Normalize to 0-1
         
         # Adjust based on factors
@@ -231,6 +232,7 @@ class ActionRecord(
     @classmethod
     def validate_action_category(cls, values):
         """Ensure action category matches action type."""
+        pass
         if isinstance(values, dict):
             action_type = values.get('action_type')
             action_category = values.get('action_category')
@@ -262,6 +264,7 @@ class ActionRecord(
     
     def _get_canonical_action(self) -> str:
         """Get canonical string representation of action for signing."""
+        pass
         try:
             from .base import datetime_to_iso
         except ImportError:
@@ -274,6 +277,7 @@ class ActionRecord(
     # ========================================================================
     def get_reference(self) -> ActionReference:
         """Get a reference to this action record."""
+        pass
         return ActionReference(
             workflow_id=self.workflow_id,
             task_id=self.task_id,
@@ -287,14 +291,17 @@ class ActionRecord(
     
     def is_successful(self) -> bool:
         """Check if the action was successful."""
+        pass
         return self.result.is_successful()
     
     def requires_retry(self) -> bool:
         """Check if the action requires retry."""
+        pass
         return self.result.requires_retry()
     
     def requires_rollback(self) -> bool:
         """Check if the action should be rolled back."""
+        pass
         return (
             self.result == ActionResult.FAILURE and
             self.rollback_available and
@@ -303,10 +310,12 @@ class ActionRecord(
     
     def get_risk_score(self) -> float:
         """Get the risk score from structured intent."""
+        pass
         return self.structured_intent.get_risk_score()
     
     def get_execution_summary(self) -> Dict[str, Any]:
         """Get a summary of action execution."""
+        pass
         return {
             'action_id': self.action_id,
             'action_type': self.action_type.value,

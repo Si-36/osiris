@@ -47,30 +47,30 @@ else:
     # Fallback tracer that does nothing
     class NoOpSpan:
         async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL agent processing with decision making"""
-        import time
-        import numpy as np
+            """REAL agent processing with decision making"""
+            import time
+            import numpy as np
         
-        start_time = time.time()
+            start_time = time.time()
         
-        # Extract features
-        features = self._extract_features(data)
+            # Extract features
+            features = self._extract_features(data)
         
-        # Make decision
-        decision = self._make_decision(features)
+            # Make decision
+            decision = self._make_decision(features)
         
-        # Execute action
-        result = await self._execute_action(decision)
+            # Execute action
+            result = await self._execute_action(decision)
         
-        return {
+            return {
             'status': 'success',
             'decision': decision,
             'result': result,
             'processing_time': time.time() - start_time,
             'confidence': 0.95
-        }
+            }
     
-        async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """REAL agent processing with decision making"""
         import time
         import numpy as np
@@ -96,50 +96,50 @@ else:
     
         def __enter__(self):
             return self
-        async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """REAL agent processing with decision making"""
-        import time
-        import numpy as np
+            async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            """REAL agent processing with decision making"""
+            import time
+            import numpy as np
         
-        start_time = time.time()
+            start_time = time.time()
         
         # Extract features
-        features = self._extract_features(data)
+            features = self._extract_features(data)
         
         # Make decision
-        decision = self._make_decision(features)
+            decision = self._make_decision(features)
         
         # Execute action
-        result = await self._execute_action(decision)
+            result = await self._execute_action(decision)
         
-        return {
+            return {
             'status': 'success',
             'decision': decision,
             'result': result,
             'processing_time': time.time() - start_time,
             'confidence': 0.95
-        }
+            }
     
     class NoOpTracer:
         def start_as_current_span(self, name):
             # Return a decorator function for @tracer.start_as_current_span usage
-            def decorator(func):
-                return func  # Just return the original function
+        def decorator(func):
+            return func  # Just return the original function
             return decorator
-    tracer = NoOpTracer()
+            tracer = NoOpTracer()
 
-if metrics:
-    meter = metrics.get_meter(__name__)
-else:
-    # Fallback meter that does nothing
-    class NoOpMeter:
-        def create_counter(self, **kwargs):
-            return NoOpCounter()
-        def create_histogram(self, **kwargs):
-            return NoOpHistogram()
-        def create_gauge(self, **kwargs):
-            return NoOpGauge()
-    meter = NoOpMeter()
+            if metrics:
+            meter = metrics.get_meter(__name__)
+            else:
+            # Fallback meter that does nothing
+            class NoOpMeter:
+                def create_counter(self, **kwargs):
+                    return NoOpCounter()
+                def create_histogram(self, **kwargs):
+                    return NoOpHistogram()
+                def create_gauge(self, **kwargs):
+                    return NoOpGauge()
+                    meter = NoOpMeter()
 
 # Fallback metric classes
 class NoOpCounter:
@@ -160,11 +160,11 @@ class NoOpCounter:
         result = await self._execute_action(decision)
         
         return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
+        'status': 'success',
+        'decision': decision,
+        'result': result,
+        'processing_time': time.time() - start_time,
+        'confidence': 0.95
         }
     
 class NoOpHistogram:
@@ -185,11 +185,11 @@ class NoOpHistogram:
         result = await self._execute_action(decision)
         
         return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
+        'status': 'success',
+        'decision': decision,
+        'result': result,
+        'processing_time': time.time() - start_time,
+        'confidence': 0.95
         }
     
 class NoOpGauge:
@@ -210,18 +210,18 @@ class NoOpGauge:
         result = await self._execute_action(decision)
         
         return {
-            'status': 'success',
-            'decision': decision,
-            'result': result,
-            'processing_time': time.time() - start_time,
-            'confidence': 0.95
+        'status': 'success',
+        'decision': decision,
+        'result': result,
+        'processing_time': time.time() - start_time,
+        'confidence': 0.95
         }
     
-# Fallback trace functions
-if not trace:
+    # Fallback trace functions
+    if not trace:
     def get_current_span():
         return NoOpSpan()
-    trace = type('trace', (), {'get_current_span': get_current_span})()
+        trace = type('trace', (), {'get_current_span': get_current_span})()
 
 
 class AgentRole(str, Enum):
@@ -272,12 +272,14 @@ class AgentMetrics:
     
     def get_success_rate(self) -> float:
         """Calculate task success rate."""
+        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_successful / self.tasks_processed
     
     def get_failure_rate(self) -> float:
         """Calculate task failure rate."""
+        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_failed / self.tasks_processed
@@ -315,6 +317,7 @@ class BaseAgent(ABC):
             instance_id: Instance ID for scaled deployments
             config: Agent configuration
         """
+        pass
         self.agent_id = agent_id
         self.role = role
         self.capabilities = capabilities
@@ -350,38 +353,40 @@ class BaseAgent(ABC):
     
     def _setup_metrics(self) -> None:
         """Setup OpenTelemetry metrics."""
+        pass
         self.task_counter = meter.create_counter(
-            name=f"agent_tasks_total",
-            description="Total number of tasks processed by agent",
-            unit="1"
+        name=f"agent_tasks_total",
+        description="Total number of tasks processed by agent",
+        unit="1"
         )
         
         self.task_duration = meter.create_histogram(
-            name=f"agent_task_duration_ms",
-            description="Task processing duration in milliseconds",
-            unit="ms"
+        name=f"agent_task_duration_ms",
+        description="Task processing duration in milliseconds",
+        unit="ms"
         )
         
         self.memory_query_counter = meter.create_counter(
-            name=f"agent_memory_queries_total",
-            description="Total number of memory queries",
-            unit="1"
+        name=f"agent_memory_queries_total",
+        description="Total number of memory queries",
+        unit="1"
         )
         
         self.message_counter = meter.create_counter(
-            name=f"agent_messages_total",
-            description="Total number of messages sent/received",
-            unit="1"
+        name=f"agent_messages_total",
+        description="Total number of messages sent/received",
+        unit="1"
         )
         
         self.health_gauge = meter.create_gauge(
-            name=f"agent_health_status",
-            description="Agent health status (1=healthy, 0=unhealthy)",
-            unit="1"
+        name=f"agent_health_status",
+        description="Agent health status (1=healthy, 0=unhealthy)",
+        unit="1"
         )
     
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start the agent and initialize services."""
+        pass
         if self._running:
             return
         
@@ -411,8 +416,9 @@ class BaseAgent(ABC):
             self._update_health_metric()
             raise
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop the agent and cleanup resources."""
+        pass
         self.status = AgentStatus.SHUTTING_DOWN
         self._update_health_metric()
         
@@ -420,7 +426,7 @@ class BaseAgent(ABC):
         
         # Cancel background tasks
         for task in self._background_tasks:
-            task.cancel()
+        task.cancel()
         
         if self._background_tasks:
             await asyncio.gather(*self._background_tasks, return_exceptions=True)
@@ -431,18 +437,18 @@ class BaseAgent(ABC):
         self.status = AgentStatus.STOPPED
         self._update_health_metric()
     
-    @abstractmethod
-    async def initialize(self) -> None:
+        @abstractmethod
+        async def initialize(self) -> None:
         """Agent-specific initialization logic."""
         pass
     
     @abstractmethod
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Agent-specific cleanup logic."""
         pass
     
-    @abstractmethod
-    async def process_task(self, state: AgentState) -> AgentState:
+        @abstractmethod
+        async def process_task(self, state: AgentState) -> AgentState:
         """
         Process a task and return updated state.
         
@@ -454,25 +460,26 @@ class BaseAgent(ABC):
         """
         pass
     
-    async def _register_message_handlers(self) -> None:
+        async def _register_message_handlers(self) -> None:
         """Register ACP message handlers."""
+        pass
         self.protocol.register_handler(
-            MessageType.REQUEST,
-            self._handle_request
+        MessageType.REQUEST,
+        self._handle_request
         )
         
         self.protocol.register_handler(
-            MessageType.NOTIFICATION,
-            self._handle_notification
+        MessageType.NOTIFICATION,
+        self._handle_notification
         )
         
         self.protocol.register_handler(
-            MessageType.BROADCAST,
-            self._handle_broadcast
+        MessageType.BROADCAST,
+        self._handle_broadcast
         )
     
-    @tracer.start_as_current_span("agent_handle_request")
-    async def _handle_request(self, envelope: ACPEnvelope) -> ACPResponse:
+        @tracer.start_as_current_span("agent_handle_request")
+        async def _handle_request(self, envelope: ACPEnvelope) -> ACPResponse:
         """Handle incoming request messages."""
         span = trace.get_current_span()
         span.set_attributes({
@@ -530,24 +537,24 @@ class BaseAgent(ABC):
                 processing_time_ms=processing_time
             )
     
-    async def _handle_notification(self, envelope: ACPEnvelope) -> None:
+        async def _handle_notification(self, envelope: ACPEnvelope) -> None:
         """Handle incoming notification messages."""
         # Default implementation - can be overridden by subclasses
         pass
     
-    async def _handle_broadcast(self, envelope: ACPEnvelope) -> None:
+        async def _handle_broadcast(self, envelope: ACPEnvelope) -> None:
         """Handle incoming broadcast messages."""
         # Default implementation - can be overridden by subclasses
         pass
     
     @tracer.start_as_current_span("agent_query_memory")
-    async def query_memory(
+        async def query_memory(
         self,
         query: str,
         tier: MemoryTier = MemoryTier.AUTO,
         limit: int = 10,
         context: Optional[Dict[str, Any]] = None
-    ) -> List[QueryResult]:
+        ) -> List[QueryResult]:
         """
         Query the unified memory system.
         
@@ -603,7 +610,7 @@ class BaseAgent(ABC):
             raise
     
     @tracer.start_as_current_span("agent_log_action")
-    async def log_action(
+        async def log_action(
         self,
         action_type: ActionType,
         action_name: str,
@@ -614,7 +621,7 @@ class BaseAgent(ABC):
         confidence: float = 0.5,
         impact_level: ImpactLevel = ImpactLevel.LOW,
         context_used: Optional[List[Dict[str, Any]]] = None
-    ) -> str:
+        ) -> str:
         """
         Log an action to the memory system.
         
@@ -659,30 +666,32 @@ class BaseAgent(ABC):
         
         return event.event_id
     
-    async def _health_monitor_loop(self) -> None:
+        async def _health_monitor_loop(self) -> None:
         """Background task to monitor agent health."""
+        pass
         while self._running:
-            try:
-                # Check agent health
-                health_ok = await self._check_health()
+        try:
+            # Check agent health
+        health_ok = await self._check_health()
                 
-                if health_ok and self.status == AgentStatus.DEGRADED:
-                    self.status = AgentStatus.HEALTHY
-                elif not health_ok and self.status == AgentStatus.HEALTHY:
-                    self.status = AgentStatus.DEGRADED
+        if health_ok and self.status == AgentStatus.DEGRADED:
+            self.status = AgentStatus.HEALTHY
+        elif not health_ok and self.status == AgentStatus.HEALTHY:
+        self.status = AgentStatus.DEGRADED
                 
-                self._update_health_metric()
+        self._update_health_metric()
                 
-                await asyncio.sleep(30)  # Check every 30 seconds
+        await asyncio.sleep(30)  # Check every 30 seconds
                 
-            except asyncio.CancelledError:
-                break
-            except Exception as e:
-                print(f"Error in health monitor: {e}")
-                await asyncio.sleep(30)
+        except asyncio.CancelledError:
+        break
+        except Exception as e:
+        print(f"Error in health monitor: {e}")
+        await asyncio.sleep(30)
     
-    async def _metrics_update_loop(self) -> None:
+        async def _metrics_update_loop(self) -> None:
         """Background task to update metrics."""
+        pass
         while self._running:
             try:
                 # Update uptime
@@ -697,29 +706,31 @@ class BaseAgent(ABC):
                 print(f"Error in metrics update: {e}")
                 await asyncio.sleep(60)
     
-    async def _check_health(self) -> bool:
+        async def _check_health(self) -> bool:
         """Check agent health status."""
+        pass
         try:
             # Basic health checks
-            if not self._running:
-                return False
+        if not self._running:
+            return False
             
-            # Check memory connectivity
-            stats = await self.memory.get_memory_stats()
-            if not stats:
-                return False
+        # Check memory connectivity
+        stats = await self.memory.get_memory_stats()
+        if not stats:
+            return False
             
-            # Check if we have too many failed tasks
-            if self.metrics.get_failure_rate() > 0.5:  # More than 50% failure rate
-                return False
+        # Check if we have too many failed tasks
+        if self.metrics.get_failure_rate() > 0.5:  # More than 50% failure rate
+        return False
             
-            return True
+        return True
             
         except Exception:
-            return False
+        return False
     
     def _update_health_metric(self) -> None:
         """Update the health metric."""
+        pass
         health_value = 1.0 if self.status == AgentStatus.HEALTHY else 0.0
         self.health_gauge.set(health_value, {
             "agent_id": self.agent_id,
@@ -729,20 +740,21 @@ class BaseAgent(ABC):
     
     def get_status(self) -> Dict[str, Any]:
         """Get agent status information."""
+        pass
         return {
-            'agent_id': self.agent_id,
-            'role': self.role.value,
-            'instance_id': self.instance_id,
-            'status': self.status.value,
-            'capabilities': [cap.value for cap in self.capabilities],
-            'metrics': {
-                'tasks_processed': self.metrics.tasks_processed,
-                'success_rate': self.metrics.get_success_rate(),
-                'uptime_seconds': self.metrics.uptime_seconds,
-                'memory_queries': self.metrics.memory_queries,
-                'messages_sent': self.metrics.messages_sent,
-                'messages_received': self.metrics.messages_received
-            },
-            'active_tasks': len(self.active_tasks),
-            'last_activity': self.metrics.last_activity
+        'agent_id': self.agent_id,
+        'role': self.role.value,
+        'instance_id': self.instance_id,
+        'status': self.status.value,
+        'capabilities': [cap.value for cap in self.capabilities],
+        'metrics': {
+        'tasks_processed': self.metrics.tasks_processed,
+        'success_rate': self.metrics.get_success_rate(),
+        'uptime_seconds': self.metrics.uptime_seconds,
+        'memory_queries': self.metrics.memory_queries,
+        'messages_sent': self.metrics.messages_sent,
+        'messages_received': self.metrics.messages_received
+        },
+        'active_tasks': len(self.active_tasks),
+        'last_activity': self.metrics.last_activity
         }
