@@ -109,6 +109,7 @@ class ResilienceMetrics:
         state: str,
         failure_rate: float
         ):
+            pass
         """Record circuit breaker state change."""
         state_value = {"closed": 0, "open": 1, "half_open": 2}.get(state, 0)
         
@@ -131,6 +132,7 @@ class ResilienceMetrics:
         queue_depth: int,
         rejected: int
         ):
+            pass
         """Record bulkhead metrics."""
         self.bulkhead_utilization.set(
             utilization * 100,
@@ -157,6 +159,7 @@ class ResilienceMetrics:
         delay_ms: float,
         succeeded: bool
         ):
+            pass
         """Record retry attempt."""
         self.retry_attempts.record(
             attempts,
@@ -176,6 +179,7 @@ class ResilienceMetrics:
         actual_ms: float,
         timed_out: bool
         ):
+            pass
         """Record timeout event."""
         self.operation_duration.record(
             actual_ms,
@@ -190,6 +194,7 @@ class ResilienceMetrics:
         Calculate overall resilience health score (0-100).
         
         Based on:
+            pass
         - Circuit breaker health
         - Bulkhead utilization
         - Retry success rate
@@ -422,18 +427,21 @@ class MetricsCollector:
         self.components[name] = component
         
         async def start(self):
+            pass
         """Start metrics collection."""
         pass
         self._collection_task = asyncio.create_task(self._collection_loop())
         logger.info("Started resilience metrics collector")
         
         async def stop(self):
+            pass
         """Stop metrics collection."""
         pass
         if self._collection_task:
             self._collection_task.cancel()
             
         async def _collection_loop(self):
+            pass
         """Main collection loop."""
         pass
         while True:
@@ -447,6 +455,7 @@ class MetricsCollector:
                 logger.error(f"Metrics collection error: {e}")
     
         async def _collect_metrics(self):
+            pass
         """Collect metrics from all components."""
         pass
         for name, component in self.components.items():
@@ -459,6 +468,7 @@ class MetricsCollector:
                 logger.error(f"Error collecting metrics from {name}: {e}")
     
         async def _process_component_metrics(self, component_name: str, metrics: Dict[str, Any]):
+            pass
         """Process metrics from a component."""
         # Circuit breaker metrics
         if "state" in metrics:

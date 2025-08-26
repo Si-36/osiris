@@ -22,6 +22,7 @@ class AgentRegistry:
         self._lock = asyncio.Lock()
     
         async def register_agent(self, agent: ICouncilAgent) -> bool:
+            pass
         """Register an agent in the registry."""
         async with self._lock:
             agent_id = agent.agent_id
@@ -45,8 +46,10 @@ class AgentRegistry:
             return True
     
         async def unregister_agent(self, agent_id: str) -> bool:
+            pass
         """Unregister an agent from the registry."""
         async with self._lock:
+            pass
         if agent_id not in self._agents:
             return False
             
@@ -55,10 +58,12 @@ class AgentRegistry:
         # Remove from capabilities
         capabilities = await agent.get_capabilities()
         for cap_str in capabilities:
+            pass
         try:
             capability = AgentCapability(cap_str)
         self._capabilities[capability].discard(agent_id)
         except ValueError:
+            pass
         pass
             
         # Remove agent
@@ -69,6 +74,7 @@ class AgentRegistry:
         self, 
         capability: AgentCapability
         ) -> List[ICouncilAgent]:
+            pass
         """Find agents with specific capability."""
         async with self._lock:
             agent_ids = self._capabilities.get(capability, set())
@@ -79,6 +85,7 @@ class AgentRegistry:
         capabilities: List[AgentCapability],
         require_all: bool = True
         ) -> List[ICouncilAgent]:
+            pass
         """Find agents with multiple capabilities."""
         async with self._lock:
             if not capabilities:
@@ -101,20 +108,25 @@ class AgentRegistry:
                 return [self._agents[agent_id] for agent_id in agent_ids]
     
         async def get_agent(self, agent_id: str) -> Optional[ICouncilAgent]:
+            pass
         """Get agent by ID."""
         async with self._lock:
+            pass
         return self._agents.get(agent_id)
     
         async def list_agents(self) -> List[ICouncilAgent]:
+            pass
         """List all registered agents."""
         pass
         async with self._lock:
             return list(self._agents.values())
     
         async def get_registry_stats(self) -> Dict[str, any]:
+            pass
         """Get registry statistics."""
         pass
         async with self._lock:
+            pass
         return {
         "total_agents": len(self._agents),
         "capabilities": {

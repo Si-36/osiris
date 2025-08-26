@@ -27,7 +27,7 @@ class ObservabilityConfig:
         self.enable_metrics = True
 
 
-            try:
+        try:
         from .context_managers import ObservabilityContext
             except ImportError:
     class ObservabilityContext:

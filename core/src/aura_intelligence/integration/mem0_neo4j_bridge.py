@@ -46,6 +46,7 @@ class Mem0Neo4jBridge:
         content: Dict[str, Any], 
         context_data: Optional[List[List[float]]] = None
         ) -> str:
+            pass
         """Store memory in both Mem0 and Neo4j with topological analysis"""
         
         # Step 1: Store in Mem0
@@ -70,9 +71,11 @@ class Mem0Neo4jBridge:
         return memory_id
     
         async def _link_memory_to_shape(self, memory_id: str, shape_hash: str):
+            pass
         """Create link between Mem0 memory and Neo4j shape"""
         if self.tda_bridge.driver:
             async with self.tda_bridge.driver.session() as session:
+                pass
         await session.run("""
         MATCH (s:Shape {betti_hash: $shape_hash})
         MERGE (m:Memory {memory_id: $memory_id})
@@ -86,6 +89,7 @@ class Mem0Neo4jBridge:
         agent_id: Optional[str] = None,
         limit: int = 10
         ) -> HybridMemoryResult:
+            pass
         """Search using both semantic and topological similarity"""
         start_time = time.perf_counter()
         
@@ -126,6 +130,7 @@ class Mem0Neo4jBridge:
         return 0.7 * semantic_score + 0.3 * topological_score
     
         async def get_context_with_shapes(self, agent_id: str, window_size: int = 50) -> Dict[str, Any]:
+            pass
         """Get agent context enriched with topological information"""
         
         # Get recent memories
@@ -154,19 +159,23 @@ class Mem0Neo4jBridge:
         }
     
         async def _get_shapes_for_memories(self, memory_ids: List[str]) -> List[Dict[str, Any]]:
+            pass
         """Get topological shapes associated with memories"""
         if not self.tda_bridge.driver:
             return []
             
         shapes = []
         async with self.tda_bridge.driver.session() as session:
+            pass
         for memory_id in memory_ids:
+            pass
         result = await session.run("""
         MATCH (m:Memory {memory_id: $memory_id})-[:HAS_SHAPE]->(s:Shape)
         RETURN s.betti_numbers, s.complexity_score, s.context_id
         """, memory_id=memory_id)
                 
         async for record in result:
+            pass
         shapes.append({
         'memory_id': memory_id,
         'betti_numbers': record['s.betti_numbers'],
@@ -186,9 +195,11 @@ class Mem0Neo4jBridge:
         return time_span.total_seconds() / 3600.0
     
         async def cleanup_old_links(self, days_old: int = 30):
+            pass
         """Clean up old memory-shape links"""
         if self.tda_bridge.driver:
             async with self.tda_bridge.driver.session() as session:
+                pass
         await session.run("""
         MATCH (m:Memory)-[r:HAS_SHAPE]->(s:Shape)
         WHERE s.created_at < datetime() - duration({days: $days_old})
@@ -201,5 +212,6 @@ class Mem0Neo4jBridge:
     def get_mem0_neo4j_bridge():
         global _mem0_neo4j_bridge
         if _mem0_neo4j_bridge is None:
+            pass
         _mem0_neo4j_bridge = Mem0Neo4jBridge()
         return _mem0_neo4j_bridge

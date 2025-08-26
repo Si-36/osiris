@@ -324,7 +324,7 @@ _settings: Optional[ShapeMemorySettings] = None
 _benchmark_settings: Optional[BenchmarkSettings] = None
 
 
-        def get_settings() -> ShapeMemorySettings:
+def get_settings() -> ShapeMemorySettings:
             """Get or create settings singleton."""
             global _settings
             if _settings is None:

@@ -175,7 +175,7 @@ class ACPProtocol:
         self.middleware.append(middleware_func)
     
     @tracer.start_as_current_span("acp_send_message")
-        async def send_message(
+    async def send_message(
         self,
         recipient: ACPEndpoint,
         message_type: MessageType,

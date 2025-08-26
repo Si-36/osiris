@@ -30,6 +30,7 @@ class AgentCouncil:
         self._initialized = False
         
         async def initialize(self):
+            pass
         """Initialize the council"""
         pass
         # In a real implementation, this would initialize actual agents
@@ -37,6 +38,7 @@ class AgentCouncil:
         self._initialized = True
         
         async def deliberate(self, context: Dict[str, Any], timeout: float = 30.0) -> Dict[str, Any]:
+            pass
         """
         Coordinate agent deliberation on the given context.
         
@@ -108,6 +110,7 @@ class AgentCouncil:
         }
         
         async def cleanup(self):
+            pass
         """Cleanup council resources"""
         pass
         logger.info("Agent council cleanup completed")

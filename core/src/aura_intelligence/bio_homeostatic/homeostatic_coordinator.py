@@ -11,6 +11,7 @@ class HomeostaticCoordinator:
         self.health_score = 1.0
         
         async def process_with_homeostasis(self, component_id: str, data: Any) -> Dict[str, Any]:
+            pass
         """Process data through bio-homeostatic pipeline"""
         # Apply metabolic constraints (prevents hallucination loops)
         result = await self.metabolic.process_with_metabolism(component_id, data)

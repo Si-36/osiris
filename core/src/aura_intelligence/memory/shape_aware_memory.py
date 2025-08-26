@@ -60,8 +60,10 @@ class TopologicalSignature:
         death_dist = wasserstein_distance(death1, death2)
         persistence_dist = (birth_dist + death_dist) / 2
         else:
+            pass
         persistence_dist = 0.0
         else:
+            pass
         persistence_dist = 0.0
         
         # Weighted combination
@@ -157,6 +159,7 @@ class ShapeAwareMemorySystem:
         
         # Create Neo4j indices
         async with self._driver.session() as session:
+            pass
         await session.run("""
         CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemory) ON (m.memory_id)
         """)
@@ -190,6 +193,7 @@ class ShapeAwareMemorySystem:
         
         # Store in Neo4j
         async with self._driver.session() as session:
+            pass
         await session.run("""
                 CREATE (m:ShapeMemory {
                     memory_id: $memory_id,
@@ -338,6 +342,7 @@ class ShapeAwareMemorySystem:
         cutoff_date = datetime.now(timezone.utc).timestamp() - (historical_window * 86400)
         
         async with self._driver.session() as session:
+            pass
         result = await session.run("""
                 MATCH (m:ShapeMemory)
                 WHERE m.context_type = 'anomaly'
@@ -438,6 +443,7 @@ class ShapeAwareMemorySystem:
         memory.update_access()
         
         async with self._driver.session() as session:
+            pass
         await session.run("""
         MATCH (m:ShapeMemory {memory_id: $memory_id})
         SET m.access_count = m.access_count + 1,
@@ -450,6 +456,7 @@ class ShapeAwareMemorySystem:
         })
     
         async def cleanup(self) -> None:
+            pass
         """Clean up connections."""
         pass
         if self._driver:
@@ -505,6 +512,7 @@ async def demo_shape_aware_memory():
     
     print(f"\nFound {len(similar_memories)} similar memories by shape:")
     for mem in similar_memories:
+        pass
     print(f"  - {mem.memory_id}: {mem.content}")
     
     await memory_system.cleanup()

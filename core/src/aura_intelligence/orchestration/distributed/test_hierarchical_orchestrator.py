@@ -45,7 +45,7 @@ class TestHierarchicalOrchestrator:
         assert tactical.authority_level > operational.authority_level
     
     @pytest.mark.asyncio
-        async def test_operational_layer_processing(self, orchestrator):
+    async def test_operational_layer_processing(self, orchestrator):
         """Test operational layer task execution"""
         pass
         context = {

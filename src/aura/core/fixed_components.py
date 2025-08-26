@@ -1595,7 +1595,7 @@ class Real2025AttentionComponent(RealComponent):
                 return {'error': f'Attention failed: {str(e)}'}
         
         return {'error': 'Invalid input - expected dict with input'}
-                }
+        }
             except Exception as e:
                 return {'error': f'Optimizer failed: {str(e)}'}
         

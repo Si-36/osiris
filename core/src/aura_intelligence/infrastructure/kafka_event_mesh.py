@@ -46,7 +46,7 @@ try:
     from aura_common.logging import get_logger
 except ImportError:
     import logging
-        def get_logger(name):
+    def get_logger(name):
             return logging.getLogger(name)
 
 logger = get_logger(__name__)

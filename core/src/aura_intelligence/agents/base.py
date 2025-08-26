@@ -169,7 +169,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
     @abstractmethod
-        async def _execute_step(self, state: TState, step_name: str) -> TState:
+    async def _execute_step(self, state: TState, step_name: str) -> TState:
         """
         Execute a specific step in the agent workflow.
         

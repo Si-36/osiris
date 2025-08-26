@@ -225,6 +225,7 @@ class ProductionCoRaLSystem:
         return ca_type in compatibility_map.get(ia_type, set())
     
         async def communication_round(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
+            pass
         """Execute one communication round with batched processing"""
         start_time = time.time()
         
@@ -363,5 +364,6 @@ _global_production_coral: Optional[ProductionCoRaLSystem] = None
         """Get global production CoRaL system"""
         global _global_production_coral
         if _global_production_coral is None:
+            pass
         _global_production_coral = ProductionCoRaLSystem()
         return _global_production_coral

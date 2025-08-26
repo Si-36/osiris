@@ -33,6 +33,7 @@ class SignatureVectorizer:
     for similarity search in DuckDB VSS.
     
     Features:
+        pass
     - Betti number encoding with normalization
     - Persistence diagram features
     - Hash-based uniqueness features
@@ -60,6 +61,7 @@ class SignatureVectorizer:
         self.logger.info(f"🔢 Signature Vectorizer initialized (dim={vector_dimension})")
     
         async def vectorize_signature(self, signature: TopologicalSignature) -> np.ndarray:
+            pass
         """
         Convert a topological signature to vector embedding.
         
@@ -133,9 +135,11 @@ class SignatureVectorizer:
         Synchronous version of vectorize_signature for thread pool execution.
 
         Args:
+            pass
         signature: TopologicalSignature to vectorize
 
         Returns:
+            pass
         Dense vector embedding of specified dimension
         """
 
@@ -150,6 +154,7 @@ class SignatureVectorizer:
         vector[idx + 1] = self._normalize_betti(signature.betti_1, max_val=50)
         vector[idx + 2] = self._normalize_betti(signature.betti_2, max_val=20)
         else:
+            pass
         # New format with betti_numbers list
         betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
         vector[idx] = self._normalize_betti(betti_nums[0], max_val=100)
@@ -161,6 +166,7 @@ class SignatureVectorizer:
         if hasattr(signature, 'anomaly_score'):
             vector[idx] = np.clip(signature.anomaly_score, 0.0, 1.0)
         else:
+            pass
         vector[idx] = np.clip(signature.consciousness_level, 0.0, 1.0)
         idx += self.anomaly_features
 
@@ -175,6 +181,7 @@ class SignatureVectorizer:
             persistence_features = self._extract_persistence_features(signature.persistence_diagram)
         vector[idx:idx + len(persistence_features)] = persistence_features[:self.persistence_features]
         else:
+            pass
         # Use Betti-based approximation
         persistence_features = self._approximate_persistence_features(signature)
         vector[idx:idx + len(persistence_features)] = persistence_features
@@ -191,6 +198,7 @@ class SignatureVectorizer:
         return vector
 
         except Exception as e:
+            pass
         self.logger.error(f"❌ Sync vectorization failed for signature {signature.signature_hash[:8]}...: {e}")
         # Return zero vector as fallback
         return np.zeros(self.vector_dimension, dtype=np.float32)
@@ -210,12 +218,14 @@ class SignatureVectorizer:
         try:
             hash_int = int(signature_hash[:16], 16) if len(signature_hash) >= 16 else 0
         except ValueError:
+            pass
         # Fallback to Python's hash function for non-hex strings
         hash_int = abs(hash(signature_hash)) % (2**32)
         
         # Extract binary features
         features = np.zeros(self.hash_features, dtype=np.float32)
         for i in range(self.hash_features):
+            pass
         features[i] = float((hash_int >> i) & 1) * 0.1  # Scale to [0, 0.1]
         
         return features
@@ -270,6 +280,7 @@ class SignatureVectorizer:
         if hasattr(signature, 'betti_0'):
             betti_0, betti_1, betti_2 = signature.betti_0, signature.betti_1, signature.betti_2
         else:
+            pass
         betti_nums = signature.betti_numbers + [0, 0, 0]  # Pad with zeros
         betti_0, betti_1, betti_2 = betti_nums[0], betti_nums[1], betti_nums[2]
 
@@ -288,11 +299,14 @@ class SignatureVectorizer:
 
         # Fill remaining with scaled Betti ratios
         for i in range(6, min(self.persistence_features, 12)):
+            pass
         if i % 3 == 0:
             features[i] = betti_0 / (betti_0 + betti_1 + betti_2 + 1)
         elif i % 3 == 1:
+            pass
         features[i] = betti_1 / (betti_0 + betti_1 + betti_2 + 1)
         else:
+            pass
         features[i] = betti_2 / (betti_0 + betti_1 + betti_2 + 1)
         
         return features
@@ -325,9 +339,11 @@ class SignatureVectorizer:
         if norm > 0:
             return vector / norm
         else:
+            pass
         return vector
     
         async def vectorize_batch(self, signatures: List[TopologicalSignature]) -> List[np.ndarray]:
+            pass
         """Vectorize a batch of signatures efficiently."""
         
         vectors = []
@@ -339,6 +355,7 @@ class SignatureVectorizer:
     
     def compute_similarity(self, vector1: np.ndarray, vector2: np.ndarray, 
         metric: str = "cosine") -> float:
+            pass
         """Compute similarity between two vectors."""
         
         if metric == "cosine":

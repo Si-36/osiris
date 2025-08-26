@@ -2,6 +2,7 @@
 Context-Aware Retry implementation for AURA Intelligence.
 
 Features:
+    pass
 - Error-type specific retry strategies
 - Retry budgets (token bucket algorithm)
 - Hedged requests for latency-sensitive operations
@@ -124,6 +125,7 @@ class RetryBudget:
         self.rejected_count = 0
         
         async def try_consume(self, tokens: int = 1) -> bool:
+            pass
         """Try to consume tokens from the budget."""
         async with self.lock:
             # Refill tokens based on time elapsed
@@ -178,6 +180,7 @@ class BackoffCalculator:
         strategy: Optional[RetryStrategy] = None,
         error_category: Optional[ErrorCategory] = None
         ) -> float:
+            pass
         """Calculate delay in milliseconds for the given attempt."""
         strategy = strategy or self.config.strategy
         
@@ -221,6 +224,7 @@ class BackoffCalculator:
         attempt: int,
         error_category: Optional[ErrorCategory]
         ) -> float:
+            pass
         """Calculate adaptive delay based on error type and system state."""
         # Base exponential backoff
         base_delay = self.config.initial_delay_ms * math.pow(
@@ -305,6 +309,7 @@ class HedgedRequestManager:
         request_id: Optional[str] = None,
         **kwargs
         ) -> T:
+            pass
         """Execute operation with hedged requests."""
         if not self.config.hedged_requests:
             return await operation(*args, **kwargs)
@@ -357,6 +362,7 @@ class HedgedRequestManager:
             self.active_hedges.pop(request_id, None)
     
         async def _execute_with_tracking(self, operation: Callable, *args, **kwargs) -> T:
+            pass
         """Execute operation with performance tracking."""
         start_time = datetime.now(timezone.utc)
         try:
@@ -376,6 +382,7 @@ class HedgedRequestManager:
         delay_ms: int,
         **kwargs
         ) -> T:
+            pass
         """Execute hedge request after delay."""
         await asyncio.sleep(delay_ms / 1000.0)
         
@@ -388,6 +395,7 @@ class ContextAwareRetry:
     Context-aware retry with advanced features.
     
     Features:
+        pass
     - Error-specific retry strategies
     - Retry budgets to prevent storms
     - Hedged requests for latency optimization
@@ -415,6 +423,7 @@ class ContextAwareRetry:
         context: Optional[Dict[str, Any]] = None,
         **kwargs
         ) -> T:
+            pass
         """Execute operation with context-aware retry."""
         context = context or {}
         operation_name = context.get("operation_name", operation.__name__)
@@ -521,6 +530,7 @@ class ContextAwareRetry:
         category: ErrorCategory,
         attempt: int
         ) -> bool:
+            pass
         """Determine if error should be retried."""
         # Circuit breaker open - check config
         if category == ErrorCategory.CIRCUIT_OPEN:
@@ -549,6 +559,7 @@ class ContextAwareRetry:
         category: ErrorCategory,
         context: Dict[str, Any]
         ) -> float:
+            pass
         """Get delay for specific error category."""
         # Check error-specific config
         if category in self.config.error_strategies:

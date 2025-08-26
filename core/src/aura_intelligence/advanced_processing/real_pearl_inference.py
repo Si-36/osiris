@@ -142,6 +142,7 @@ class RealPEARLInferenceEngine:
         return draft_length
     
         async def _generate_draft_tokens(self, input_tokens: List[int], draft_length: int) -> List[int]:
+            pass
         """Generate draft tokens using lightweight model"""
         start_time = time.perf_counter()
         
@@ -167,6 +168,7 @@ class RealPEARLInferenceEngine:
         return draft_tokens
     
         async def _pre_verify_first_token(self, input_tokens: List[int], first_draft_token: int) -> Dict[str, Any]:
+            pass
         """Pre-verify first draft token during drafting phase"""
         if not self.config.pre_verify_enabled:
             return {'verified': True, 'confidence': 1.0}
@@ -193,6 +195,7 @@ class RealPEARLInferenceEngine:
         }
     
         async def _parallel_verification(self, input_tokens: List[int], draft_tokens: List[int]) -> Dict[str, Any]:
+            pass
         """Parallel verification of draft tokens with target model"""
         start_time = time.perf_counter()
         
@@ -233,6 +236,7 @@ class RealPEARLInferenceEngine:
         }
     
         async def _post_verify_generation(self, input_tokens: List[int], verified_tokens: List[int]) -> List[int]:
+            pass
         """Generate additional tokens during verification phase"""
         if not self.config.post_verify_enabled:
             return []
@@ -275,6 +279,7 @@ class RealPEARLInferenceEngine:
         return min(efficiency, 15.0)  # Cap at 15x efficiency
     
         async def pearl_inference(self, input_tokens: List[int]) -> Dict[str, Any]:
+            pass
         """Main PEARL inference with adaptive draft length"""
         start_time = time.perf_counter()
         

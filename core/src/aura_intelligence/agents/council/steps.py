@@ -22,7 +22,7 @@ class WorkflowStep(ABC):
         self.config = config
     
     @abstractmethod
-        async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
+    async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
         """Execute the step."""
         pass
 

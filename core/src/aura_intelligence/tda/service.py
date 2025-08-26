@@ -62,6 +62,7 @@ class TDAService:
         self.engine = UnifiedTDAEngine()
         
         async def analyze(self, request: TDAServiceRequest) -> TDAServiceResponse:
+            pass
         """
         Analyze data using TDA.
         
@@ -96,6 +97,7 @@ class TDAService:
         )
         
         async def health_check(self) -> Dict[str, Any]:
+            pass
         """Check service health."""
         pass
         return {

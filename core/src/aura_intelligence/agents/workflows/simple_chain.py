@@ -67,6 +67,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
         return workflow
     
         async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
+            pass
         """Execute a specific step in the research workflow."""
         if step_name == "research":
             return await self.research_step(state)
@@ -76,6 +77,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
             raise ValueError(f"Unknown step: {step_name}")
     
         async def research_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+            pass
         """Perform research on the given query."""
         # In production, this would call search APIs or databases
         async with self.instrumentor.trace_llm_call(
@@ -129,6 +131,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
         return state
     
         async def validate_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+            pass
         """Validate research results."""
         # Check if we have enough quality results
         high_quality_results = [
@@ -206,6 +209,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         return workflow
     
         async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
+            pass
         """Execute a specific step in the analysis workflow."""
         if step_name == "analyze":
             return await self.analyze_step(state)
@@ -217,6 +221,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
             raise ValueError(f"Unknown step: {step_name}")
     
         async def analyze_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+            pass
         """Analyze research results to extract insights."""
         async with self.instrumentor.trace_llm_call(
             agent_name=self.name,
@@ -248,6 +253,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         return state
     
         async def synthesize_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+            pass
         """Synthesize findings into a summary."""
         # Create summary from insights
         state.analysis_summary = (
@@ -269,6 +275,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         return state
     
         async def recommend_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+            pass
         """Generate recommendations based on analysis."""
         # Generate recommendations (mock)
         state.recommendations = [
@@ -327,6 +334,7 @@ class ResearchAnalysisWorkflow:
         self.analysis_agent = instrumentor.instrument_agent(self.analysis_agent)
     
         async def run(self, query: str) -> Dict[str, Any]:
+            pass
         """
         Run the complete research and analysis workflow.
         

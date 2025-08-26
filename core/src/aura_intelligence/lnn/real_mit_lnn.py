@@ -32,6 +32,7 @@ class RealMITLNN(nn.Module):
         self.lnn = CfC(input_size, wiring)
         self.fallback_mode = False
         else:
+            pass
         # Fallback: Real ODE-based implementation
         self.lnn = self._create_ode_fallback()
         self.fallback_mode = True
@@ -72,6 +73,7 @@ class RealMITLNN(nn.Module):
                     )
             
                     except ImportError:
+                        pass
             # Basic fallback
                     return nn.Sequential(
                     nn.Linear(self.input_size, self.hidden_size),
@@ -82,11 +84,14 @@ class RealMITLNN(nn.Module):
                 def forward(self, x: torch.Tensor) -> torch.Tensor:
                     """Forward pass through real MIT LNN"""
                     if self.fallback_mode:
+                        pass
             # Simple fallback processing
                     return self.lnn(x)
                     else:
+                        pass
         # Real ncps processing
                     if x.dim() == 2:
+                        pass
                     x = x.unsqueeze(1)  # Add time dimension
                     return self.lnn(x)
     

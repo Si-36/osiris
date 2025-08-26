@@ -26,6 +26,7 @@ class WorkflowEngine:
     Workflow orchestration engine.
     
     2025 Pattern:
+        pass
     - Strategy pattern for steps
     - Dependency injection
     - Clean interfaces
@@ -52,6 +53,7 @@ class WorkflowEngine:
         return None
     
         async def execute_step(self, state: LNNCouncilState, step_name: str) -> LNNCouncilState:
+            pass
         """Execute a workflow step."""
         if step_name not in self.steps:
             raise ValueError(f"Unknown step: {step_name}")

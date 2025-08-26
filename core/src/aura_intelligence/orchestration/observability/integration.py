@@ -26,7 +26,7 @@ class ObservableWorkflowOrchestrator:
         self._active_spans: Dict[str, SpanContext] = {}
     
     @asynccontextmanager
-        async def observable_workflow(
+    async def observable_workflow(
         self,
         workflow_id: str,
         operation_name: str,

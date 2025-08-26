@@ -125,6 +125,7 @@ class MultiScaleProcessor:
             self.output_queues[scale.name] = queue.Queue(maxsize=10000)
             
         async def add_points(self, points: np.ndarray) -> Dict[str, DiagramUpdate]:
+            pass
         """
         Add points to all scales and process in parallel
         
@@ -180,6 +181,7 @@ class MultiScaleProcessor:
         scale_name: str,
         state: ScaleState
         ) -> Optional[DiagramUpdate]:
+            pass
         """Process a single scale (runs in worker thread/process)"""
         start_time = datetime.now()
         
@@ -273,6 +275,7 @@ class MultiScaleProcessor:
         return stats
         
         async def shutdown(self) -> None:
+            pass
         """Gracefully shutdown the processor"""
         pass
         logger.info("multi_scale_processor_shutdown_started")
@@ -344,6 +347,7 @@ class RaceConditionDetector:
 
 # Example usage
         if __name__ == "__main__":
+            pass
     # Define scales
         scales = [
         ScaleConfig("1min", window_size=1000, slide_interval=100, priority=3),
@@ -356,6 +360,7 @@ class RaceConditionDetector:
     
     # Simulate streaming data
         async def simulate_stream():
+            pass
         for i in range(100):
             points = np.random.randn(10, 3)
             updates = await processor.add_points(points)

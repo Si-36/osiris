@@ -80,7 +80,7 @@ class TDAAgentContextAdapter:
         self._subscriptions = {}
         
     @trace_span("enrich_agent_context")
-        async def enrich_agent_context(
+    async def enrich_agent_context(
         self,
         agent_id: str,
         base_context: AgentContext,

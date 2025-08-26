@@ -608,6 +608,7 @@ class TestReasoningPathGenerator:
     
     def test_approve_decision_reasoning(self, generator, sample_request, sample_confidence_metrics, 
         sample_validation_result, sample_state):
+            pass
         """Test reasoning path generation for approve decision."""
         pass
         reasoning_path = generator.generate_reasoning_path(
@@ -631,6 +632,7 @@ class TestReasoningPathGenerator:
     
     def test_deny_decision_reasoning(self, generator, sample_request, sample_confidence_metrics, 
         sample_state):
+            pass
         """Test reasoning path generation for deny decision."""
         pass
         # Create validation result with violations
@@ -659,6 +661,7 @@ class TestReasoningPathGenerator:
     
     def test_defer_decision_reasoning(self, generator, sample_request, sample_confidence_metrics, 
         sample_validation_result, sample_state):
+            pass
         """Test reasoning path generation for defer decision."""
         pass
         # Lower confidence for defer decision
@@ -681,6 +684,7 @@ class TestReasoningPathGenerator:
     
     def test_technical_details_inclusion(self, sample_request, sample_confidence_metrics, 
         sample_validation_result, sample_state):
+            pass
         """Test inclusion of technical details in reasoning."""
         pass
         # Generator with technical details enabled
@@ -716,6 +720,7 @@ class TestReasoningPathGenerator:
     
     def test_reasoning_with_warnings(self, generator, sample_request, sample_confidence_metrics, 
         sample_state):
+            pass
         """Test reasoning path generation with validation warnings."""
         pass
         validation_result = ValidationResult()

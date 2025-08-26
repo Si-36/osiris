@@ -2,12 +2,14 @@
 AURA Intelligence Consensus Protocols
 
 Advanced consensus mechanisms for distributed decision-making:
+    pass
 - Raft consensus for operational decisions
 - Byzantine fault tolerance for critical decisions
 - Multi-Raft for scalability
 - Neuro-symbolic validation for explainability
 
 Key Features:
+    pass
 - Hierarchical consensus based on decision criticality
 - Integration with Temporal workflows and Kafka event mesh
 - Explainable decisions with causal reasoning
@@ -97,6 +99,7 @@ class SimpleConsensus:
             setattr(self, key, value)
     
         async def decide(self, request):
+            pass
         return {"decision": "approved", "confidence": 0.8}
 
 class Decision:

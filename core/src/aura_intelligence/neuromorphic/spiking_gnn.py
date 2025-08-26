@@ -165,6 +165,7 @@ class NeuromorphicCoordinator:
         return adj
     
         async def neuromorphic_decision(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Make component selection using neuromorphic processing"""
         start_time = time.time()
         

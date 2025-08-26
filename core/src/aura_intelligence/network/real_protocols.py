@@ -8,6 +8,7 @@ class RealNetworkProtocol:
         self.connections = {}
     
         async def create_tcp_connection(self, host: str, port: int) -> str:
+            pass
         """Create real TCP connection"""
         try:
             reader, writer = await asyncio.open_connection(host, port)
@@ -18,6 +19,7 @@ class RealNetworkProtocol:
             return f"error:{e}"
     
         async def send_data(self, conn_id: str, data: bytes) -> bool:
+            pass
         """Send data over connection"""
         if conn_id in self.connections:
             try:
@@ -30,6 +32,7 @@ class RealNetworkProtocol:
         return False
     
         async def close_connection(self, conn_id: str):
+            pass
         """Close connection"""
         if conn_id in self.connections:
             reader, writer = self.connections[conn_id]

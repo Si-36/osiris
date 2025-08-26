@@ -401,7 +401,7 @@ CRYPTO_PROVIDERS: Dict[SignatureAlgorithm, CryptoProvider] = {
 }
 
 
-    def get_crypto_provider(algorithm: SignatureAlgorithm) -> CryptoProvider:
+def get_crypto_provider(algorithm: SignatureAlgorithm) -> CryptoProvider:
         """
         Get cryptographic provider for algorithm.
     

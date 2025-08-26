@@ -145,7 +145,7 @@ class UnifiedComponent(ABC):
     # ========================================================================
     
     @abstractmethod
-        async def initialize(self) -> bool:
+    async def initialize(self) -> bool:
         """Initialize the component. Returns True if successful."""
         pass
     

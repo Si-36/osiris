@@ -325,7 +325,7 @@ class TestLNNCouncilAgent:
         assert state.inference_start_time is not None
     
     @pytest.mark.asyncio
-        async def test_analyze_request_step(self, config, sample_request):
+    async def test_analyze_request_step(self, config, sample_request):
         """Test analyze request step."""
         pass
         agent = LNNCouncilAgent(config)

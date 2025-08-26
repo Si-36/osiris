@@ -179,7 +179,7 @@ class AURAComponentRegistry:
 
 _global_registry: Optional[AURAComponentRegistry] = None
 
-    def get_component_registry() -> AURAComponentRegistry:
+def get_component_registry() -> AURAComponentRegistry:
         global _global_registry
         if _global_registry is None:
         _global_registry = AURAComponentRegistry()

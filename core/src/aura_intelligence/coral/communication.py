@@ -126,6 +126,7 @@ class CoRaLCommunicationSystem:
         self.influence_scores = []
         
         async def communication_round(self, global_context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         # Phase 1: Information agents generate messages
         ia_messages = {}
         for agent_id, ia in self.information_agents.items():
@@ -176,5 +177,6 @@ _global_coral_system: Optional[CoRaLCommunicationSystem] = None
     def get_coral_system() -> CoRaLCommunicationSystem:
         global _global_coral_system
         if _global_coral_system is None:
+            pass
         _global_coral_system = CoRaLCommunicationSystem()
         return _global_coral_system

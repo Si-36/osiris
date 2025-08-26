@@ -120,10 +120,12 @@ class RealTDA:
     def dfs(node):
         visited[node] = True
         for neighbor in range(n_points):
+            pass
         if adjacency[node, neighbor] and not visited[neighbor]:
             dfs(neighbor)
         
         for i in range(n_points):
+            pass
         if not visited[i]:
             dfs(i)
         components += 1
@@ -148,6 +150,7 @@ class RealTDA:
             # Convert 1D to 2D point cloud
         points = data.reshape(-1, 1)
         else:
+            pass
         points = data
         
         # Compute persistence

@@ -224,7 +224,7 @@ class UnifiedMemory:
         return None
     
     @tracer.start_as_current_span("unified_memory_query")
-        async def query(
+    async def query(
         self,
         query: str,
         tier: MemoryTier = MemoryTier.AUTO,

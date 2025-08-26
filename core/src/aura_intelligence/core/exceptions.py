@@ -662,15 +662,15 @@ class ErrorAnalysisManager:
 _global_error_manager: Optional[ErrorAnalysisManager] = None
 
 
-    def get_error_analysis_manager() -> ErrorAnalysisManager:
+def get_error_analysis_manager() -> ErrorAnalysisManager:
         """Get the global error analysis manager instance."""
         global _global_error_manager
         if _global_error_manager is None:
-        _global_error_manager = ErrorAnalysisManager()
+            _global_error_manager = ErrorAnalysisManager()
         return _global_error_manager
 
 
-    def register_system_error(error: AuraError) -> Dict[str, Any]:
-        """Register an error with the global error analysis system."""
-        manager = get_error_analysis_manager()
-        return manager.register_error(error)
+def register_system_error(error: AuraError) -> Dict[str, Any]:
+    """Register an error with the global error analysis system."""
+    manager = get_error_analysis_manager()
+    return manager.register_error(error)

@@ -24,6 +24,7 @@ class SimpleAgent:
         self.name = config.name
     
         async def make_decision(self, request: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Make a simple decision."""
         # Simulate neural inference
         confidence = 0.85
@@ -88,5 +89,6 @@ async def main():
 
 
         if __name__ == "__main__":
+            pass
         success = asyncio.run(main())
         exit(0 if success else 1)

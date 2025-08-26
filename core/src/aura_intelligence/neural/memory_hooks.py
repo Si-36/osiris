@@ -78,6 +78,7 @@ class LNNMemoryHooks:
             try:
                 await self._flush_task
             except asyncio.CancelledError:
+                pass
         pass
                 
         logger.info(f"LNN memory hooks stopped. Processed: {self._events_processed}, Failed: {self._events_failed}")
@@ -225,6 +226,7 @@ class LNNMemoryHooks:
         # Get events to process
         events_to_process = []
         while self._event_queue and len(events_to_process) < self.batch_size:
+            pass
         events_to_process.append(self._event_queue.popleft())
             
         if not events_to_process:
@@ -236,13 +238,16 @@ class LNNMemoryHooks:
         # Group by event type for batch processing
         by_type: Dict[str, List[MemoryEvent]] = {}
         for event in events_to_process:
+            pass
         by_type.setdefault(event.event_type, []).append(event)
                 
         # Process each type
         for event_type, events in by_type.items():
+            pass
         try:
             memories = []
         for event in events:
+            pass
         memory = {
         "agent_id": event.agent_id,
         "memory_type": event.event_type,
@@ -258,11 +263,13 @@ class LNNMemoryHooks:
         self._events_processed += len(memories)
                     
         except Exception as e:
+            pass
         logger.error(f"Failed to process {event_type} events: {e}")
         self._events_failed += len(events)
                     
         # Re-queue failed events if queue has space
         for event in events:
+            pass
         if len(self._event_queue) < self._event_queue.maxlen:
             self._event_queue.append(event)
                             
@@ -303,6 +310,7 @@ class LNNMemoryHooks:
         return embedding
         
         async def cleanup_old_memories(self):
+            pass
         """Remove memories older than retention period."""
         pass
         if not self.memory:

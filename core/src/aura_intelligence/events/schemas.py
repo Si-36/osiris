@@ -96,7 +96,7 @@ class EventSchema(BaseModel):
         }
     
     @validator('partition_key', always=True)
-        def set_partition_key(cls, v, values):
+    def set_partition_key(cls, v, values):
             """Set partition key if not provided."""
             pass
             if v is None:

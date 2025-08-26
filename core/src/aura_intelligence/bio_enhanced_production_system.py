@@ -51,6 +51,7 @@ class BioEnhancedAURA:
         return None
 
         async def process_enhanced(self, request: Any, component_id: Optional[str] = None) -> Dict[str, Any]:
+            pass
         """Process through complete bio-enhanced pipeline"""
         t0 = time.perf_counter()
         enhancements = {}
@@ -111,6 +112,7 @@ class BioEnhancedAURA:
         }
     
         async def _swarm_bg_check(self, request: Any):
+            pass
         """Background swarm verification"""
         try:
             async with self._swarm_tokens:

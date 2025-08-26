@@ -35,6 +35,7 @@ class PEARLInferenceEngine:
         self.acceptance_history = []
         
         async def pearl_inference(self, input_tokens: List[int]) -> Dict[str, Any]:
+            pass
         """Main PEARL inference with adaptive optimization"""
         start_time = time.perf_counter()
         
@@ -79,11 +80,13 @@ class PEARLInferenceEngine:
         return base_length
     
         async def _generate_draft_tokens(self, input_tokens: List[int], length: int) -> List[int]:
+            pass
         """Fast draft generation with small model"""
         await asyncio.sleep(0.002)  # 2ms simulation
         return [hash(str(input_tokens)) % 1000 + i for i in range(length)]
     
         async def _parallel_verification(self, draft_tokens: List[int]) -> Dict[str, Any]:
+            pass
         """Parallel verification with target model"""
         await asyncio.sleep(0.005)  # 5ms simulation
         

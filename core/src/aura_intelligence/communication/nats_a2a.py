@@ -3,6 +3,7 @@
 2025 State-of-the-Art Agent-to-Agent Communication
 
 Features:
+    pass
 - 10M+ messages/sec throughput
 - <1ms latency for local cluster
 - Built-in clustering and failover
@@ -516,16 +517,19 @@ class NATSA2ASystem:
         self.metrics['avg_latency_ms'] = (alpha * latency_ms) + ((1 - alpha) * current_avg)
     
         async def _error_callback(self, error) -> None:
+            pass
         """Handle NATS connection errors"""
         pass
         print(f"NATS Error: {error}")
     
         async def _disconnected_callback(self) -> None:
+            pass
         """Handle NATS disconnection"""
         pass
         print("NATS Disconnected - attempting reconnection...")
     
         async def _reconnected_callback(self) -> None:
+            pass
         """Handle NATS reconnection"""
         pass
         print("NATS Reconnected successfully")

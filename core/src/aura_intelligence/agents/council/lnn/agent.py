@@ -201,6 +201,7 @@ class LNNCouncilAgent(ICouncilAgent):
         request: CouncilRequest,
         start_time: float
         ) -> CouncilResponse:
+            pass
         """Create a delegation response when agent can't handle request."""
         return CouncilResponse(
             request_id=request.request_id,
@@ -218,6 +219,7 @@ class LNNCouncilAgent(ICouncilAgent):
         error: str,
         start_time: float
         ) -> CouncilResponse:
+            pass
         """Create an error response."""
         return CouncilResponse(
             request_id=request.request_id,
@@ -231,6 +233,7 @@ class LNNCouncilAgent(ICouncilAgent):
         )
     
         async def _store_decision(self, response: CouncilResponse):
+            pass
         """Store decision using storage adapter."""
         try:
             await self.storage_adapter.store_decision(
@@ -249,6 +252,7 @@ class LNNCouncilAgent(ICouncilAgent):
             )
     
         async def _publish_decision(self, response: CouncilResponse):
+            pass
         """Publish decision event."""
         try:
             await self.event_publisher.publish_decision(
@@ -292,16 +296,19 @@ class LNNCouncilAgent(ICouncilAgent):
         )
     
         async def get_capabilities(self) -> List[str]:
+            pass
         """Get agent capabilities."""
         pass
         return [cap.value for cap in self.capabilities]
     
         async def get_metrics(self) -> AgentMetrics:
+            pass
         """Get agent performance metrics."""
         pass
         return self._metrics
     
         async def health_check(self) -> Dict[str, Any]:
+            pass
         """Perform health check."""
         pass
         health = {
@@ -341,6 +348,7 @@ class LNNCouncilAgent(ICouncilAgent):
         return health
     
         async def initialize(self):
+            pass
         """Initialize the agent and all components."""
         pass
         logger.info("Initializing LNN Council Agent", agent_id=self.agent_id)
@@ -355,6 +363,7 @@ class LNNCouncilAgent(ICouncilAgent):
         logger.info("LNN Council Agent initialized successfully", agent_id=self.agent_id)
     
         async def cleanup(self):
+            pass
         """Cleanup resources."""
         pass
         logger.info("Cleaning up LNN Council Agent", agent_id=self.agent_id)

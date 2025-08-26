@@ -12,6 +12,7 @@ except ImportError:
 class MetabolicSignals:
     def __init__(self, get_utility: Callable[[str], float], get_influence: Callable[[str], float], 
         get_efficiency: Callable[[str], float], get_risk: Callable[[str], float]):
+            pass
         self.get_utility = get_utility
         self.get_influence = get_influence  
         self.get_efficiency = get_efficiency
@@ -22,6 +23,7 @@ class MetabolicManager:
     
     def __init__(self, registry=None, signals: Optional[MetabolicSignals]=None, 
         redis_url: str="redis://localhost:6379/0", tick: float=5.0):
+            pass
         self.registry = registry or self._get_registry()
         self.tick = tick
         self.last_reset = time.time()
@@ -78,6 +80,7 @@ class MetabolicManager:
             self.in_mem[mapname][cid] = val
 
         async def periodic_update(self):
+            pass
         """Update budgets based on utility/influence/efficiency/risk signals"""
         pass
         while True:
@@ -116,6 +119,7 @@ class MetabolicManager:
 
         async def process_with_metabolism(self, component_id: str, data: Any,
         context: Optional[Dict[str,Any]]=None) -> Dict[str,Any]:
+            pass
         """Main processing with metabolic constraints"""
         context = context or {}
         

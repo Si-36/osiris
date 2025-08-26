@@ -3,6 +3,7 @@
 2025 State-of-the-Art Cognitive Control for AURA Intelligence
 
 Implements executive functions based on latest neuroscience research:
+    pass
 - Working Memory with capacity limits and interference
 - Cognitive Flexibility for adaptive plan modification  
 - Inhibitory Control for filtering inappropriate actions
@@ -154,6 +155,7 @@ class CognitiveFlexibility:
         self.adaptation_rate: float = 0.1
         
         async def switch_context(self, new_context: str) -> float:
+            pass
         """Switch to new context and return switch cost"""
         if self.current_context == new_context:
             return 0.0
@@ -173,6 +175,7 @@ class CognitiveFlexibility:
         return switch_cost
     
         async def adapt_plan(self, plan: Plan, new_context: Dict[str, Any]) -> Plan:
+            pass
         """Adapt plan based on new context"""
         # Simple adaptation: adjust step priorities based on context
         adapted_steps = []
@@ -216,6 +219,7 @@ class InhibitoryControl:
         action: Dict[str, Any], 
         context: Dict[str, Any]
         ) -> Tuple[bool, str]:
+            pass
         """Determine if action should be inhibited"""
         action_type = action.get('type', 'unknown')
         
@@ -271,6 +275,7 @@ class PlanningSystem:
         context: Dict[str, Any],
         strategy: Optional[str] = None
         ) -> Plan:
+            pass
         """Create execution plan for goal"""
         strategy = strategy or self.default_strategy
         planning_func = self.planning_strategies.get(strategy, self._hierarchical_planning)
@@ -292,6 +297,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
+            pass
         """Hierarchical task decomposition"""
         steps = []
         
@@ -317,6 +323,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
+            pass
         """Means-ends analysis planning"""
         steps = []
         current_state = context.get('current_state', {})
@@ -340,6 +347,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
+            pass
         """Reactive planning based on current context"""
         return [{
             'action': 'reactive_execute',
@@ -354,6 +362,7 @@ class PlanningSystem:
         current_state: Dict[str, Any], 
         target_state: Dict[str, Any]
         ) -> List[str]:
+            pass
         """Find differences between current and target states"""
         differences = []
         
@@ -369,6 +378,7 @@ class PlanningSystem:
         steps: List[Dict[str, Any]], 
         context: Dict[str, Any]
         ) -> float:
+            pass
         """Estimate confidence in plan success"""
         if not steps:
             return 0.0
@@ -414,12 +424,14 @@ class ExecutiveFunction(SystemComponent):
         }
     
         async def start(self) -> None:
+            pass
         """Start executive function system"""
         pass
         self.current_state = ExecutiveState.IDLE
         print("🧠 Executive Function System started")
     
         async def stop(self) -> None:
+            pass
         """Stop executive function system"""
         pass
         self.current_state = ExecutiveState.IDLE
@@ -430,6 +442,7 @@ class ExecutiveFunction(SystemComponent):
         goal: Goal, 
         context: Dict[str, Any] = None
         ) -> ConsciousDecision:
+            pass
         """Process a goal through the executive function system"""
         context = context or {}
         
@@ -485,6 +498,7 @@ class ExecutiveFunction(SystemComponent):
         plan: Plan, 
         context: Dict[str, Any]
         ) -> Dict[str, Any]:
+            pass
         """Execute a plan step by step"""
         results = []
         
@@ -530,6 +544,7 @@ class ExecutiveFunction(SystemComponent):
         step: Dict[str, Any], 
         context: Dict[str, Any]
         ) -> Dict[str, Any]:
+            pass
         """Execute a single plan step"""
         # Simulate step execution
         execution_time = step.get('estimated_time', 1.0)

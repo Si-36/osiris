@@ -509,7 +509,7 @@ ACTION_CATEGORIES: Dict[ActionType, ActionCategory] = {
 }
 
 
-    def get_action_category(action_type: ActionType) -> ActionCategory:
+def get_action_category(action_type: ActionType) -> ActionCategory:
         """Get the category for an action type."""
         return ACTION_CATEGORIES.get(action_type, ActionCategory.INFRASTRUCTURE)
 

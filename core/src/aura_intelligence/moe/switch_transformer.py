@@ -82,6 +82,7 @@ class SwitchTransformerMoE(nn.Module):
         return x_flat, routing_info
     
         async def route_to_components(self, x: torch.Tensor) -> Dict[str, Any]:
+            pass
         """Route tokens to actual AURA components"""
         x_flat, routing_info = self.forward(x)
         expert_indices = routing_info['expert_indices']

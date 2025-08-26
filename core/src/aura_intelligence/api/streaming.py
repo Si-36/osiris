@@ -27,6 +27,7 @@ class ShapeStreamManager:
         self.is_running = False
     
         async def connect(self, websocket: WebSocket):
+            pass
         """Accept new WebSocket connection"""
         await websocket.accept()
         self.active_connections.append(websocket)
@@ -36,6 +37,7 @@ class ShapeStreamManager:
         self.active_connections.remove(websocket)
     
         async def broadcast_shape_data(self, data: Dict):
+            pass
         """Send shape data to all connected clients"""
         message = json.dumps(data)
         
@@ -52,6 +54,7 @@ class ShapeStreamManager:
             self.disconnect(conn)
     
         async def stream_analysis(self, analysis_result: Dict):
+            pass
         """Stream analysis results with topological data"""
         # Extract topological features
         if 'topological_signature' in analysis_result:
@@ -103,6 +106,7 @@ async def shape_stream_endpoint(websocket: WebSocket):
         WebSocket endpoint for real-time shape streaming
     
         Clients connect to receive:
+            pass
         - Betti numbers (topological invariants)
         - Persistence diagrams
         - Risk scores
@@ -111,6 +115,7 @@ async def shape_stream_endpoint(websocket: WebSocket):
         await shape_stream_manager.connect(websocket)
     
         try:
+            pass
         # Send initial connection message
         await websocket.send_text(json.dumps({
             'type': 'connection',
@@ -132,8 +137,10 @@ async def shape_stream_endpoint(websocket: WebSocket):
             await simulate_shape_update(websocket)
             
         except WebSocketDisconnect:
+            pass
         shape_stream_manager.disconnect(websocket)
         except Exception as e:
+            pass
         print(f"WebSocket error: {e}")
         shape_stream_manager.disconnect(websocket)
 
@@ -171,12 +178,14 @@ async def simulate_shape_update(websocket: WebSocket):
     
     # Add detected patterns based on topology
         if n_loops > 0:
+            pass
         shape_data['patterns_detected'].append({
             'name': 'stuck_loop',
             'confidence': 0.7 + random.random() * 0.25
         })
     
         if n_components > 2:
+            pass
         shape_data['patterns_detected'].append({
             'name': 'context_fragmentation',
             'confidence': 0.6 + random.random() * 0.3

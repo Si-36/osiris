@@ -299,7 +299,7 @@ class EnhancementLevel:
 
 
 @lru_cache(maxsize=1)
-    def get_config() -> AURAConfig:
+def get_config() -> AURAConfig:
         """Get the global configuration instance."""
         global _config
     

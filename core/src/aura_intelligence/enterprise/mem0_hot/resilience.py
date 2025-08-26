@@ -68,6 +68,7 @@ class ExponentialBackoff:
                    *args,
                    operation_name: str = "operation",
                    **kwargs) -> Any:
+                       pass
         """
         Execute function with exponential backoff retry.
         
@@ -179,6 +180,7 @@ class CircuitBreaker:
         self.logger.info(f"⚡ Circuit breaker '{name}' initialized")
     
         async def call(self, func: Callable, *args, **kwargs) -> Any:
+            pass
         """
         Execute function through circuit breaker.
         
@@ -360,6 +362,7 @@ class DeadLetterQueue:
                            operation_data: Dict[str, Any],
                            error_message: str,
                            retry_count: int = 0):
+                               pass
         """Add failed operation to dead letter queue."""
         
         if len(self.queue) >= self.max_size:

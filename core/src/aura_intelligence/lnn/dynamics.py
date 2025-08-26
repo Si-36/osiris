@@ -206,7 +206,7 @@ class ContinuousTimeRNN(nn.Module):
 # Aliases for compatibility
 AdaptiveStepSolver = AdaptiveRK45
 
-    def liquid_dynamics(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+def liquid_dynamics(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
         """Compatibility function for liquid dynamics."""
         dynamics = LiquidDynamics()
         if len(args) >= 3:

@@ -306,6 +306,7 @@ class FaissKNNIndex(BaseKNNIndex):
                 # Use restricted unpickler for security
                 class RestrictedUnpickler(pickle.Unpickler):
                     def find_class(self, module, name):
+                        pass
         # Only allow safe classes
                         ALLOWED_CLASSES = {
                             ('builtins', 'dict'),
@@ -326,6 +327,7 @@ class FaissKNNIndex(BaseKNNIndex):
         
         # Reconstruct config if needed
                         if isinstance(metadata.get('config'), dict):
+                            pass
                         self.config = KNNConfig(**metadata['config'])
         
                         logger.info(f"Loaded FAISS index from {path} with {len(self._ids)} vectors")
@@ -595,6 +597,7 @@ class HybridKNNIndex:
     Production-ready k-NN index that automatically selects the best backend.
     
     Features:
+        pass
     - Automatic backend selection based on data size
     - Seamless switching between backends
     - Thread-safe operations

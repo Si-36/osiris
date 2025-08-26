@@ -28,6 +28,7 @@ class ProductionMetabolicManager:
         asyncio.create_task(self._periodic_update_safe())
     
         async def _periodic_update_safe(self):
+            pass
         """Safe periodic update that won't crash"""
         pass
         while self._running:
@@ -39,6 +40,7 @@ class ProductionMetabolicManager:
                 await asyncio.sleep(10.0)  # Wait longer on error
     
         async def _update_all_budgets(self):
+            pass
         """Update budgets for all components using real AURA signals"""
         pass
         # Get all 209 components
@@ -81,6 +83,7 @@ class ProductionMetabolicManager:
     
         async def process_with_metabolism(self, component_id: str, data: Any,
         context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+            pass
         """Process with metabolic regulation"""
         context = context or {}
         

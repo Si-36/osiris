@@ -2,6 +2,7 @@
 Neo4j Adapter for AURA Intelligence.
 
 Provides async interface to Neo4j knowledge graph with:
+    pass
 - Connection pooling
 - Automatic retry logic
 - Query optimization
@@ -59,6 +60,7 @@ class Neo4jAdapter:
         self._initialized = False
         
         async def initialize(self):
+            pass
         """Initialize the Neo4j driver."""
         pass
         if self._initialized:
@@ -88,6 +90,7 @@ class Neo4jAdapter:
                 raise
                 
         async def close(self):
+            pass
         """Close the Neo4j driver."""
         pass
         if self._driver:
@@ -97,6 +100,7 @@ class Neo4jAdapter:
             
     @asynccontextmanager
         async def session(self, database: Optional[str] = None):
+            pass
         """Create a Neo4j session."""
         if not self._initialized:
             await self.initialize()
@@ -114,6 +118,7 @@ class Neo4jAdapter:
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
         ) -> List[Dict[str, Any]]:
+            pass
         """Execute a read query."""
         with tracer.start_as_current_span("neo4j_query") as span:
             span.set_attribute("neo4j.query", cypher[:100])  # First 100 chars
@@ -144,6 +149,7 @@ class Neo4jAdapter:
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
         ) -> Dict[str, Any]:
+            pass
         """Execute a write query."""
         with tracer.start_as_current_span("neo4j_write") as span:
             span.set_attribute("neo4j.query", cypher[:100])
@@ -182,6 +188,7 @@ class Neo4jAdapter:
         queries: List[tuple[str, Dict[str, Any]]],
         database: Optional[str] = None
         ) -> List[Any]:
+            pass
         """Execute multiple queries in a transaction."""
         with tracer.start_as_current_span("neo4j_transaction") as span:
             span.set_attribute("neo4j.query_count", len(queries))
@@ -212,6 +219,7 @@ class Neo4jAdapter:
         limit: int = 10,
         threshold: float = 0.5
         ) -> List[Dict[str, Any]]:
+            pass
         """Find similar patterns using vector similarity."""
         query = """
         MATCH (p:Pattern)
@@ -236,6 +244,7 @@ class Neo4jAdapter:
         relationship_types: Optional[List[str]] = None,
         depth: int = 1
         ) -> Dict[str, List[str]]:
+            pass
         """Get relationships for an entity."""
         if relationship_types:
             rel_filter = f"[r:{' | '.join(relationship_types)}]"
@@ -264,6 +273,7 @@ class Neo4jAdapter:
         context: Dict[str, Any],
         embedding: Optional[List[float]] = None
         ) -> str:
+            pass
         """Add a decision node to the graph."""
         query = """
         CREATE (d:Decision {
@@ -298,6 +308,7 @@ class Neo4jAdapter:
         context_ids: List[str],
         relationship_type: str = "INFLUENCED_BY"
         ):
+            pass
         """Link a decision to its context nodes."""
         query = f"""
         MATCH (d:Decision {{id: $decision_id}})
@@ -318,6 +329,7 @@ class Neo4jAdapter:
         entity_id: str,
         properties: Dict[str, Any]
         ):
+            pass
         """Update entity properties."""
         set_clause = ", ".join([f"e.{k} = ${k}" for k in properties.keys()])
         query = f"""

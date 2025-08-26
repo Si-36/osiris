@@ -112,6 +112,7 @@ class CXLMemoryManager:
         return pickle.loads(data)
     
         async def store(self, key: str, data: Any, tier: Optional[MemoryTier] = None) -> bool:
+            pass
         """Store data in appropriate tier"""
         serialized_data = self._serialize_data(data)
         size_bytes = len(serialized_data)
@@ -157,10 +158,12 @@ class CXLMemoryManager:
         return True
     
         async def retrieve(self, key: str) -> Optional[Any]:
+            pass
         """Retrieve data from any tier"""
         # Search through tiers (hot to cold)
         for tier in [MemoryTier.L0_HBM, MemoryTier.L1_DDR, MemoryTier.L2_CXL, 
                      MemoryTier.L3_PMEM, MemoryTier.L4_SSD]:
+                         pass
             
             if key in self.tiers[tier]:
                 obj = self.tiers[tier][key]
@@ -202,6 +205,7 @@ class CXLMemoryManager:
         return None
     
         async def _promote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+            pass
         """Promote object to faster tier"""
         if obj.tier == target_tier:
             return
@@ -219,6 +223,7 @@ class CXLMemoryManager:
         self.stats['promotion_events'] += 1
     
         async def _demote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+            pass
         """Demote object to slower tier"""
         if obj.tier == target_tier:
             return

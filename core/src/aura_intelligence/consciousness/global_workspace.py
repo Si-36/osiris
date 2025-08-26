@@ -98,6 +98,7 @@ class GlobalWorkspace:
             self.subscribers[content_type].add(component_id)
     
         async def broadcast(self, content: WorkspaceContent) -> None:
+            pass
         """Broadcast content to subscribers."""
         self.content[content.content_id] = content
         await self.broadcast_queue.put(content)
@@ -121,16 +122,19 @@ class MetaCognitiveController:
         self.active = False
     
         async def start(self) -> None:
+            pass
         """Start the controller."""
         pass
         self.active = True
     
         async def stop(self) -> None:
+            pass
         """Stop the controller."""
         pass
         self.active = False
     
         async def process_content(self, content: WorkspaceContent) -> None:
+            pass
         """Process content through workspace and stream."""
         await self.workspace.broadcast(content)
         self.stream.add_content(content)
@@ -140,6 +144,7 @@ class MetaCognitiveController:
         options: List[Dict[str, Any]],
         context: Dict[str, Any] = None
         ) -> ConsciousDecision:
+            pass
         """Make a conscious decision."""
         # Simple scoring: choose option with highest 'score' or first one
         best_option = max(options, key=lambda x: x.get('score', 0))
@@ -183,5 +188,6 @@ _global_controller: Optional[MetaCognitiveController] = None
         """Get global controller instance."""
         global _global_controller
         if _global_controller is None:
+            pass
         _global_controller = create_metacognitive_controller()
         return _global_controller

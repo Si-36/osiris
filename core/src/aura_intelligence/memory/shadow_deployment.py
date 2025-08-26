@@ -36,6 +36,7 @@ class ShadowMemoryWrapper:
     Wraps old and new memory systems for shadow deployment.
     
     Features:
+        pass
     - Dual writes to both systems
     - Reads from old system (configurable)
     - Logs comparison results
@@ -84,6 +85,7 @@ class ShadowMemoryWrapper:
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
         ) -> str:
+            pass
         """
         Store in both systems (if shadow enabled).
         
@@ -115,6 +117,7 @@ class ShadowMemoryWrapper:
         k: int = 10,
         context_filter: Optional[str] = None
         ) -> List[Tuple[Dict[str, Any], float]]:
+            pass
         """
         Retrieve from primary system and optionally compare.
         """
@@ -167,6 +170,7 @@ class ShadowMemoryWrapper:
         latency_old: float,
         latency_new: float
         ) -> ComparisonResult:
+            pass
         """Compare results from both systems."""
         # Extract top IDs
         old_ids = [r[0]["id"] for r in old_results[:5]]
@@ -194,6 +198,7 @@ class ShadowMemoryWrapper:
         )
     
         async def _async_wrapper(self, sync_func, *args, **kwargs):
+            pass
         """Wrap sync functions for async execution."""
         pass
         loop = asyncio.get_event_loop()

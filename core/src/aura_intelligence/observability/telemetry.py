@@ -253,7 +253,7 @@ class ModernTelemetry:
         print("🌐 FastAPI instrumentation enabled")
     
     @asynccontextmanager
-        async def trace_operation(
+    async def trace_operation(
         self, 
         operation_name: str, 
         attributes: Optional[Dict[str, Any]] = None,

@@ -237,6 +237,7 @@ class BestCoRaLSystem:
         return embeddings
     
         async def communicate(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
+            pass
         """Execute communication round with unlimited context"""
         start_time = time.time()
         
@@ -327,5 +328,6 @@ _best_coral = None
     def get_best_coral():
         global _best_coral
         if _best_coral is None:
+            pass
         _best_coral = BestCoRaLSystem()
         return _best_coral

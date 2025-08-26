@@ -42,10 +42,12 @@ except ImportError:
             sys.path.insert(0, str(schema_dir))
 
             try:
+                pass
             import enums
             import base
             from production_observer_agent import ProductionAgentState
             except ImportError:
+                pass
             # Fallback for testing
             class ProductionAgentState:
                 def __init__(self):
@@ -67,6 +69,7 @@ class CollectiveMemoryManager:
         # Initialize LangMem client
             api_key = config.get("langmem_api_key")
             if api_key:
+                pass
             self.client = LangMemClient(
         api_key=api_key,
         namespace=self.namespace
@@ -74,11 +77,13 @@ class CollectiveMemoryManager:
         self.connected = True
             logger.info(f"✅ LangMem connected: {self.namespace}")
         else:
+            pass
         self.client = LangMemClient()
         self.connected = False
             logger.warning("⚠️ LangMem API key not provided - using fallback mode")
     
         async def query_relevant_context(self, state: Any) -> Dict[str, Any]:
+            pass
         """Query LangMem for relevant context to inform supervisor decisions.
         
         Args:
@@ -89,9 +94,11 @@ class CollectiveMemoryManager:
         """
         
             if not self.connected:
+                pass
             return self._fallback_context()
         
             try:
+                pass
             # Create semantic signature for the current situation
             event_signature = self._create_event_signature(state)
             
@@ -117,21 +124,26 @@ class CollectiveMemoryManager:
             return insights
             
             except Exception as e:
+                pass
             logger.error(f"❌ LangMem query failed: {e}")
             return self._fallback_context()
     
         async def learn_from_workflow(self, final_state: Any) -> None:
+            pass
         """Store completed workflow in collective memory for future learning.
         
         Args:
+            pass
         final_state: Final state of completed workflow
         """
         
             if not self.connected:
+                pass
             logger.info("📝 Would store workflow in LangMem (fallback mode)")
         return
         
             try:
+                pass
             workflow_summary = self._create_workflow_summary(final_state)
             
         await self.client.add(
@@ -147,11 +159,14 @@ class CollectiveMemoryManager:
             logger.info(f"✅ Stored workflow in collective memory")
             
             except Exception as e:
+                pass
             logger.error(f"❌ Failed to store workflow: {e}")
     
     def _create_event_signature(self, state: Any) -> str:
+        pass
         
             try:
+                pass
             if hasattr(state, 'evidence_entries') and state.evidence_entries:
                 latest_evidence = state.evidence_entries[-1]
                 evidence_type = getattr(latest_evidence, 'evidence_type', 'unknown')
@@ -161,11 +176,14 @@ class CollectiveMemoryManager:
             else:
                 return "unknown_event"
             except Exception:
+                pass
             return "unknown_event"
     
     def _analyze_memory_patterns(self, memories: List[Dict]) -> Dict[str, Any]:
+        pass
         
             if not memories:
+                pass
             return {"confidence": 0.0}
         
         # Analyze success patterns
@@ -176,11 +194,14 @@ class CollectiveMemoryManager:
         # Extract common patterns
             patterns = []
             for memory in memories:
+                pass
             if isinstance(memory, dict) and "patterns" in memory:
+                pass
             patterns.extend(memory.get("patterns", []))
         
         # Generate recommendations
             if success_rate > 0.8:
+                pass
             recommended_approach = "standard_analysis"
         elif success_rate > 0.5:
             recommended_approach = "careful_analysis"
@@ -197,8 +218,10 @@ class CollectiveMemoryManager:
         }
     
     def _create_workflow_summary(self, final_state: Any) -> Dict[str, Any]:
+        pass
         
             try:
+                pass
             workflow_id = getattr(final_state, 'workflow_id', 'unknown')
             status = getattr(final_state, 'status', 'unknown')
             evidence_count = len(getattr(final_state, 'evidence_entries', []))
@@ -220,6 +243,7 @@ class CollectiveMemoryManager:
             }
             
             except Exception as e:
+                pass
             logger.error(f"Failed to create workflow summary: {e}")
             return {
                 "workflow_id": "unknown",
@@ -229,13 +253,16 @@ class CollectiveMemoryManager:
             }
     
     def _extract_patterns(self, state: Any) -> List[str]:
+        pass
         
             patterns = []
         
             try:
+                pass
             evidence_entries = getattr(state, 'evidence_entries', [])
             
             if len(evidence_entries) > 3:
+                pass
             patterns.append("high_evidence_volume")
             
         # Check for error patterns

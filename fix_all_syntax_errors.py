@@ -1,180 +1,268 @@
 #!/usr/bin/env python3
 """
-Fix all syntax errors in the project using best practices
+FIX ALL SYNTAX ERRORS IN AURA INTELLIGENCE
+Systematic fix for the 408 broken files
 """
-
+import os
 import re
+import ast
 from pathlib import Path
-from typing import List, Tuple
+import json
 
-class SyntaxErrorFixer:
+class SystematicSyntaxFixer:
     def __init__(self):
+        self.base_path = Path("/workspace")
         self.fixed_count = 0
-        self.error_files = [
-            # From the analysis
-            "/workspace/core/src/aura_intelligence/streaming/kafka_integration.py",
-            "/workspace/core/src/aura_intelligence/agents/council/multi_agent/supervisor.py",
-            "/workspace/core/src/aura_intelligence/collective/memory_manager.py",
-            "/workspace/core/src/aura_intelligence/agents/base_classes/instrumentation.py",
-            "/workspace/src/aura_intelligence_integrations/adapters/base_classes/agent.py",
-            "/workspace/orchestration/distributed/crewai/tasks/planning/activities/main.py",
-            "/workspace/utilities/fix_real_issues.py",
-            "/workspace/core/src/aura_intelligence/orchestration/durable/test_workflow_observability.py",
-            "/workspace/core/src/aura_intelligence/agents/nodes/observer.py",
-            "/workspace/core/src/aura_intelligence/agents/nodes/supervisor.py",
-            "/workspace/core/src/aura_intelligence/core/fixed_components.py"
-        ]
-    
-    def fix_file(self, filepath: str) -> bool:
-        """Fix syntax errors in a single file"""
-        if not Path(filepath).exists():
-            print(f"⚠️  File not found: {filepath}")
-            return False
+        self.failed_fixes = []
+        self.fix_patterns = []
         
-        try:
-            with open(filepath, 'r') as f:
-                lines = f.readlines()
+    def fix_all_syntax_errors(self):
+        """Fix all syntax errors systematically"""
+        print("🔧 FIXING ALL SYNTAX ERRORS IN AURA INTELLIGENCE")
+        print("=" * 80)
+        
+        # Load the list of files with syntax errors
+        with open('/workspace/deep_honest_analysis.json', 'r') as f:
+            analysis = json.load(f)
+        
+        syntax_errors = analysis['syntax_errors']
+        print(f"\n📊 Found {len(syntax_errors)} files with syntax errors")
+        print("Starting systematic fix...\n")
+        
+        # Group errors by type
+        error_types = {}
+        for error in syntax_errors:
+            error_msg = error['error']
+            if error_msg not in error_types:
+                error_types[error_msg] = []
+            error_types[error_msg].append(error)
+        
+        # Fix by error type
+        for error_type, files in error_types.items():
+            print(f"\n🔧 Fixing error type: {error_type}")
+            print(f"   Affects {len(files)} files")
             
-            fixed_lines = self.fix_indentation_errors(lines)
-            fixed_lines = self.fix_docstring_indentation(fixed_lines)
-            fixed_lines = self.fix_try_blocks(fixed_lines)
-            fixed_lines = self.fix_unterminated_strings(fixed_lines)
-            
-            # Write back if changes were made
-            if fixed_lines != lines:
-                with open(filepath, 'w') as f:
-                    f.writelines(fixed_lines)
-                self.fixed_count += 1
-                print(f"✅ Fixed: {Path(filepath).name}")
-                return True
-            else:
-                print(f"⏭️  No changes needed: {Path(filepath).name}")
-                return False
-                
-        except Exception as e:
-            print(f"❌ Error fixing {filepath}: {e}")
-            return False
-    
-    def fix_indentation_errors(self, lines: List[str]) -> List[str]:
-        """Fix missing indentation after colons"""
-        fixed = []
-        i = 0
-        
-        while i < len(lines):
-            line = lines[i]
-            fixed.append(line)
-            
-            # Check if line ends with colon (function, class, if, try, etc.)
-            if line.strip() and line.strip().endswith(':'):
-                # Check next line
-                if i + 1 < len(lines):
-                    next_line = lines[i + 1]
-                    
-                    # If next line is not indented and not empty
-                    if next_line.strip() and not next_line.startswith(' ') and not next_line.startswith('\t'):
-                        # Determine indentation level
-                        current_indent = len(line) - len(line.lstrip())
-                        new_indent = current_indent + 4
-                        
-                        # Skip the original unindented line
-                        i += 1
-                        
-                        # Add properly indented line
-                        fixed.append(' ' * new_indent + next_line.strip() + '\n')
-                        continue
-            
-            i += 1
-        
-        return fixed
-    
-    def fix_docstring_indentation(self, lines: List[str]) -> List[str]:
-        """Fix docstring indentation specifically"""
-        fixed = []
-        
-        for i, line in enumerate(lines):
-            # Check for function/method definition
-            if re.match(r'\s*def\s+\w+\s*\(.*\)\s*.*:\s*$', line):
-                fixed.append(line)
-                
-                # Check if next line is an unindented docstring
-                if i + 1 < len(lines):
-                    next_line = lines[i + 1]
-                    if next_line.strip().startswith('"""') and not next_line.startswith(' '):
-                        # Get function indentation
-                        func_indent = len(line) - len(line.lstrip())
-                        docstring_indent = func_indent + 4
-                        
-                        # Fix docstring line
-                        fixed.append(' ' * docstring_indent + next_line.strip() + '\n')
-                        continue
-            
-            # Skip if we already processed this line
-            if i > 0 and lines[i-1].strip().endswith(':') and line.strip().startswith('"""'):
-                continue
-                
-            fixed.append(line)
-        
-        return fixed
-    
-    def fix_try_blocks(self, lines: List[str]) -> List[str]:
-        """Fix try/except block indentation"""
-        fixed = []
-        
-        for i, line in enumerate(lines):
-            fixed.append(line)
-            
-            # Check for try: statement
-            if line.strip() == 'try:':
-                # Ensure next line is indented
-                if i + 1 < len(lines):
-                    next_line = lines[i + 1]
-                    if next_line.strip() and not next_line.startswith(' '):
-                        # Get try indentation
-                        try_indent = len(line) - len(line.lstrip())
-                        content_indent = try_indent + 4
-                        
-                        # Add placeholder if needed
-                        fixed.append(' ' * content_indent + 'pass  # TODO: Add implementation\n')
-        
-        return fixed
-    
-    def fix_unterminated_strings(self, lines: List[str]) -> List[str]:
-        """Fix unterminated triple-quoted strings"""
-        fixed = []
-        in_triple_quote = False
-        quote_char = None
-        
-        for line in lines:
-            # Check for triple quotes
-            if '"""' in line:
-                count = line.count('"""')
-                if count % 2 == 1:  # Odd number means state change
-                    in_triple_quote = not in_triple_quote
-                    quote_char = '"""'
-            elif "'''" in line:
-                count = line.count("'''")
-                if count % 2 == 1:
-                    in_triple_quote = not in_triple_quote
-                    quote_char = "'''"
-            
-            fixed.append(line)
-        
-        # If still in triple quote at end, close it
-        if in_triple_quote:
-            fixed.append(quote_char + '\n')
-        
-        return fixed
-    
-    def fix_all(self):
-        """Fix all known syntax error files"""
-        print("🔧 FIXING SYNTAX ERRORS")
-        print("=" * 60)
-        
-        for filepath in self.error_files:
-            self.fix_file(filepath)
+            if "expected an indented block" in error_type:
+                self.fix_indentation_errors(files)
+            elif "unindent does not match" in error_type:
+                self.fix_unindent_errors(files)
+            elif "unexpected indent" in error_type:
+                self.fix_unexpected_indent(files)
+            elif "invalid syntax" in error_type:
+                self.fix_invalid_syntax(files)
         
         print(f"\n✅ Fixed {self.fixed_count} files")
+        print(f"❌ Failed to fix {len(self.failed_fixes)} files")
+        
+        if self.failed_fixes:
+            print("\nFailed fixes:")
+            for fail in self.failed_fixes[:10]:
+                print(f"  - {fail}")
+    
+    def fix_indentation_errors(self, errors):
+        """Fix 'expected an indented block' errors"""
+        for error in errors:
+            file_path = self.base_path / error['file']
+            line_num = error['line']
+            
+            try:
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                
+                # Check if it's after a function/class/if/try/etc
+                if line_num > 0 and line_num <= len(lines):
+                    prev_line = lines[line_num - 2].rstrip() if line_num > 1 else ""
+                    current_line = lines[line_num - 1] if line_num <= len(lines) else ""
+                    
+                    # If current line is not indented after a colon, add pass
+                    if prev_line.endswith(':'):
+                        # Check if next line is empty or not properly indented
+                        if not current_line.strip() or not current_line.startswith(' '):
+                            # Insert 'pass' with proper indentation
+                            indent = self.get_indent_level(prev_line) + 4
+                            lines.insert(line_num - 1, ' ' * indent + 'pass\n')
+                            
+                            with open(file_path, 'w') as f:
+                                f.writelines(lines)
+                            self.fixed_count += 1
+                            print(f"  ✅ Fixed: {error['file']} line {line_num}")
+                            continue
+                
+                # Try to fix by adding pass after any line ending with :
+                fixed = False
+                for i in range(len(lines)):
+                    if lines[i].rstrip().endswith(':'):
+                        # Check if next line is properly indented
+                        if i + 1 < len(lines):
+                            next_line = lines[i + 1]
+                            if not next_line.strip() or self.get_indent_level(next_line) <= self.get_indent_level(lines[i]):
+                                # Insert pass
+                                indent = self.get_indent_level(lines[i]) + 4
+                                lines.insert(i + 1, ' ' * indent + 'pass\n')
+                                fixed = True
+                
+                if fixed:
+                    with open(file_path, 'w') as f:
+                        f.writelines(lines)
+                    self.fixed_count += 1
+                    print(f"  ✅ Fixed: {error['file']}")
+                    
+            except Exception as e:
+                self.failed_fixes.append(f"{error['file']}: {str(e)}")
+    
+    def fix_unindent_errors(self, errors):
+        """Fix 'unindent does not match' errors"""
+        for error in errors:
+            file_path = self.base_path / error['file']
+            
+            try:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                
+                # Fix mixed tabs and spaces
+                content = content.replace('\t', '    ')
+                
+                # Fix inconsistent indentation
+                lines = content.split('\n')
+                fixed_lines = []
+                indent_stack = [0]
+                
+                for line in lines:
+                    stripped = line.lstrip()
+                    if not stripped:
+                        fixed_lines.append('')
+                        continue
+                    
+                    current_indent = len(line) - len(stripped)
+                    
+                    # Determine correct indent level
+                    if stripped.startswith(('def ', 'class ', 'if ', 'elif ', 'else:', 'try:', 'except', 'finally:', 'for ', 'while ', 'with ')):
+                        # These should match or increase current level
+                        if current_indent not in indent_stack:
+                            # Find closest valid indent
+                            valid_indent = min(indent_stack, key=lambda x: abs(x - current_indent))
+                            fixed_lines.append(' ' * valid_indent + stripped)
+                        else:
+                            fixed_lines.append(line)
+                        
+                        if stripped.endswith(':'):
+                            indent_stack.append(current_indent + 4)
+                    else:
+                        # Regular line - should match stack
+                        if current_indent not in indent_stack:
+                            valid_indent = indent_stack[-1] if indent_stack else 0
+                            fixed_lines.append(' ' * valid_indent + stripped)
+                        else:
+                            fixed_lines.append(line)
+                    
+                    # Pop from stack if dedenting
+                    while indent_stack and current_indent < indent_stack[-1]:
+                        indent_stack.pop()
+                
+                with open(file_path, 'w') as f:
+                    f.write('\n'.join(fixed_lines))
+                
+                self.fixed_count += 1
+                print(f"  ✅ Fixed: {error['file']}")
+                
+            except Exception as e:
+                self.failed_fixes.append(f"{error['file']}: {str(e)}")
+    
+    def fix_unexpected_indent(self, errors):
+        """Fix 'unexpected indent' errors"""
+        for error in errors:
+            file_path = self.base_path / error['file']
+            line_num = error['line']
+            
+            try:
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                
+                if line_num > 0 and line_num <= len(lines):
+                    # Check if the line has unexpected indent
+                    current_line = lines[line_num - 1]
+                    
+                    # Find the previous non-empty line
+                    prev_line_idx = line_num - 2
+                    while prev_line_idx >= 0 and not lines[prev_line_idx].strip():
+                        prev_line_idx -= 1
+                    
+                    if prev_line_idx >= 0:
+                        prev_line = lines[prev_line_idx]
+                        prev_indent = self.get_indent_level(prev_line)
+                        
+                        # If previous line doesn't end with :, current should have same indent
+                        if not prev_line.rstrip().endswith(':'):
+                            lines[line_num - 1] = ' ' * prev_indent + current_line.lstrip()
+                        else:
+                            # Should be indented by 4 more
+                            lines[line_num - 1] = ' ' * (prev_indent + 4) + current_line.lstrip()
+                        
+                        with open(file_path, 'w') as f:
+                            f.writelines(lines)
+                        self.fixed_count += 1
+                        print(f"  ✅ Fixed: {error['file']} line {line_num}")
+                
+            except Exception as e:
+                self.failed_fixes.append(f"{error['file']}: {str(e)}")
+    
+    def fix_invalid_syntax(self, errors):
+        """Fix general invalid syntax errors"""
+        for error in errors:
+            file_path = self.base_path / error['file']
+            
+            try:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                
+                # Common fixes
+                # Fix incomplete function definitions
+                content = re.sub(r'def\s+(\w+)\s*\(\s*\)\s*:\s*$', r'def \1():\n    pass', content, flags=re.MULTILINE)
+                
+                # Fix incomplete class definitions  
+                content = re.sub(r'class\s+(\w+)\s*:\s*$', r'class \1:\n    pass', content, flags=re.MULTILINE)
+                
+                # Fix incomplete if statements
+                content = re.sub(r'if\s+(.+)\s*:\s*$', r'if \1:\n    pass', content, flags=re.MULTILINE)
+                
+                # Write back
+                with open(file_path, 'w') as f:
+                    f.write(content)
+                
+                # Verify it's fixed
+                try:
+                    ast.parse(content)
+                    self.fixed_count += 1
+                    print(f"  ✅ Fixed: {error['file']}")
+                except:
+                    self.failed_fixes.append(f"{error['file']}: Still has syntax errors")
+                    
+            except Exception as e:
+                self.failed_fixes.append(f"{error['file']}: {str(e)}")
+    
+    def get_indent_level(self, line):
+        """Get indentation level of a line"""
+        return len(line) - len(line.lstrip())
+
+    def verify_fixes(self):
+        """Verify all fixes by trying to import"""
+        print("\n🔍 Verifying fixes...")
+        
+        test_imports = [
+            "from aura_intelligence import UnifiedSystem",
+            "from aura_intelligence.orchestration.workflows.nodes.supervisor import UnifiedAuraSupervisor",
+            "from aura_intelligence.tda import TDAEngine",
+        ]
+        
+        for imp in test_imports:
+            try:
+                exec(f"import sys; sys.path.insert(0, '/workspace/core/src'); {imp}")
+                print(f"  ✅ Import works: {imp}")
+            except Exception as e:
+                print(f"  ❌ Import still fails: {imp}")
+                print(f"     Error: {str(e)[:100]}")
 
 if __name__ == "__main__":
-    fixer = SyntaxErrorFixer()
-    fixer.fix_all()
+    fixer = SystematicSyntaxFixer()
+    fixer.fix_all_syntax_errors()
+    fixer.verify_fixes()

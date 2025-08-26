@@ -2,6 +2,7 @@
 Mem0 Adapter for AURA Intelligence.
 
 Provides async interface to Mem0 memory management system with:
+    pass
 - Memory search and retrieval
 - Batch operations for efficiency
 - Embedding support
@@ -102,6 +103,7 @@ class Mem0Adapter:
         self._initialized = False
         
         async def initialize(self):
+            pass
         """Initialize the Mem0 client."""
         pass
         if self._initialized:
@@ -137,6 +139,7 @@ class Mem0Adapter:
                 raise
                 
         async def close(self):
+            pass
         """Close the Mem0 client."""
         pass
         if self._client:
@@ -149,6 +152,7 @@ class Mem0Adapter:
         self,
         memory: Memory
         ) -> str:
+            pass
         """Add a new memory."""
         with tracer.start_as_current_span("mem0_add_memory") as span:
             span.set_attribute("mem0.agent_id", memory.agent_id)
@@ -191,6 +195,7 @@ class Mem0Adapter:
         self,
         memories: List[Memory]
         ) -> List[str]:
+            pass
         """Add multiple memories in batch."""
         with tracer.start_as_current_span("mem0_add_memories_batch") as span:
             span.set_attribute("mem0.batch_size", len(memories))
@@ -234,6 +239,7 @@ class Mem0Adapter:
         self,
         query: SearchQuery
         ) -> List[Memory]:
+            pass
         """Search for memories."""
         with tracer.start_as_current_span("mem0_search_memories") as span:
             span.set_attribute("mem0.query_text", query.query_text or "")
@@ -297,6 +303,7 @@ class Mem0Adapter:
         self,
         memory_id: str
         ) -> Optional[Memory]:
+            pass
         """Get a specific memory by ID."""
         with tracer.start_as_current_span("mem0_get_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -334,6 +341,7 @@ class Mem0Adapter:
         memory_id: str,
         updates: Dict[str, Any]
         ) -> bool:
+            pass
         """Update an existing memory."""
         with tracer.start_as_current_span("mem0_update_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -359,6 +367,7 @@ class Mem0Adapter:
         self,
         memory_id: str
         ) -> bool:
+            pass
         """Delete a memory."""
         with tracer.start_as_current_span("mem0_delete_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -383,6 +392,7 @@ class Mem0Adapter:
         older_than: Optional[datetime] = None,
         memory_type: Optional[MemoryType] = None
         ) -> int:
+            pass
         """Prune old memories based on criteria."""
         with tracer.start_as_current_span("mem0_prune_memories") as span:
             span.set_attribute("mem0.agent_id", agent_id or "all")
@@ -423,6 +433,7 @@ class Mem0Adapter:
         window_size: int = 100,
         memory_types: Optional[List[MemoryType]] = None
         ) -> List[Memory]:
+            pass
         """Get a context window of recent memories for an agent."""
         query = SearchQuery(
             agent_ids=[agent_id],
@@ -447,6 +458,7 @@ class Mem0Adapter:
         limit: int = 10,
         threshold: float = None
         ) -> List[Memory]:
+            pass
         """Find similar past decisions based on embedding."""
         query = SearchQuery(
             query_embedding=embedding,
@@ -468,6 +480,7 @@ class Mem0Adapter:
         hours: int = 24,
         memory_types: Optional[List[MemoryType]] = None
         ) -> List[Memory]:
+            pass
         """Get agent's recent history."""
         end_time = datetime.now(timezone.utc)
         start_time = end_time - timedelta(hours=hours)

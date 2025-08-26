@@ -133,6 +133,7 @@ class RealRaySystem:
                     self.actors[actor_id] = f"fallback_{actor_id}"
     
         async def process_distributed(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Real distributed processing across Ray actors"""
         start_time = time.perf_counter()
         
