@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Final comprehensive fix for error_topology.py."""
+"""Final comprehensive fix for all issues in error_topology.py."""
+
+import re
 
 def fix_file():
     file_path = '/workspace/core/src/aura_intelligence/core/error_topology.py'
@@ -13,34 +15,49 @@ def fix_file():
     while i < len(lines):
         line = lines[i]
         
-        # Skip standalone pass lines that shouldn't be there
-        if line.strip() == 'pass':
-            # Check if it's in a function that already has content
-            if i < len(lines) - 1:
-                next_line = lines[i + 1]
-                # If next line is not empty and has code content, skip the pass
-                if next_line.strip() and not next_line.strip().startswith('#'):
-                    i += 1
-                    continue
-        
-        # Check for malformed function signatures with docstring on same line
-        if ') -> ' in line and ':' in line:
-            # Check if there's content after the colon
-            parts = line.split(':')
-            if len(parts) >= 2:
-                after_colon = ':'.join(parts[1:]).strip()
-                if after_colon and after_colon != '':
-                    # There's content after colon, split it
-                    fixed_lines.append(parts[0] + ':\n')
-                    # Add proper indentation for next content
+        # Fix split function signatures
+        if 'def ' in line and '(self' in line and ':' not in line:
+            # Collect the full signature
+            sig_lines = [line.rstrip()]
+            j = i + 1
+            
+            # Look for continuation
+            while j < len(lines):
+                next_line = lines[j].rstrip()
+                sig_lines.append(next_line)
+                
+                if '):' in next_line or '-> ' in next_line:
+                    if ':' in next_line:
+                        # Found end of signature
+                        break
+                j += 1
+                if j - i > 5:  # Safety
+                    break
+            
+            # Check if we have a complete signature
+            full_sig = ' '.join(l.strip() for l in sig_lines)
+            
+            # Check for the next line - might be duplicate or docstring
+            if j + 1 < len(lines):
+                next_after_sig = lines[j + 1].strip()
+                
+                # Skip duplicate lines
+                if '):' in next_after_sig and '->' in next_after_sig:
+                    j += 1  # Skip the duplicate
+                
+                # Check for incorrectly indented docstring
+                if j + 1 < len(lines) and '"""' in lines[j + 1]:
+                    doc_line = lines[j + 1]
+                    # Fix docstring indentation
                     indent = len(line) - len(line.lstrip())
-                    if '"""' in after_colon:
-                        # It's a docstring, indent it properly
-                        fixed_lines.append(' ' * (indent + 4) + after_colon.lstrip() + '\n')
-                    else:
-                        fixed_lines.append(' ' * (indent + 4) + after_colon.lstrip() + '\n')
-                    i += 1
-                    continue
+                    lines[j + 1] = ' ' * (indent + 4) + doc_line.strip() + '\n'
+            
+            # Clean and write the signature
+            if '->' in full_sig and ':' in full_sig:
+                indent = len(line) - len(line.lstrip())
+                fixed_lines.append(' ' * indent + full_sig + '\n')
+                i = j + 1
+                continue
         
         fixed_lines.append(line)
         i += 1
@@ -49,26 +66,7 @@ def fix_file():
     with open(file_path, 'w') as f:
         f.writelines(fixed_lines)
     
-    print(f"✅ Applied comprehensive fixes to {file_path}")
-    
-    # Second pass: remove any remaining issues
-    with open(file_path, 'r') as f:
-        content = f.read()
-    
-    # Fix specific patterns
-    import re
-    
-    # Pattern: function with pass followed by actual code
-    content = re.sub(r'(\n\s+)pass\n(\s+)if ', r'\1\2if ', content)
-    content = re.sub(r'(\n\s+)pass\n(\s+)return ', r'\1\2return ', content)
-    content = re.sub(r'(\n\s+)pass\n(\s+)try:', r'\1\2try:', content)
-    content = re.sub(r'(\n\s+)pass\n(\s+)G = ', r'\1\2G = ', content)
-    content = re.sub(r'(\n\s+)pass\n(\s+)# ', r'\1\2# ', content)
-    
-    with open(file_path, 'w') as f:
-        f.write(content)
-    
-    print("✅ Removed unnecessary pass statements")
+    print("✅ Applied final fixes to error_topology.py")
 
 if __name__ == "__main__":
     fix_file()
