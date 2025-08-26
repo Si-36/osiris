@@ -148,17 +148,17 @@ class UnifiedComponent(ABC):
         pass
     
     @abstractmethod
-        async def start(self) -> bool:
+    async def start(self) -> bool:
         """Start the component. Returns True if successful."""
         pass
     
     @abstractmethod
-        async def stop(self) -> bool:
+    async def stop(self) -> bool:
         """Stop the component. Returns True if successful."""
         pass
     
     @abstractmethod
-        async def health_check(self) -> ComponentMetrics:
+    async def health_check(self) -> ComponentMetrics:
         """Perform health check and return current metrics."""
         pass
     
@@ -167,7 +167,7 @@ class UnifiedComponent(ABC):
     # ========================================================================
     
     @abstractmethod
-        async def update_config(self, config_updates: Dict[str, Any]) -> bool:
+    async def update_config(self, config_updates: Dict[str, Any]) -> bool:
         """Update component configuration. Returns True if successful."""
         pass
     
@@ -186,7 +186,7 @@ class UnifiedComponent(ABC):
     # ========================================================================
     
     @abstractmethod
-        async def process(self, input_data: Any, context: Optional[Dict[str, Any]] = None) -> Any:
+    async def process(self, input_data: Any, context: Optional[Dict[str, Any]] = None) -> Any:
         """Process input data and return result."""
         pass
     
@@ -194,13 +194,13 @@ class UnifiedComponent(ABC):
     # OBSERVABILITY METHODS (Implemented)
     # ========================================================================
     
-        async def get_metrics(self) -> ComponentMetrics:
+    async def get_metrics(self) -> ComponentMetrics:
         """Get current component metrics."""
         self.metrics.uptime_seconds = time.time() - self.start_time
         self.metrics.status = self.status
         return self.metrics
     
-        async def emit_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
+    async def emit_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
         """Emit a system event."""
         event = SystemEvent(
             event_type=event_type,
@@ -230,7 +230,7 @@ class UnifiedComponent(ABC):
         """Add health status callback."""
         self._health_callbacks.append(callback)
     
-        async def _notify_health_callbacks(self) -> None:
+    async def _notify_health_callbacks(self) -> None:
         """Notify all health callbacks."""
         metrics = await self.get_metrics()
         for callback in self._health_callbacks:
@@ -246,7 +246,7 @@ class UnifiedComponent(ABC):
     # UTILITY METHODS (Implemented)
     # ========================================================================
     
-        async def restart(self) -> bool:
+    async def restart(self) -> bool:
         """Restart the component."""
         try:
             await self.stop()
@@ -424,7 +424,7 @@ class ComponentRegistry:
         """List all registered components and their types."""
         return self._component_types.copy()
     
-        async def health_check_all(self) -> Dict[str, ComponentMetrics]:
+    async def health_check_all(self) -> Dict[str, ComponentMetrics]:
         """Perform health check on all components."""
         results = {}
         for component_id, component in self._components.items():
@@ -447,21 +447,22 @@ class ComponentRegistry:
                 )
         return results
     
-        async def start_health_monitoring(self) -> None:
+    async def start_health_monitoring(self) -> None:
         """Start continuous health monitoring."""
         if self._health_monitor_task is None:
             self._health_monitor_task = asyncio.create_task(self._health_monitor_loop())
     
-        async def stop_health_monitoring(self) -> None:
+    async def stop_health_monitoring(self) -> None:
         """Stop health monitoring."""
         if self._health_monitor_task:
             self._health_monitor_task.cancel()
             try:
                 await self._health_monitor_task
             except asyncio.CancelledError:
+                pass
             self._health_monitor_task = None
     
-        async def _health_monitor_loop(self) -> None:
+    async def _health_monitor_loop(self) -> None:
         """Health monitoring loop."""
         while True:
             try:
@@ -482,11 +483,11 @@ class ComponentRegistry:
                 print(f"Health monitoring error: {e}")
                 await asyncio.sleep(self._health_check_interval)
     
-        async def _handle_component_error(self, event: SystemEvent) -> None:
+    async def _handle_component_error(self, event: SystemEvent) -> None:
         """Handle component error events."""
         print(f"🚨 Component error: {event.component_id} - {event.data}")
     
-        async def _handle_status_change(self, event: SystemEvent) -> None:
+    async def _handle_status_change(self, event: SystemEvent) -> None:
         """Handle component status change events."""
         print(f"📊 Status change: {event.component_id} - {event.data}")
 
@@ -497,19 +498,19 @@ class ComponentRegistry:
 # Global component registry
 _global_registry: Optional[ComponentRegistry] = None
 
-    def get_component_registry() -> ComponentRegistry:
-        """Get the global component registry."""
-        global _global_registry
-        if _global_registry is None:
+def get_component_registry() -> ComponentRegistry:
+    """Get the global component registry."""
+    global _global_registry
+    if _global_registry is None:
         _global_registry = ComponentRegistry()
-        return _global_registry
+    return _global_registry
 
-    def register_component(component: UnifiedComponent, component_type: str) -> None:
-        """Register a component with the global registry."""
-        registry = get_component_registry()
-        registry.register_component(component, component_type)
+def register_component(component: UnifiedComponent, component_type: str) -> None:
+    """Register a component with the global registry."""
+    registry = get_component_registry()
+    registry.register_component(component, component_type)
 
-    def get_component(component_id: str) -> Optional[UnifiedComponent]:
-        """Get a component from the global registry."""
-        registry = get_component_registry()
-        return registry.get_component(component_id)
+def get_component(component_id: str) -> Optional[UnifiedComponent]:
+    """Get a component from the global registry."""
+    registry = get_component_registry()
+    return registry.get_component(component_id)

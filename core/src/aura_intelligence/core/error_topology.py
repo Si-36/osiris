@@ -312,9 +312,8 @@ class ErrorTopologyAnalyzer:
         except:
             return None
     
-    def detect_propagation_pattern(self, component_id:
-        str) -> ErrorPropagationPattern:
-            """Detect the error propagation pattern for a component."""
+    def detect_propagation_pattern(self, component_id: str) -> ErrorPropagationPattern:
+        """Detect the error propagation pattern for a component."""
         if component_id not in self.error_graph:
             return ErrorPropagationPattern.LINEAR
         
@@ -330,9 +329,8 @@ class ErrorTopologyAnalyzer:
         
         return pattern
     
-    def _analyze_local_pattern(self, component_id:
-        str) -> ErrorPropagationPattern:
-            """Analyze local propagation pattern around a component."""
+    def _analyze_local_pattern(self, component_id: str) -> ErrorPropagationPattern:
+        """Analyze local propagation pattern around a component."""
         G = self.error_graph
         
         # Get neighbors
@@ -365,9 +363,8 @@ class ErrorTopologyAnalyzer:
         else:
             return ErrorPropagationPattern.HIERARCHICAL
     
-    def _is_in_cycle(self, component_id:
-        str) -> bool:
-            """Check if a component is part of a cycle."""
+    def _is_in_cycle(self, component_id: str) -> bool:
+        """Check if a component is part of a cycle."""
         try:
             cycles = list(nx.simple_cycles(self.error_graph))
             for cycle in cycles:
@@ -377,8 +374,7 @@ class ErrorTopologyAnalyzer:
         except:
             return False
     
-    def predict_error_cascade( self, initial_error: AuraError, time_horizon: float = 60.0 ) -> List[Tuple[str, float, float]]:
-    ) -> List[Tuple[str, float, float]]:
+    def predict_error_cascade(self, initial_error: AuraError, time_horizon: float = 60.0) -> List[Tuple[str, float, float]]:
         """
         Predict error cascade propagation.
         
@@ -486,7 +482,6 @@ class ErrorTopologyAnalyzer:
         return criticality_scores
     
     def optimize_recovery_strategy( self, error: AuraError, available_resources: Dict[str, float] ) -> RecoveryStrategy:
-    ) -> RecoveryStrategy:
         """
         Optimize recovery strategy based on topology analysis.
         
@@ -615,7 +610,6 @@ class PersistentHomologyComputer:
         self.filtration_cache: Dict[str, List[Tuple[float, int]]] = {}
     
     def compute_persistent_homology( self, error_graph: nx.DiGraph, max_dimension: int = 2 ) -> Dict[str, Any]:
-    ) -> Dict[str, Any]:
         """
         Compute persistent homology of the error graph.
         
@@ -643,9 +637,8 @@ class PersistentHomologyComputer:
             'topological_complexity': self._compute_topological_complexity(persistence_diagrams)
         }
     
-    def _graph_to_distance_matrix(self, graph:
-        nx.DiGraph) -> np.ndarray:
-            """Convert graph to distance matrix."""
+    def _graph_to_distance_matrix(self, graph: nx.DiGraph) -> np.ndarray:
+        """Convert graph to distance matrix."""
         nodes = list(graph.nodes())
         n = len(nodes)
         distance_matrix = np.full((n, n), np.inf)
@@ -670,9 +663,8 @@ class PersistentHomologyComputer:
         
         return distance_matrix
     
-    def _compute_vietoris_rips_filtration(self, distance_matrix:
-        np.ndarray) -> List[Tuple[float, List[Tuple]]]:
-            """Compute Vietoris-Rips filtration (simplified)."""
+    def _compute_vietoris_rips_filtration(self, distance_matrix: np.ndarray) -> List[Tuple[float, List[Tuple]]]:
+        """Compute Vietoris-Rips filtration (simplified)."""
         n = distance_matrix.shape[0]
         
         # Get unique distances (filtration values)
@@ -709,7 +701,6 @@ class PersistentHomologyComputer:
         return filtration
     
     def _compute_persistence_diagrams( self, filtration: List[Tuple[float, List[Tuple]]], max_dimension: int ) -> Dict[int, List[Tuple[float, float]]]:
-    ) -> Dict[int, List[Tuple[float, float]]]:
         """Compute persistence diagrams (simplified implementation)."""
         persistence_diagrams = {dim: [] for dim in range(max_dimension + 1)}
         
@@ -743,9 +734,8 @@ class PersistentHomologyComputer:
         
         return persistence_diagrams
     
-    def _compute_betti_numbers(self, persistence_diagrams:
-        Dict[int, List[Tuple[float, float]]]) -> List[int]:
-            """Compute Betti numbers from persistence diagrams."""
+    def _compute_betti_numbers(self, persistence_diagrams: Dict[int, List[Tuple[float, float]]]) -> List[int]:
+        """Compute Betti numbers from persistence diagrams."""
         max_dim = max(persistence_diagrams.keys()) if persistence_diagrams else 0
         betti_numbers = []
         
@@ -760,17 +750,15 @@ class PersistentHomologyComputer:
         
         return betti_numbers
     
-    def _compute_euler_characteristic(self, betti_numbers:
-        List[int]) -> int:
-            """Compute Euler characteristic from Betti numbers."""
+    def _compute_euler_characteristic(self, betti_numbers: List[int]) -> int:
+        """Compute Euler characteristic from Betti numbers."""
         euler_char = 0
         for i, betti in enumerate(betti_numbers):
             euler_char += (-1) ** i * betti
         return euler_char
     
-    def _compute_topological_complexity(self, persistence_diagrams:
-        Dict[int, List[Tuple[float, float]]]) -> float:
-            """Compute topological complexity measure."""
+    def _compute_topological_complexity(self, persistence_diagrams: Dict[int, List[Tuple[float, float]]]) -> float:
+        """Compute topological complexity measure."""
         total_persistence = 0.0
         total_features = 0
         

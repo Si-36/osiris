@@ -304,13 +304,13 @@ def get_config() -> AURAConfig:
         global _config
     
         if _config is None:
-        # Try to load from file
-        config_path = os.getenv("AURA_CONFIG_PATH")
-        if config_path and Path(config_path).exists():
-            _config = AURAConfig.from_file(config_path)
-        else:
-            # Use environment variables
-            _config = AURAConfig()
+            # Try to load from file
+            config_path = os.getenv("AURA_CONFIG_PATH")
+            if config_path and Path(config_path).exists():
+                _config = AURAConfig.from_file(config_path)
+            else:
+                # Use environment variables
+                _config = AURAConfig()
             
         # Validate in production
         if _config.environment == "production":
@@ -321,15 +321,15 @@ def get_config() -> AURAConfig:
         return _config
 
 
-    def set_config(config: AURAConfig) -> None:
-        """Set the global configuration instance (mainly for testing)."""
-        global _config
-        _config = config
-        get_config.cache_clear()
+def set_config(config: AURAConfig) -> None:
+    """Set the global configuration instance (mainly for testing)."""
+    global _config
+    _config = config
+    get_config.cache_clear()
 
 
-    def reset_config() -> None:
-        """Reset configuration (mainly for testing)."""
-        global _config
-        _config = None
-        get_config.cache_clear()
+def reset_config() -> None:
+    """Reset configuration (mainly for testing)."""
+    global _config
+    _config = None
+    get_config.cache_clear()

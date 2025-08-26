@@ -17,41 +17,41 @@ import uuid
 # ============================================================================
 
 class Environment(Enum):
-"""Deployment environment."""
-DEVELOPMENT = "development"
-TESTING = "testing"
-STAGING = "staging"
-PRODUCTION = "production"
+    """Deployment environment."""
+    DEVELOPMENT = "development"
+    TESTING = "testing"
+    STAGING = "staging"
+    PRODUCTION = "production"
 
 class LogLevel(Enum):
-"""Logging levels."""
-DEBUG = "DEBUG"
-INFO = "INFO"
-WARNING = "WARNING"
-ERROR = "ERROR"
-CRITICAL = "CRITICAL"
+    """Logging levels."""
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
 
 class StorageBackend(Enum):
-"""Storage backend types."""
-REDIS = "redis"
-MEMORY = "memory"
-FAISS = "faiss"
-WEAVIATE = "weaviate"
-NEO4J = "neo4j"
-DUCKDB = "duckdb"
+    """Storage backend types."""
+    REDIS = "redis"
+    MEMORY = "memory"
+    FAISS = "faiss"
+    WEAVIATE = "weaviate"
+    NEO4J = "neo4j"
+    DUCKDB = "duckdb"
 
 class ActivationType(Enum):
-"""Neural network activation types."""
-LIQUID = "liquid"
-RELU = "relu"
-TANH = "tanh"
-SIGMOID = "sigmoid"
+    """Neural network activation types."""
+    LIQUID = "liquid"
+    RELU = "relu"
+    TANH = "tanh"
+    SIGMOID = "sigmoid"
 
 class SolverType(Enum):
-"""ODE solver types."""
-EULER = "euler"
-RK4 = "rk4"
-ADAPTIVE = "adaptive"
+    """ODE solver types."""
+    EULER = "euler"
+    RK4 = "rk4"
+    ADAPTIVE = "adaptive"
 
 # ============================================================================
 # CORE CONFIGURATION CLASSES
@@ -59,32 +59,32 @@ ADAPTIVE = "adaptive"
 
 @dataclass
 class SystemConfig:
-"""Core system configuration."""
-environment: Environment = Environment.DEVELOPMENT
-service_name: str = "aura-intelligence"
-service_version: str = "1.0.0"
-instance_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-log_level: LogLevel = LogLevel.INFO
-debug_mode: bool = False
-max_workers: int = 4
-timeout_seconds: int = 30
+    """Core system configuration."""
+    environment: Environment = Environment.DEVELOPMENT
+    service_name: str = "aura-intelligence"
+    service_version: str = "1.0.0"
+    instance_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    log_level: LogLevel = LogLevel.INFO
+    debug_mode: bool = False
+    max_workers: int = 4
+    timeout_seconds: int = 30
 
-@classmethod
-def from_env(cls) -> 'SystemConfig':
-"""Create from environment variables."""
-return cls(
-environment=Environment(os.getenv("ENVIRONMENT", "development")),
-service_name=os.getenv("SERVICE_NAME", "aura-intelligence"),
-service_version=os.getenv("SERVICE_VERSION", "1.0.0"),
-log_level=LogLevel(os.getenv("LOG_LEVEL", "INFO")),
-debug_mode=os.getenv("DEBUG_MODE", "false").lower() == "true",
-max_workers=int(os.getenv("MAX_WORKERS", "4")),
-timeout_seconds=int(os.getenv("TIMEOUT_SECONDS", "30"))
-)
+    @classmethod
+    def from_env(cls) -> 'SystemConfig':
+        """Create from environment variables."""
+        return cls(
+            environment=Environment(os.getenv("ENVIRONMENT", "development")),
+            service_name=os.getenv("SERVICE_NAME", "aura-intelligence"),
+            service_version=os.getenv("SERVICE_VERSION", "1.0.0"),
+            log_level=LogLevel(os.getenv("LOG_LEVEL", "INFO")),
+            debug_mode=os.getenv("DEBUG_MODE", "false").lower() == "true",
+            max_workers=int(os.getenv("MAX_WORKERS", "4")),
+            timeout_seconds=int(os.getenv("TIMEOUT_SECONDS", "30"))
+        )
 
 @dataclass
 class DatabaseConfig:
-"""Database configuration."""
+    """Database configuration."""
 # Redis
 redis_url: str = "redis://localhost:6379"
 redis_password: Optional[str] = None
@@ -119,7 +119,7 @@ duckdb_threads=int(os.getenv("DUCKDB_THREADS", "4"))
 
 @dataclass
 class AgentConfig:
-"""Unified agent configuration."""
+    """Unified agent configuration."""
 # General agent settings
 max_agents: int = 7
 cycle_interval: float = 1.0
@@ -170,7 +170,7 @@ batch_size=int(os.getenv("BATCH_SIZE", "16"))
 
 @dataclass
 class MemoryConfig:
-"""Unified memory configuration."""
+    """Unified memory configuration."""
 # General memory settings
 storage_backend: StorageBackend = StorageBackend.REDIS
 embedding_dim: int = 128
@@ -224,7 +224,7 @@ retry_max_attempts=int(os.getenv("MEMORY_RETRY_MAX_ATTEMPTS", "3"))
 
 @dataclass
 class ObservabilityConfig:
-"""Unified observability configuration."""
+    """Unified observability configuration."""
 # Core observability
 organism_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 organism_generation: int = 1
@@ -291,7 +291,7 @@ health_check_interval=int(os.getenv("HEALTH_CHECK_INTERVAL", "30"))
 
 @dataclass
 class NeuralConfig:
-"""Unified neural network configuration."""
+    """Unified neural network configuration."""
 # General neural settings
 enable_lnn: bool = True
 enable_bio_neural: bool = True
@@ -337,7 +337,7 @@ gradient_clipping=float(os.getenv("NEURAL_GRADIENT_CLIPPING", "1.0"))
 
 @dataclass
 class OrchestrationConfig:
-"""Unified orchestration configuration."""
+    """Unified orchestration configuration."""
 # General orchestration
 enable_semantic_orchestration: bool = True
 enable_event_driven: bool = True
@@ -376,8 +376,8 @@ semantic_similarity_threshold=float(os.getenv("ORCHESTRATION_SEMANTIC_SIMILARITY
 
 @dataclass
 class UnifiedConfig:
-"""
-Unified configuration for the entire AURA Intelligence system.
+    """
+    Unified configuration for the entire AURA Intelligence system.
 
 This replaces all scattered configuration files with a single,
 type-safe, environment-aware configuration system.
@@ -529,10 +529,10 @@ return self.system.environment == Environment.DEVELOPMENT
 # ============================================================================
 
 class ConfigurationManager:
-"""
-Centralized configuration management with hot reloading,
-validation, and environment-specific overrides.
-"""
+    """
+    Centralized configuration management with hot reloading,
+    validation, and environment-specific overrides.
+    """
 
 def __init__(self, config: Optional[UnifiedConfig] = None):
 self._config = config or UnifiedConfig.from_env()

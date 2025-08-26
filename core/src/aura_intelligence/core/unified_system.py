@@ -110,7 +110,7 @@ class UnifiedSystem:
     # LIFECYCLE MANAGEMENT
     # ========================================================================
     
-        async def initialize(self) -> bool:
+    async def initialize(self) -> bool:
         """Initialize the unified system."""
         try:
             print("🔧 Initializing Unified AURA Intelligence System...")
@@ -148,7 +148,7 @@ class UnifiedSystem:
             print(f"❌ System initialization failed: {e}")
             return False
     
-        async def start(self) -> bool:
+    async def start(self) -> bool:
         """Start the unified system."""
         try:
             if self.running:
@@ -181,7 +181,7 @@ class UnifiedSystem:
             print(f"❌ System start failed: {e}")
             return False
     
-        async def stop(self) -> bool:
+    async def stop(self) -> bool:
         """Stop the unified system."""
         try:
             print("🛑 Stopping Unified AURA Intelligence System...")
@@ -193,6 +193,7 @@ class UnifiedSystem:
                 try:
                     await self._main_task
                 except asyncio.CancelledError:
+                    pass
             
             if self._health_monitor_task:
                 self._health_monitor_task.cancel()
@@ -223,7 +224,7 @@ class UnifiedSystem:
             print(f"❌ System stop failed: {e}")
             return False
     
-        async def restart(self) -> bool:
+    async def restart(self) -> bool:
         """Restart the unified system."""
         print("🔄 Restarting Unified AURA Intelligence System...")
         if await self.stop():
@@ -252,7 +253,7 @@ class UnifiedSystem:
         """Get all components of a specific type."""
         return self.registry.get_components_by_type(component_type)
     
-        async def _initialize_components(self) -> None:
+    async def _initialize_components(self) -> None:
         """Initialize all registered components."""
         components = self.registry.list_components()
         
@@ -271,7 +272,7 @@ class UnifiedSystem:
                 except Exception as e:
                     print(f"❌ Component initialization error {component_id}: {e}")
     
-        async def _stop_components(self) -> None:
+    async def _stop_components(self) -> None:
         """Stop all registered components."""
         components = self.registry.list_components()
         
@@ -288,7 +289,7 @@ class UnifiedSystem:
     # SYSTEM ORCHESTRATION
     # ========================================================================
     
-        async def _main_system_loop(self) -> None:
+    async def _main_system_loop(self) -> None:
         """Main system orchestration loop."""
         cycle_count = 0
         
@@ -325,7 +326,7 @@ class UnifiedSystem:
                 self._update_cycle_metrics(cycle_time_ms, False)
                 await asyncio.sleep(1.0)  # Error recovery wait
     
-        async def _run_system_cycle(self, cycle_number: int) -> Dict[str, Any]:
+    async def _run_system_cycle(self, cycle_number: int) -> Dict[str, Any]:
         """Run a single system cycle."""
         try:
             cycle_data = {
@@ -408,7 +409,7 @@ class UnifiedSystem:
                 'error': str(e)
             }
     
-        async def _update_system_state(self, agent_results: Dict, memory_results: Dict, neural_results: Dict, orchestration_results: Dict) -> None:
+    async def _update_system_state(self, agent_results: Dict, memory_results: Dict, neural_results: Dict, orchestration_results: Dict) -> None:
         """Update system state based on cycle results."""
         # Calculate consciousness level based on agent performance
         if agent_results:
@@ -436,7 +437,7 @@ class UnifiedSystem:
     # HEALTH MONITORING
     # ========================================================================
     
-        async def _health_monitor_loop(self) -> None:
+    async def _health_monitor_loop(self) -> None:
         """Health monitoring loop."""
         while self.running:
             try:
@@ -478,7 +479,7 @@ class UnifiedSystem:
     # EVENT HANDLING
     # ========================================================================
     
-        async def _emit_system_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
+    async def _emit_system_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
         """Emit a system-level event."""
         event = SystemEvent(
             event_type=event_type,
@@ -488,7 +489,7 @@ class UnifiedSystem:
         )
         await self._event_queue.put(event)
     
-        async def _process_events(self) -> None:
+    async def _process_events(self) -> None:
         """Process system events."""
         while self.running:
             try:
@@ -522,7 +523,7 @@ class UnifiedSystem:
             self._event_handlers[event_type] = []
         self._event_handlers[event_type].append(handler)
     
-        async def _handle_component_error(self, event: SystemEvent) -> None:
+    async def _handle_component_error(self, event: SystemEvent) -> None:
         """Handle component error events."""
         print(f"🚨 Component error: {event.component_id} - {event.data}")
         
@@ -532,7 +533,7 @@ class UnifiedSystem:
             "error_data": event.data
         }, Priority.HIGH)
     
-        async def _handle_component_status_change(self, event: SystemEvent) -> None:
+    async def _handle_component_status_change(self, event: SystemEvent) -> None:
         """Handle component status change events."""
         print(f"📊 Component status change: {event.component_id} - {event.data}")
     
@@ -548,7 +549,7 @@ class UnifiedSystem:
         """Add shutdown hook."""
         self._shutdown_hooks.append(hook)
     
-        async def _run_startup_hooks(self) -> None:
+    async def _run_startup_hooks(self) -> None:
         """Run all startup hooks."""
         for hook in self._startup_hooks:
             try:
@@ -559,7 +560,7 @@ class UnifiedSystem:
             except Exception as e:
                     print(f"Startup hook error: {e}")
     
-        async def _run_shutdown_hooks(self) -> None:
+    async def _run_shutdown_hooks(self) -> None:
         """Run all shutdown hooks."""
         for hook in self._shutdown_hooks:
             try:
@@ -635,12 +636,12 @@ class UnifiedSystem:
 # Global system instance
 _global_system: Optional[UnifiedSystem] = None
 
-    def get_unified_system() -> UnifiedSystem:
-        """Get the global unified system instance."""
-        global _global_system
-        if _global_system is None:
+def get_unified_system() -> UnifiedSystem:
+    """Get the global unified system instance."""
+    global _global_system
+    if _global_system is None:
         _global_system = UnifiedSystem()
-        return _global_system
+    return _global_system
 
 def create_unified_system(config: Optional[UnifiedConfig] = None, system_id: Optional[str] = None) -> UnifiedSystem:
     """Create a new unified system instance."""
