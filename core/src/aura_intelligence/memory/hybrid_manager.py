@@ -2,21 +2,13 @@
 Hybrid Memory Manager - Hot/Warm/Cold tiers for 40 memory components
 Production-grade memory hierarchy with real performance
 """
-import asyncio
-import time
-import msgpack
-import zstandard as zstd
-from typing import Dict, Any, Optional, List, Tuple
-from enum import Enum
-from dataclasses import dataclass
-import numpy as np
-from ..components.real_registry import get_real_registry
-from ..observability.prometheus_integration import metrics_collector
-
-class MemoryTier(Enum):
-    HOT = "hot"      # Redis/RAM - sub-ms access
-    WARM = "warm"    # Compressed RAM - ms access  
-    COLD = "cold"    # Disk/SSD - 10ms+ access
+# Import our advanced implementation
+from .advanced_hybrid_memory_2025 import (
+    HybridMemoryManager as AdvancedHybridMemoryManager,
+    MemoryTier,
+    MemorySegment,
+    AccessStatistics
+)
 
 @dataclass
 class MemorySegment:
