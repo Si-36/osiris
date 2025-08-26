@@ -5,12 +5,14 @@ Ultimate knowledge graph system with causal reasoning and consciousness integrat
 All your knowledge graph research with enterprise-grade implementation.
 """
 
-import asyncio
-import time
-from typing import Dict, Any, List, Optional
-
-from aura_intelligence.config import AURASettings as KnowledgeConfig
-from aura_intelligence.utils.logger import get_logger
+# Import our advanced implementation
+from ..graph.advanced_knowledge_graph_2025 import (
+    AdvancedKnowledgeGraph,
+    NodeType,
+    EdgeType,
+    KnowledgeNode,
+    KnowledgeEdge
+)
 
 
 class EnterpriseKnowledgeGraph:
