@@ -56,31 +56,35 @@ class SystemComponent(ABC):
         )
     
     @abstractmethod
-        async def initialize(self) -> None:
+    async def initialize(self) -> None:
         """Initialize the component."""
         pass
     
     @abstractmethod
-        async def start(self) -> None:
+    async def start(self) -> None:
         """Start the component."""
         pass
     
     @abstractmethod
-        async def stop(self) -> None:
+    async def stop(self) -> None:
         """Stop the component."""
         pass
     
     @abstractmethod
-        async def health_check(self) -> HealthStatus:
+
+    
+    async def health_check(self) -> HealthStatus:
         """Check the health of the component."""
         pass
     
     @abstractmethod
-        async def get_metrics(self) -> Dict[str, Any]:
+
+    
+    async def get_metrics(self) -> Dict[str, Any]:
         """Get component metrics."""
         pass
     
-        async def restart(self) -> None:
+    async def restart(self) -> None:
         """Restart the component."""
         await self.stop()
         await self.start()

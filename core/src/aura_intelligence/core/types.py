@@ -616,14 +616,13 @@ class ConsistencyChecker:
     
     def _check_circular_dependencies(self) -> List[str]:
         """Check for circular dependencies in type graph."""
-        pass
         violations = []
         
         type_graph = self.universe.compute_type_graph()
         visited = set()
         rec_stack = set()
         
-    def has_cycle(node: str) -> bool:
+        def has_cycle(node: str) -> bool:
             visited.add(node)
             rec_stack.add(node)
             
@@ -714,19 +713,19 @@ class ProductType(AuraType):
 
 
 # Factory functions for common types
-    def create_basic_type(name: str, data_type: type) -> BasicType:
-        """Create a basic type."""
-        return BasicType(name, data_type)
+def create_basic_type(name: str, data_type: type) -> BasicType:
+    """Create a basic type."""
+    return BasicType(name, data_type)
 
 
-    def create_function_type(domain: AuraType, codomain: AuraType) -> FunctionType:
-        """Create a function type."""
-        return FunctionType(domain, codomain)
+def create_function_type(domain: AuraType, codomain: AuraType) -> FunctionType:
+    """Create a function type."""
+    return FunctionType(domain, codomain)
 
 
-    def create_product_type(left: AuraType, right: AuraType) -> ProductType:
-        """Create a product type."""
-        return ProductType(left, right)
+def create_product_type(left: AuraType, right: AuraType) -> ProductType:
+    """Create a product type."""
+    return ProductType(left, right)
 
 
 # Additional enums for system components

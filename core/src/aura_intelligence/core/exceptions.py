@@ -538,7 +538,7 @@ class ErrorAnalysisManager:
         
         return recommendations
     
-        async def analyze_error_patterns(self) -> Dict[str, Any]:
+    async def analyze_error_patterns(self) -> Dict[str, Any]:
         """Perform advanced pattern analysis on error history."""
         pass
         if not self.error_history:
