@@ -287,6 +287,7 @@ def create_consciousness_error(
     component_id: str = "consciousness",
     consciousness_level: float = 0.0
 ) -> ConsciousnessError:
+) -> ConsciousnessError:
     """Create a consciousness error with appropriate context."""
     return ConsciousnessError(
         message=message,
@@ -300,6 +301,7 @@ def create_topological_error(
     message: str,
     component_id: str = "topology",
     computation_type: str = "persistent_homology"
+) -> TopologicalComputationError:
 ) -> TopologicalComputationError:
     """Create a topological computation error with appropriate context."""
     return TopologicalComputationError(
@@ -315,6 +317,7 @@ def create_swarm_error(
     component_id: str = "swarm",
     swarm_size: int = 0,
     affected_agents: List[str] = None
+) -> SwarmCoordinationError:
 ) -> SwarmCoordinationError:
     """Create a swarm coordination error with appropriate context."""
     return SwarmCoordinationError(
@@ -332,6 +335,7 @@ def create_quantum_error(
     message: str,
     component_id: str = "quantum",
     quantum_fidelity: float = 0.0
+) -> QuantumComputationError:
 ) -> QuantumComputationError:
     """Create a quantum computation error with appropriate context."""
     return QuantumComputationError(
@@ -663,7 +667,7 @@ _global_error_manager: Optional[ErrorAnalysisManager] = None
 
 
 def get_error_analysis_manager() -> ErrorAnalysisManager:
-        """Get the global error analysis manager instance."""
+    """Get the global error analysis manager instance."""
         global _global_error_manager
         if _global_error_manager is None:
             _global_error_manager = ErrorAnalysisManager()

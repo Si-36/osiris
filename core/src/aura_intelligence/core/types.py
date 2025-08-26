@@ -158,7 +158,7 @@ class AuraType(ABC):
         pass
 
     
-    def create_identity(self, other: 'AuraType') -> Optional[TypeIdentity]:
+def create_identity(self, other: 'AuraType') -> Optional[TypeIdentity]:
         """Create identity type between this and other type."""
         if self.is_equivalent_to(other):
             return TypeIdentity(left=self, right=other)

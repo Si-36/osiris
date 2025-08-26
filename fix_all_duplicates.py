@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Fix duplicate function definitions in all core files."""
+
+import os
+from pathlib import Path
+
+def fix_duplicates(file_path):
+    """Fix duplicate function definition lines."""
+    
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+    
+    fixed_lines = []
+    i = 0
+    
+    while i < len(lines):
+        line = lines[i]
+        
+        # Check if this line and next line are identical function definitions
+        if i + 1 < len(lines):
+            next_line = lines[i + 1]
+            
+            # If both lines start with same function definition
+            if (('def ' in line) and 
+                line.strip() == next_line.strip() and
+                line.strip().endswith(':')):
+                # Skip the duplicate
+                fixed_lines.append(line)
+                i += 2  # Skip both lines, we already added one
+                continue
+        
+        fixed_lines.append(line)
+        i += 1
+    
+    # Write back
+    with open(file_path, 'w') as f:
+        f.writelines(fixed_lines)
+    
+    return True
+
+def main():
+    core_dir = Path('/workspace/core/src/aura_intelligence/core')
+    
+    # Fix all .py files in core directory
+    for py_file in core_dir.glob('*.py'):
+        print(f"Checking {py_file.name}...")
+        if fix_duplicates(py_file):
+            print(f"✅ Fixed {py_file.name}")
+
+if __name__ == "__main__":
+    main()

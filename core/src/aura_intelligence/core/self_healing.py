@@ -1589,7 +1589,7 @@ class SelfHealingErrorHandler:
 
 # Factory functions and utilities
 
-    def create_self_healing_error_handler() -> SelfHealingErrorHandler:
+def create_self_healing_error_handler() -> SelfHealingErrorHandler:
         """Create a new self-healing error handler."""
         return SelfHealingErrorHandler()
 
@@ -1601,6 +1601,7 @@ def create_chaos_experiment(
     duration: float = 30.0,
     intensity: float = 0.5,
     blast_radius: float = 0.1
+) -> ChaosExperiment:
 ) -> ChaosExperiment:
     """Create a chaos experiment with sensible defaults."""
     return ChaosExperiment(
