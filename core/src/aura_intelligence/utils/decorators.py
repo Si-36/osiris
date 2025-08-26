@@ -63,6 +63,7 @@ class CircuitBreaker:
     
     def call_succeeded(self) -> None:
         """Record successful call."""
+        pass
         self.failure_count = 0
         if self.state == CircuitState.HALF_OPEN:
             self.success_count += 1
@@ -73,16 +74,18 @@ class CircuitBreaker:
     
     def call_failed(self) -> None:
         """Record failed call."""
+        pass
         self.failure_count += 1
         self.last_failure_time = datetime.now()
         self.success_count = 0
         
         if self.failure_count >= self.config.failure_threshold:
             self.state = CircuitState.OPEN
-            logger.warning(f"Circuit breaker opened after {self.failure_count} failures")
+        logger.warning(f"Circuit breaker opened after {self.failure_count} failures")
     
     def can_attempt_call(self) -> bool:
         """Check if call can be attempted."""
+        pass
         if self.state == CircuitState.CLOSED:
             return True
         
@@ -101,30 +104,30 @@ class CircuitBreaker:
     def __call__(self, func: F) -> F:
         """Decorator for circuit breaker."""
         @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            if not self.can_attempt_call():
-                raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        if not self.can_attempt_call():
+            raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
             
-            try:
-                result = func(*args, **kwargs)
-                self.call_succeeded()
-                return result
-            except self.config.expected_exception as e:
-                self.call_failed()
-                raise
+        try:
+            result = func(*args, **kwargs)
+        self.call_succeeded()
+        return result
+        except self.config.expected_exception as e:
+        self.call_failed()
+        raise
         
         @functools.wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-            if not self.can_attempt_call():
-                raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
+        if not self.can_attempt_call():
+            raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
             
-            try:
-                result = await func(*args, **kwargs)
-                self.call_succeeded()
-                return result
-            except self.config.expected_exception as e:
-                self.call_failed()
-                raise
+        try:
+            result = await func(*args, **kwargs)
+        self.call_succeeded()
+        return result
+        except self.config.expected_exception as e:
+        self.call_failed()
+        raise
         
         if asyncio.iscoroutinefunction(func):
             return async_wrapper  # type: ignore
@@ -150,15 +153,15 @@ def circuit_breaker(
         @circuit_breaker(failure_threshold=3, recovery_timeout=30)
         def external_api_call():
             ...
-    """
-    config = CircuitBreakerConfig(
-        failure_threshold=failure_threshold,
-        recovery_timeout=recovery_timeout,
-        expected_exception=expected_exception,
-        success_threshold=success_threshold
-    )
-    breaker = CircuitBreaker(config)
-    return breaker
+            """
+            config = CircuitBreakerConfig(
+            failure_threshold=failure_threshold,
+            recovery_timeout=recovery_timeout,
+            expected_exception=expected_exception,
+            success_threshold=success_threshold
+            )
+            breaker = CircuitBreaker(config)
+            return breaker
 
 
 def retry(
@@ -182,11 +185,11 @@ def retry(
         @retry(max_attempts=3, delay=1.0, backoff_factor=2.0)
         def unstable_operation():
             ...
-    """
-    def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            current_delay = delay
+            """
+            def decorator(func: F) -> F:
+            @functools.wraps(func)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        current_delay = delay
             last_exception = None
             
             for attempt in range(max_attempts):
@@ -214,29 +217,29 @@ def retry(
             last_exception = None
             
             for attempt in range(max_attempts):
-                try:
-                    return await func(*args, **kwargs)
-                except exceptions as e:
-                    last_exception = e
-                    if attempt < max_attempts - 1:
-                        logger.warning(
-                            f"Retry {attempt + 1}/{max_attempts} for {func.__name__} "
-                            f"after {type(e).__name__}: {str(e)}"
-                        )
-                        await asyncio.sleep(min(current_delay, max_delay))
-                        current_delay *= backoff_factor
-                    else:
-                        logger.error(
-                            f"All {max_attempts} attempts failed for {func.__name__}"
-                        )
+            try:
+                return await func(*args, **kwargs)
+            except exceptions as e:
+            last_exception = e
+            if attempt < max_attempts - 1:
+                logger.warning(
+            f"Retry {attempt + 1}/{max_attempts} for {func.__name__} "
+            f"after {type(e).__name__}: {str(e)}"
+            )
+            await asyncio.sleep(min(current_delay, max_delay))
+            current_delay *= backoff_factor
+            else:
+            logger.error(
+            f"All {max_attempts} attempts failed for {func.__name__}"
+            )
             
             raise last_exception  # type: ignore
         
-        if asyncio.iscoroutinefunction(func):
-            return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+            if asyncio.iscoroutinefunction(func):
+                return async_wrapper  # type: ignore
+            return sync_wrapper  # type: ignore
     
-    return decorator
+            return decorator
 
 
 def rate_limit(calls: int = 10, period: float = 60.0) -> Callable[[F], F]:
@@ -244,60 +247,60 @@ def rate_limit(calls: int = 10, period: float = 60.0) -> Callable[[F], F]:
     Rate limiting decorator.
     
     Args:
-        calls: Maximum number of calls allowed
-        period: Time period in seconds
+    calls: Maximum number of calls allowed
+    period: Time period in seconds
     
     Example:
-        @rate_limit(calls=10, period=60.0)  # 10 calls per minute
-        def api_endpoint():
-            ...
+    @rate_limit(calls=10, period=60.0)  # 10 calls per minute
+    def api_endpoint():
+    ...
     """
     call_times: dict[str, list[float]] = defaultdict(list)
     
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            now = time.time()
-            func_name = func.__name__
+    @functools.wraps(func)
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+    now = time.time()
+    func_name = func.__name__
             
-            # Remove old calls outside the period
-            call_times[func_name] = [
-                t for t in call_times[func_name]
-                if now - t < period
-            ]
+    # Remove old calls outside the period
+    call_times[func_name] = [
+    t for t in call_times[func_name]
+    if now - t < period
+    ]
             
-            if len(call_times[func_name]) >= calls:
-                raise Exception(
-                    f"Rate limit exceeded for {func_name}: "
-                    f"{calls} calls per {period} seconds"
-                )
+    if len(call_times[func_name]) >= calls:
+        raise Exception(
+    f"Rate limit exceeded for {func_name}: "
+    f"{calls} calls per {period} seconds"
+    )
             
-            call_times[func_name].append(now)
-            return func(*args, **kwargs)
+    call_times[func_name].append(now)
+    return func(*args, **kwargs)
         
-        @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-            now = time.time()
-            func_name = func.__name__
+    @functools.wraps(func)
+    async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+    now = time.time()
+    func_name = func.__name__
             
-            # Remove old calls outside the period
-            call_times[func_name] = [
-                t for t in call_times[func_name]
-                if now - t < period
-            ]
+    # Remove old calls outside the period
+    call_times[func_name] = [
+    t for t in call_times[func_name]
+    if now - t < period
+    ]
             
-            if len(call_times[func_name]) >= calls:
-                raise Exception(
-                    f"Rate limit exceeded for {func_name}: "
-                    f"{calls} calls per {period} seconds"
-                )
+    if len(call_times[func_name]) >= calls:
+        raise Exception(
+    f"Rate limit exceeded for {func_name}: "
+    f"{calls} calls per {period} seconds"
+    )
             
-            call_times[func_name].append(now)
-            return await func(*args, **kwargs)
+    call_times[func_name].append(now)
+    return await func(*args, **kwargs)
         
-        if asyncio.iscoroutinefunction(func):
-            return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+    if asyncio.iscoroutinefunction(func):
+        return async_wrapper  # type: ignore
+    return sync_wrapper  # type: ignore
     
     return decorator
 
@@ -307,30 +310,30 @@ def timeout(seconds: float) -> Callable[[F], F]:
     Timeout decorator for async functions.
     
     Args:
-        seconds: Timeout in seconds
+    seconds: Timeout in seconds
     
     Example:
-        @timeout(30.0)
-        async def slow_operation():
-            ...
+    @timeout(30.0)
+    async def slow_operation():
+    ...
     """
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=seconds
-                )
-            except asyncio.TimeoutError:
-                raise TimeoutError(
-                    f"{func.__name__} timed out after {seconds} seconds"
-                )
+    @functools.wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
+    try:
+        return await asyncio.wait_for(
+    func(*args, **kwargs),
+    timeout=seconds
+    )
+    except asyncio.TimeoutError:
+    raise TimeoutError(
+    f"{func.__name__} timed out after {seconds} seconds"
+    )
         
-        if not asyncio.iscoroutinefunction(func):
-            raise TypeError(f"@timeout can only be used on async functions")
+    if not asyncio.iscoroutinefunction(func):
+        raise TypeError(f"@timeout can only be used on async functions")
         
-        return wrapper  # type: ignore
+    return wrapper  # type: ignore
     
     return decorator
 
@@ -340,45 +343,45 @@ def log_performance(threshold_ms: float = 1000.0) -> Callable[[F], F]:
     Log function performance and warn if slow.
     
     Args:
-        threshold_ms: Warning threshold in milliseconds
+    threshold_ms: Warning threshold in milliseconds
     
     Example:
-        @log_performance(threshold_ms=500)
-        def process_data():
-            ...
+    @log_performance(threshold_ms=500)
+    def process_data():
+    ...
     """
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            start_time = time.time()
-            try:
-                result = func(*args, **kwargs)
-                return result
-            finally:
-                duration_ms = (time.time() - start_time) * 1000
-                log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
-                logger.log(
-                    log_level,
-                    f"{func.__name__} took {duration_ms:.2f}ms"
-                )
+    @functools.wraps(func)
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+    start_time = time.time()
+    try:
+        result = func(*args, **kwargs)
+    return result
+    finally:
+    duration_ms = (time.time() - start_time) * 1000
+    log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
+    logger.log(
+    log_level,
+    f"{func.__name__} took {duration_ms:.2f}ms"
+    )
         
-        @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-            start_time = time.time()
-            try:
-                result = await func(*args, **kwargs)
-                return result
-            finally:
-                duration_ms = (time.time() - start_time) * 1000
-                log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
-                logger.log(
-                    log_level,
-                    f"{func.__name__} took {duration_ms:.2f}ms"
-                )
+    @functools.wraps(func)
+    async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+    start_time = time.time()
+    try:
+        result = await func(*args, **kwargs)
+    return result
+    finally:
+    duration_ms = (time.time() - start_time) * 1000
+    log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
+    logger.log(
+    log_level,
+    f"{func.__name__} took {duration_ms:.2f}ms"
+    )
         
-        if asyncio.iscoroutinefunction(func):
-            return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+    if asyncio.iscoroutinefunction(func):
+        return async_wrapper  # type: ignore
+    return sync_wrapper  # type: ignore
     
     return decorator
 
@@ -400,11 +403,11 @@ def handle_errors(
         @handle_errors(default_return=[], log_errors=True)
         def get_items():
             ...
-    """
-    def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            try:
+            """
+            def decorator(func: F) -> F:
+            @functools.wraps(func)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        try:
                 return func(*args, **kwargs)
             except Exception as e:
                 if log_errors:
@@ -421,34 +424,34 @@ def handle_errors(
             try:
                 return await func(*args, **kwargs)
             except Exception as e:
-                if log_errors:
-                    logger.error(
-                        f"Error in {func.__name__}: {type(e).__name__}: {str(e)}",
-                        exc_info=True
-                    )
-                if reraise:
-                    raise
-                return default_return
+            if log_errors:
+                logger.error(
+            f"Error in {func.__name__}: {type(e).__name__}: {str(e)}",
+            exc_info=True
+            )
+            if reraise:
+                raise
+            return default_return
         
-        if asyncio.iscoroutinefunction(func):
-            return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+            if asyncio.iscoroutinefunction(func):
+                return async_wrapper  # type: ignore
+            return sync_wrapper  # type: ignore
     
-    return decorator
+            return decorator
 
 
-@contextmanager
+    @contextmanager
 def timer(name: str = "Operation", logger_func: Optional[Callable] = None):
     """
     Context manager for timing operations.
     
     Args:
-        name: Name of the operation being timed
-        logger_func: Optional logging function (defaults to logger.info)
+    name: Name of the operation being timed
+    logger_func: Optional logging function (defaults to logger.info)
     
     Example:
-        with timer("Data processing"):
-            process_large_dataset()
+    with timer("Data processing"):
+        process_large_dataset()
     """
     if logger_func is None:
         logger_func = logger.info
@@ -457,5 +460,5 @@ def timer(name: str = "Operation", logger_func: Optional[Callable] = None):
     try:
         yield
     finally:
-        duration = time.time() - start_time
-        logger_func(f"{name} completed in {duration:.2f} seconds")
+    duration = time.time() - start_time
+    logger_func(f"{name} completed in {duration:.2f} seconds")

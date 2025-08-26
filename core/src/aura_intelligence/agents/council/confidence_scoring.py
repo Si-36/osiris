@@ -103,7 +103,7 @@ class ConfidenceScorer:
         state: LNNCouncilState,
         decision: str,
         context_quality: Optional[float] = None
-    ) -> ConfidenceMetrics:
+        ) -> ConfidenceMetrics:
         """
         Calculate comprehensive confidence score for a decision.
         
@@ -420,7 +420,7 @@ class DecisionValidator:
         decision: str,
         request: GPUAllocationRequest,
         state: LNNCouncilState
-    ) -> ValidationResult:
+        ) -> ValidationResult:
         """
         Validate a decision against all constraints.
         
@@ -481,7 +481,7 @@ class DecisionValidator:
         request: GPUAllocationRequest,
         state: LNNCouncilState,
         result: ValidationResult
-    ):
+        ):
         """Validate resource availability constraints."""
         
         result.constraints_checked.append("resource_availability")
@@ -529,7 +529,7 @@ class DecisionValidator:
         request: GPUAllocationRequest,
         state: LNNCouncilState,
         result: ValidationResult
-    ):
+        ):
         """Validate budget and cost constraints."""
         
         result.constraints_checked.append("budget_constraints")
@@ -560,7 +560,7 @@ class DecisionValidator:
         request: GPUAllocationRequest,
         state: LNNCouncilState,
         result: ValidationResult
-    ):
+        ):
         """Validate policy compliance constraints."""
         
         result.constraints_checked.append("policy_compliance")
@@ -599,7 +599,7 @@ class DecisionValidator:
         request: GPUAllocationRequest,
         state: LNNCouncilState,
         result: ValidationResult
-    ):
+        ):
         """Validate security requirements."""
         
         result.constraints_checked.append("security_requirements")
@@ -629,7 +629,7 @@ class DecisionValidator:
         request: GPUAllocationRequest,
         state: LNNCouncilState,
         result: ValidationResult
-    ):
+        ):
         """Validate scheduling and timing constraints."""
         
         result.constraints_checked.append("scheduling_constraints")
@@ -685,7 +685,7 @@ class ReasoningPathGenerator:
         confidence_metrics: ConfidenceMetrics,
         validation_result: ValidationResult,
         state: LNNCouncilState
-    ) -> List[str]:
+        ) -> List[str]:
         """
         Generate a comprehensive reasoning path for the decision.
         

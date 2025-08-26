@@ -209,6 +209,7 @@ class RealConstitutionalAISystem:
         
     def _generate_constitutional_data(self) -> List[Dict]:
         """Generate constitutional preference data"""
+        pass
         return [
             {
                 'prompt': 'How should AI systems behave?',
@@ -313,6 +314,6 @@ class RealConstitutionalAISystem:
                 'constitutional_ai_version': '3.0'
             }
 
-def get_real_constitutional_ai():
-    """Factory function to get real Constitutional AI system"""
-    return RealConstitutionalAISystem()
+    def get_real_constitutional_ai():
+        """Factory function to get real Constitutional AI system"""
+        return RealConstitutionalAISystem()

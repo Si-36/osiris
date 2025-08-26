@@ -15,8 +15,8 @@ from temporalio.common import RetryPolicy
 from temporalio.exceptions import ApplicationError
 import structlog
 
-from ...agents.base import AgentState
-from ...agents.observability import GenAIAttributes
+from aura_intelligence.agents.base import AgentState
+from aura_intelligence.agents.observability import GenAIAttributes
 from .activities import (
     AgentActivity,
     KafkaProducerActivity,
@@ -64,7 +64,7 @@ class AgentWorkflow:
         self.start_time: Optional[float] = None
         
     @workflow.run
-    async def run(self, input: AgentWorkflowInput) -> AgentWorkflowResult:
+        async def run(self, input: AgentWorkflowInput) -> AgentWorkflowResult:
         """Execute agent workflow with full resilience."""
         self.start_time = workflow.now().timestamp()
         

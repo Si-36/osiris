@@ -35,6 +35,7 @@ class VoteConfidence(float):
     @classmethod
     def __get_pydantic_core_schema__(cls, source_type, handler):
         """Pydantic core schema for VoteConfidence."""
+        pass
         from pydantic_core import core_schema
         return core_schema.no_info_after_validator_function(
             cls,
@@ -89,6 +90,7 @@ class DecisionEvidence:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         return {
             "type": self.evidence_type,
             "source": self.source,
@@ -118,10 +120,10 @@ class CouncilRequest(BaseModel):
         }
     
     @validator('deadline')
-    def deadline_must_be_future(cls, v):
-        if v and v < datetime.now(timezone.utc):
+        def deadline_must_be_future(cls, v):
+            if v and v < datetime.now(timezone.utc):
             raise ValueError('Deadline must be in the future')
-        return v
+            return v
 
 
 class CouncilResponse(BaseModel):
@@ -145,8 +147,8 @@ class CouncilResponse(BaseModel):
         }
     
     @validator('confidence')
-    def validate_confidence(cls, v):
-        return VoteConfidence(v)
+        def validate_confidence(cls, v):
+            return VoteConfidence(v)
 
 
 @dataclass(frozen=True)
@@ -198,6 +200,7 @@ class AgentMetrics:
     
     def update(self, **kwargs) -> 'AgentMetrics':
         """Create new metrics with updated values."""
+        pass
         return AgentMetrics(
             total_decisions=kwargs.get('total_decisions', self.total_decisions),
             approval_rate=kwargs.get('approval_rate', self.approval_rate),

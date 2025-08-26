@@ -21,18 +21,18 @@ from langgraph.graph import StateGraph, END
 from pydantic import BaseModel, Field
 import structlog
 
-from ...agents.base import AgentBase, AgentConfig, AgentState
-from ...agents.council.lnn_council import (
+from aura_intelligence.agents.base import AgentBase, AgentConfig, AgentState
+from aura_intelligence.agents.council.lnn_council import (
     LNNCouncilAgent, CouncilTask, CouncilVote, VoteType
 )
-from ...neural.lnn import LiquidNeuralNetwork, LNNConfig, ODESolver
-from ...neural.context_integration import ContextAwareLNN, ContextWindow
-from ...neural.memory_hooks import LNNMemoryHooks
-from ...adapters.neo4j_adapter import Neo4jAdapter, Neo4jConfig
-from ...events.producers import EventProducer
-from ...memory.mem0_integration import Mem0Manager
-from ...observability import create_tracer, create_meter
-from ...resilience import resilient, ResilienceLevel
+from aura_intelligence.neural.lnn import LiquidNeuralNetwork, LNNConfig, ODESolver
+from aura_intelligence.neural.context_integration import ContextAwareLNN, ContextWindow
+from aura_intelligence.neural.memory_hooks import LNNMemoryHooks
+from aura_intelligence.adapters.neo4j_adapter import Neo4jAdapter, Neo4jConfig
+from aura_intelligence.events.producers import EventProducer
+from aura_intelligence.memory.mem0_integration import Mem0Manager
+from aura_intelligence.observability import create_tracer, create_meter
+from aura_intelligence.resilience import resilient, ResilienceLevel
 
 logger = structlog.get_logger()
 tracer = create_tracer("production_lnn_council")
@@ -110,12 +110,13 @@ class RealLiquidTimeStep(nn.Module):
     
     def adapt_structure(self) -> bool:
         """Adapt liquid structure based on usage patterns."""
+        pass
         if torch.max(self.usage_stats) > self.adaptation_threshold:
             # Increase time constants for highly used neurons
-            high_usage = self.usage_stats > torch.mean(self.usage_stats) + torch.std(self.usage_stats)
-            self.tau.data[high_usage] *= 1.1
-            self.usage_stats.zero_()
-            return True
+        high_usage = self.usage_stats > torch.mean(self.usage_stats) + torch.std(self.usage_stats)
+        self.tau.data[high_usage] *= 1.1
+        self.usage_stats.zero_()
+        return True
         return False
 
 
@@ -124,11 +125,12 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
     
     def __init__(self, config: Union[AgentConfig, Dict[str, Any]]):
         """Initialize with proper configuration handling."""
+        pass
         # Convert AgentConfig to dictionary if needed
         if isinstance(config, AgentConfig):
             config_dict = self._convert_config(config)
         else:
-            config_dict = config
+        config_dict = config
             
         # Initialize base class with dictionary config
         super().__init__(config_dict)
@@ -174,20 +176,21 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         
     def _initialize_components(self):
         """Initialize all required components."""
+        pass
         # Create LNN config from dictionary
         lnn_config_dict = self.config.get("lnn_config", {})
         self.lnn_config = LNNConfig(
-            input_size=lnn_config_dict.get("input_size", 256),
-            hidden_size=lnn_config_dict.get("hidden_size", 128),
-            output_size=lnn_config_dict.get("output_size", 4),
-            num_layers=lnn_config_dict.get("num_layers", 3),
-            time_constant=lnn_config_dict.get("time_constant", 1.0),
-            ode_solver=lnn_config_dict.get("ode_solver", ODESolver.RK4),
-            solver_steps=lnn_config_dict.get("solver_steps", 10),
-            adaptivity_rate=lnn_config_dict.get("adaptivity_rate", 0.1),
-            sparsity=lnn_config_dict.get("sparsity", 0.7),
-            consensus_enabled=lnn_config_dict.get("consensus_enabled", True),
-            consensus_threshold=lnn_config_dict.get("consensus_threshold", 0.67)
+        input_size=lnn_config_dict.get("input_size", 256),
+        hidden_size=lnn_config_dict.get("hidden_size", 128),
+        output_size=lnn_config_dict.get("output_size", 4),
+        num_layers=lnn_config_dict.get("num_layers", 3),
+        time_constant=lnn_config_dict.get("time_constant", 1.0),
+        ode_solver=lnn_config_dict.get("ode_solver", ODESolver.RK4),
+        solver_steps=lnn_config_dict.get("solver_steps", 10),
+        adaptivity_rate=lnn_config_dict.get("adaptivity_rate", 0.1),
+        sparsity=lnn_config_dict.get("sparsity", 0.7),
+        consensus_enabled=lnn_config_dict.get("consensus_enabled", True),
+        consensus_threshold=lnn_config_dict.get("consensus_threshold", 0.67)
         )
         
         # Initialize adapters (will be set by dependency injection in production)
@@ -196,7 +199,8 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         self.memory_manager: Optional[Mem0Manager] = None
         
     def _setup_neural_network(self):
-        """Set up the liquid neural network components."""
+            """Set up the liquid neural network components."""
+        pass
         # Create context-aware LNN
         self.context_lnn = ContextAwareLNN(
             lnn_config=self.lnn_config,
@@ -230,20 +234,21 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         
     def _configure_integrations(self):
         """Configure external integrations."""
+        pass
         # Memory hooks for background indexing
         if self.config.get("feature_flags", {}).get("enable_memory_hooks", True):
             self.memory_hooks = LNNMemoryHooks(
-                memory_manager=self.memory_manager
-            )
+        memory_manager=self.memory_manager
+        )
         else:
-            self.memory_hooks = None
+        self.memory_hooks = None
             
-    def set_adapters(
+        def set_adapters(
         self,
         neo4j: Optional[Neo4jAdapter] = None,
         events: Optional[EventProducer] = None,
         memory: Optional[Mem0Manager] = None
-    ):
+        ):
         """Set external adapters (for dependency injection)."""
         if neo4j:
             self.neo4j_adapter = neo4j
@@ -260,6 +265,7 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             
     def build_graph(self) -> StateGraph:
         """Build the LangGraph workflow for council decisions."""
+        pass
         workflow = StateGraph(CouncilState)
         
         # Define workflow nodes
@@ -283,7 +289,7 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         
         return workflow
         
-    async def _execute_step(self, state: CouncilState, step_name: str) -> CouncilState:
+        async def _execute_step(self, state: CouncilState, step_name: str) -> CouncilState:
         """Execute a specific step in the workflow."""
         step_methods = {
             "validate_task": self._validate_task_step,
@@ -302,11 +308,11 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
     def _create_initial_state(self, input_data: CouncilTask) -> CouncilState:
         """Create initial state from council task."""
         return CouncilState(
-            agent_id=str(uuid.uuid4()),
-            task=input_data,
-            context=input_data.context if hasattr(input_data, 'context') else {},
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc)
+        agent_id=str(uuid.uuid4()),
+        task=input_data,
+        context=input_data.context if hasattr(input_data, 'context') else {},
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
         )
         
     def _extract_output(self, final_state: CouncilState) -> CouncilVote:
@@ -325,33 +331,33 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             )
             
     @resilient(criticality=ResilienceLevel.HIGH)
-    async def _validate_task_step(self, state: CouncilState) -> CouncilState:
+        async def _validate_task_step(self, state: CouncilState) -> CouncilState:
         """Validate the incoming task."""
         with tracer.start_as_current_span("validate_task") as span:
             if not state.task:
                 state.add_error(ValueError("No task provided"), "validate_task")
-                state.completed = True
-                return state
+        state.completed = True
+        return state
                 
-            # Validate task structure
-            required_fields = ["task_id", "task_type", "payload"]
-            for field in required_fields:
-                if not hasattr(state.task, field):
-                    state.add_error(
-                        ValueError(f"Missing required field: {field}"),
-                        "validate_task"
-                    )
-                    state.completed = True
-                    return state
+        # Validate task structure
+        required_fields = ["task_id", "task_type", "payload"]
+        for field in required_fields:
+        if not hasattr(state.task, field):
+            state.add_error(
+        ValueError(f"Missing required field: {field}"),
+        "validate_task"
+        )
+        state.completed = True
+        return state
                     
-            span.set_attribute("task.id", state.task.task_id)
-            span.set_attribute("task.type", state.task.task_type)
+        span.set_attribute("task.id", state.task.task_id)
+        span.set_attribute("task.type", state.task.task_type)
             
-            state.next_step = "gather_context"
-            return state
+        state.next_step = "gather_context"
+        return state
             
-    @resilient(criticality=ResilienceLevel.MEDIUM)
-    async def _gather_context_step(self, state: CouncilState) -> CouncilState:
+        @resilient(criticality=ResilienceLevel.MEDIUM)
+        async def _gather_context_step(self, state: CouncilState) -> CouncilState:
         """Gather context from Neo4j and memory."""
         with tracer.start_as_current_span("gather_context") as span:
             context_tasks = []
@@ -382,48 +388,48 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             state.next_step = "prepare_features"
             return state
             
-    async def _query_neo4j_context(self, state: CouncilState):
+        async def _query_neo4j_context(self, state: CouncilState):
         """Query Neo4j for relevant context."""
         try:
             # Extract user ID from task payload
-            gpu_allocation = state.task.payload.get("gpu_allocation", {})
-            user_id = gpu_allocation.get("user_id", "unknown")
+        gpu_allocation = state.task.payload.get("gpu_allocation", {})
+        user_id = gpu_allocation.get("user_id", "unknown")
             
-            # Query historical allocations
-            query = """
-            MATCH (u:User {id: $user_id})-[:REQUESTED]->(a:Allocation)
-            WHERE a.timestamp > datetime() - duration('P30D')
-            RETURN a.gpu_type as gpu_type, 
-                   a.gpu_count as gpu_count, 
-                   a.approved as approved,
-                   a.actual_usage as actual_usage,
-                   a.cost_per_hour as cost_per_hour
-            ORDER BY a.timestamp DESC
-            LIMIT 100
-            """
+        # Query historical allocations
+        query = """
+        MATCH (u:User {id: $user_id})-[:REQUESTED]->(a:Allocation)
+        WHERE a.timestamp > datetime() - duration('P30D')
+        RETURN a.gpu_type as gpu_type,
+        a.gpu_count as gpu_count,
+        a.approved as approved,
+        a.actual_usage as actual_usage,
+        a.cost_per_hour as cost_per_hour
+        ORDER BY a.timestamp DESC
+        LIMIT 100
+        """
             
-            results = await self.neo4j_adapter.query(query, {"user_id": user_id})
+        results = await self.neo4j_adapter.query(query, {"user_id": user_id})
             
-            # Process results into patterns
-            patterns = []
-            for record in results:
-                patterns.append({
-                    "features": [
-                        float(record.get("gpu_count", 0)),
-                        float(record.get("cost_per_hour", 0)),
-                        float(record.get("approved", False)),
-                        float(record.get("actual_usage", 0))
-                    ]
-                })
+        # Process results into patterns
+        patterns = []
+        for record in results:
+        patterns.append({
+        "features": [
+        float(record.get("gpu_count", 0)),
+        float(record.get("cost_per_hour", 0)),
+        float(record.get("approved", False)),
+        float(record.get("actual_usage", 0))
+        ]
+        })
                 
-            state.neo4j_context["patterns"] = patterns
+        state.neo4j_context["patterns"] = patterns
             
         except Exception as e:
-            logger.error(f"Failed to query Neo4j context: {e}")
-            state.neo4j_context["patterns"] = []
+        logger.error(f"Failed to query Neo4j context: {e}")
+        state.neo4j_context["patterns"] = []
             
-    async def _query_memory_context(self, state: CouncilState):
-        """Query memory for relevant context."""
+        async def _query_memory_context(self, state: CouncilState):
+            """Query memory for relevant context."""
         try:
             # Get recent decisions from memory
             memories = await self.memory_manager.search(
@@ -437,48 +443,48 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             logger.error(f"Failed to query memory context: {e}")
             state.memory_context["recent_memories"] = []
             
-    async def _prepare_features_step(self, state: CouncilState) -> CouncilState:
+        async def _prepare_features_step(self, state: CouncilState) -> CouncilState:
         """Prepare features for LNN inference."""
         with tracer.start_as_current_span("prepare_features") as span:
             # Extract features from task
-            gpu_allocation = state.task.payload.get("gpu_allocation", {})
+        gpu_allocation = state.task.payload.get("gpu_allocation", {})
             
-            # Create feature vector
-            features = [
-                float(gpu_allocation.get("gpu_count", 0)) / 10.0,  # Normalize
-                float(gpu_allocation.get("cost_per_hour", 0)) / 100.0,  # Normalize
-                float(gpu_allocation.get("duration_hours", 0)) / 24.0,  # Normalize
-                float(state.task.priority) / 10.0 if hasattr(state.task, 'priority') else 0.5,
-            ]
+        # Create feature vector
+        features = [
+        float(gpu_allocation.get("gpu_count", 0)) / 10.0,  # Normalize
+        float(gpu_allocation.get("cost_per_hour", 0)) / 100.0,  # Normalize
+        float(gpu_allocation.get("duration_hours", 0)) / 24.0,  # Normalize
+        float(state.task.priority) / 10.0 if hasattr(state.task, 'priority') else 0.5,
+        ]
             
-            # Add context features if available
-            if state.context_window:
-                context_tensor = state.context_window.to_tensor()
-                # Combine task features with context
-                full_features = torch.cat([
-                    torch.tensor(features, dtype=torch.float32),
-                    context_tensor
-                ])
-            else:
-                # Pad to expected input size
-                features.extend([0.0] * (self.lnn_config.input_size - len(features)))
-                full_features = torch.tensor(features, dtype=torch.float32)
+        # Add context features if available
+        if state.context_window:
+            context_tensor = state.context_window.to_tensor()
+        # Combine task features with context
+        full_features = torch.cat([
+        torch.tensor(features, dtype=torch.float32),
+        context_tensor
+        ])
+        else:
+        # Pad to expected input size
+        features.extend([0.0] * (self.lnn_config.input_size - len(features)))
+        full_features = torch.tensor(features, dtype=torch.float32)
                 
-            # Ensure correct shape
-            if len(full_features) < self.lnn_config.input_size:
-                padding = torch.zeros(self.lnn_config.input_size - len(full_features))
-                full_features = torch.cat([full_features, padding])
-            elif len(full_features) > self.lnn_config.input_size:
-                full_features = full_features[:self.lnn_config.input_size]
+        # Ensure correct shape
+        if len(full_features) < self.lnn_config.input_size:
+            padding = torch.zeros(self.lnn_config.input_size - len(full_features))
+        full_features = torch.cat([full_features, padding])
+        elif len(full_features) > self.lnn_config.input_size:
+        full_features = full_features[:self.lnn_config.input_size]
                 
-            state.context["prepared_features"] = full_features
-            span.set_attribute("features.size", len(full_features))
+        state.context["prepared_features"] = full_features
+        span.set_attribute("features.size", len(full_features))
             
-            state.next_step = "lnn_inference"
-            return state
+        state.next_step = "lnn_inference"
+        return state
             
-    @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def _lnn_inference_step(self, state: CouncilState) -> CouncilState:
+        @resilient(criticality=ResilienceLevel.CRITICAL)
+        async def _lnn_inference_step(self, state: CouncilState) -> CouncilState:
         """Run LNN inference."""
         with tracer.start_as_current_span("lnn_inference") as span:
             try:
@@ -536,56 +542,56 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             state.next_step = "generate_vote"
             return state
             
-    async def _generate_vote_step(self, state: CouncilState) -> CouncilState:
+        async def _generate_vote_step(self, state: CouncilState) -> CouncilState:
         """Generate vote from LNN output."""
         with tracer.start_as_current_span("generate_vote") as span:
             output_probs = state.lnn_output[0] if state.lnn_output is not None else torch.tensor([0.25, 0.25, 0.25, 0.25])
             
-            # Map probabilities to vote types
-            vote_mapping = {
-                0: VoteType.APPROVE,
-                1: VoteType.REJECT,
-                2: VoteType.ABSTAIN,
-                3: VoteType.DELEGATE
-            }
+        # Map probabilities to vote types
+        vote_mapping = {
+        0: VoteType.APPROVE,
+        1: VoteType.REJECT,
+        2: VoteType.ABSTAIN,
+        3: VoteType.DELEGATE
+        }
             
-            # Get vote with highest probability
-            vote_idx = torch.argmax(output_probs).item()
-            vote_type = vote_mapping[vote_idx]
-            confidence = output_probs[vote_idx].item()
+        # Get vote with highest probability
+        vote_idx = torch.argmax(output_probs).item()
+        vote_type = vote_mapping[vote_idx]
+        confidence = output_probs[vote_idx].item()
             
-            # Generate reasoning based on context and vote
-            reasoning = self._generate_reasoning(state, vote_type, confidence)
+        # Generate reasoning based on context and vote
+        reasoning = self._generate_reasoning(state, vote_type, confidence)
             
-            # Collect supporting evidence
-            evidence = self._collect_evidence(state, vote_type)
+        # Collect supporting evidence
+        evidence = self._collect_evidence(state, vote_type)
             
-            # Create vote
-            state.vote = CouncilVote(
-                agent_id=self.config["name"],
-                vote=vote_type,
-                confidence=confidence,
-                reasoning=reasoning,
-                supporting_evidence=evidence,
-                timestamp=datetime.now(timezone.utc)
-            )
+        # Create vote
+        state.vote = CouncilVote(
+        agent_id=self.config["name"],
+        vote=vote_type,
+        confidence=confidence,
+        reasoning=reasoning,
+        supporting_evidence=evidence,
+        timestamp=datetime.now(timezone.utc)
+        )
             
-            # Update metrics
-            council_decisions.add(1, {"vote_type": vote_type.value})
-            decision_confidence.record(confidence)
+        # Update metrics
+        council_decisions.add(1, {"vote_type": vote_type.value})
+        decision_confidence.record(confidence)
             
-            span.set_attribute("vote.type", vote_type.value)
-            span.set_attribute("vote.confidence", confidence)
+        span.set_attribute("vote.type", vote_type.value)
+        span.set_attribute("vote.confidence", confidence)
             
-            # Add liquid network metrics
-            if 'liquid_info' in state.context:
-                liquid_info = state.context['liquid_info']
-                span.set_attribute("liquid.complexity", liquid_info['complexity'])
-                span.set_attribute("liquid.adaptations", liquid_info['adaptations'])
-                span.set_attribute("liquid.sparsity", liquid_info['sparsity'])
+        # Add liquid network metrics
+        if 'liquid_info' in state.context:
+            liquid_info = state.context['liquid_info']
+        span.set_attribute("liquid.complexity", liquid_info['complexity'])
+        span.set_attribute("liquid.adaptations", liquid_info['adaptations'])
+        span.set_attribute("liquid.sparsity", liquid_info['sparsity'])
             
-            state.next_step = "store_decision"
-            return state
+        state.next_step = "store_decision"
+        return state
             
     def _generate_reasoning(self, state: CouncilState, vote_type: VoteType, confidence: float) -> str:
         """Generate human-readable reasoning for the vote."""
@@ -621,33 +627,33 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         
         # Add neural network analysis
         evidence.append({
-            "type": "neural_analysis",
-            "confidence_scores": state.lnn_output[0].tolist() if state.lnn_output is not None else [],
-            "selected_vote": vote_type.value
+        "type": "neural_analysis",
+        "confidence_scores": state.lnn_output[0].tolist() if state.lnn_output is not None else [],
+        "selected_vote": vote_type.value
         })
         
         # Add context summary if available
         if state.context_window:
             evidence.append({
-                "type": "context_summary",
-                "historical_patterns": len(state.context_window.historical_patterns),
-                "recent_decisions": len(state.context_window.recent_decisions)
-            })
+        "type": "context_summary",
+        "historical_patterns": len(state.context_window.historical_patterns),
+        "recent_decisions": len(state.context_window.recent_decisions)
+        })
             
         # Add task details
         gpu_allocation = state.task.payload.get("gpu_allocation", {})
         evidence.append({
-            "type": "request_details",
-            "gpu_type": gpu_allocation.get("gpu_type"),
-            "gpu_count": gpu_allocation.get("gpu_count"),
-            "cost_per_hour": gpu_allocation.get("cost_per_hour"),
-            "duration_hours": gpu_allocation.get("duration_hours")
+        "type": "request_details",
+        "gpu_type": gpu_allocation.get("gpu_type"),
+        "gpu_count": gpu_allocation.get("gpu_count"),
+        "cost_per_hour": gpu_allocation.get("cost_per_hour"),
+        "duration_hours": gpu_allocation.get("duration_hours")
         })
         
         return evidence
         
-    @resilient(criticality=ResilienceLevel.LOW)
-    async def _store_decision_step(self, state: CouncilState) -> CouncilState:
+        @resilient(criticality=ResilienceLevel.LOW)
+        async def _store_decision_step(self, state: CouncilState) -> CouncilState:
         """Store decision in Neo4j and publish events."""
         with tracer.start_as_current_span("store_decision") as span:
             storage_tasks = []
@@ -678,39 +684,39 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             
             return state
             
-    async def _store_in_neo4j(self, state: CouncilState):
+        async def _store_in_neo4j(self, state: CouncilState):
         """Store decision in Neo4j."""
         try:
             query = """
-            CREATE (d:Decision {
-                decision_id: $decision_id,
-                request_id: $request_id,
-                agent_id: $agent_id,
-                vote: $vote,
-                confidence: $confidence,
-                reasoning: $reasoning,
-                timestamp: $timestamp
-            })
-            RETURN d
-            """
+        CREATE (d:Decision {
+        decision_id: $decision_id,
+        request_id: $request_id,
+        agent_id: $agent_id,
+        vote: $vote,
+        confidence: $confidence,
+        reasoning: $reasoning,
+        timestamp: $timestamp
+        })
+        RETURN d
+        """
             
-            params = {
-                "decision_id": str(uuid.uuid4()),
-                "request_id": state.task.task_id,
-                "agent_id": state.vote.agent_id,
-                "vote": state.vote.vote.value,
-                "confidence": state.vote.confidence,
-                "reasoning": state.vote.reasoning,
-                "timestamp": state.vote.timestamp.isoformat()
-            }
+        params = {
+        "decision_id": str(uuid.uuid4()),
+        "request_id": state.task.task_id,
+        "agent_id": state.vote.agent_id,
+        "vote": state.vote.vote.value,
+        "confidence": state.vote.confidence,
+        "reasoning": state.vote.reasoning,
+        "timestamp": state.vote.timestamp.isoformat()
+        }
             
-            await self.neo4j_adapter.query(query, params)
+        await self.neo4j_adapter.query(query, params)
             
         except Exception as e:
-            logger.error(f"Failed to store decision in Neo4j: {e}")
+        logger.error(f"Failed to store decision in Neo4j: {e}")
             
-    async def _store_in_memory(self, state: CouncilState):
-        """Store decision in memory."""
+        async def _store_in_memory(self, state: CouncilState):
+            """Store decision in memory."""
         try:
             await self.memory_hooks.store_decision(
                 decision_id=str(uuid.uuid4()),
@@ -722,28 +728,29 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         except Exception as e:
             logger.error(f"Failed to store decision in memory: {e}")
             
-    async def _publish_event(self, state: CouncilState):
+        async def _publish_event(self, state: CouncilState):
         """Publish decision event."""
         try:
             event = {
-                "type": "council_vote",
-                "agent_id": state.vote.agent_id,
-                "task_id": state.task.task_id,
-                "vote": state.vote.vote.value,
-                "confidence": state.vote.confidence,
-                "reasoning": state.vote.reasoning,
-                "timestamp": state.vote.timestamp.isoformat()
-            }
+        "type": "council_vote",
+        "agent_id": state.vote.agent_id,
+        "task_id": state.task.task_id,
+        "vote": state.vote.vote.value,
+        "confidence": state.vote.confidence,
+        "reasoning": state.vote.reasoning,
+        "timestamp": state.vote.timestamp.isoformat()
+        }
             
-            await self.event_producer.publish(
-                topic="gpu.allocation.decisions",
-                event=event
-            )
+        await self.event_producer.publish(
+        topic="gpu.allocation.decisions",
+        event=event
+        )
         except Exception as e:
-            logger.error(f"Failed to publish decision event: {e}")
+        logger.error(f"Failed to publish decision event: {e}")
             
-    async def cleanup(self):
-        """Cleanup resources."""
+        async def cleanup(self):
+            """Cleanup resources."""
+        pass
         try:
             cleanup_tasks = []
             
@@ -763,7 +770,7 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
             logger.error(f"Error during cleanup: {e}")
             
     # Override the process method to use the workflow
-    async def process(self, task: CouncilTask) -> CouncilVote:
+        async def process(self, task: CouncilTask) -> CouncilVote:
         """Process a council task through the LNN workflow."""
         # Use the base class _process method which handles the workflow
         return await self._process(task)

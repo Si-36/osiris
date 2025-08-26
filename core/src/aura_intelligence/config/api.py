@@ -132,9 +132,11 @@ class APISettings(BaseSettings):
     @property
     def has_openai_key(self) -> bool:
         """Check if OpenAI API key is configured."""
+        pass
         return self.openai_api_key is not None
     
     @property
     def has_anthropic_key(self) -> bool:
         """Check if Anthropic API key is configured."""
+        pass
         return self.anthropic_api_key is not None

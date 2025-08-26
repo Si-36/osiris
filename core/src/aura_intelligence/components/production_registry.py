@@ -59,22 +59,22 @@ class NeuralComponentActor:
         # Load real models based on type
         if "transformer" in model_type:
             self.model = AutoModel.from_pretrained("distilbert-base-uncased")
-            self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
         elif "vision" in model_type:
-            self.model = models.resnet18(pretrained=True)
-            self.model.fc = nn.Linear(512, 256)  # Reduce output dim
+        self.model = models.resnet18(pretrained=True)
+        self.model.fc = nn.Linear(512, 256)  # Reduce output dim
         elif "lnn" in model_type:
-            # Liquid Neural Network implementation
-            self.model = LiquidNeuralNetwork(input_dim=128, hidden_dim=256, output_dim=64)
+        # Liquid Neural Network implementation
+        self.model = LiquidNeuralNetwork(input_dim=128, hidden_dim=256, output_dim=64)
         else:
-            # Default MLP
-            self.model = nn.Sequential(
-                nn.Linear(128, 256),
-                nn.ReLU(),
-                nn.Linear(256, 128),
-                nn.ReLU(), 
-                nn.Linear(128, 64)
-            )
+        # Default MLP
+        self.model = nn.Sequential(
+        nn.Linear(128, 256),
+        nn.ReLU(),
+        nn.Linear(256, 128),
+        nn.ReLU(),
+        nn.Linear(128, 64)
+        )
         
         self.model.to(self.device)
         self.model.eval()
@@ -89,7 +89,7 @@ class NeuralComponentActor:
         
         logger.info(f"Neural component {component_id} initialized with {model_type}")
     
-    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Real neural processing with actual computation"""
         start_time = time.time()
         self.request_count += 1
@@ -142,22 +142,22 @@ class NeuralComponentActor:
                 "component_id": self.component_id
             }
     
-    async def _process_text(self, text: str) -> Dict[str, Any]:
+        async def _process_text(self, text: str) -> Dict[str, Any]:
         """Real text processing with transformer"""
         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
         
         with torch.no_grad():
             outputs = self.model(**inputs)
-            embeddings = outputs.last_hidden_state.mean(dim=1)  # Pool over sequence
+        embeddings = outputs.last_hidden_state.mean(dim=1)  # Pool over sequence
         
         return {
-            "embeddings": embeddings.cpu().numpy().tolist(),
-            "confidence": float(torch.sigmoid(embeddings.norm())),
-            "processing_type": "text_transformer"
+        "embeddings": embeddings.cpu().numpy().tolist(),
+        "confidence": float(torch.sigmoid(embeddings.norm())),
+        "processing_type": "text_transformer"
         }
     
-    async def _process_image(self, image_data: Union[np.ndarray, List]) -> Dict[str, Any]:
+        async def _process_image(self, image_data: Union[np.ndarray, List]) -> Dict[str, Any]:
         """Real image processing with CNN"""
         if isinstance(image_data, list):
             image_data = np.array(image_data)
@@ -177,7 +177,7 @@ class NeuralComponentActor:
             "processing_type": "image_cnn"
         }
     
-    async def _process_vector(self, vector: List[float]) -> Dict[str, Any]:
+        async def _process_vector(self, vector: List[float]) -> Dict[str, Any]:
         """Real vector processing"""
         input_tensor = torch.tensor([vector], dtype=torch.float32).to(self.device)
         
@@ -185,13 +185,13 @@ class NeuralComponentActor:
             output = self.model(input_tensor)
         
         return {
-            "output": output.cpu().numpy().tolist(),
-            "confidence": float(torch.sigmoid(output.mean())),
-            "processing_type": "vector_mlp"
+        "output": output.cpu().numpy().tolist(),
+        "confidence": float(torch.sigmoid(output.mean())),
+        "processing_type": "vector_mlp"
         }
     
     def _save_state(self, state: Dict[str, Any]):
-        """Save component state to RocksDB"""
+            """Save component state to RocksDB"""
         try:
             self.state_db.put(b"current_state", json.dumps(state).encode())
         except Exception as e:
@@ -199,18 +199,19 @@ class NeuralComponentActor:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get real component metrics"""
+        pass
         return {
-            "component_id": self.component_id,
-            "model_type": self.model_type,
-            "request_count": self.request_count,
-            "error_count": self.error_count,
-            "error_rate": self.error_count / max(1, self.request_count),
-            "avg_processing_time": self.metrics.processing_time,
-            "throughput": self.metrics.throughput,
-            "device": str(self.device)
+        "component_id": self.component_id,
+        "model_type": self.model_type,
+        "request_count": self.request_count,
+        "error_count": self.error_count,
+        "error_rate": self.error_count / max(1, self.request_count),
+        "avg_processing_time": self.metrics.processing_time,
+        "throughput": self.metrics.throughput,
+        "device": str(self.device)
         }
 
-@ray.remote(memory=2*1024*1024*1024)  # 2GB RAM
+    @ray.remote(memory=2*1024*1024*1024)  # 2GB RAM
 class MemoryComponentActor:
     """Real memory component with tiered storage"""
     
@@ -220,11 +221,11 @@ class MemoryComponentActor:
         # Real Redis connection
         try:
             self.redis_client = redis.Redis(host='localhost', port=6379, db=0)
-            self.redis_client.ping()
-            self.has_redis = True
+        self.redis_client.ping()
+        self.has_redis = True
         except:
-            self.has_redis = False
-            logger.warning(f"Redis not available for {component_id}")
+        self.has_redis = False
+        logger.warning(f"Redis not available for {component_id}")
         
         # RocksDB for persistent storage
         self.rocks_db = rocksdb.DB(f"/tmp/memory_{component_id}", rocksdb.Options(create_if_missing=True))
@@ -242,7 +243,7 @@ class MemoryComponentActor:
         
         logger.info(f"Memory component {component_id} initialized")
     
-    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Real memory operations with tiering"""
         operation = data.get("operation", "get")
         key = data.get("key", "")
@@ -282,7 +283,7 @@ class MemoryComponentActor:
                 "component_id": self.component_id
             }
     
-    async def _set_value(self, key: str, value: Any) -> Dict[str, Any]:
+        async def _set_value(self, key: str, value: Any) -> Dict[str, Any]:
         """Set value with automatic tiering"""
         # Always store in hot cache first
         self.hot_cache[key] = value
@@ -293,18 +294,18 @@ class MemoryComponentActor:
         if self.has_redis:
             try:
                 self.redis_client.set(f"warm:{key}", json.dumps(value))
-            except Exception as e:
-                logger.warning(f"Redis set failed: {e}")
+        except Exception as e:
+        logger.warning(f"Redis set failed: {e}")
         
         # Store in RocksDB (cold tier)
         try:
             self.rocks_db.put(f"cold:{key}".encode(), json.dumps(value).encode())
         except Exception as e:
-            logger.warning(f"RocksDB set failed: {e}")
+        logger.warning(f"RocksDB set failed: {e}")
         
         return {"stored": True, "tier": "hot", "key": key}
     
-    async def _get_value(self, key: str) -> Dict[str, Any]:
+        async def _get_value(self, key: str) -> Dict[str, Any]:
         """Get value with tier promotion"""
         # Check hot cache first
         if key in self.hot_cache:
@@ -346,7 +347,7 @@ class MemoryComponentActor:
                         self.redis_client.set(f"warm:{key}", json.dumps(decoded_value))
                         self.promotions += 1
                     except:
-                        pass
+        pass
                 
                 return {"value": decoded_value, "tier": "cold", "found": True}
         except Exception as e:
@@ -354,33 +355,33 @@ class MemoryComponentActor:
         
         return {"found": False, "tier": None}
     
-    async def _delete_value(self, key: str) -> Dict[str, Any]:
+        async def _delete_value(self, key: str) -> Dict[str, Any]:
         """Delete value from all tiers"""
         deleted_from = []
         
         # Delete from hot cache
         if key in self.hot_cache:
             del self.hot_cache[key]
-            deleted_from.append("hot")
+        deleted_from.append("hot")
         
         # Delete from Redis
         if self.has_redis:
             try:
                 if self.redis_client.delete(f"warm:{key}"):
                     deleted_from.append("warm")
-            except:
-                pass
+        except:
+        pass
         
         # Delete from RocksDB
         try:
             self.rocks_db.delete(f"cold:{key}".encode())
-            deleted_from.append("cold")
+        deleted_from.append("cold")
         except:
-            pass
+        pass
         
         return {"deleted": True, "tiers": deleted_from}
 
-@ray.remote
+    @ray.remote
 class TDAComponentActor:
     """Real TDA component with actual topological analysis"""
     
@@ -393,7 +394,7 @@ class TDAComponentActor:
         
         logger.info(f"TDA component {component_id} initialized")
     
-    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Real topological data analysis"""
         if not self.has_tda:
             return {
@@ -506,7 +507,8 @@ class ProductionComponentRegistry:
         logger.info(f"Production registry initialized with {len(self.actors)} real components")
     
     def _initialize_real_components(self):
-        """Initialize real components as Ray actors"""
+            """Initialize real components as Ray actors"""
+        pass
         
         # Neural components (30 real PyTorch models)
         neural_types = [
@@ -545,7 +547,7 @@ class ProductionComponentRegistry:
             self.actors[component_id] = actor
             self.component_types[component_id] = ComponentType.ORCHESTRATION
     
-    async def process_data(self, component_id: str, data: Any, context: Optional[Dict[str, Any]] = None) -> Any:
+        async def process_data(self, component_id: str, data: Any, context: Optional[Dict[str, Any]] = None) -> Any:
         """Process data through real component actor"""
         if component_id not in self.actors:
             raise ValueError(f"Component {component_id} not found")
@@ -564,7 +566,7 @@ class ProductionComponentRegistry:
         
         return result
     
-    async def get_component_metrics(self, component_id: str) -> Dict[str, Any]:
+        async def get_component_metrics(self, component_id: str) -> Dict[str, Any]:
         """Get real metrics from component actor"""
         if component_id not in self.actors:
             return {"error": f"Component {component_id} not found"}
@@ -576,46 +578,48 @@ class ProductionComponentRegistry:
         else:
             return {"component_id": component_id, "metrics_available": False}
     
-    async def get_all_metrics(self) -> Dict[str, Any]:
+        async def get_all_metrics(self) -> Dict[str, Any]:
         """Get metrics from all components"""
+        pass
         all_metrics = {}
         
         # Get metrics from a sample of components (to avoid overwhelming)
         sample_components = list(self.actors.keys())[:20]
         
         for component_id in sample_components:
-            try:
-                metrics = await self.get_component_metrics(component_id)
-                all_metrics[component_id] = metrics
-            except Exception as e:
-                all_metrics[component_id] = {"error": str(e)}
+        try:
+            metrics = await self.get_component_metrics(component_id)
+        all_metrics[component_id] = metrics
+        except Exception as e:
+        all_metrics[component_id] = {"error": str(e)}
         
         return {
-            "total_components": len(self.actors),
-            "sampled_components": len(sample_components),
-            "component_metrics": all_metrics,
-            "component_types": {
-                "neural": len([c for c, t in self.component_types.items() if t == ComponentType.NEURAL]),
-                "memory": len([c for c, t in self.component_types.items() if t == ComponentType.MEMORY]),
-                "tda": len([c for c, t in self.component_types.items() if t == ComponentType.TDA]),
-                "orchestration": len([c for c, t in self.component_types.items() if t == ComponentType.ORCHESTRATION])
-            }
+        "total_components": len(self.actors),
+        "sampled_components": len(sample_components),
+        "component_metrics": all_metrics,
+        "component_types": {
+        "neural": len([c for c, t in self.component_types.items() if t == ComponentType.NEURAL]),
+        "memory": len([c for c, t in self.component_types.items() if t == ComponentType.MEMORY]),
+        "tda": len([c for c, t in self.component_types.items() if t == ComponentType.TDA]),
+        "orchestration": len([c for c, t in self.component_types.items() if t == ComponentType.ORCHESTRATION])
+        }
         }
     
     def get_component_list(self) -> List[str]:
         """Get list of all component IDs"""
+        pass
         return list(self.actors.keys())
     
     def get_components_by_type(self, component_type: ComponentType) -> List[str]:
         """Get components by type"""
         return [comp_id for comp_id, comp_type_val in self.component_types.items() 
-                if comp_type_val == component_type]
+        if comp_type_val == component_type]
 
-# Global registry instance
-_production_registry = None
+    # Global registry instance
+        _production_registry = None
 
-def get_production_registry():
-    global _production_registry
-    if _production_registry is None:
+    def get_production_registry():
+        global _production_registry
+        if _production_registry is None:
         _production_registry = ProductionComponentRegistry()
-    return _production_registry
+        return _production_registry

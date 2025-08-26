@@ -19,7 +19,7 @@ from ..observer.agent import ObserverAgent
 from ..analyst.agent import AnalystAgent, AgentConfig
 from ..supervisor import Supervisor
 # Validator and TDA Analyzer agents will be imported dynamically if needed
-from ...observability.tracing import TracingContext
+from aura_intelligence.observability.tracing import TracingContext
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +53,11 @@ class BaseAgentFactory(ABC):
     """Base factory for all agents."""
     
     def __init__(self):
-        from ...observability.metrics import metrics_collector
+        from aura_intelligence.observability.metrics import metrics_collector
         self.metrics = metrics_collector
         self._credentials_cache: Dict[str, AgentCredentials] = {}
     
-    @abstractmethod
+        @abstractmethod
     def create(self, config: Dict[str, Any]) -> Any:
         """Create agent instance."""
         pass
@@ -77,34 +77,34 @@ class ObserverAgentFactory(BaseAgentFactory):
         """Create ObserverAgent with proper initialization."""
         with TracingContext(operation="create_observer_agent", service="agent_factory") as ctx:
             # Get or generate credentials
-            credentials = self.get_or_create_credentials(
-                "observer",
-                config.get("agent_id")
-            )
+        credentials = self.get_or_create_credentials(
+        "observer",
+        config.get("agent_id")
+        )
             
-            # Prepare agent config
-            agent_config = {
-                "name": config.get("name", "observer"),
-                "model": config.get("model", "gpt-4"),
-                "temperature": config.get("temperature", 0.0),
-                "max_retries": config.get("max_retries", 3),
-                "timeout": config.get("timeout", 30),
-                **config.get("metadata", {})
-            }
+        # Prepare agent config
+        agent_config = {
+        "name": config.get("name", "observer"),
+        "model": config.get("model", "gpt-4"),
+        "temperature": config.get("temperature", 0.0),
+        "max_retries": config.get("max_retries", 3),
+        "timeout": config.get("timeout", 30),
+        **config.get("metadata", {})
+        }
             
-            # Create agent
-            agent = ObserverAgent(
-                agent_id=credentials.agent_id,
-                private_key=credentials.private_key,
-                public_key=credentials.public_key,
-                config=agent_config
-            )
+        # Create agent
+        agent = ObserverAgent(
+        agent_id=credentials.agent_id,
+        private_key=credentials.private_key,
+        public_key=credentials.public_key,
+        config=agent_config
+        )
             
-            # Record metrics
-            self.metrics.agents_created.labels(agent_type="observer").inc()
+        # Record metrics
+        self.metrics.agents_created.labels(agent_type="observer").inc()
             
-            logger.info(f"Created ObserverAgent: {credentials.agent_id}")
-            return agent
+        logger.info(f"Created ObserverAgent: {credentials.agent_id}")
+        return agent
 
 
 class AnalystAgentFactory(BaseAgentFactory):
@@ -114,25 +114,25 @@ class AnalystAgentFactory(BaseAgentFactory):
         """Create AnalystAgent with proper initialization."""
         with TracingContext(operation="create_analyst_agent", service="agent_factory") as ctx:
             # Create AgentConfig
-            agent_config = AgentConfig()
-            agent_config.agent_id = config.get("agent_id", uuid.uuid4().hex[:8])
-            agent_config.name = config.get("name", "analyst")
-            agent_config.model = config.get("model", "gpt-4")
-            agent_config.temperature = config.get("temperature", 0.1)
+        agent_config = AgentConfig()
+        agent_config.agent_id = config.get("agent_id", uuid.uuid4().hex[:8])
+        agent_config.name = config.get("name", "analyst")
+        agent_config.model = config.get("model", "gpt-4")
+        agent_config.temperature = config.get("temperature", 0.1)
             
-            # Set additional config attributes if they exist
-            for key, value in config.items():
-                if hasattr(agent_config, key):
-                    setattr(agent_config, key, value)
+        # Set additional config attributes if they exist
+        for key, value in config.items():
+        if hasattr(agent_config, key):
+            setattr(agent_config, key, value)
             
-            # Create agent
-            agent = AnalystAgent(agent_config)
+        # Create agent
+        agent = AnalystAgent(agent_config)
             
-            # Record metrics
-            self.metrics.agents_created.labels(agent_type="analyst").inc()
+        # Record metrics
+        self.metrics.agents_created.labels(agent_type="analyst").inc()
             
-            logger.info(f"Created AnalystAgent: {agent.agent_id}")
-            return agent
+        logger.info(f"Created AnalystAgent: {agent.agent_id}")
+        return agent
 
 
 class SupervisorAgentFactory(BaseAgentFactory):
@@ -142,25 +142,25 @@ class SupervisorAgentFactory(BaseAgentFactory):
         """Create Supervisor with proper initialization."""
         with TracingContext(operation="create_supervisor_agent", service="agent_factory") as ctx:
             # Prepare tools list
-            tools = config.get("tools", [])
-            if not tools:
-                # Default tools for supervisor
-                tools = ["observer", "analyst", "validator", "tda_analyzer"]
+        tools = config.get("tools", [])
+        if not tools:
+            # Default tools for supervisor
+        tools = ["observer", "analyst", "validator", "tda_analyzer"]
             
-            # Create supervisor with mock LLM if not provided
-            if "llm" not in config:
-                # Create a simple mock LLM for testing
-                class MockLLM:
-                    async def ainvoke(self, messages):
-                        class Response:
-                            content = "observer"  # Default to observer tool
-                        return Response()
-                config["llm"] = MockLLM()
+        # Create supervisor with mock LLM if not provided
+        if "llm" not in config:
+            # Create a simple mock LLM for testing
+        class MockLLM:
+        async def ainvoke(self, messages):
+        class Response:
+        content = "observer"  # Default to observer tool
+            return Response()
+        config["llm"] = MockLLM()
             
-            supervisor = Supervisor(tools=tools, llm=config["llm"])
+        supervisor = Supervisor(tools=tools, llm=config["llm"])
             
-            # Record metrics
-            self.metrics.agents_created.labels(agent_type="supervisor").inc()
+        # Record metrics
+        self.metrics.agents_created.labels(agent_type="supervisor").inc()
             
             logger.info(f"Created Supervisor with tools: {tools}")
             return supervisor
@@ -174,7 +174,8 @@ class AgentRegistry:
         self._register_default_factories()
     
     def _register_default_factories(self):
-        """Register default agent factories."""
+            """Register default agent factories."""
+        pass
         self.register("observer", ObserverAgentFactory())
         self.register("analyst", AnalystAgentFactory())
         self.register("supervisor", SupervisorAgentFactory())
@@ -194,29 +195,30 @@ class AgentRegistry:
     
     def list_types(self) -> List[str]:
         """List available agent types."""
+        pass
         return list(self._factories.keys())
 
 
-# Global registry instance
-agent_registry = AgentRegistry()
+    # Global registry instance
+        agent_registry = AgentRegistry()
 
 
-# Convenience functions
-def create_agent(agent_type: str, config: Optional[Dict[str, Any]] = None) -> Any:
-    """Create an agent using the global registry."""
-    return agent_registry.create(agent_type, config or {})
+    # Convenience functions
+    def create_agent(agent_type: str, config: Optional[Dict[str, Any]] = None) -> Any:
+        """Create an agent using the global registry."""
+        return agent_registry.create(agent_type, config or {})
 
 
-def create_observer_agent(config: Optional[Dict[str, Any]] = None) -> ObserverAgent:
-    """Create an ObserverAgent."""
-    return create_agent("observer", config or {})
+    def create_observer_agent(config: Optional[Dict[str, Any]] = None) -> ObserverAgent:
+        """Create an ObserverAgent."""
+        return create_agent("observer", config or {})
 
 
-def create_analyst_agent(config: Optional[Dict[str, Any]] = None) -> AnalystAgent:
-    """Create an AnalystAgent."""
-    return create_agent("analyst", config or {})
+    def create_analyst_agent(config: Optional[Dict[str, Any]] = None) -> AnalystAgent:
+        """Create an AnalystAgent."""
+        return create_agent("analyst", config or {})
 
 
-def create_supervisor_agent(config: Optional[Dict[str, Any]] = None) -> Supervisor:
-    """Create a Supervisor."""
-    return create_agent("supervisor", config or {})
+    def create_supervisor_agent(config: Optional[Dict[str, Any]] = None) -> Supervisor:
+        """Create a Supervisor."""
+        return create_agent("supervisor", config or {})

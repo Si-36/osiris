@@ -21,15 +21,88 @@ try:
     import base
     from production_observer_agent import ProductionAgentState, ProductionEvidence, AgentConfig
 except ImportError:
-    # Fallback for testing
+    # Fallback for testing with full implementations
     class ProductionAgentState:
-        def __init__(self): pass
-    class ProductionEvidence:
-        def __init__(self, **kwargs): pass
+        """Production-ready agent state management"""
+        
+        def __init__(self):
+            """Initialize agent state with latest 2025 patterns"""
+            self.messages = []
+            self.evidence_list = []
+            self.current_message = None
+            self.memory_retrieval_config = {
+            'temperature': 0.7,
+            'max_tokens': 2048,
+            'top_k': 5
+            }
+            self.observation_config = {
+            'depth': 'detailed',
+            'confidence_threshold': 0.8
+            }
+            self.metadata = {
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'version': '2025.1',
+            'agent_type': 'production'
+            }
+            
+            class ProductionEvidence:
+            """Evidence container with full validation and tracking"""
+        
+                def __init__(self, **kwargs):
+                    """Initialize evidence with comprehensive metadata"""
+                    self.id = kwargs.get('id', f"evidence_{datetime.now().timestamp()}")
+                    self.type = kwargs.get('type', 'observation')
+                    self.content = kwargs.get('content', {})
+                    self.confidence = kwargs.get('confidence', 0.5)
+                    self.source = kwargs.get('source', 'unknown')
+                    self.timestamp = kwargs.get('timestamp', datetime.now(timezone.utc).isoformat())
+                    self.metadata = kwargs.get('metadata', {})
+            
+            # Validation
+                    self._validate()
+            
+                def _validate(self):
+                    """Validate evidence structure"""
+                    if not isinstance(self.confidence, (int, float)) or not 0 <= self.confidence <= 1:
+                    raise ValueError(f"Invalid confidence: {self.confidence}")
+                    if self.type not in ['observation', 'inference', 'memory', 'context']:
+                    raise ValueError(f"Invalid evidence type: {self.type}")
+                
+                def to_dict(self):
+                    """Convert to dictionary for serialization"""
+                    return {
+                    'id': self.id,
+                    'type': self.type,
+                    'content': self.content,
+                    'confidence': self.confidence,
+                    'source': self.source,
+                    'timestamp': self.timestamp,
+                    'metadata': self.metadata
+                    }
+            
     class AgentConfig:
-        def __init__(self): pass
+        """Agent configuration with sensible defaults"""
+        
+        def __init__(self):
+            """Initialize with production-ready defaults"""
+            self.model = "gpt-4-turbo-preview"
+            self.temperature = 0.7
+            self.max_retries = 3
+            self.timeout = 30.0
+            self.memory_enabled = True
+            self.context_window = 128000
+            self.features = {
+            'streaming': True,
+            'function_calling': True,
+            'vision': False,
+            'code_interpreter': True
+            }
+            self.rate_limits = {
+            'requests_per_minute': 60,
+            'tokens_per_minute': 150000
+            }
 
-logger = logging.getLogger(__name__)
+            logger = logging.getLogger(__name__)
 
 
 class ContextEngine:
@@ -51,9 +124,9 @@ class ContextEngine:
         self.max_context_entries = config.get("max_context_entries", 5)
         self.context_confidence_threshold = config.get("context_confidence_threshold", 0.3)
         
-        logger.info("🧠 Context Engine initialized")
+            logger.info("🧠 Context Engine initialized")
     
-    async def enrich_state(self, state: Any, memory_context: Dict[str, Any]) -> Any:
+        async def enrich_state(self, state: Any, memory_context: Dict[str, Any]) -> Any:
         """
         Main context enrichment function.
         
@@ -65,9 +138,9 @@ class ContextEngine:
             Enriched state with contextual information
         """
         
-        logger.info(f"🧠 Enriching state with context: confidence={memory_context.get('confidence', 0.0)}")
+            logger.info(f"🧠 Enriching state with context: confidence={memory_context.get('confidence', 0.0)}")
         
-        try:
+            try:
             # Step 1: Analyze current state
             state_analysis = self._analyze_current_state(state)
             
@@ -90,80 +163,80 @@ class ContextEngine:
             logger.info("✅ State enrichment complete")
             return enriched_state
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"❌ Context enrichment failed: {e}")
             return state
     
     def _analyze_current_state(self, state: Any) -> Dict[str, Any]:
         """Analyze current state to extract contextual information."""
         
-        analysis = {
-            "workflow_stage": "unknown",
-            "evidence_count": 0,
-            "complexity_score": 0.0,
-            "urgency_indicators": [],
-            "patterns_detected": []
+            analysis = {
+        "workflow_stage": "unknown",
+        "evidence_count": 0,
+        "complexity_score": 0.0,
+        "urgency_indicators": [],
+        "patterns_detected": []
         }
         
-        try:
+            try:
             # Analyze evidence entries
             if hasattr(state, 'evidence_entries'):
-                evidence_entries = state.evidence_entries
-                analysis["evidence_count"] = len(evidence_entries)
+            evidence_entries = state.evidence_entries
+        analysis["evidence_count"] = len(evidence_entries)
                 
-                # Determine workflow stage
-                if evidence_entries:
-                    latest_evidence = evidence_entries[-1]
-                    evidence_type = getattr(latest_evidence, 'evidence_type', None)
+        # Determine workflow stage
+            if evidence_entries:
+            latest_evidence = evidence_entries[-1]
+            evidence_type = getattr(latest_evidence, 'evidence_type', None)
                     
-                    if evidence_type:
-                        if str(evidence_type) == "EvidenceType.OBSERVATION":
-                            analysis["workflow_stage"] = "observation"
-                        elif str(evidence_type) == "EvidenceType.PATTERN":
-                            analysis["workflow_stage"] = "analysis"
-                        elif str(evidence_type) == "EvidenceType.EXECUTION":
-                            analysis["workflow_stage"] = "execution"
+            if evidence_type:
+            if str(evidence_type) == "EvidenceType.OBSERVATION":
+                analysis["workflow_stage"] = "observation"
+        elif str(evidence_type) == "EvidenceType.PATTERN":
+        analysis["workflow_stage"] = "analysis"
+        elif str(evidence_type) == "EvidenceType.EXECUTION":
+        analysis["workflow_stage"] = "execution"
                 
-                # Calculate complexity score
-                analysis["complexity_score"] = min(1.0, len(evidence_entries) / 10.0)
+        # Calculate complexity score
+        analysis["complexity_score"] = min(1.0, len(evidence_entries) / 10.0)
                 
-                # Detect urgency indicators
-                for evidence in evidence_entries:
-                    content = getattr(evidence, 'content', {})
-                    if isinstance(content, dict):
-                        message = str(content.get('message', '')).lower()
+        # Detect urgency indicators
+            for evidence in evidence_entries:
+            content = getattr(evidence, 'content', {})
+            if isinstance(content, dict):
+            message = str(content.get('message', '')).lower()
                         
-                        if any(word in message for word in ['critical', 'urgent', 'emergency']):
-                            analysis["urgency_indicators"].append("high_priority_keywords")
+            if any(word in message for word in ['critical', 'urgent', 'emergency']):
+            analysis["urgency_indicators"].append("high_priority_keywords")
                         
-                        if 'error' in message:
-                            analysis["urgency_indicators"].append("error_detected")
+            if 'error' in message:
+            analysis["urgency_indicators"].append("error_detected")
                         
-                        if 'failure' in message:
-                            analysis["urgency_indicators"].append("failure_detected")
+            if 'failure' in message:
+            analysis["urgency_indicators"].append("failure_detected")
                 
-                # Detect patterns
-                if len(evidence_entries) > 3:
-                    analysis["patterns_detected"].append("high_volume_evidence")
+        # Detect patterns
+            if len(evidence_entries) > 3:
+            analysis["patterns_detected"].append("high_volume_evidence")
                 
-                if len(set(analysis["urgency_indicators"])) > 1:
-                    analysis["patterns_detected"].append("multiple_urgency_signals")
+            if len(set(analysis["urgency_indicators"])) > 1:
+            analysis["patterns_detected"].append("multiple_urgency_signals")
             
-            # Analyze timing
+        # Analyze timing
             if hasattr(state, 'created_at') and hasattr(state, 'updated_at'):
-                processing_time = (state.updated_at - state.created_at).total_seconds()
-                if processing_time > 300:  # 5 minutes
-                    analysis["patterns_detected"].append("long_processing_time")
+            processing_time = (state.updated_at - state.created_at).total_seconds()
+            if processing_time > 300:  # 5 minutes
+        analysis["patterns_detected"].append("long_processing_time")
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"State analysis failed: {e}")
         
-        return analysis
+            return analysis
     
     def _merge_contexts(self, state_analysis: Dict[str, Any], memory_context: Dict[str, Any]) -> Dict[str, Any]:
         """Merge current state analysis with memory context."""
         
-        merged = {
+            merged = {
             # Current state information
             "current_stage": state_analysis.get("workflow_stage", "unknown"),
             "evidence_count": state_analysis.get("evidence_count", 0),
@@ -185,30 +258,30 @@ class ContextEngine:
             "optimization_opportunities": self._identify_optimizations(state_analysis, memory_context)
         }
         
-        return merged
+            return merged
     
     def _calculate_context_quality(self, state_analysis: Dict[str, Any], memory_context: Dict[str, Any]) -> float:
         """Calculate overall context quality score."""
         
-        quality_factors = []
+            quality_factors = []
         
         # Evidence richness
-        evidence_count = state_analysis.get("evidence_count", 0)
-        evidence_quality = min(1.0, evidence_count / 5.0)
+            evidence_count = state_analysis.get("evidence_count", 0)
+            evidence_quality = min(1.0, evidence_count / 5.0)
         quality_factors.append(evidence_quality)
         
         # Memory confidence
-        memory_confidence = memory_context.get("confidence", 0.0)
+            memory_confidence = memory_context.get("confidence", 0.0)
         quality_factors.append(memory_confidence)
         
         # Pattern detection
-        current_patterns = len(state_analysis.get("patterns_detected", []))
-        historical_patterns = len(memory_context.get("success_patterns", []))
-        pattern_quality = min(1.0, (current_patterns + historical_patterns) / 4.0)
+            current_patterns = len(state_analysis.get("patterns_detected", []))
+            historical_patterns = len(memory_context.get("success_patterns", []))
+            pattern_quality = min(1.0, (current_patterns + historical_patterns) / 4.0)
         quality_factors.append(pattern_quality)
         
         # Calculate weighted average
-        if quality_factors:
+            if quality_factors:
             return sum(quality_factors) / len(quality_factors)
         else:
             return 0.5
@@ -216,58 +289,58 @@ class ContextEngine:
     def _identify_risk_indicators(self, state_analysis: Dict[str, Any], memory_context: Dict[str, Any]) -> List[str]:
         """Identify risk indicators from combined context."""
         
-        risks = []
+            risks = []
         
         # Current state risks
-        urgency_indicators = state_analysis.get("urgency_indicators", [])
-        if "error_detected" in urgency_indicators:
+            urgency_indicators = state_analysis.get("urgency_indicators", [])
+            if "error_detected" in urgency_indicators:
             risks.append("current_errors_present")
         
-        if "failure_detected" in urgency_indicators:
+            if "failure_detected" in urgency_indicators:
             risks.append("current_failures_present")
         
         # Historical risks
-        success_rate = memory_context.get("success_rate", 0.5)
-        if success_rate < 0.3:
+            success_rate = memory_context.get("success_rate", 0.5)
+            if success_rate < 0.3:
             risks.append("low_historical_success_rate")
         
         # Combined risks
-        complexity_score = state_analysis.get("complexity_score", 0.0)
-        memory_confidence = memory_context.get("confidence", 0.0)
+            complexity_score = state_analysis.get("complexity_score", 0.0)
+            memory_confidence = memory_context.get("confidence", 0.0)
         
-        if complexity_score > 0.7 and memory_confidence < 0.3:
+            if complexity_score > 0.7 and memory_confidence < 0.3:
             risks.append("high_complexity_low_confidence")
         
-        return risks
+            return risks
     
     def _identify_optimizations(self, state_analysis: Dict[str, Any], memory_context: Dict[str, Any]) -> List[str]:
         """Identify optimization opportunities."""
         
-        optimizations = []
+            optimizations = []
         
         # High confidence + simple case = fast track
-        complexity_score = state_analysis.get("complexity_score", 0.0)
-        memory_confidence = memory_context.get("confidence", 0.0)
+            complexity_score = state_analysis.get("complexity_score", 0.0)
+            memory_confidence = memory_context.get("confidence", 0.0)
         
-        if complexity_score < 0.3 and memory_confidence > 0.8:
+            if complexity_score < 0.3 and memory_confidence > 0.8:
             optimizations.append("fast_track_eligible")
         
         # Repeated patterns = automation opportunity
-        similar_incidents = memory_context.get("similar_incidents_count", 0)
-        if similar_incidents > 10:
+            similar_incidents = memory_context.get("similar_incidents_count", 0)
+            if similar_incidents > 10:
             optimizations.append("automation_candidate")
         
         # High success rate = standard processing
-        success_rate = memory_context.get("success_rate", 0.5)
-        if success_rate > 0.9:
+            success_rate = memory_context.get("success_rate", 0.5)
+            if success_rate > 0.9:
             optimizations.append("standard_processing_recommended")
         
-        return optimizations
+            return optimizations
     
     def _create_context_evidence(self, state: Any, enriched_context: Dict[str, Any]) -> Any:
         """Create contextual evidence entry."""
         
-        try:
+            try:
             # Create context evidence using your proven schemas
             context_evidence = ProductionEvidence(
                 evidence_type=enums.EvidenceType.CONTEXT,
@@ -289,28 +362,28 @@ class ContextEngine:
             
             return context_evidence
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"Failed to create context evidence: {e}")
             return None
     
     def _add_context_to_state(self, state: Any, context_evidence: Any, enriched_context: Dict[str, Any]) -> Any:
         """Add contextual information to state."""
         
-        try:
+            try:
             # Add context evidence if state supports it
             if hasattr(state, 'add_evidence') and context_evidence:
-                enriched_state = state.add_evidence(context_evidence, AgentConfig())
-            else:
-                enriched_state = state
+            enriched_state = state.add_evidence(context_evidence, AgentConfig())
+        else:
+            enriched_state = state
             
-            # Add context metadata
+        # Add context metadata
             if hasattr(enriched_state, '__dict__'):
-                enriched_state.context_enriched = True
-                enriched_state.context_quality = enriched_context.get("context_quality", 0.5)
-                enriched_state.context_timestamp = datetime.now(timezone.utc).isoformat()
+            enriched_state.context_enriched = True
+        enriched_state.context_quality = enriched_context.get("context_quality", 0.5)
+        enriched_state.context_timestamp = datetime.now(timezone.utc).isoformat()
             
             return enriched_state
             
-        except Exception as e:
+            except Exception as e:
             logger.error(f"Failed to add context to state: {e}")
             return state

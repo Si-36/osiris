@@ -12,7 +12,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import GPUAllocationRequest, GPUAllocationDecision
 
 logger = structlog.get_logger()
@@ -44,12 +44,12 @@ class MemoryLearningEngine:
         
         logger.info("Memory Learning Engine initialized")
     
-    async def learn_from_decision(
+        async def learn_from_decision(
         self,
         request: GPUAllocationRequest,
         decision: GPUAllocationDecision,
         actual_outcome: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Learn from a decision and its outcome.
         
@@ -106,6 +106,7 @@ class MemoryLearningEngine:
     
     def get_learning_insights(self) -> Dict[str, Any]:
         """Get current learning insights and recommendations."""
+        pass
         
         return {
             "learning_episodes": self.learning_episodes,
@@ -149,7 +150,7 @@ class ConfidenceCalibrator:
         self.bin_counts = np.zeros(self.calibration_bins)
         self.bin_accuracies = np.zeros(self.calibration_bins)
     
-    async def update(self, predicted_confidence: float, actual_success: bool) -> Dict[str, Any]:
+        async def update(self, predicted_confidence: float, actual_success: bool) -> Dict[str, Any]:
         """Update calibration with new data point."""
         
         # Add to calibration data
@@ -177,6 +178,7 @@ class ConfidenceCalibrator:
     
     def _calculate_calibration_error(self) -> float:
         """Calculate Expected Calibration Error (ECE)."""
+        pass
         
         if len(self.calibration_data) < 10:
             return 0.1  # Default error for insufficient data
@@ -196,6 +198,7 @@ class ConfidenceCalibrator:
     
     def get_calibration_stats(self) -> Dict[str, Any]:
         """Get calibration statistics."""
+        pass
         
         return {
             "calibration_error": self._calculate_calibration_error(),
@@ -213,12 +216,12 @@ class PatternLearner:
         self.patterns = {}
         self.pattern_outcomes = {}
     
-    async def learn_pattern(
+        async def learn_pattern(
         self,
         request: GPUAllocationRequest,
         decision: GPUAllocationDecision,
         outcome: Optional[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Learn patterns from request-decision-outcome triplets."""
         
         # Create pattern key
@@ -300,6 +303,7 @@ class PatternLearner:
     
     def get_pattern_insights(self) -> Dict[str, Any]:
         """Get insights about learned patterns."""
+        pass
         
         if not self.patterns:
             return {"total_patterns": 0}
@@ -332,12 +336,12 @@ class OutcomePredictor:
         self.prediction_data = []
         self.feature_weights = np.random.normal(0, 0.1, 10)  # Simple linear model
     
-    async def update(
+        async def update(
         self,
         request: GPUAllocationRequest,
         decision: GPUAllocationDecision,
         outcome: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Update outcome prediction model."""
         
         # Extract features
@@ -384,6 +388,7 @@ class OutcomePredictor:
     
     def _update_model(self):
         """Update the prediction model with recent data."""
+        pass
         
         if len(self.prediction_data) < 10:
             return
@@ -409,6 +414,7 @@ class OutcomePredictor:
     
     def _calculate_accuracy(self) -> float:
         """Calculate prediction accuracy."""
+        pass
         
         if len(self.prediction_data) < 5:
             return 0.5
@@ -433,6 +439,7 @@ class OutcomePredictor:
     
     def get_accuracy_stats(self) -> Dict[str, Any]:
         """Get accuracy statistics."""
+        pass
         
         return {
             "current_accuracy": self._calculate_accuracy(),

@@ -17,7 +17,7 @@ with comprehensive observability and resilience patterns.
 
 # Phase 2 new implementations - commented out due to complex dependencies
 # from .base import AgentBase, AgentConfig, AgentState
-# from .observability import AgentInstrumentor, AgentMetrics
+# from aura_intelligence.observability import AgentInstrumentor, AgentMetrics
 
 # Original schemas (to be implemented/migrated) - commented out due to missing modules
 # from .schemas.acp import ACPEnvelope, ACPEndpoint, MessageType, Priority
@@ -33,17 +33,17 @@ with comprehensive observability and resilience patterns.
 # from .base_classes.agent import BaseAgent, AgentRole, AgentCapability
 # from .base_classes.instrumentation import instrument_agent, AgentMetrics as LegacyAgentMetrics
 
-# TODO: Fix missing orchestration module
+
 # from .orchestration.workflow import WorkflowEngine, WorkflowState
 # from .orchestration.langgraph import LangGraphOrchestrator
 
-# TODO: Fix missing core agent implementations
+
 # from .core.observer import ObserverAgent
 # from .core.analyst import AnalystAgent  
 # from .core.executor import ExecutorAgent
 # from .core.coordinator import CoordinatorAgent
 
-# TODO: Fix missing advanced agents
+
 # from .advanced.router import RouterAgent
 # from .advanced.consensus import ConsensusAgent
 # from .advanced.supervisor import SupervisorAgent

@@ -30,7 +30,7 @@ class ActionExecutor:
         
         logger.info("⚡ Action Executor initialized")
     
-    async def execute_action(self, decision: ActiveModeDecision) -> Dict[str, Any]:
+        async def execute_action(self, decision: ActiveModeDecision) -> Dict[str, Any]:
         """
         Execute an approved action safely.
         
@@ -85,7 +85,7 @@ class ActionExecutor:
             logger.error(f"❌ Action execution failed: {decision.decision_id} - {e}")
             return error_result
     
-    async def _execute_action_impl(self, decision: ActiveModeDecision) -> Dict[str, Any]:
+        async def _execute_action_impl(self, decision: ActiveModeDecision) -> Dict[str, Any]:
         """
         Internal action execution implementation.
         
@@ -166,6 +166,7 @@ class ActionExecutor:
     
     def get_execution_stats(self) -> Dict[str, Any]:
         """Get execution statistics for monitoring."""
+        pass
         if not self.execution_history:
             return {
                 'total_executions': 0,
@@ -195,5 +196,6 @@ class ActionExecutor:
     
     def clear_history(self):
         """Clear execution history (for testing or maintenance)."""
+        pass
         self.execution_history.clear()
         logger.info("🧹 Execution history cleared")

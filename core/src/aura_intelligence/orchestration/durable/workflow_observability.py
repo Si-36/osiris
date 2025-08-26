@@ -123,18 +123,27 @@ class MockSpan:
     def __enter__(self):
         return self
     
-    def __exit__(self, *args):
+    def __exit__(self, *args, **kwargs):
+        """Real implementation"""
         pass
-    
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
     def set_attributes(self, attributes: Dict[str, Any]):
         self.attributes.update(attributes)
     
-    def add_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):
+    def add_event(self, *args, **kwargs):
+        """Real implementation"""
         pass
-    
-    def set_status(self, status: str):
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
+    def set_status(self, *args, **kwargs):
+            """Real implementation"""
         pass
-
+        # Process input
+        result = self._process(*args, **kwargs)
+        return result
 class WorkflowObservabilityManager:
     """
     Comprehensive workflow observability with TDA integration
@@ -152,21 +161,21 @@ class WorkflowObservabilityManager:
         
         # Performance tracking
         self.workflow_stats = defaultdict(lambda: {
-            "total_executions": 0,
-            "successful_executions": 0,
-            "failed_executions": 0,
-            "total_execution_time": 0.0,
-            "avg_execution_time": 0.0,
-            "last_execution": None,
-            "tda_correlated_count": 0
+        "total_executions": 0,
+        "successful_executions": 0,
+        "failed_executions": 0,
+        "total_execution_time": 0.0,
+        "avg_execution_time": 0.0,
+        "last_execution": None,
+        "tda_correlated_count": 0
         })
         
         # SLA thresholds
         self.sla_thresholds = {
-            "max_execution_time": 300.0,  # 5 minutes
-            "min_success_rate": 0.95,     # 95%
-            "max_failure_rate": 0.05,     # 5%
-            "max_step_latency": 30.0      # 30 seconds
+        "max_execution_time": 300.0,  # 5 minutes
+        "min_success_rate": 0.95,     # 95%
+        "max_failure_rate": 0.05,     # 5%
+        "max_step_latency": 30.0      # 30 seconds
         }
         
         # Thread-safe metrics collection
@@ -176,7 +185,8 @@ class WorkflowObservabilityManager:
         self._initialize_metrics()
     
     def _initialize_metrics(self):
-        """Initialize observability metrics"""
+            """Initialize observability metrics"""
+        pass
         if not self.meter:
             return
         
@@ -221,16 +231,16 @@ class WorkflowObservabilityManager:
             
         except Exception as e:
             # Graceful fallback if metrics initialization fails
-            pass
+        pass
     
-    async def start_workflow_span(
+        async def start_workflow_span(
         self,
         workflow_id: str,
         operation_name: str,
         tda_correlation_id: Optional[str] = None,
         parent_span_id: Optional[str] = None,
         tags: Optional[Dict[str, Any]] = None
-    ) -> str:
+        ) -> str:
         """Start a new workflow execution span"""
         
         span_id = f"{workflow_id}_{int(time.time() * 1000)}"
@@ -275,13 +285,13 @@ class WorkflowObservabilityManager:
         
         return span_id
     
-    async def end_workflow_span(
+        async def end_workflow_span(
         self,
         span_id: str,
         status: str = "success",
         error: Optional[str] = None,
         result_summary: Optional[Dict[str, Any]] = None
-    ):
+        ):
         """End a workflow execution span"""
         
         if span_id not in self.active_spans:
@@ -324,7 +334,7 @@ class WorkflowObservabilityManager:
         if self.meter and hasattr(self, 'active_workflows_gauge'):
             self.active_workflows_gauge.add(-1, {"workflow_type": workflow_span.operation_name})
     
-    async def record_step_execution(
+        async def record_step_execution(
         self,
         workflow_id: str,
         step_name: str,
@@ -332,7 +342,7 @@ class WorkflowObservabilityManager:
         status: str = "success",
         error: Optional[str] = None,
         tda_correlation_id: Optional[str] = None
-    ):
+        ):
         """Record individual workflow step execution"""
         
         # Record step latency metric
@@ -363,13 +373,13 @@ class WorkflowObservabilityManager:
                 {"step_name": step_name, "duration": duration_seconds}
             )
     
-    async def _record_workflow_execution(
+        async def _record_workflow_execution(
         self,
         workflow_span: WorkflowSpan,
         status: str,
         duration: float,
         error: Optional[str]
-    ):
+        ):
         """Record workflow execution metrics"""
         
         # Record execution time
@@ -438,34 +448,34 @@ class WorkflowObservabilityManager:
         with self._metrics_lock:
             stats = self.workflow_stats[workflow_span.operation_name]
             
-            stats["total_executions"] += 1
-            stats["total_execution_time"] += duration
-            stats["last_execution"] = datetime.now(timezone.utc)
+        stats["total_executions"] += 1
+        stats["total_execution_time"] += duration
+        stats["last_execution"] = datetime.now(timezone.utc)
             
-            if status == "success":
-                stats["successful_executions"] += 1
-            else:
-                stats["failed_executions"] += 1
+        if status == "success":
+            stats["successful_executions"] += 1
+        else:
+        stats["failed_executions"] += 1
             
-            if workflow_span.tda_correlation_id:
-                stats["tda_correlated_count"] += 1
+        if workflow_span.tda_correlation_id:
+            stats["tda_correlated_count"] += 1
             
-            # Calculate average execution time
-            stats["avg_execution_time"] = stats["total_execution_time"] / stats["total_executions"]
+        # Calculate average execution time
+        stats["avg_execution_time"] = stats["total_execution_time"] / stats["total_executions"]
     
-    async def _record_metric(self, metric: WorkflowMetric):
-        """Record a workflow metric"""
+        async def _record_metric(self, metric: WorkflowMetric):
+            """Record a workflow metric"""
         
         with self._metrics_lock:
             self.metrics_buffer.append(metric)
     
-    async def _record_sla_violation(
+        async def _record_sla_violation(
         self,
         violation_type: str,
         message: str,
         workflow_id: str,
         details: Dict[str, Any]
-    ):
+        ):
         """Record SLA violation"""
         
         violation_metric = WorkflowMetric(
@@ -490,7 +500,7 @@ class WorkflowObservabilityManager:
                 })
                 span.add_event("SLA Violation", {"message": message})
     
-    async def _send_span_to_tda(self, workflow_span: WorkflowSpan):
+        async def _send_span_to_tda(self, workflow_span: WorkflowSpan):
         """Send workflow span to TDA for correlation"""
         
         if not self.tda_integration:
@@ -498,28 +508,29 @@ class WorkflowObservabilityManager:
         
         try:
             tda_span_data = {
-                "span_id": workflow_span.span_id,
-                "workflow_id": workflow_span.workflow_id,
-                "operation": workflow_span.operation_name,
-                "start_time": workflow_span.start_time.isoformat(),
-                "end_time": workflow_span.end_time.isoformat() if workflow_span.end_time else None,
-                "duration_ms": workflow_span.duration_ms,
-                "status": workflow_span.status,
-                "tags": workflow_span.tags,
-                "logs": workflow_span.logs
-            }
+        "span_id": workflow_span.span_id,
+        "workflow_id": workflow_span.workflow_id,
+        "operation": workflow_span.operation_name,
+        "start_time": workflow_span.start_time.isoformat(),
+        "end_time": workflow_span.end_time.isoformat() if workflow_span.end_time else None,
+        "duration_ms": workflow_span.duration_ms,
+        "status": workflow_span.status,
+        "tags": workflow_span.tags,
+        "logs": workflow_span.logs
+        }
             
-            await self.tda_integration.send_orchestration_result(
-                tda_span_data,
-                workflow_span.tda_correlation_id
-            )
+        await self.tda_integration.send_orchestration_result(
+        tda_span_data,
+        workflow_span.tda_correlation_id
+        )
             
         except Exception as e:
-            # Graceful fallback if TDA integration fails
-            pass
+        # Graceful fallback if TDA integration fails
+        pass
     
-    async def perform_health_check(self) -> Dict[str, HealthCheck]:
+        async def perform_health_check(self) -> Dict[str, HealthCheck]:
         """Perform comprehensive health check"""
+        pass
         
         health_checks = {}
         
@@ -545,25 +556,26 @@ class WorkflowObservabilityManager:
         
         return health_checks
     
-    async def _check_workflow_health(self) -> HealthCheck:
+        async def _check_workflow_health(self) -> HealthCheck:
         """Check workflow execution health"""
+        pass
         
         current_time = datetime.now(timezone.utc)
         recent_window = current_time - timedelta(minutes=15)
         
         # Get recent metrics
         recent_metrics = [
-            m for m in self.metrics_buffer
-            if m.timestamp >= recent_window
+        m for m in self.metrics_buffer
+        if m.timestamp >= recent_window
         ]
         
         if not recent_metrics:
             return HealthCheck(
-                component="workflow_execution",
-                status=HealthStatus.HEALTHY,
-                message="No recent workflow activity",
-                timestamp=current_time
-            )
+        component="workflow_execution",
+        status=HealthStatus.HEALTHY,
+        message="No recent workflow activity",
+        timestamp=current_time
+        )
         
         # Calculate success rate
         success_metrics = [m for m in recent_metrics if m.name == "workflow_success"]
@@ -575,31 +587,32 @@ class WorkflowObservabilityManager:
         # Determine health status
         if success_rate >= self.sla_thresholds["min_success_rate"]:
             status = HealthStatus.HEALTHY
-            message = f"Workflow execution healthy: {success_rate:.1%} success rate"
+        message = f"Workflow execution healthy: {success_rate:.1%} success rate"
         elif success_rate >= 0.8:
-            status = HealthStatus.DEGRADED
-            message = f"Workflow execution degraded: {success_rate:.1%} success rate"
+        status = HealthStatus.DEGRADED
+        message = f"Workflow execution degraded: {success_rate:.1%} success rate"
         else:
-            status = HealthStatus.UNHEALTHY
-            message = f"Workflow execution unhealthy: {success_rate:.1%} success rate"
+        status = HealthStatus.UNHEALTHY
+        message = f"Workflow execution unhealthy: {success_rate:.1%} success rate"
         
         recommendations = []
         if success_rate < self.sla_thresholds["min_success_rate"]:
             recommendations.append("Investigate recent workflow failures")
-            recommendations.append("Check TDA anomaly correlation")
-            recommendations.append("Review error patterns and compensation strategies")
+        recommendations.append("Check TDA anomaly correlation")
+        recommendations.append("Review error patterns and compensation strategies")
         
         return HealthCheck(
-            component="workflow_execution",
-            status=status,
-            message=message,
-            timestamp=current_time,
-            metrics={"success_rate": success_rate, "total_executions": total_executions},
-            recommendations=recommendations
+        component="workflow_execution",
+        status=status,
+        message=message,
+        timestamp=current_time,
+        metrics={"success_rate": success_rate, "total_executions": total_executions},
+        recommendations=recommendations
         )
     
-    async def _check_observability_health(self) -> HealthCheck:
+        async def _check_observability_health(self) -> HealthCheck:
         """Check observability system health"""
+        pass
         
         current_time = datetime.now(timezone.utc)
         
@@ -635,53 +648,55 @@ class WorkflowObservabilityManager:
                 recommendations=["Check metric collection pipeline"]
             )
     
-    async def _check_tda_integration_health(self) -> HealthCheck:
+        async def _check_tda_integration_health(self) -> HealthCheck:
         """Check TDA integration health"""
+        pass
         
         current_time = datetime.now(timezone.utc)
         
         if not TDA_INTEGRATION_AVAILABLE:
             return HealthCheck(
-                component="tda_integration",
-                status=HealthStatus.DEGRADED,
-                message="TDA integration not available",
-                timestamp=current_time,
-                recommendations=["Install TDA dependencies for full integration"]
-            )
+        component="tda_integration",
+        status=HealthStatus.DEGRADED,
+        message="TDA integration not available",
+        timestamp=current_time,
+        recommendations=["Install TDA dependencies for full integration"]
+        )
         
         try:
             # Perform TDA health check
-            tda_health = await self.tda_integration.health_check()
+        tda_health = await self.tda_integration.health_check()
             
-            if tda_health.get("status") == "healthy":
-                return HealthCheck(
-                    component="tda_integration",
-                    status=HealthStatus.HEALTHY,
-                    message="TDA integration healthy",
-                    timestamp=current_time,
-                    metrics=tda_health
-                )
-            else:
-                return HealthCheck(
-                    component="tda_integration",
-                    status=HealthStatus.DEGRADED,
-                    message=f"TDA integration degraded: {tda_health.get('status', 'unknown')}",
-                    timestamp=current_time,
-                    metrics=tda_health,
-                    recommendations=["Check TDA system connectivity"]
-                )
+        if tda_health.get("status") == "healthy":
+            return HealthCheck(
+        component="tda_integration",
+        status=HealthStatus.HEALTHY,
+        message="TDA integration healthy",
+        timestamp=current_time,
+        metrics=tda_health
+        )
+        else:
+        return HealthCheck(
+        component="tda_integration",
+        status=HealthStatus.DEGRADED,
+        message=f"TDA integration degraded: {tda_health.get('status', 'unknown')}",
+        timestamp=current_time,
+        metrics=tda_health,
+        recommendations=["Check TDA system connectivity"]
+        )
                 
         except Exception as e:
-            return HealthCheck(
-                component="tda_integration",
-                status=HealthStatus.UNHEALTHY,
-                message=f"TDA integration error: {str(e)}",
-                timestamp=current_time,
-                recommendations=["Check TDA system availability", "Verify TDA configuration"]
-            )
+        return HealthCheck(
+        component="tda_integration",
+        status=HealthStatus.UNHEALTHY,
+        message=f"TDA integration error: {str(e)}",
+        timestamp=current_time,
+        recommendations=["Check TDA system availability", "Verify TDA configuration"]
+        )
     
-    async def _check_sla_compliance(self) -> HealthCheck:
+        async def _check_sla_compliance(self) -> HealthCheck:
         """Check SLA compliance"""
+        pass
         
         current_time = datetime.now(timezone.utc)
         recent_window = current_time - timedelta(hours=1)
@@ -733,19 +748,19 @@ class WorkflowObservabilityManager:
         # Filter metrics by workflow type if specified
         if workflow_type:
             stats = self.workflow_stats.get(workflow_type, {})
-            return {
-                "workflow_type": workflow_type,
-                "total_executions": stats.get("total_executions", 0),
-                "successful_executions": stats.get("successful_executions", 0),
-                "failed_executions": stats.get("failed_executions", 0),
-                "success_rate": (
-                    stats.get("successful_executions", 0) / max(stats.get("total_executions", 1), 1)
-                ),
-                "average_execution_time": stats.get("avg_execution_time", 0.0),
-                "tda_correlated_count": stats.get("tda_correlated_count", 0),
-                "last_execution": stats.get("last_execution"),
-                "timestamp": current_time.isoformat()
-            }
+        return {
+        "workflow_type": workflow_type,
+        "total_executions": stats.get("total_executions", 0),
+        "successful_executions": stats.get("successful_executions", 0),
+        "failed_executions": stats.get("failed_executions", 0),
+        "success_rate": (
+        stats.get("successful_executions", 0) / max(stats.get("total_executions", 1), 1)
+        ),
+        "average_execution_time": stats.get("avg_execution_time", 0.0),
+        "tda_correlated_count": stats.get("tda_correlated_count", 0),
+        "last_execution": stats.get("last_execution"),
+        "timestamp": current_time.isoformat()
+        }
         
         # Return overall metrics
         total_executions = sum(stats["total_executions"] for stats in self.workflow_stats.values())
@@ -754,26 +769,26 @@ class WorkflowObservabilityManager:
         total_tda_correlated = sum(stats["tda_correlated_count"] for stats in self.workflow_stats.values())
         
         return {
-            "overall_metrics": {
-                "total_executions": total_executions,
-                "successful_executions": total_successful,
-                "failed_executions": total_failed,
-                "success_rate": total_successful / max(total_executions, 1),
-                "tda_correlation_rate": total_tda_correlated / max(total_executions, 1),
-                "active_workflows": len(self.active_spans),
-                "metrics_buffer_size": len(self.metrics_buffer),
-                "workflow_types": list(self.workflow_stats.keys())
-            },
-            "by_workflow_type": {
-                workflow_type: {
-                    "total_executions": stats["total_executions"],
-                    "success_rate": stats["successful_executions"] / max(stats["total_executions"], 1),
-                    "avg_execution_time": stats["avg_execution_time"],
-                    "tda_correlation_rate": stats["tda_correlated_count"] / max(stats["total_executions"], 1)
-                }
-                for workflow_type, stats in self.workflow_stats.items()
-            },
-            "timestamp": current_time.isoformat()
+        "overall_metrics": {
+        "total_executions": total_executions,
+        "successful_executions": total_successful,
+        "failed_executions": total_failed,
+        "success_rate": total_successful / max(total_executions, 1),
+        "tda_correlation_rate": total_tda_correlated / max(total_executions, 1),
+        "active_workflows": len(self.active_spans),
+        "metrics_buffer_size": len(self.metrics_buffer),
+        "workflow_types": list(self.workflow_stats.keys())
+        },
+        "by_workflow_type": {
+        workflow_type: {
+        "total_executions": stats["total_executions"],
+        "success_rate": stats["successful_executions"] / max(stats["total_executions"], 1),
+        "avg_execution_time": stats["avg_execution_time"],
+        "tda_correlation_rate": stats["tda_correlated_count"] / max(stats["total_executions"], 1)
+        }
+        for workflow_type, stats in self.workflow_stats.items()
+        },
+        "timestamp": current_time.isoformat()
         }
     
     def get_recent_metrics(self, minutes: int = 15) -> List[WorkflowMetric]:
@@ -788,6 +803,7 @@ class WorkflowObservabilityManager:
     
     def export_metrics_for_dashboard(self) -> Dict[str, Any]:
         """Export metrics in format suitable for TDA dashboard"""
+        pass
         
         current_time = datetime.now(timezone.utc)
         recent_metrics = self.get_recent_metrics(60)  # Last hour
@@ -795,33 +811,33 @@ class WorkflowObservabilityManager:
         # Group metrics by type
         metrics_by_type = defaultdict(list)
         for metric in recent_metrics:
-            metrics_by_type[metric.metric_type.value].append(metric)
+        metrics_by_type[metric.metric_type.value].append(metric)
         
         dashboard_data = {
-            "timestamp": current_time.isoformat(),
-            "summary": self.get_workflow_metrics(),
-            "health_status": {
-                component: {
-                    "status": health.status.value,
-                    "message": health.message,
-                    "metrics": health.metrics
-                }
-                for component, health in self.health_checks.items()
-            },
-            "recent_activity": {
-                metric_type: {
-                    "count": len(metrics),
-                    "avg_value": sum(m.value for m in metrics) / len(metrics) if metrics else 0,
-                    "latest_timestamp": max(m.timestamp for m in metrics).isoformat() if metrics else None
-                }
-                for metric_type, metrics in metrics_by_type.items()
-            },
-            "active_workflows": len(self.active_spans),
-            "sla_compliance": {
-                "execution_time_threshold": self.sla_thresholds["max_execution_time"],
-                "success_rate_threshold": self.sla_thresholds["min_success_rate"],
-                "step_latency_threshold": self.sla_thresholds["max_step_latency"]
-            }
+        "timestamp": current_time.isoformat(),
+        "summary": self.get_workflow_metrics(),
+        "health_status": {
+        component: {
+        "status": health.status.value,
+        "message": health.message,
+        "metrics": health.metrics
+        }
+        for component, health in self.health_checks.items()
+        },
+        "recent_activity": {
+        metric_type: {
+        "count": len(metrics),
+        "avg_value": sum(m.value for m in metrics) / len(metrics) if metrics else 0,
+        "latest_timestamp": max(m.timestamp for m in metrics).isoformat() if metrics else None
+        }
+        for metric_type, metrics in metrics_by_type.items()
+        },
+        "active_workflows": len(self.active_spans),
+        "sla_compliance": {
+        "execution_time_threshold": self.sla_thresholds["max_execution_time"],
+        "success_rate_threshold": self.sla_thresholds["min_success_rate"],
+        "step_latency_threshold": self.sla_thresholds["max_step_latency"]
+        }
         }
         
         return dashboard_data

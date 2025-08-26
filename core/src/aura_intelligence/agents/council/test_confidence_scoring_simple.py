@@ -60,13 +60,13 @@ except ImportError as e:
     CONFIDENCE_SCORING_AVAILABLE = False
 
 
-def test_confidence_scorer_basic():
-    """Test basic confidence scorer functionality."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_confidence_scorer_basic():
+        """Test basic confidence scorer functionality."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         config = {
             "confidence_threshold": 0.7,
             "entropy_weight": 0.2,
@@ -95,18 +95,18 @@ def test_confidence_scorer_basic():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Confidence scorer basic test failed: {e}")
         return False
 
 
-def test_confidence_metrics():
-    """Test ConfidenceMetrics dataclass."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_confidence_metrics():
+        """Test ConfidenceMetrics dataclass."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         metrics = ConfidenceMetrics()
         
         # Test default values
@@ -126,18 +126,18 @@ def test_confidence_metrics():
         print("✅ ConfidenceMetrics dataclass works correctly")
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ ConfidenceMetrics test failed: {e}")
         return False
 
 
-def test_validation_result():
-    """Test ValidationResult dataclass."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_validation_result():
+        """Test ValidationResult dataclass."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         result = ValidationResult()
         
         # Test default values
@@ -160,18 +160,18 @@ def test_validation_result():
         print("✅ ValidationResult dataclass works correctly")
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ ValidationResult test failed: {e}")
         return False
 
 
-def test_decision_validator_basic():
-    """Test basic decision validator functionality."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_decision_validator_basic():
+        """Test basic decision validator functionality."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         config = {
             "max_gpu_allocation": 8,
             "max_duration_hours": 168,
@@ -229,18 +229,18 @@ def test_decision_validator_basic():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Decision validator basic test failed: {e}")
         return False
 
 
-def test_reasoning_path_generator_basic():
-    """Test basic reasoning path generator functionality."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_reasoning_path_generator_basic():
+        """Test basic reasoning path generator functionality."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         config = {
             "include_technical_details": True,
             "max_reasoning_steps": 10
@@ -294,18 +294,18 @@ def test_reasoning_path_generator_basic():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Reasoning path generator test failed: {e}")
         return False
 
 
-def test_full_confidence_calculation():
-    """Test full confidence calculation pipeline."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_full_confidence_calculation():
+        """Test full confidence calculation pipeline."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         config = {
             "confidence_threshold": 0.7,
             "entropy_weight": 0.2,
@@ -361,18 +361,18 @@ def test_full_confidence_calculation():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Full confidence calculation test failed: {e}")
         return False
 
 
-def test_integration_scenario():
-    """Test integration scenario with all components."""
-    if not CONFIDENCE_SCORING_AVAILABLE:
+    def test_integration_scenario():
+        """Test integration scenario with all components."""
+        if not CONFIDENCE_SCORING_AVAILABLE:
         print("❌ Confidence scoring not available, skipping test")
         return False
     
-    try:
+        try:
         # Initialize all components
         config = {
             "confidence_threshold": 0.7,
@@ -452,17 +452,17 @@ def test_integration_scenario():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Integration scenario test failed: {e}")
         return False
 
 
-def main():
-    """Run all confidence scoring tests."""
-    print("🧪 Confidence Scoring Tests - Task 7 Implementation")
-    print("=" * 60)
+    def main():
+        """Run all confidence scoring tests."""
+        print("🧪 Confidence Scoring Tests - Task 7 Implementation")
+        print("=" * 60)
     
-    tests = [
+        tests = [
         ("Confidence Scorer Basic", test_confidence_scorer_basic),
         ("Confidence Metrics", test_confidence_metrics),
         ("Validation Result", test_validation_result),
@@ -470,10 +470,10 @@ def main():
         ("Reasoning Path Generator", test_reasoning_path_generator_basic),
         ("Full Confidence Calculation", test_full_confidence_calculation),
         ("Integration Scenario", test_integration_scenario)
-    ]
+        ]
     
-    results = []
-    for test_name, test_func in tests:
+        results = []
+        for test_name, test_func in tests:
         print(f"\n🔍 Running: {test_name}")
         try:
             result = test_func()
@@ -486,10 +486,10 @@ def main():
             print(f"❌ {test_name}: ERROR - {e}")
             results.append(False)
     
-    print("\n" + "=" * 60)
-    print(f"📊 Test Results: {sum(results)}/{len(results)} passed")
+        print("\n" + "=" * 60)
+        print(f"📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 ALL CONFIDENCE SCORING TESTS PASSED!")
         print("\n✅ Task 7 Implementation Complete:")
         print("   • Confidence scoring based on neural network outputs ✅")
@@ -498,10 +498,10 @@ def main():
         print("   • Unit tests for confidence calculation and validation logic ✅")
         print("\n🚀 Ready for Task 8: Implement Fallback Mechanisms")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit(main())
+        if __name__ == "__main__":
+        exit(main())

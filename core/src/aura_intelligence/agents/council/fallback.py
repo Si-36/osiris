@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import structlog
 import time
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState
 
 logger = structlog.get_logger()
@@ -71,7 +71,7 @@ class FallbackEngine:
         self.recovery_attempts = {}
         self.last_fallback_time = None
     
-    async def handle_failure(self, state: LNNCouncilState, failed_step: str, error: Exception) -> LNNCouncilState:
+        async def handle_failure(self, state: LNNCouncilState, failed_step: str, error: Exception) -> LNNCouncilState:
         """Handle step failure with comprehensive fallback logic."""
         start_time = time.time()
         
@@ -138,6 +138,7 @@ class FallbackEngine:
     
     def _calculate_degradation_level(self) -> DegradationLevel:
         """Calculate appropriate degradation level based on failed subsystems."""
+        pass
         if not self.failed_subsystems:
             return DegradationLevel.FULL_FUNCTIONALITY
         
@@ -154,12 +155,12 @@ class FallbackEngine:
         else:
             return DegradationLevel.FULL_FUNCTIONALITY
     
-    async def _execute_fallback_strategy(
+        async def _execute_fallback_strategy(
         self, 
         state: LNNCouncilState, 
         trigger: FallbackTrigger, 
         degradation: DegradationLevel
-    ) -> LNNCouncilState:
+        ) -> LNNCouncilState:
         """Execute appropriate fallback strategy based on trigger and degradation level."""
         
         # Mark fallback triggered
@@ -289,7 +290,7 @@ class FallbackEngine:
             "rule_score": score
         }
     
-    async def _reduced_ai_decision(self, state: LNNCouncilState, trigger: FallbackTrigger) -> Dict[str, Any]:
+        async def _reduced_ai_decision(self, state: LNNCouncilState, trigger: FallbackTrigger) -> Dict[str, Any]:
         """Reduced AI mode: use available AI components."""
         request = state.current_request
         if not request:
@@ -364,8 +365,9 @@ class FallbackEngine:
             "degradation_level": "full"
         }
     
-    async def _get_memory_context(self, request) -> Optional[Dict[str, Any]]:
+        async def _get_memory_context(self, request) -> Optional[Dict[str, Any]]:
         """Simplified memory context retrieval."""
+        pass
         # This would integrate with the actual memory system
         # For now, return a simple context based on request
         return {
@@ -376,6 +378,7 @@ class FallbackEngine:
     
     def _get_knowledge_boost(self, request) -> float:
         """Simple knowledge-based confidence boost."""
+        pass
         # This would integrate with the actual knowledge graph
         # For now, return a simple boost based on request characteristics
         if hasattr(request, 'project_id') and request.project_id:
@@ -393,7 +396,7 @@ class FallbackEngine:
                 / self.metrics.total_fallbacks
             )
     
-    async def attempt_recovery(self, subsystem: str) -> bool:
+        async def attempt_recovery(self, subsystem: str) -> bool:
         """Attempt to recover a failed subsystem."""
         if subsystem not in self.failed_subsystems:
             return True
@@ -442,6 +445,7 @@ class FallbackEngine:
     
     def get_health_status(self) -> Dict[str, Any]:
         """Get comprehensive health status of the fallback system."""
+        pass
         return {
             "degradation_level": self.current_degradation.value,
             "failed_subsystems": list(self.failed_subsystems),
@@ -459,6 +463,7 @@ class FallbackEngine:
     
     def get_status(self) -> Dict[str, Any]:
         """Get fallback engine status (legacy method)."""
+        pass
         return {
             "fallback_count": self.metrics.total_fallbacks,
             "enabled": self.config.enable_fallback,
@@ -467,6 +472,7 @@ class FallbackEngine:
     
     def reset_metrics(self):
         """Reset fallback metrics (useful for testing)."""
+        pass
         self.metrics = FallbackMetrics()
         self.failed_subsystems.clear()
         self.recovery_attempts.clear()

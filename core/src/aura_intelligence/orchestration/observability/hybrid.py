@@ -189,100 +189,100 @@ class HybridObservability:
         )
 
 # Factory function for creating hybrid observability stack
-def create_hybrid_stack(config: ObservabilityConfig) -> HybridObservability:
-    """Create hybrid observability stack from configuration"""
-    collectors = []
+    def create_hybrid_stack(config: ObservabilityConfig) -> HybridObservability:
+        """Create hybrid observability stack from configuration"""
+        collectors = []
     
     # Add external collectors
-    if config.arize:
+        if config.arize:
         collectors.append(create_arize_collector(config.arize))
     
-    if config.langsmith:
+        if config.langsmith:
         collectors.append(create_langsmith_collector(config.langsmith))
     
     # Add custom collectors
-    collectors.extend(config.custom_collectors)
+        collectors.extend(config.custom_collectors)
     
     # Create multi-collector
-    collector = create_multi_collector(*collectors) if collectors else create_multi_collector()
+        collector = create_multi_collector(*collectors) if collectors else create_multi_collector()
     
     # Create tracer (prefer Jaeger, fallback to first custom tracer)
-    tracer = (
+        tracer = (
         create_jaeger_tracer(config.jaeger) if config.jaeger
         else config.custom_tracers[0] if config.custom_tracers
         else create_jaeger_tracer(JaegerConfig("aura-orchestration"))  # Default
-    )
+        )
     
-    return HybridObservability(collector, tracer)
+        return HybridObservability(collector, tracer)
 
-# Functional composition helpers
-def compose_event_handlers(*handlers: Callable[[WorkflowEvent], Effect[None]]) -> Callable[[WorkflowEvent], Effect[None]]:
-    """Compose multiple event handlers into one"""
+    # Functional composition helpers
+    def compose_event_handlers(*handlers: Callable[[WorkflowEvent], Effect[None]]) -> Callable[[WorkflowEvent], Effect[None]]:
+        """Compose multiple event handlers into one"""
     def composed_handler(event: WorkflowEvent) -> Effect[None]:
         async def _handle_all():
-            effects = [handler(event) for handler in handlers]
-            await asyncio.gather(*[effect.run() for effect in effects])
+        effects = [handler(event) for handler in handlers]
+        await asyncio.gather(*[effect.run() for effect in effects])
         
         return Effect(_handle_all)
     
-    return composed_handler
+        return composed_handler
 
-def create_tda_event_handler(tda_client) -> Callable[[WorkflowEvent], Effect[None]]:
-    """Create TDA-specific event handler"""
+    def create_tda_event_handler(tda_client) -> Callable[[WorkflowEvent], Effect[None]]:
+        """Create TDA-specific event handler"""
     def tda_handler(event: WorkflowEvent) -> Effect[None]:
         async def _send_to_tda():
-            if hasattr(tda_client, 'send_orchestration_result'):
-                await tda_client.send_orchestration_result(
-                    {
-                        "event_type": event.event_type,
-                        "workflow_id": event.workflow_id,
-                        "timestamp": event.timestamp.isoformat(),
-                        "data": event.data
-                    },
-                    event.correlation_id
-                )
+        if hasattr(tda_client, 'send_orchestration_result'):
+        await tda_client.send_orchestration_result(
+        {
+        "event_type": event.event_type,
+        "workflow_id": event.workflow_id,
+        "timestamp": event.timestamp.isoformat(),
+        "data": event.data
+        },
+        event.correlation_id
+        )
         
         return Effect(_send_to_tda)
     
-    return tda_handler
+        return tda_handler
 
-# Example usage with functional composition
+    # Example usage with functional composition
 async def example_hybrid_usage():
-    """Example of hybrid observability usage"""
+        """Example of hybrid observability usage"""
     # Configuration
-    config = ObservabilityConfig(
+        config = ObservabilityConfig(
         arize=ArizeConfig(project_name="aura-production"),
         langsmith=LangSmithConfig(project_name="aura-workflows"),
         jaeger=JaegerConfig(service_name="aura-orchestration")
-    )
+        )
     
     # Create hybrid stack
-    observability = create_hybrid_stack(config)
+        observability = create_hybrid_stack(config)
     
     # Add TDA integration
     # observability = observability.with_event_handler(create_tda_event_handler(tda_client))
     
     # Use hybrid observability
-    span_context = await observability.record_workflow_start(
+        span_context = await observability.record_workflow_start(
         workflow_id="example_workflow",
         operation_name="multi_agent_processing",
         correlation_id="example-correlation-123"
-    )
+        )
     
     # Record LLM call
-    await observability.record_llm_call(
+        await observability.record_llm_call(
         workflow_id="example_workflow",
         model="gpt-4",
         tokens=150,
         latency_ms=1200,
         cost=0.003
-    )
+        )
     
     # End workflow
-    await observability.record_workflow_end(
+        await observability.record_workflow_end(
         workflow_id="example_workflow",
         span_context=span_context,
         status="success",
         duration_ms=5000,
         metadata={"steps_completed": 4}
-    )
+        )

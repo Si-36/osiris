@@ -15,7 +15,7 @@ import sys
 import structlog
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import
@@ -42,8 +42,9 @@ class StructuredLoggingManager:
         Initialize structured logging manager.
         
         Args:
-            config: Observability configuration
+        config: Observability configuration
         """
+        pass
         
         self.config = config
         self.logger: Optional[logging.Logger] = None
@@ -53,10 +54,11 @@ class StructuredLoggingManager:
         self._signing_key = self._generate_signing_key()
         self._log_sequence = 0
     
-    async def initialize(self) -> None:
+        async def initialize(self) -> None:
         """
         Initialize structured logging with latest 2025 patterns.
         """
+        pass
         
         # Initialize structlog - no fallback, strict requirements
         self._initialize_structlog()
@@ -76,14 +78,15 @@ class StructuredLoggingManager:
     
     def _initialize_structlog(self) -> None:
         """Initialize with structlog for advanced features."""
+        pass
         
         # Configure structlog processors
         processors = [
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso", utc=True),
-            self._add_organism_context,
-            self._add_trace_correlation,
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
+        self._add_organism_context,
+        self._add_trace_correlation,
         ]
         
         # Add cryptographic signature processor if enabled
@@ -95,12 +98,12 @@ class StructuredLoggingManager:
         
         # Configure structlog
         structlog.configure(
-            processors=processors,
-            wrapper_class=structlog.make_filtering_bound_logger(
-                getattr(logging, self.config.log_level.upper())
-            ),
-            logger_factory=structlog.WriteLoggerFactory(),
-            cache_logger_on_first_use=True,
+        processors=processors,
+        wrapper_class=structlog.make_filtering_bound_logger(
+        getattr(logging, self.config.log_level.upper())
+        ),
+        logger_factory=structlog.WriteLoggerFactory(),
+        cache_logger_on_first_use=True,
         )
         
         # Create logger
@@ -110,6 +113,7 @@ class StructuredLoggingManager:
     
     def _generate_signing_key(self) -> bytes:
         """Generate cryptographic signing key for log integrity."""
+        pass
         
         # In production, this should come from secure key management
         key_material = f"{self.config.organism_id}:{self.config.service_version}:neural_observability"
@@ -117,19 +121,21 @@ class StructuredLoggingManager:
     
     def _add_organism_context(self, logger, method_name, event_dict):
         """Add organism context to all log entries."""
+        pass
         
         event_dict.update({
-            "organism_id": self.config.organism_id,
-            "organism_generation": self.config.organism_generation,
-            "deployment_environment": self.config.deployment_environment,
-            "service_version": self.config.service_version,
-            "neural_observability_version": "2025.7.27",
+        "organism_id": self.config.organism_id,
+        "organism_generation": self.config.organism_generation,
+        "deployment_environment": self.config.deployment_environment,
+        "service_version": self.config.service_version,
+        "neural_observability_version": "2025.7.27",
         })
         
         return event_dict
     
     def _add_trace_correlation(self, logger, method_name, event_dict):
-        """Add trace correlation information."""
+            """Add trace correlation information."""
+        pass
         
         if not self.config.log_enable_correlation:
             return event_dict
@@ -148,47 +154,48 @@ class StructuredLoggingManager:
                 })
         except Exception:
             # Graceful degradation if OpenTelemetry not available
-            pass
+        pass
         
         return event_dict
     
     def _add_cryptographic_signature(self, logger, method_name, event_dict):
         """Add cryptographic signature for log integrity."""
+        pass
         
         if not self.config.log_enable_crypto_signatures:
             return event_dict
         
         try:
             # Increment sequence number
-            self._log_sequence += 1
+        self._log_sequence += 1
             
-            # Create signature payload
-            signature_payload = {
-                "sequence": self._log_sequence,
-                "timestamp": event_dict.get("timestamp"),
-                "level": event_dict.get("level"),
-                "event": event_dict.get("event", ""),
-                "organism_id": self.config.organism_id,
-            }
+        # Create signature payload
+        signature_payload = {
+        "sequence": self._log_sequence,
+        "timestamp": event_dict.get("timestamp"),
+        "level": event_dict.get("level"),
+        "event": event_dict.get("event", ""),
+        "organism_id": self.config.organism_id,
+        }
             
-            # Create HMAC signature
-            payload_json = json.dumps(signature_payload, sort_keys=True)
-            signature = hmac.new(
-                self._signing_key,
-                payload_json.encode(),
-                hashlib.sha256
-            ).hexdigest()
+        # Create HMAC signature
+        payload_json = json.dumps(signature_payload, sort_keys=True)
+        signature = hmac.new(
+        self._signing_key,
+        payload_json.encode(),
+        hashlib.sha256
+        ).hexdigest()
             
-            # Add signature fields
-            event_dict.update({
-                "log_sequence": self._log_sequence,
-                "log_signature": signature,
-                "signature_algorithm": "HMAC-SHA256",
-            })
+        # Add signature fields
+        event_dict.update({
+        "log_sequence": self._log_sequence,
+        "log_signature": signature,
+        "signature_algorithm": "HMAC-SHA256",
+        })
             
         except Exception as e:
-            # Don't fail logging if signature fails
-            event_dict["signature_error"] = str(e)
+        # Don't fail logging if signature fails
+        event_dict["signature_error"] = str(e)
         
         return event_dict
     
@@ -220,19 +227,19 @@ class StructuredLoggingManager:
             return
         
         self.logger.info(
-            "workflow_completed",
-            workflow_id=context.workflow_id,
-            workflow_type=context.workflow_type,
-            status=context.status,
-            duration=context.duration,
-            error=context.error,
-            final_evidence_count=len(state.get("evidence_log", [])),
-            final_error_count=len(state.get("error_log", [])),
-            recovery_attempts=state.get("error_recovery_attempts", 0),
-            system_health_score=state.get("system_health", {}).get("health_score", 0.0),
-            trace_id=context.trace_id,
-            span_id=context.span_id,
-            tags=context.tags,
+        "workflow_completed",
+        workflow_id=context.workflow_id,
+        workflow_type=context.workflow_type,
+        status=context.status,
+        duration=context.duration,
+        error=context.error,
+        final_evidence_count=len(state.get("evidence_log", [])),
+        final_error_count=len(state.get("error_log", [])),
+        recovery_attempts=state.get("error_recovery_attempts", 0),
+        system_health_score=state.get("system_health", {}).get("health_score", 0.0),
+        trace_id=context.trace_id,
+        span_id=context.span_id,
+        tags=context.tags,
         )
     
     def log_agent_started(self, agent_context: Dict[str, Any]) -> None:
@@ -259,26 +266,26 @@ class StructuredLoggingManager:
             return
         
         self.logger.info(
-            "agent_call_completed",
-            agent_name=agent_context['agent_name'],
-            tool_name=agent_context['tool_name'],
-            workflow_id=agent_context.get('workflow_context', {}).get('workflow_id', 'unknown'),
-            status=agent_context.get('status', 'unknown'),
-            duration=agent_context.get('duration', 0),
-            error=agent_context.get('error'),
-            output_count=len(agent_context.get('outputs', {})) if agent_context.get('outputs') else 0,
-            trace_id=agent_context.get('trace_id'),
-            span_id=agent_context.get('span_id'),
+        "agent_call_completed",
+        agent_name=agent_context['agent_name'],
+        tool_name=agent_context['tool_name'],
+        workflow_id=agent_context.get('workflow_context', {}).get('workflow_id', 'unknown'),
+        status=agent_context.get('status', 'unknown'),
+        duration=agent_context.get('duration', 0),
+        error=agent_context.get('error'),
+        output_count=len(agent_context.get('outputs', {})) if agent_context.get('outputs') else 0,
+        trace_id=agent_context.get('trace_id'),
+        span_id=agent_context.get('span_id'),
         )
     
-    def log_llm_usage(
+        def log_llm_usage(
         self,
         model_name: str,
         input_tokens: int,
         output_tokens: int,
         latency_seconds: float,
         cost_usd: Optional[float] = None
-    ) -> None:
+        ) -> None:
         """Log LLM usage with cost and performance metrics."""
 
         if not self.logger:
@@ -305,11 +312,11 @@ class StructuredLoggingManager:
 
         log_level = "info" if success else "warning"
         getattr(self.logger, log_level)(
-            "error_recovery_attempt",
-            error_type=error_type,
-            recovery_strategy=recovery_strategy,
-            success=success,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+        "error_recovery_attempt",
+        error_type=error_type,
+        recovery_strategy=recovery_strategy,
+        success=success,
+        timestamp=datetime.now(timezone.utc).isoformat(),
         )
     
     def log_system_health_update(self, health_score: float) -> None:
@@ -340,11 +347,11 @@ class StructuredLoggingManager:
             return
         
         self.logger.warning(
-            "circuit_breaker_event",
-            component=component,
-            event=event,
-            new_state=state,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+        "circuit_breaker_event",
+        component=component,
+        event=event,
+        new_state=state,
+        timestamp=datetime.now(timezone.utc).isoformat(),
         )
     
     def log_anomaly_detected(self, anomaly_type: str, severity: str, details: Dict[str, Any]) -> None:
@@ -370,10 +377,10 @@ class StructuredLoggingManager:
             return
         
         self.logger.warning(
-            "security_event",
-            event_type=event_type,
-            details=details,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+        "security_event",
+        event_type=event_type,
+        details=details,
+        timestamp=datetime.now(timezone.utc).isoformat(),
         )
     
     def log_performance_metric(self, metric_name: str, value: float, unit: str, tags: Dict[str, str] = None) -> None:
@@ -396,10 +403,10 @@ class StructuredLoggingManager:
         Verify the cryptographic signature of a log entry.
         
         Args:
-            log_entry: Log entry with signature fields
+        log_entry: Log entry with signature fields
             
         Returns:
-            bool: True if signature is valid
+        bool: True if signature is valid
         """
         
         if not self.config.log_enable_crypto_signatures:
@@ -407,36 +414,37 @@ class StructuredLoggingManager:
         
         try:
             # Extract signature fields
-            sequence = log_entry.get("log_sequence")
-            signature = log_entry.get("log_signature")
+        sequence = log_entry.get("log_sequence")
+        signature = log_entry.get("log_signature")
             
-            if not sequence or not signature:
-                return False
+        if not sequence or not signature:
+            return False
             
-            # Recreate signature payload
-            signature_payload = {
-                "sequence": sequence,
-                "timestamp": log_entry.get("timestamp"),
-                "level": log_entry.get("level"),
-                "event": log_entry.get("event", ""),
-                "organism_id": self.config.organism_id,
-            }
+        # Recreate signature payload
+        signature_payload = {
+        "sequence": sequence,
+        "timestamp": log_entry.get("timestamp"),
+        "level": log_entry.get("level"),
+        "event": log_entry.get("event", ""),
+        "organism_id": self.config.organism_id,
+        }
             
-            # Verify signature
-            payload_json = json.dumps(signature_payload, sort_keys=True)
-            expected_signature = hmac.new(
-                self._signing_key,
-                payload_json.encode(),
-                hashlib.sha256
-            ).hexdigest()
+        # Verify signature
+        payload_json = json.dumps(signature_payload, sort_keys=True)
+        expected_signature = hmac.new(
+        self._signing_key,
+        payload_json.encode(),
+        hashlib.sha256
+        ).hexdigest()
             
-            return hmac.compare_digest(signature, expected_signature)
+        return hmac.compare_digest(signature, expected_signature)
             
         except Exception:
-            return False
+        return False
     
-    async def shutdown(self) -> None:
+        async def shutdown(self) -> None:
         """Gracefully shutdown structured logging."""
+        pass
         
         if self.logger:
             self.logger.info(

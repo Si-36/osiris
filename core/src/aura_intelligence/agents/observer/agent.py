@@ -71,12 +71,14 @@ class ObserverAgent:
     
     async def initialize(self) -> None:
         """Initialize the agent."""
+        pass
         logger.info(f"Initializing ObserverAgent: {self.agent_id}")
         # Any initialization logic here
         self._initialized = True
     
     async def shutdown(self) -> None:
         """Shutdown the agent."""
+        pass
         logger.info(f"Shutting down ObserverAgent: {self.agent_id}")
         # Any cleanup logic here
         self._initialized = False
@@ -452,8 +454,9 @@ class ObserverAgent:
             (current_avg * (count - 1) + processing_time_ms) / count
         )
     
-    async def get_health_status(self) -> Dict[str, Any]:
+        async def get_health_status(self) -> Dict[str, Any]:
         """Return comprehensive health and performance metrics."""
+        pass
         return {
             "agent_id": self.agent_id,
             "status": "healthy",

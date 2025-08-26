@@ -111,8 +111,8 @@ class ObservabilityEngine:
         self.max_alerts = self.config.get("max_alerts", 100)
         self.max_latency_samples = self.config.get("max_latency_samples", 100)
     
-    def record_metric(self, name: str, value: float, metric_type: MetricType, 
-                     labels: Optional[Dict[str, str]] = None, unit: str = "") -> None:
+        def record_metric(self, name: str, value: float, metric_type: MetricType,
+        labels: Optional[Dict[str, str]] = None, unit: str = "") -> None:
         """Record a performance metric (Requirement 6.1)"""
         metric = PerformanceMetric(
             name=name,
@@ -128,22 +128,22 @@ class ObservabilityEngine:
     def start_decision_trace(self, request_id: str) -> DecisionTrace:
         """Start tracing a decision process (Requirement 6.2)"""
         trace = DecisionTrace(
-            request_id=request_id,
-            start_time=time.time()
+        request_id=request_id,
+        start_time=time.time()
         )
         
         self.decision_traces[request_id] = trace
         
         # Cleanup old traces if needed
         if len(self.decision_traces) > self.max_traces:
-            oldest_key = min(self.decision_traces.keys(), 
-                           key=lambda k: self.decision_traces[k].start_time)
-            del self.decision_traces[oldest_key]
+            oldest_key = min(self.decision_traces.keys(),
+        key=lambda k: self.decision_traces[k].start_time)
+        del self.decision_traces[oldest_key]
         
         return trace
     
-    def add_trace_step(self, request_id: str, step_name: str, 
-                      step_data: Dict[str, Any]) -> None:
+        def add_trace_step(self, request_id: str, step_name: str,
+        step_data: Dict[str, Any]) -> None:
         """Add a step to the decision trace"""
         if request_id in self.decision_traces:
             step_info = {
@@ -154,7 +154,7 @@ class ObservabilityEngine:
             self.decision_traces[request_id].steps.append(step_info)
     
     def complete_decision_trace(self, request_id: str, final_decision: str,
-                              confidence_score: float, reasoning_path: List[str],
+        confidence_score: float, reasoning_path: List[str],
                               fallback_triggered: bool = False) -> None:
         """Complete a decision trace (Requirement 6.2)"""
         if request_id in self.decision_traces:
@@ -188,42 +188,42 @@ class ObservabilityEngine:
         
         try:
             metrics.total_calls += 1
-            yield
+        yield
             
-            # Success case
-            latency = time.time() - start_time
-            metrics.successful_calls += 1
-            self._update_latency_metrics(metrics, latency)
+        # Success case
+        latency = time.time() - start_time
+        metrics.successful_calls += 1
+        self._update_latency_metrics(metrics, latency)
             
-            # Record component metric
-            labels = {"component": component_name}
-            if operation:
-                labels["operation"] = operation
+        # Record component metric
+        labels = {"component": component_name}
+        if operation:
+            labels["operation"] = operation
             
-            self.record_metric(f"{component_name}_latency", latency, 
-                             MetricType.TIMER, labels, "seconds")
+        self.record_metric(f"{component_name}_latency", latency,
+        MetricType.TIMER, labels, "seconds")
             
         except Exception as e:
-            # Error case
-            latency = time.time() - start_time
-            metrics.failed_calls += 1
-            metrics.last_error = str(e)
+        # Error case
+        latency = time.time() - start_time
+        metrics.failed_calls += 1
+        metrics.last_error = str(e)
             
-            # Record error
-            self.record_error(component_name, e, {
-                "operation": operation,
-                "latency": latency
-            })
+        # Record error
+        self.record_error(component_name, e, {
+        "operation": operation,
+        "latency": latency
+        })
             
-            raise
+        raise
         
         finally:
-            # Update error rate
-            if metrics.total_calls > 0:
-                metrics.error_rate = metrics.failed_calls / metrics.total_calls
+        # Update error rate
+        if metrics.total_calls > 0:
+            metrics.error_rate = metrics.failed_calls / metrics.total_calls
     
-    def record_error(self, component: str, error: Exception, 
-                    context: Optional[Dict[str, Any]] = None) -> None:
+        def record_error(self, component: str, error: Exception,
+        context: Optional[Dict[str, Any]] = None) -> None:
         """Record detailed error information (Requirement 6.4)"""
         error_info = {
             "component": component,
@@ -242,7 +242,7 @@ class ObservabilityEngine:
         self._check_error_patterns(component, error_info)
     
     def generate_alert(self, level: AlertLevel, message: str, 
-                      context: Optional[Dict[str, Any]] = None,
+        context: Optional[Dict[str, Any]] = None,
                       actionable_info: Optional[List[str]] = None) -> SystemAlert:
         """Generate a system alert (Requirement 6.5)"""
         alert = SystemAlert(
@@ -275,6 +275,7 @@ class ObservabilityEngine:
     
     def get_performance_summary(self) -> Dict[str, Any]:
         """Get comprehensive performance summary"""
+        pass
         current_time = time.time()
         
         # Calculate overall metrics
@@ -340,11 +341,11 @@ class ObservabilityEngine:
         # Calculate statistics
         if metrics.latency_samples:
             metrics.average_latency = sum(metrics.latency_samples) / len(metrics.latency_samples)
-            sorted_samples = sorted(metrics.latency_samples)
-            p95_index = int(0.95 * len(sorted_samples))
-            p99_index = int(0.99 * len(sorted_samples))
-            metrics.p95_latency = sorted_samples[min(p95_index, len(sorted_samples) - 1)]
-            metrics.p99_latency = sorted_samples[min(p99_index, len(sorted_samples) - 1)]
+        sorted_samples = sorted(metrics.latency_samples)
+        p95_index = int(0.95 * len(sorted_samples))
+        p99_index = int(0.99 * len(sorted_samples))
+        metrics.p95_latency = sorted_samples[min(p95_index, len(sorted_samples) - 1)]
+        metrics.p99_latency = sorted_samples[min(p99_index, len(sorted_samples) - 1)]
     
     def _check_decision_performance(self, trace: DecisionTrace) -> None:
         """Check decision performance and generate alerts if needed"""
@@ -394,28 +395,29 @@ class ObservabilityEngine:
         if component in self.component_metrics:
             metrics = self.component_metrics[component]
             
-            # Check error rate threshold
-            if metrics.error_rate > self.error_rate_threshold:
-                self.generate_alert(
-                    AlertLevel.ERROR,
-                    f"High error rate in {component}: {metrics.error_rate:.2%} > {self.error_rate_threshold:.2%}",
-                    {
-                        "component": component,
-                        "error_rate": metrics.error_rate,
-                        "threshold": self.error_rate_threshold,
-                        "total_calls": metrics.total_calls,
-                        "failed_calls": metrics.failed_calls
-                    },
-                    [
-                        f"Investigate {component} component health",
-                        "Check external dependencies",
-                        "Review recent configuration changes",
-                        "Consider enabling fallback mechanisms"
-                    ]
-                )
+        # Check error rate threshold
+        if metrics.error_rate > self.error_rate_threshold:
+            self.generate_alert(
+        AlertLevel.ERROR,
+        f"High error rate in {component}: {metrics.error_rate:.2%} > {self.error_rate_threshold:.2%}",
+        {
+        "component": component,
+        "error_rate": metrics.error_rate,
+        "threshold": self.error_rate_threshold,
+        "total_calls": metrics.total_calls,
+        "failed_calls": metrics.failed_calls
+        },
+        [
+        f"Investigate {component} component health",
+        "Check external dependencies",
+        "Review recent configuration changes",
+        "Consider enabling fallback mechanisms"
+        ]
+        )
     
     def _calculate_health_status(self) -> str:
         """Calculate overall system health status"""
+        pass
         recent_alerts = self.get_recent_alerts(1)  # Last hour
         critical_alerts = [a for a in recent_alerts if a.level == AlertLevel.CRITICAL]
         error_alerts = [a for a in recent_alerts if a.level == AlertLevel.ERROR]
@@ -431,6 +433,7 @@ class ObservabilityEngine:
     
     def reset_metrics(self) -> None:
         """Reset all metrics (useful for testing)"""
+        pass
         self.metrics.clear()
         self.component_metrics.clear()
         self.decision_traces.clear()
@@ -442,13 +445,14 @@ class TestObservabilityEngine:
     
     def __init__(self):
         self.engine = ObservabilityEngine({
-            "latency_threshold": 1.0,
-            "error_rate_threshold": 0.1,
-            "confidence_threshold": 0.8
+        "latency_threshold": 1.0,
+        "error_rate_threshold": 0.1,
+        "confidence_threshold": 0.8
         })
     
     def test_metric_recording(self):
-        """Test performance metric recording (Requirement 6.1)"""
+            """Test performance metric recording (Requirement 6.1)"""
+        pass
         # Record various types of metrics
         self.engine.record_metric("lnn_inference_time", 0.5, MetricType.TIMER, 
                                  {"model": "v1"}, "seconds")
@@ -477,6 +481,7 @@ class TestObservabilityEngine:
     
     def test_decision_tracing(self):
         """Test decision process tracing (Requirement 6.2)"""
+        pass
         request_id = "test-request-123"
         
         # Start decision trace
@@ -484,30 +489,30 @@ class TestObservabilityEngine:
         
         if trace.request_id != request_id:
             print(f"❌ Wrong request ID: {trace.request_id}")
-            return False
+        return False
         
         if trace.start_time <= 0:
             print(f"❌ Invalid start time: {trace.start_time}")
-            return False
+        return False
         
         # Add trace steps
         self.engine.add_trace_step(request_id, "analyze_request", {
-            "priority": 7,
-            "gpu_count": 2
+        "priority": 7,
+        "gpu_count": 2
         })
         
         self.engine.add_trace_step(request_id, "lnn_inference", {
-            "confidence": 0.85,
-            "processing_time": 0.3
+        "confidence": 0.85,
+        "processing_time": 0.3
         })
         
         # Complete trace
         self.engine.complete_decision_trace(
-            request_id, 
-            "approve", 
-            0.85, 
-            ["High priority request", "Sufficient resources available"],
-            False
+        request_id,
+        "approve",
+        0.85,
+        ["High priority request", "Sufficient resources available"],
+        False
         )
         
         # Verify trace completion
@@ -515,29 +520,30 @@ class TestObservabilityEngine:
         
         if not completed_trace:
             print("❌ Trace not found after completion")
-            return False
+        return False
         
         if completed_trace.final_decision != "approve":
             print(f"❌ Wrong final decision: {completed_trace.final_decision}")
-            return False
+        return False
         
         if completed_trace.confidence_score != 0.85:
             print(f"❌ Wrong confidence score: {completed_trace.confidence_score}")
-            return False
+        return False
         
         if len(completed_trace.steps) != 2:
             print(f"❌ Wrong number of steps: {len(completed_trace.steps)}")
-            return False
+        return False
         
         if len(completed_trace.reasoning_path) != 2:
             print(f"❌ Wrong reasoning path length: {len(completed_trace.reasoning_path)}")
-            return False
+        return False
         
         print("✅ Decision tracing: PASSED")
         return True
     
     def test_component_monitoring(self):
-        """Test component performance monitoring (Requirement 6.3)"""
+            """Test component performance monitoring (Requirement 6.3)"""
+        pass
         # Test successful operation
         with self.engine.monitor_component("memory_system", "query"):
             time.sleep(0.01)  # Simulate work
@@ -597,12 +603,13 @@ class TestObservabilityEngine:
     
     def test_error_recording(self):
         """Test detailed error recording (Requirement 6.4)"""
+        pass
         # Record an error
         test_error = RuntimeError("Neural network inference failed")
         context = {
-            "model_version": "v2.1",
-            "input_size": 1024,
-            "gpu_memory": "8GB"
+        "model_version": "v2.1",
+        "input_size": 1024,
+        "gpu_memory": "8GB"
         }
         
         initial_metric_count = len(self.engine.metrics)
@@ -611,253 +618,258 @@ class TestObservabilityEngine:
         
         # Verify error metric was recorded
         error_metrics = [m for m in self.engine.metrics.values() 
-                        if m.name == "error_count"]
+        if m.name == "error_count"]
         
         if not error_metrics:
             print("❌ Error metric not recorded")
-            return False
+        return False
         
         error_metric = error_metrics[-1]  # Get the latest one
         
         if error_metric.labels.get("component") != "lnn_inference":
             print(f"❌ Wrong component in error metric: {error_metric.labels}")
-            return False
+        return False
         
         if error_metric.labels.get("error_type") != "RuntimeError":
             print(f"❌ Wrong error type in metric: {error_metric.labels}")
-            return False
+        return False
         
         print("✅ Error recording: PASSED")
         return True
     
     def test_alert_generation(self):
-        """Test alert generation and callbacks (Requirement 6.5)"""
+            """Test alert generation and callbacks (Requirement 6.5)"""
+        pass
         # Set up alert callback
         received_alerts = []
         
-        def alert_callback(alert):
+    def alert_callback(alert):
             received_alerts.append(alert)
         
-        self.engine.add_alert_callback(alert_callback)
+            self.engine.add_alert_callback(alert_callback)
         
-        # Generate different types of alerts
-        warning_alert = self.engine.generate_alert(
+            # Generate different types of alerts
+            warning_alert = self.engine.generate_alert(
             AlertLevel.WARNING,
             "High latency detected",
             {"component": "lnn_inference", "latency": 2.5},
             ["Check GPU utilization", "Review model complexity"]
-        )
+            )
         
-        error_alert = self.engine.generate_alert(
+            error_alert = self.engine.generate_alert(
             AlertLevel.ERROR,
             "Component failure",
             {"component": "memory_system", "error": "Connection timeout"}
-        )
+            )
         
-        # Verify alerts were generated
-        if len(self.engine.alerts) < 2:
-            print(f"❌ Expected at least 2 alerts, got {len(self.engine.alerts)}")
+            # Verify alerts were generated
+            if len(self.engine.alerts) < 2:
+                print(f"❌ Expected at least 2 alerts, got {len(self.engine.alerts)}")
             return False
         
-        # Verify callback was called
-        if len(received_alerts) != 2:
-            print(f"❌ Expected 2 callback calls, got {len(received_alerts)}")
+            # Verify callback was called
+            if len(received_alerts) != 2:
+                print(f"❌ Expected 2 callback calls, got {len(received_alerts)}")
             return False
         
-        # Check alert details
-        if warning_alert.level != AlertLevel.WARNING:
-            print(f"❌ Wrong alert level: {warning_alert.level}")
+            # Check alert details
+            if warning_alert.level != AlertLevel.WARNING:
+                print(f"❌ Wrong alert level: {warning_alert.level}")
             return False
         
-        if "High latency detected" not in warning_alert.message:
-            print(f"❌ Wrong alert message: {warning_alert.message}")
+            if "High latency detected" not in warning_alert.message:
+                print(f"❌ Wrong alert message: {warning_alert.message}")
             return False
         
-        if len(warning_alert.actionable_info) != 2:
-            print(f"❌ Wrong actionable info count: {len(warning_alert.actionable_info)}")
+            if len(warning_alert.actionable_info) != 2:
+                print(f"❌ Wrong actionable info count: {len(warning_alert.actionable_info)}")
             return False
         
-        print("✅ Alert generation: PASSED")
-        return True
+            print("✅ Alert generation: PASSED")
+            return True
     
     def test_performance_thresholds(self):
-        """Test automatic performance threshold monitoring"""
-        request_id = "slow-request-456"
+                """Test automatic performance threshold monitoring"""
+            pass
+            request_id = "slow-request-456"
         
-        # Start a trace
-        trace = self.engine.start_decision_trace(request_id)
+            # Start a trace
+            trace = self.engine.start_decision_trace(request_id)
         
-        # Simulate slow decision (exceed threshold)
-        time.sleep(0.01)  # Small delay for testing
+            # Simulate slow decision (exceed threshold)
+            time.sleep(0.01)  # Small delay for testing
         
-        # Manually set times to simulate slow decision
-        trace.start_time = time.time() - 1.5  # 1.5 seconds ago
+            # Manually set times to simulate slow decision
+            trace.start_time = time.time() - 1.5  # 1.5 seconds ago
         
-        initial_alert_count = len(self.engine.alerts)
+            initial_alert_count = len(self.engine.alerts)
         
-        # Complete trace (should trigger latency alert)
-        self.engine.complete_decision_trace(
+            # Complete trace (should trigger latency alert)
+            self.engine.complete_decision_trace(
             request_id,
             "approve",
             0.6,  # Low confidence (below threshold)
             ["Slow processing due to high load"],
             False
-        )
+            )
         
-        # Check if alerts were generated
-        new_alerts = self.engine.alerts[initial_alert_count:]
+            # Check if alerts were generated
+            new_alerts = self.engine.alerts[initial_alert_count:]
         
-        # Should have at least one alert (latency or confidence)
-        if len(new_alerts) == 0:
-            print("❌ No alerts generated for threshold violations")
+            # Should have at least one alert (latency or confidence)
+            if len(new_alerts) == 0:
+                print("❌ No alerts generated for threshold violations")
             return False
         
-        # Check for latency alert
-        latency_alerts = [a for a in new_alerts if "latency" in a.message.lower()]
-        confidence_alerts = [a for a in new_alerts if "confidence" in a.message.lower()]
+            # Check for latency alert
+            latency_alerts = [a for a in new_alerts if "latency" in a.message.lower()]
+            confidence_alerts = [a for a in new_alerts if "confidence" in a.message.lower()]
         
-        if not latency_alerts and not confidence_alerts:
-            print("❌ No latency or confidence alerts generated")
+            if not latency_alerts and not confidence_alerts:
+                print("❌ No latency or confidence alerts generated")
             return False
         
-        print("✅ Performance thresholds: PASSED")
-        return True
+            print("✅ Performance thresholds: PASSED")
+            return True
     
     def test_performance_summary(self):
-        """Test comprehensive performance summary generation"""
-        # Reset engine to start fresh
-        self.engine.reset_metrics()
+                """Test comprehensive performance summary generation"""
+            pass
+            # Reset engine to start fresh
+            self.engine.reset_metrics()
         
-        # Generate some activity
-        for i in range(3):
+            # Generate some activity
+            for i in range(3):
             request_id = f"summary-test-{i}"
             trace = self.engine.start_decision_trace(request_id)
             
             self.engine.add_trace_step(request_id, "process", {"step": i})
             
             self.engine.complete_decision_trace(
-                request_id,
-                "approve" if i % 2 == 0 else "deny",
-                0.8 + (i * 0.05),
-                [f"Reasoning step {i}"],
-                i == 2  # Last one uses fallback
+            request_id,
+            "approve" if i % 2 == 0 else "deny",
+            0.8 + (i * 0.05),
+            [f"Reasoning step {i}"],
+            i == 2  # Last one uses fallback
             )
         
-        # Get performance summary
-        summary = self.engine.get_performance_summary()
+            # Get performance summary
+            summary = self.engine.get_performance_summary()
         
-        # Verify summary structure
-        required_keys = [
+            # Verify summary structure
+            required_keys = [
             "timestamp", "overall_metrics", "component_metrics",
             "active_traces", "recent_alerts", "health_status"
-        ]
+            ]
         
-        for key in required_keys:
+            for key in required_keys:
             if key not in summary:
                 print(f"❌ Missing key in summary: {key}")
-                return False
-        
-        # Check overall metrics
-        overall = summary["overall_metrics"]
-        
-        if overall["total_decisions"] != 3:
-            print(f"❌ Wrong total decisions: {overall['total_decisions']}")
             return False
         
-        if overall["fallback_rate"] != 1/3:  # One out of three used fallback
+            # Check overall metrics
+            overall = summary["overall_metrics"]
+        
+            if overall["total_decisions"] != 3:
+                print(f"❌ Wrong total decisions: {overall['total_decisions']}")
+            return False
+        
+            if overall["fallback_rate"] != 1/3:  # One out of three used fallback
             print(f"❌ Wrong fallback rate: {overall['fallback_rate']}")
             return False
         
-        # Check health status
-        if summary["health_status"] not in ["HEALTHY", "WARNING", "DEGRADED", "CRITICAL"]:
-            print(f"❌ Invalid health status: {summary['health_status']}")
+            # Check health status
+            if summary["health_status"] not in ["HEALTHY", "WARNING", "DEGRADED", "CRITICAL"]:
+                print(f"❌ Invalid health status: {summary['health_status']}")
             return False
         
-        print("✅ Performance summary: PASSED")
-        return True
+            print("✅ Performance summary: PASSED")
+            return True
     
     def test_metrics_cleanup(self):
-        """Test metrics cleanup and retention policies"""
-        # Create engine with small limits for testing
-        test_engine = ObservabilityEngine({
+                """Test metrics cleanup and retention policies"""
+            pass
+            # Create engine with small limits for testing
+            test_engine = ObservabilityEngine({
             "max_traces": 2,
             "max_alerts": 2,
             "max_latency_samples": 3
-        })
+            })
         
-        # Add more traces than the limit
-        for i in range(4):
+            # Add more traces than the limit
+            for i in range(4):
             request_id = f"cleanup-test-{i}"
             trace = test_engine.start_decision_trace(request_id)
             test_engine.complete_decision_trace(request_id, "approve", 0.8, [], False)
         
-        # Should only keep the last 2 traces
-        if len(test_engine.decision_traces) != 2:
-            print(f"❌ Wrong trace count after cleanup: {len(test_engine.decision_traces)}")
+            # Should only keep the last 2 traces
+            if len(test_engine.decision_traces) != 2:
+                print(f"❌ Wrong trace count after cleanup: {len(test_engine.decision_traces)}")
             return False
         
-        # Add more alerts than the limit
-        for i in range(4):
+            # Add more alerts than the limit
+            for i in range(4):
             test_engine.generate_alert(AlertLevel.INFO, f"Test alert {i}")
         
-        # Should only keep the last 2 alerts
-        if len(test_engine.alerts) != 2:
-            print(f"❌ Wrong alert count after cleanup: {len(test_engine.alerts)}")
+            # Should only keep the last 2 alerts
+            if len(test_engine.alerts) != 2:
+                print(f"❌ Wrong alert count after cleanup: {len(test_engine.alerts)}")
             return False
         
-        print("✅ Metrics cleanup: PASSED")
-        return True
+            print("✅ Metrics cleanup: PASSED")
+            return True
     
     def test_recent_alerts_filtering(self):
-        """Test filtering of recent alerts by time"""
-        # Create fresh engine for this test
-        test_engine = ObservabilityEngine()
+                """Test filtering of recent alerts by time"""
+            pass
+            # Create fresh engine for this test
+            test_engine = ObservabilityEngine()
         
-        # Generate alerts with different timestamps
-        current_time = time.time()
+            # Generate alerts with different timestamps
+            current_time = time.time()
         
-        # Create an alert from 2 hours ago
-        old_alert = SystemAlert(
+            # Create an alert from 2 hours ago
+            old_alert = SystemAlert(
             alert_id="old_alert",
             level=AlertLevel.WARNING,
             message="Old alert",
             timestamp=current_time - 7200  # 2 hours ago
-        )
+            )
         
-        # Create a recent alert
-        recent_alert = SystemAlert(
+            # Create a recent alert
+            recent_alert = SystemAlert(
             alert_id="recent_alert",
             level=AlertLevel.INFO,
             message="Recent alert",
             timestamp=current_time - 1800  # 30 minutes ago
-        )
+            )
         
-        test_engine.alerts.extend([old_alert, recent_alert])
+            test_engine.alerts.extend([old_alert, recent_alert])
         
-        # Get recent alerts (last 1 hour)
-        recent_alerts = test_engine.get_recent_alerts(1)
+            # Get recent alerts (last 1 hour)
+            recent_alerts = test_engine.get_recent_alerts(1)
         
-        # Should only include the recent alert
-        if len(recent_alerts) != 1:
-            print(f"❌ Wrong recent alert count: {len(recent_alerts)}")
+            # Should only include the recent alert
+            if len(recent_alerts) != 1:
+                print(f"❌ Wrong recent alert count: {len(recent_alerts)}")
             return False
         
-        if recent_alerts[0].alert_id != "recent_alert":
-            print(f"❌ Wrong recent alert: {recent_alerts[0].alert_id}")
+            if recent_alerts[0].alert_id != "recent_alert":
+                print(f"❌ Wrong recent alert: {recent_alerts[0].alert_id}")
             return False
         
-        print("✅ Recent alerts filtering: PASSED")
-        return True
+            print("✅ Recent alerts filtering: PASSED")
+            return True
 
 
 async def run_all_tests():
-    """Run all observability engine tests"""
-    print("🧪 Observability Engine Comprehensive Tests - Task 9 Implementation")
-    print("=" * 70)
+        """Run all observability engine tests"""
+        print("🧪 Observability Engine Comprehensive Tests - Task 9 Implementation")
+        print("=" * 70)
     
-    tester = TestObservabilityEngine()
+        tester = TestObservabilityEngine()
     
-    tests = [
+        tests = [
         ("Metric Recording", tester.test_metric_recording),
         ("Decision Tracing", tester.test_decision_tracing),
         ("Component Monitoring", tester.test_component_monitoring),
@@ -867,30 +879,30 @@ async def run_all_tests():
         ("Performance Summary", tester.test_performance_summary),
         ("Metrics Cleanup", tester.test_metrics_cleanup),
         ("Recent Alerts Filtering", tester.test_recent_alerts_filtering),
-    ]
+        ]
     
-    passed = 0
-    total = len(tests)
+        passed = 0
+        total = len(tests)
     
-    for test_name, test_func in tests:
+        for test_name, test_func in tests:
         print(f"\n🔍 Running: {test_name}")
         try:
-            if asyncio.iscoroutinefunction(test_func):
-                result = await test_func()
-            else:
-                result = test_func()
+        if asyncio.iscoroutinefunction(test_func):
+            result = await test_func()
+        else:
+        result = test_func()
             
-            if result:
-                passed += 1
-            else:
-                print(f"❌ {test_name}: FAILED")
+        if result:
+        passed += 1
+        else:
+        print(f"❌ {test_name}: FAILED")
         except Exception as e:
-            print(f"❌ {test_name}: ERROR - {e}")
+        print(f"❌ {test_name}: ERROR - {e}")
     
-    print("\n" + "=" * 70)
-    print(f"📊 Test Results: {passed}/{total} passed")
+        print("\n" + "=" * 70)
+        print(f"📊 Test Results: {passed}/{total} passed")
     
-    if passed == total:
+        if passed == total:
         print("🎉 ALL OBSERVABILITY ENGINE TESTS PASSED!")
         print("\n✅ Task 9 Implementation Complete:")
         print("   • Performance metrics collection for LNN inference ✅")
@@ -900,11 +912,11 @@ async def run_all_tests():
         print("   • Performance degradation alerts with actionable info ✅")
         print("   • Unit tests for metrics collection and logging ✅")
         print("\n🚀 Ready for Task 10: Create Data Models and Schemas")
-    else:
+        else:
         print("❌ Some tests failed")
     
-    return passed == total
+        return passed == total
 
 
-if __name__ == "__main__":
-    asyncio.run(run_all_tests())
+        if __name__ == "__main__":
+        asyncio.run(run_all_tests())

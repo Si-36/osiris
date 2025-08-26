@@ -107,11 +107,13 @@ class AgentSettings(BaseSettings):
     
     def get_agent_config_dict(self) -> dict:
         """Get agent configuration as dictionary for legacy compatibility."""
+        pass
         return self.model_dump(exclude={"max_memory_mb", "max_cpu_percent"})
     
     @property
     def is_advanced_mode(self) -> bool:
         """Check if advanced features are enabled."""
+        pass
         return self.enhancement_level in (
             EnhancementLevel.ULTIMATE,
             EnhancementLevel.CONSCIOUSNESS

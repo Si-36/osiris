@@ -81,5 +81,5 @@ class PHFormerProcessor:
             'model_type': self.model_type
         }
 
-def get_phformer_processor(model_size='base', device='cpu'):
-    return PHFormerProcessor(model_size, device)
+    def get_phformer_processor(model_size='base', device='cpu'):
+        return PHFormerProcessor(model_size, device)

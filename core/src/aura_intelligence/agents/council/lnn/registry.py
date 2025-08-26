@@ -21,7 +21,7 @@ class AgentRegistry:
         self._capabilities: Dict[AgentCapability, Set[str]] = defaultdict(set)
         self._lock = asyncio.Lock()
     
-    async def register_agent(self, agent: ICouncilAgent) -> bool:
+        async def register_agent(self, agent: ICouncilAgent) -> bool:
         """Register an agent in the registry."""
         async with self._lock:
             agent_id = agent.agent_id
@@ -40,45 +40,45 @@ class AgentRegistry:
                     self._capabilities[capability].add(agent_id)
                 except ValueError:
                     # Skip unknown capabilities
-                    pass
+        pass
             
             return True
     
-    async def unregister_agent(self, agent_id: str) -> bool:
+        async def unregister_agent(self, agent_id: str) -> bool:
         """Unregister an agent from the registry."""
         async with self._lock:
-            if agent_id not in self._agents:
-                return False
+        if agent_id not in self._agents:
+            return False
             
-            agent = self._agents[agent_id]
+        agent = self._agents[agent_id]
             
-            # Remove from capabilities
-            capabilities = await agent.get_capabilities()
-            for cap_str in capabilities:
-                try:
-                    capability = AgentCapability(cap_str)
-                    self._capabilities[capability].discard(agent_id)
-                except ValueError:
-                    pass
+        # Remove from capabilities
+        capabilities = await agent.get_capabilities()
+        for cap_str in capabilities:
+        try:
+            capability = AgentCapability(cap_str)
+        self._capabilities[capability].discard(agent_id)
+        except ValueError:
+        pass
             
-            # Remove agent
-            del self._agents[agent_id]
-            return True
+        # Remove agent
+        del self._agents[agent_id]
+        return True
     
-    async def find_agents_by_capability(
+        async def find_agents_by_capability(
         self, 
         capability: AgentCapability
-    ) -> List[ICouncilAgent]:
+        ) -> List[ICouncilAgent]:
         """Find agents with specific capability."""
         async with self._lock:
             agent_ids = self._capabilities.get(capability, set())
             return [self._agents[agent_id] for agent_id in agent_ids]
     
-    async def find_agents_by_capabilities(
+        async def find_agents_by_capabilities(
         self, 
         capabilities: List[AgentCapability],
         require_all: bool = True
-    ) -> List[ICouncilAgent]:
+        ) -> List[ICouncilAgent]:
         """Find agents with multiple capabilities."""
         async with self._lock:
             if not capabilities:
@@ -100,33 +100,35 @@ class AgentRegistry:
                 
                 return [self._agents[agent_id] for agent_id in agent_ids]
     
-    async def get_agent(self, agent_id: str) -> Optional[ICouncilAgent]:
+        async def get_agent(self, agent_id: str) -> Optional[ICouncilAgent]:
         """Get agent by ID."""
         async with self._lock:
-            return self._agents.get(agent_id)
+        return self._agents.get(agent_id)
     
-    async def list_agents(self) -> List[ICouncilAgent]:
+        async def list_agents(self) -> List[ICouncilAgent]:
         """List all registered agents."""
+        pass
         async with self._lock:
             return list(self._agents.values())
     
-    async def get_registry_stats(self) -> Dict[str, any]:
+        async def get_registry_stats(self) -> Dict[str, any]:
         """Get registry statistics."""
+        pass
         async with self._lock:
-            return {
-                "total_agents": len(self._agents),
-                "capabilities": {
-                    cap.value: len(agent_ids) 
-                    for cap, agent_ids in self._capabilities.items()
-                },
-                "agent_ids": list(self._agents.keys())
-            }
+        return {
+        "total_agents": len(self._agents),
+        "capabilities": {
+        cap.value: len(agent_ids)
+        for cap, agent_ids in self._capabilities.items()
+        },
+        "agent_ids": list(self._agents.keys())
+        }
 
 
-# Global registry instance
-_global_registry = AgentRegistry()
+    # Global registry instance
+        _global_registry = AgentRegistry()
 
 
-def get_global_registry() -> AgentRegistry:
-    """Get the global agent registry."""
-    return _global_registry
+    def get_global_registry() -> AgentRegistry:
+        """Get the global agent registry."""
+        return _global_registry

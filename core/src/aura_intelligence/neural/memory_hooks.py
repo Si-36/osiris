@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from collections import deque
 import json
 
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 from ..resilience import resilient, ResilienceLevel
 
 logger = logging.getLogger(__name__)
@@ -57,6 +57,7 @@ class LNNMemoryHooks:
         
     async def start(self):
         """Start background processing."""
+        pass
         if self._running:
             return
             
@@ -64,8 +65,9 @@ class LNNMemoryHooks:
         self._flush_task = asyncio.create_task(self._flush_loop())
         logger.info("LNN memory hooks started")
         
-    async def stop(self):
-        """Stop background processing."""
+        async def stop(self):
+            """Stop background processing."""
+        pass
         self._running = False
         
         # Flush remaining events
@@ -76,7 +78,7 @@ class LNNMemoryHooks:
             try:
                 await self._flush_task
             except asyncio.CancelledError:
-                pass
+        pass
                 
         logger.info(f"LNN memory hooks stopped. Processed: {self._events_processed}, Failed: {self._events_failed}")
         
@@ -86,29 +88,29 @@ class LNNMemoryHooks:
         with tracer.start_as_current_span("on_inference_complete") as span:
             span.set_attribute("result.confidence", result.get("confidence", 0.0))
             
-            event = MemoryEvent(
-                event_type="inference",
-                agent_id="lnn",
-                content={
-                    "predictions": result.get("predictions"),
-                    "confidence": result.get("confidence", 0.0),
-                    "context_influence": result.get("context_influence", 0.0),
-                    "similar_patterns": result.get("similar_patterns", [])
-                },
-                metadata={
-                    "timestamp": datetime.now(timezone.utc),
-                    "model_version": result.get("inference_metadata", {}).get("model_version", "1.0"),
-                    "latency_ms": result.get("inference_metadata", {}).get("latency_ms", 0),
-                    "context_used": result.get("inference_metadata", {}).get("context_used", False)
-                },
-                timestamp=datetime.now(timezone.utc)
-            )
+        event = MemoryEvent(
+        event_type="inference",
+        agent_id="lnn",
+        content={
+        "predictions": result.get("predictions"),
+        "confidence": result.get("confidence", 0.0),
+        "context_influence": result.get("context_influence", 0.0),
+        "similar_patterns": result.get("similar_patterns", [])
+        },
+        metadata={
+        "timestamp": datetime.now(timezone.utc),
+        "model_version": result.get("inference_metadata", {}).get("model_version", "1.0"),
+        "latency_ms": result.get("inference_metadata", {}).get("latency_ms", 0),
+        "context_used": result.get("inference_metadata", {}).get("context_used", False)
+        },
+        timestamp=datetime.now(timezone.utc)
+        )
             
-            await self._enqueue_event(event)
+        await self._enqueue_event(event)
             
-    @resilient(criticality=ResilienceLevel.STANDARD)
-    async def on_adaptation(self, adaptation_event: Dict[str, Any]):
-        """Track model adaptations for analysis."""
+        @resilient(criticality=ResilienceLevel.STANDARD)
+        async def on_adaptation(self, adaptation_event: Dict[str, Any]):
+            """Track model adaptations for analysis."""
         with tracer.start_as_current_span("on_adaptation") as span:
             span.set_attribute("adaptation.trigger", adaptation_event.get("trigger", "unknown"))
             
@@ -137,26 +139,26 @@ class LNNMemoryHooks:
         with tracer.start_as_current_span("on_pattern_detected") as span:
             span.set_attribute("pattern.type", pattern.get("type", "unknown"))
             
-            event = MemoryEvent(
-                event_type="pattern",
-                agent_id="lnn",
-                content={
-                    "pattern_type": pattern.get("type"),
-                    "features": pattern.get("features", []),
-                    "confidence": pattern.get("confidence", 0.0),
-                    "context": pattern.get("context", {})
-                },
-                metadata={
-                    "timestamp": datetime.now(timezone.utc),
-                    "source": pattern.get("source", "lnn"),
-                    "importance": pattern.get("importance", 0.5)
-                },
-                timestamp=datetime.now(timezone.utc)
-            )
+        event = MemoryEvent(
+        event_type="pattern",
+        agent_id="lnn",
+        content={
+        "pattern_type": pattern.get("type"),
+        "features": pattern.get("features", []),
+        "confidence": pattern.get("confidence", 0.0),
+        "context": pattern.get("context", {})
+        },
+        metadata={
+        "timestamp": datetime.now(timezone.utc),
+        "source": pattern.get("source", "lnn"),
+        "importance": pattern.get("importance", 0.5)
+        },
+        timestamp=datetime.now(timezone.utc)
+        )
             
-            await self._enqueue_event(event)
+        await self._enqueue_event(event)
             
-    async def search_similar_decisions(
+        async def search_similar_decisions(
         self,
         query_features: List[float],
         limit: int = 10,
@@ -204,8 +206,9 @@ class LNNMemoryHooks:
         if len(self._event_queue) >= self.batch_size:
             asyncio.create_task(self._flush_events())
             
-    async def _flush_loop(self):
-        """Background loop for periodic flushing."""
+        async def _flush_loop(self):
+            """Background loop for periodic flushing."""
+        pass
         while self._running:
             try:
                 await asyncio.sleep(self.flush_interval)
@@ -215,13 +218,14 @@ class LNNMemoryHooks:
                 
     async def _flush_events(self):
         """Flush queued events to memory store."""
+        pass
         if not self.memory or not self._event_queue:
             return
             
         # Get events to process
         events_to_process = []
         while self._event_queue and len(events_to_process) < self.batch_size:
-            events_to_process.append(self._event_queue.popleft())
+        events_to_process.append(self._event_queue.popleft())
             
         if not events_to_process:
             return
@@ -229,40 +233,40 @@ class LNNMemoryHooks:
         with tracer.start_as_current_span("flush_events") as span:
             span.set_attribute("event.count", len(events_to_process))
             
-            # Group by event type for batch processing
-            by_type: Dict[str, List[MemoryEvent]] = {}
-            for event in events_to_process:
-                by_type.setdefault(event.event_type, []).append(event)
+        # Group by event type for batch processing
+        by_type: Dict[str, List[MemoryEvent]] = {}
+        for event in events_to_process:
+        by_type.setdefault(event.event_type, []).append(event)
                 
-            # Process each type
-            for event_type, events in by_type.items():
-                try:
-                    memories = []
-                    for event in events:
-                        memory = {
-                            "agent_id": event.agent_id,
-                            "memory_type": event.event_type,
-                            "content": event.content,
-                            "metadata": event.metadata,
-                            "timestamp": event.timestamp,
-                            "embedding": self._compute_embedding(event)
-                        }
-                        memories.append(memory)
+        # Process each type
+        for event_type, events in by_type.items():
+        try:
+            memories = []
+        for event in events:
+        memory = {
+        "agent_id": event.agent_id,
+        "memory_type": event.event_type,
+        "content": event.content,
+        "metadata": event.metadata,
+        "timestamp": event.timestamp,
+        "embedding": self._compute_embedding(event)
+        }
+        memories.append(memory)
                         
-                    # Batch insert
-                    await self.memory.add_memories_batch(memories)
-                    self._events_processed += len(memories)
+        # Batch insert
+        await self.memory.add_memories_batch(memories)
+        self._events_processed += len(memories)
                     
-                except Exception as e:
-                    logger.error(f"Failed to process {event_type} events: {e}")
-                    self._events_failed += len(events)
+        except Exception as e:
+        logger.error(f"Failed to process {event_type} events: {e}")
+        self._events_failed += len(events)
                     
-                    # Re-queue failed events if queue has space
-                    for event in events:
-                        if len(self._event_queue) < self._event_queue.maxlen:
-                            self._event_queue.append(event)
+        # Re-queue failed events if queue has space
+        for event in events:
+        if len(self._event_queue) < self._event_queue.maxlen:
+            self._event_queue.append(event)
                             
-            self._last_flush = datetime.now(timezone.utc)
+        self._last_flush = datetime.now(timezone.utc)
             
     def _compute_embedding(self, event: MemoryEvent) -> List[float]:
         """Compute embedding for similarity search."""
@@ -298,22 +302,24 @@ class LNNMemoryHooks:
             
         return embedding
         
-    async def cleanup_old_memories(self):
+        async def cleanup_old_memories(self):
         """Remove memories older than retention period."""
+        pass
         if not self.memory:
             return
             
         cutoff_time = datetime.now(timezone.utc) - timedelta(days=self.retention_days)
         
         deleted = await self.memory.delete_memories(
-            agent_id="lnn",
-            before_timestamp=cutoff_time
+        agent_id="lnn",
+        before_timestamp=cutoff_time
         )
         
         logger.info(f"Cleaned up {deleted} old LNN memories")
         
     def get_metrics(self) -> Dict[str, Any]:
         """Get hook metrics."""
+        pass
         return {
             "events_processed": self._events_processed,
             "events_failed": self._events_failed,

@@ -54,11 +54,12 @@ class WorkflowBenchmark:
     
     def __init__(self, output_dir: Optional[Path] = None):
         """Initialize benchmark suite."""
+        pass
         self.output_dir = output_dir or Path("benchmarks/results")
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.results: List[BenchmarkResult] = []
     
-    async def run_all(self, iterations: int = 100) -> Dict[str, BenchmarkSummary]:
+        async def run_all(self, iterations: int = 100) -> Dict[str, BenchmarkSummary]:
         """Run all benchmarks."""
         logger.info(f"Starting workflow benchmarks with {iterations} iterations")
         
@@ -78,7 +79,7 @@ class WorkflowBenchmark:
         
         return summaries
     
-    async def benchmark_observer_node(self, iterations: int) -> BenchmarkSummary:
+        async def benchmark_observer_node(self, iterations: int) -> BenchmarkSummary:
         """Benchmark observer node."""
         results = []
         node = create_observer_node()
@@ -111,7 +112,7 @@ class WorkflowBenchmark:
         
         return self._summarize_results("observer_node", results)
     
-    async def benchmark_supervisor_node(self, iterations: int) -> BenchmarkSummary:
+        async def benchmark_supervisor_node(self, iterations: int) -> BenchmarkSummary:
         """Benchmark supervisor node."""
         results = []
         node = create_supervisor_node()
@@ -148,7 +149,7 @@ class WorkflowBenchmark:
         
         return self._summarize_results("supervisor_node", results)
     
-    async def benchmark_analyst_node(self, iterations: int) -> BenchmarkSummary:
+        async def benchmark_analyst_node(self, iterations: int) -> BenchmarkSummary:
         """Benchmark analyst node."""
         results = []
         node = create_analyst_node()
@@ -192,7 +193,7 @@ class WorkflowBenchmark:
         
         return self._summarize_results("analyst_node", results)
     
-    async def benchmark_tda_small(self, iterations: int) -> BenchmarkSummary:
+        async def benchmark_tda_small(self, iterations: int) -> BenchmarkSummary:
         """Benchmark TDA with small dataset."""
         results = []
         engine = create_unified_tda_engine()
@@ -230,7 +231,7 @@ class WorkflowBenchmark:
         
         return self._summarize_results("tda_small", results)
     
-    async def benchmark_tda_medium(self, iterations: int) -> BenchmarkSummary:
+        async def benchmark_tda_medium(self, iterations: int) -> BenchmarkSummary:
         """Benchmark TDA with medium dataset."""
         results = []
         engine = create_unified_tda_engine()
@@ -270,6 +271,7 @@ class WorkflowBenchmark:
     
     def _get_memory_usage(self) -> float:
         """Get current memory usage in MB."""
+        pass
         try:
             import psutil
             process = psutil.Process()
@@ -281,7 +283,7 @@ class WorkflowBenchmark:
         self,
         name: str,
         results: List[BenchmarkResult]
-    ) -> BenchmarkSummary:
+        ) -> BenchmarkSummary:
         """Summarize benchmark results."""
         successful = [r for r in results if r.success]
         
@@ -377,12 +379,12 @@ class WorkflowBenchmark:
 
 
 async def run_benchmarks(iterations: int = 100):
-    """Run workflow benchmarks."""
-    benchmark = WorkflowBenchmark()
-    summaries = await benchmark.run_all(iterations)
-    benchmark.print_summary(summaries)
-    return summaries
+        """Run workflow benchmarks."""
+        benchmark = WorkflowBenchmark()
+        summaries = await benchmark.run_all(iterations)
+        benchmark.print_summary(summaries)
+        return summaries
 
 
-if __name__ == "__main__":
-    asyncio.run(run_benchmarks())
+        if __name__ == "__main__":
+        asyncio.run(run_benchmarks())

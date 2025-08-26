@@ -103,7 +103,7 @@ class HeaderPruner:
         self, 
         peer_id: str, 
         headers: Dict[str, str]
-    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        ) -> Tuple[Dict[str, str], Dict[str, str]]:
         """
         Analyze headers and return (pruned, full) versions
         
@@ -152,7 +152,7 @@ class HeaderPruner:
         self, 
         peer_id: str, 
         pruned_headers: Dict[str, str]
-    ) -> Dict[str, str]:
+        ) -> Dict[str, str]:
         """Reconstruct full headers from pruned version"""
         if "__pruned__" not in pruned_headers:
             return pruned_headers
@@ -208,8 +208,9 @@ class DiffCommV2b:
         
         logger.info("DiffCommV2b initialized with 3x bandwidth reduction target")
     
-    async def start(self):
+        async def start(self):
         """Start the DiffComm protocol"""
+        pass
         if self._running:
             return
             
@@ -217,8 +218,9 @@ class DiffCommV2b:
         self._batch_task = asyncio.create_task(self._batch_processor())
         logger.info("DiffComm v2b started")
     
-    async def stop(self):
+        async def stop(self):
         """Stop the DiffComm protocol"""
+        pass
         self._running = False
         
         if self._batch_task:
@@ -229,14 +231,14 @@ class DiffCommV2b:
         
         logger.info(f"DiffComm v2b stopped. Stats: {self.get_stats()}")
     
-    async def send_message(
+        async def send_message(
         self,
         peer_id: str,
         payload: Any,
         headers: Dict[str, str],
         priority: int = 0,
         batch_key: Optional[str] = None
-    ) -> str:
+        ) -> str:
         """
         Send message with DiffComm optimizations
         
@@ -281,13 +283,13 @@ class DiffCommV2b:
         
         return message_id
     
-    async def _optimize_message(
+        async def _optimize_message(
         self,
         peer_id: str,
         payload: bytes,
         headers: Dict[str, str],
         message_id: str
-    ) -> Tuple[bytes, Dict[str, str], MessageMetadata]:
+        ) -> Tuple[bytes, Dict[str, str], MessageMetadata]:
         """
         Apply DiffComm optimizations to message
         
@@ -341,7 +343,7 @@ class DiffCommV2b:
         peer_id: str, 
         payload: bytes, 
         content_hash: str
-    ) -> Tuple[Optional[bytes], Optional[str]]:
+        ) -> Tuple[Optional[bytes], Optional[str]]:
         """Compute delta against cached payloads"""
         # Find similar cached payload
         best_match = None
@@ -410,14 +412,14 @@ class DiffCommV2b:
             logger.error(f"Delta creation failed: {e}")
             return None
     
-    async def _add_to_batch(
+        async def _add_to_batch(
         self,
         peer_id: str,
         batch_key: str,
         payload: bytes,
         headers: Dict[str, str],
         metadata: MessageMetadata
-    ):
+        ):
         """Add message to batch queue"""
         key = f"{peer_id}:{batch_key}"
         self.batch_queue[key].append((payload, headers, metadata))
@@ -426,8 +428,9 @@ class DiffCommV2b:
         if len(self.batch_queue[key]) >= self.config.max_batch_size:
             await self._flush_batch(key)
     
-    async def _batch_processor(self):
+        async def _batch_processor(self):
         """Background task to process batches"""
+        pass
         while self._running:
             try:
                 # Wait for batch window
@@ -439,8 +442,9 @@ class DiffCommV2b:
             except Exception as e:
                 logger.error(f"Batch processor error: {e}")
     
-    async def _flush_old_batches(self):
+        async def _flush_old_batches(self):
         """Flush batches that have aged out"""
+        pass
         now = time.time()
         
         for key in list(self.batch_queue.keys()):
@@ -453,7 +457,7 @@ class DiffCommV2b:
                 if age_ms >= self.config.batch_window_ms:
                     await self._flush_batch(key)
     
-    async def _flush_batch(self, key: str):
+        async def _flush_batch(self, key: str):
         """Flush a batch of messages"""
         queue = self.batch_queue[key]
         if not queue:
@@ -496,13 +500,13 @@ class DiffCommV2b:
             None  # No individual metadata for batch
         )
     
-    async def _send_single(
+        async def _send_single(
         self,
         peer_id: str,
         payload: bytes,
         headers: Dict[str, str],
         metadata: Optional[MessageMetadata]
-    ):
+        ):
         """Send a single message (or batch)"""
         # In real implementation, this would use gRPC/HTTP2
         # For now, simulate network send
@@ -511,8 +515,9 @@ class DiffCommV2b:
         # Log send
         logger.debug(f"Sent to {peer_id}: {len(payload)} bytes, headers: {list(headers.keys())}")
     
-    async def _flush_all_batches(self):
+        async def _flush_all_batches(self):
         """Flush all pending batches"""
+        pass
         keys = list(self.batch_queue.keys())
         
         for key in keys:
@@ -520,6 +525,7 @@ class DiffCommV2b:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get protocol statistics"""
+        pass
         stats = self.stats.copy()
         
         # Calculate compression ratio
@@ -541,12 +547,12 @@ class DiffCommV2b:
         
         return stats
     
-    async def receive_message(
+        async def receive_message(
         self,
         peer_id: str,
         payload: bytes,
         headers: Dict[str, str]
-    ) -> Any:
+        ) -> Any:
         """
         Receive and decode DiffComm message
         
@@ -592,12 +598,12 @@ class DiffCommV2b:
         delta_data = delta[11:]
         return bytes(a ^ b for a, b in zip(base, delta_data))
     
-    async def _receive_batch(
+        async def _receive_batch(
         self,
         peer_id: str,
         payload: bytes,
         headers: Dict[str, str]
-    ) -> List[Any]:
+        ) -> List[Any]:
         """Receive and decode batch message"""
         # Decompress
         if headers.get("__compressed__") == "zlib":
@@ -623,11 +629,11 @@ class DiffCommV2b:
 
 
 # Factory function
-def create_diff_comm_v2b(**kwargs) -> DiffCommV2b:
-    """Create DiffComm v2b with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+    def create_diff_comm_v2b(**kwargs) -> DiffCommV2b:
+        """Create DiffComm v2b with feature flag support"""
+        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.DIFF_COMM_V2B_ENABLED):
+        if not is_feature_enabled(FeatureFlag.DIFF_COMM_V2B_ENABLED):
         raise RuntimeError("DiffComm v2b is not enabled. Enable with feature flag.")
     
-    return DiffCommV2b(**kwargs)
+        return DiffCommV2b(**kwargs)

@@ -22,7 +22,7 @@ class MixtureOfAgents:
         self.layers = 3
         self.agents_per_layer = 10
         
-    async def process_with_moa(self, query: Dict[str, Any]) -> Dict[str, Any]:
+        async def process_with_moa(self, query: Dict[str, Any]) -> Dict[str, Any]:
         start_time = time.time()
         current_responses = [query]
         layer_results = []
@@ -54,7 +54,7 @@ class MixtureOfAgents:
     def _get_layer_agents(self, layer: int) -> List[str]:
         return [f"agent_{layer}_{i}" for i in range(self.agents_per_layer)]
     
-    async def _agent_refine(self, agent_id: str, previous_responses: List, layer: int) -> AgentResponse:
+        async def _agent_refine(self, agent_id: str, previous_responses: List, layer: int) -> AgentResponse:
         start_time = time.time()
         
         if layer == 0:
@@ -98,5 +98,5 @@ class MixtureOfAgents:
         }
 
 
-def get_moa_system() -> MixtureOfAgents:
-    return MixtureOfAgents()
+    def get_moa_system() -> MixtureOfAgents:
+        return MixtureOfAgents()

@@ -61,12 +61,12 @@ class RealTDA:
             persistence_diagrams[f'H{dim}'] = dim_persistence
         
         return {
-            'library': 'gudhi',
-            'betti_numbers': betti_numbers,
-            'persistence_diagrams': persistence_diagrams,
-            'num_simplices': simplex_tree.num_simplices(),
-            'num_vertices': simplex_tree.num_vertices(),
-            'real_computation': True
+        'library': 'gudhi',
+        'betti_numbers': betti_numbers,
+        'persistence_diagrams': persistence_diagrams,
+        'num_simplices': simplex_tree.num_simplices(),
+        'num_vertices': simplex_tree.num_vertices(),
+        'real_computation': True
         }
     
     def _compute_with_ripser(self, points: np.ndarray, max_dimension: int) -> Dict[str, Any]:
@@ -117,23 +117,23 @@ class RealTDA:
         visited = np.zeros(n_points, dtype=bool)
         components = 0
         
-        def dfs(node):
-            visited[node] = True
-            for neighbor in range(n_points):
-                if adjacency[node, neighbor] and not visited[neighbor]:
-                    dfs(neighbor)
+    def dfs(node):
+        visited[node] = True
+        for neighbor in range(n_points):
+        if adjacency[node, neighbor] and not visited[neighbor]:
+            dfs(neighbor)
         
         for i in range(n_points):
-            if not visited[i]:
-                dfs(i)
-                components += 1
+        if not visited[i]:
+            dfs(i)
+        components += 1
         
         return {
-            'library': 'mathematical_fallback',
-            'betti_numbers': [components, 0, 0],  # Only B0 computed
-            'persistence_diagrams': {'H0': [[0, threshold]]},
-            'real_computation': True,
-            'method': 'connected_components_analysis'
+        'library': 'mathematical_fallback',
+        'betti_numbers': [components, 0, 0],  # Only B0 computed
+        'persistence_diagrams': {'H0': [[0, threshold]]},
+        'real_computation': True,
+        'method': 'connected_components_analysis'
         }
     
     def compute_betti_numbers(self, points: np.ndarray) -> List[int]:
@@ -146,9 +146,9 @@ class RealTDA:
         
         if data.ndim == 1:
             # Convert 1D to 2D point cloud
-            points = data.reshape(-1, 1)
+        points = data.reshape(-1, 1)
         else:
-            points = data
+        points = data
         
         # Compute persistence
         persistence_result = self.compute_persistence(points)
@@ -162,16 +162,16 @@ class RealTDA:
         complexity_score = betti_sum / n_points if n_points > 0 else 0
         
         return {
-            **persistence_result,
-            'topological_analysis': {
-                'n_points': n_points,
-                'dimension': dimension,
-                'complexity_score': complexity_score,
-                'dominant_homology': np.argmax(persistence_result['betti_numbers']),
-                'libraries_available': self.available_libraries
-            }
+        **persistence_result,
+        'topological_analysis': {
+        'n_points': n_points,
+        'dimension': dimension,
+        'complexity_score': complexity_score,
+        'dominant_homology': np.argmax(persistence_result['betti_numbers']),
+        'libraries_available': self.available_libraries
+        }
         }
 
-def get_real_tda():
-    """Get real TDA instance"""
-    return RealTDA()
+    def get_real_tda():
+        """Get real TDA instance"""
+        return RealTDA()

@@ -65,6 +65,7 @@ class RedisBus(EventBus):
     
     async def _get_client(self) -> redis.Redis:
         """Get or create Redis client."""
+        pass
         if self._client is None:
             self._client = redis.Redis(connection_pool=self.pool)
         return self._client
@@ -171,6 +172,7 @@ class RedisBus(EventBus):
     
     async def health_check(self) -> bool:
         """Check Redis connectivity."""
+        pass
         try:
             client = await self._get_client()
             await client.ping()
@@ -206,6 +208,7 @@ class RedisBus(EventBus):
     
     async def close(self):
         """Clean up connections."""
+        pass
         if self._client:
             await self._client.close()
             await self.pool.disconnect()

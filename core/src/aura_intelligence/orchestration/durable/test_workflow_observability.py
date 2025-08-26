@@ -6,6 +6,7 @@ Tests cover metrics collection, health monitoring, SLA compliance, and TDA integ
 with graceful fallbacks for missing dependencies.
 
 Tests cover:
+    - Workflow span tracking and metrics collection
 - Workflow span tracking and metrics collection
 - Health checks and SLA monitoring
 - TDA integration and correlation
@@ -26,43 +27,38 @@ from .workflow_observability import (
 
 
 class MockTDAIntegration:
-    """Mock TDA integration for testing"""
     
     def __init__(self):
         self.results = []
         self.health_status = {"status": "healthy", "tda_available": True}
     
-    async def send_orchestration_result(self, result: Dict[str, Any], correlation_id: str) -> bool:
+        async def send_orchestration_result(self, result: Dict[str, Any], correlation_id: str) -> bool:
         self.results.append((result, correlation_id))
         return True
     
-    async def health_check(self) -> Dict[r, Any]:
+        async def health_check(self) -> Dict[r, Any]:
         return self.health_status
 
 
 class TestWorkflowObservabilityManager:
-    """Test workflow observability manager"""
     
     @pytest.fixture
     def mock_tda_integration(self):
-        """Mock TDA integration for testing"""
         return MockTDAIntegration()
     
-    @pytest.fixture
+        @pytest.fixture
     def observability_manager(self, mock_tda_integration):
-        """Create observability manager with mock TDA integration"""
         return WorkflowObservabilityManager(tda_integration=mock_tda_integration)
     
     @pytest.mark.asyncio
-    async def test_workflow_span_lifecycle(self, observability_manager):
-        """Test complete workflow span lifecycle"""
+        async def test_workflow_span_lifecycle(self, observability_manager):
         
         # Start workflow span
         span_id = await observability_manager.start_workflow_span(
-            workflow_id="test_workflow_001",
-            operation_name="multi_agent_processing",
-            tda_correlation_id="test-correlation-123",
-            tags={"environment": "test", "priority": "high"}
+        workflow_id="test_workflow_001",
+        operation_name="multi_agent_processing",
+        tda_correlation_id="test-correlation-123",
+        tags={"environment": "test", "priority": "high"}
         )
         
         assert span_id is not None
@@ -81,9 +77,9 @@ class TestWorkflowObservabilityManager:
         
         # End workflow span
         await observability_manager.end_workflow_span(
-            span_id=span_id,
-            status="success",
-            result_summary={"steps_completed": 4, "total_time": 0.1}
+        span_id=span_id,
+        status="success",
+        result_summary={"steps_completed": 4, "total_time": 0.1}
         )
         
         # Verify span is completed and removed from active spans
@@ -93,9 +89,8 @@ class TestWorkflowObservabilityManager:
         assert span.duration_ms is not None
         assert span.duration_ms > 0
     
-    @pytest.mark.asyncio
-    async def test_workflow_span_with_error(self, observability_manager):
-        """Test workflow span with error handling"""
+        @pytest.mark.asyncio
+        async def test_workflow_span_with_error(self, observability_manager):
         
         span_id = await observability_manager.start_workflow_span(
             workflow_id="test_workflow_error",
@@ -123,25 +118,24 @@ class TestWorkflowObservabilityManager:
         assert failure_metric.metric_type == WorkflowMetricType.FAILURE_RATE
     
     @pytest.mark.asyncio
-    async def test_step_execution_recording(self, observability_manager):
-        """Test individual step execution recording"""
+        async def test_step_execution_recording(self, observability_manager):
         
         # Record successful step
         await observability_manager.record_step_execution(
-            workflow_id="test_workflow_steps",
-            step_name="data_processing",
-            duration_seconds=0.5,
-            status="success",
-            tda_correlation_id="test-correlation-456"
+        workflow_id="test_workflow_steps",
+        step_name="data_processing",
+        duration_seconds=0.5,
+        status="success",
+        tda_correlation_id="test-correlation-456"
         )
         
         # Record failed step
         await observability_manager.record_step_execution(
-            workflow_id="test_workflow_steps",
-            step_name="model_inference",
-            duration_seconds=2.0,
-            status="failed",
-            error="GPU memory exhausted"
+        workflow_id="test_workflow_steps",
+        step_name="model_inference",
+        duration_seconds=2.0,
+        status="failed",
+        error="GPU memory exhausted"
         )
         
         # Verify metrics were recorded
@@ -161,9 +155,8 @@ class TestWorkflowObservabilityManager:
         assert failed_metric.value == 2.0
         assert failed_metric.tags["status"] == "failed"
     
-    @pytest.mark.asyncio
-    async def test_sla_violation_detection(self, observability_manager):
-        """Test SLA violation detection and recording"""
+        @pytest.mark.asyncio
+        async def test_sla_violation_detection(self, observability_manager):
         
         # Set lower SLA threshold for testing
         observability_manager.sla_thresholds["max_step_latency"] = 1.0
@@ -188,28 +181,27 @@ class TestWorkflowObservabilityManager:
         assert "step_latency_exceeded" in violation_metric.name
     
     @pytest.mark.asyncio
-    async def test_health_check_workflow_execution(self, observability_manager):
-        """Test workflow execution health check"""
+        async def test_health_check_workflow_execution(self, observability_manager):
         
         # Simulate successful workflows
         for i in range(8):
-            await observability_manager._record_metric(WorkflowMetric(
-                name="workflow_success",
-                metric_type=WorkflowMetricType.SUCCESS_RATE,
-                value=1.0,
-                timestamp=datetime.now(timezone.utc),
-                workflow_id=f"success_workflow_{i}"
-            ))
+        await observability_manager._record_metric(WorkflowMetric(
+        name="workflow_success",
+        metric_type=WorkflowMetricType.SUCCESS_RATE,
+        value=1.0,
+        timestamp=datetime.now(timezone.utc),
+        workflow_id=f"success_workflow_{i}"
+        ))
         
         # Simulate failed workflows
         for i in range(2):
-            await observability_manager._record_metric(WorkflowMetric(
-                name="workflow_failure",
-                metric_type=WorkflowMetricType.FAILURE_RATE,
-                value=1.0,
-                timestamp=datetime.now(timezone.utc),
-                workflow_id=f"failed_workflow_{i}"
-            ))
+        await observability_manager._record_metric(WorkflowMetric(
+        name="workflow_failure",
+        metric_type=WorkflowMetricType.FAILURE_RATE,
+        value=1.0,
+        timestamp=datetime.now(timezone.utc),
+        workflow_id=f"failed_workflow_{i}"
+        ))
         
         # Perform health check
         health_check = await observability_manager._check_workflow_health()
@@ -219,9 +211,8 @@ class TestWorkflowObservabilityManager:
         assert health_check.metrics["success_rate"] == 0.8
         assert health_check.metrics["total_executions"] == 10
     
-    @pytest.mark.asyncio
-    async def test_health_check_degraded_performance(self, observability_manager):
-        """Test health check with degraded performance"""
+        @pytest.mark.asyncio
+        async def test_health_check_degraded_performance(self, observability_manager):
         
         # Simulate mostly failed workflows
         for i in range(7):
@@ -252,15 +243,14 @@ class TestWorkflowObservabilityManager:
         assert "Investigate recent workflow failures" in health_check.recommendations
     
     @pytest.mark.asyncio
-    async def test_health_check_observability(self, observability_manager):
-        """Test observability system health check"""
+        async def test_health_check_observability(self, observability_manager):
         
         # Add some recent metrics
         await observability_manager._record_metric(WorkflowMetric(
-            name="test_metric",
-            metric_type=WorkflowMetricType.THROUGHPUT,
-            value=1.0,
-            timestamp=datetime.now(timezone.utc)
+        name="test_metric",
+        metric_type=WorkflowMetricType.THROUGHPUT,
+        value=1.0,
+        timestamp=datetime.now(timezone.utc)
         ))
         
         health_check = await observability_manager._check_observability_health()
@@ -270,13 +260,12 @@ class TestWorkflowObservabilityManager:
         assert health_check.status in [HealthStatus.HEALTHY, HealthStatus.DEGRADED]
         
         if health_check.status == HealthStatus.HEALTHY:
-            assert "recent metrics" in health_check.message.lower()
+        assert "recent metrics" in health_check.message.lower()
         else:
-            assert "not available" in health_check.message.lower()
+        assert "not available" in health_check.message.lower()
     
-    @pytest.mark.asyncio
-    async def test_health_check_tda_integration(self, observability_manager, mock_tda_integration):
-        """Test TDA integration health check"""
+        @pytest.mark.asyncio
+        async def test_health_check_tda_integration(self, observability_manager, mock_tda_integration):
         
         # Test healthy TDA integration
         health_check = await observability_manager._check_tda_integration_health()
@@ -293,8 +282,7 @@ class TestWorkflowObservabilityManager:
         assert "degraded" in health_check.message.lower()
     
     @pytest.mark.asyncio
-    async def test_health_check_sla_compliance(self, observability_manager):
-        """Test SLA compliance health check"""
+        async def test_health_check_sla_compliance(self, observability_manager):
         
         # Test with no violations (healthy)
         health_check = await observability_manager._check_sla_compliance()
@@ -305,12 +293,12 @@ class TestWorkflowObservabilityManager:
         
         # Add some SLA violations
         for i in range(3):
-            await observability_manager._record_metric(WorkflowMetric(
-                name="sla_violation_test",
-                metric_type=WorkflowMetricType.FAILURE_RATE,
-                value=1.0,
-                timestamp=datetime.now(timezone.utc)
-            ))
+        await observability_manager._record_metric(WorkflowMetric(
+        name="sla_violation_test",
+        metric_type=WorkflowMetricType.FAILURE_RATE,
+        value=1.0,
+        timestamp=datetime.now(timezone.utc)
+        ))
         
         health_check = await observability_manager._check_sla_compliance()
         
@@ -318,9 +306,8 @@ class TestWorkflowObservabilityManager:
         assert health_check.metrics["violation_count"] == 3
         assert len(health_check.recommendations) > 0
     
-    @pytest.mark.asyncio
-    async def test_comprehensive_health_check(self, observability_manager):
-        """Test comprehensive health check of all components"""
+        @pytest.mark.asyncio
+        async def test_comprehensive_health_check(self, observability_manager):
         
         health_checks = await observability_manager.perform_health_check()
         
@@ -339,30 +326,29 @@ class TestWorkflowObservabilityManager:
             ]
     
     def test_workflow_metrics_collection(self, observability_manager):
-        """Test workflow metrics collection and aggregation"""
         
         # Simulate workflow executions
         observability_manager._update_workflow_stats(
-            WorkflowSpan(
-                span_id="span_1",
-                workflow_id="workflow_1",
-                operation_name="data_processing",
-                start_time=datetime.now(timezone.utc)
-            ),
-            "success",
-            1.5
+        WorkflowSpan(
+        span_id="span_1",
+        workflow_id="workflow_1",
+        operation_name="data_processing",
+        start_time=datetime.now(timezone.utc)
+        ),
+        "success",
+        1.5
         )
         
         observability_manager._update_workflow_stats(
-            WorkflowSpan(
-                span_id="span_2",
-                workflow_id="workflow_2",
-                operation_name="data_processing",
-                start_time=datetime.now(timezone.utc),
-                tda_correlation_id="test-correlation"
-            ),
-            "failed",
-            2.0
+        WorkflowSpan(
+        span_id="span_2",
+        workflow_id="workflow_2",
+        operation_name="data_processing",
+        start_time=datetime.now(timezone.utc),
+        tda_correlation_id="test-correlation"
+        ),
+        "failed",
+        2.0
         )
         
         # Get metrics
@@ -377,7 +363,6 @@ class TestWorkflowObservabilityManager:
         assert metrics["tda_correlated_count"] == 1
     
     def test_overall_workflow_metrics(self, observability_manager):
-        """Test overall workflow metrics across all workflow types"""
         
         # Simulate different workflow types
         for workflow_type in ["data_processing", "model_inference", "result_aggregation"]:
@@ -411,23 +396,22 @@ class TestWorkflowObservabilityManager:
             assert by_type[workflow_type]["success_rate"] == 2/3
     
     def test_recent_metrics_filtering(self, observability_manager):
-        """Test recent metrics filtering by time window"""
         
         current_time = datetime.now(timezone.utc)
         
         # Add metrics at different times
         old_metric = WorkflowMetric(
-            name="old_metric",
-            metric_type=WorkflowMetricType.THROUGHPUT,
-            value=1.0,
-            timestamp=current_time - timedelta(hours=1)  # 1 hour ago
+        name="old_metric",
+        metric_type=WorkflowMetricType.THROUGHPUT,
+        value=1.0,
+        timestamp=current_time - timedelta(hours=1)  # 1 hour ago
         )
         
         recent_metric = WorkflowMetric(
-            name="recent_metric",
-            metric_type=WorkflowMetricType.THROUGHPUT,
-            value=2.0,
-            timestamp=current_time - timedelta(minutes=5)  # 5 minutes ago
+        name="recent_metric",
+        metric_type=WorkflowMetricType.THROUGHPUT,
+        value=2.0,
+        timestamp=current_time - timedelta(minutes=5)  # 5 minutes ago
         )
         
         observability_manager.metrics_buffer.extend([old_metric, recent_metric])
@@ -444,7 +428,6 @@ class TestWorkflowObservabilityManager:
         assert len(recent_metrics) == 2
     
     def test_dashboard_data_export(self, observability_manager):
-        """Test dashboard data export functionality"""
         
         # Add some test data
         observability_manager._update_workflow_stats(
@@ -492,20 +475,19 @@ class TestWorkflowObservabilityManager:
         assert "step_latency_threshold" in sla_compliance
     
     @pytest.mark.asyncio
-    async def test_tda_integration_span_sending(self, observability_manager, mock_tda_integration):
-        """Test sending workflow spans to TDA integration"""
+        async def test_tda_integration_span_sending(self, observability_manager, mock_tda_integration):
         
         # Start and end a workflow span with TDA correlation
         span_id = await observability_manager.start_workflow_span(
-            workflow_id="tda_test_workflow",
-            operation_name="tda_test_operation",
-            tda_correlation_id="tda-test-correlation-789"
+        workflow_id="tda_test_workflow",
+        operation_name="tda_test_operation",
+        tda_correlation_id="tda-test-correlation-789"
         )
         
         await observability_manager.end_workflow_span(
-            span_id=span_id,
-            status="success",
-            result_summary={"test": "data"}
+        span_id=span_id,
+        status="success",
+        result_summary={"test": "data"}
         )
         
         # Verify TDA integration received the data
@@ -514,9 +496,9 @@ class TestWorkflowObservabilityManager:
         # Check the span data sent to TDA
         span_data = None
         for result, correlation_id in mock_tda_integration.results:
-            if "span_id" in result:
-                span_data = result
-                break
+        if "span_id" in result:
+        span_data = result
+        break
         
         assert span_data is not None
         assert span_data["workflow_id"] == "tda_test_workflow"
@@ -526,9 +508,8 @@ class TestWorkflowObservabilityManager:
         assert "end_time" in span_data
         assert "duration_ms" in span_data
     
-    @pytest.mark.asyncio
-    async def test_graceful_fallback_without_dependencies(self):
-        """Test graceful fallback when dependencies are not available"""
+        @pytest.mark.asyncio
+        async def test_graceful_fallback_without_dependencies(self):
         
         # Create observability manager without TDA integration
         observability_manager = WorkflowObservabilityManager(tda_integration=None)
@@ -559,12 +540,10 @@ class TestWorkflowObservabilityManager:
 
 
 class TestWorkflowObservabilityIntegration:
-    """Integration tests for workflow observability"""
     
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_end_to_end_workflow_monitoring(self):
-        """Test end-to-end workflow monitoring scenario"""
         
         mock_tda = MockTDAIntegration()
         observability_manager = WorkflowObservabilityManager(tda_integration=mock_tda)
@@ -575,41 +554,41 @@ class TestWorkflowObservabilityIntegration:
         
         # Start workflow
         span_id = await observability_manager.start_workflow_span(
-            workflow_id=workflow_id,
-            operation_name="multi_step_processing",
-            tda_correlation_id=correlation_id,
-            tags={"environment": "test", "priority": "high"}
+        workflow_id=workflow_id,
+        operation_name="multi_step_processing",
+        tda_correlation_id=correlation_id,
+        tags={"environment": "test", "priority": "high"}
         )
         
         # Simulate workflow steps
         steps = [
-            ("data_preprocessing", 0.5, "success"),
-            ("feature_engineering", 0.8, "success"),
-            ("model_inference", 1.2, "success"),
-            ("result_aggregation", 0.3, "success")
+        ("data_preprocessing", 0.5, "success"),
+        ("feature_engineering", 0.8, "success"),
+        ("model_inference", 1.2, "success"),
+        ("result_aggregation", 0.3, "success")
         ]
         
         for step_name, duration, status in steps:
-            await observability_manager.record_step_execution(
-                workflow_id=workflow_id,
-                step_name=step_name,
-                duration_seconds=duration,
-                status=status,
-                tda_correlation_id=correlation_id
-            )
+        await observability_manager.record_step_execution(
+        workflow_id=workflow_id,
+        step_name=step_name,
+        duration_seconds=duration,
+        status=status,
+        tda_correlation_id=correlation_id
+        )
             
-            # Simulate processing time
-            await asyncio.sleep(0.01)
+        # Simulate processing time
+        await asyncio.sleep(0.01)
         
         # End workflow
         await observability_manager.end_workflow_span(
-            span_id=span_id,
-            status="success",
-            result_summary={
-                "total_steps": len(steps),
-                "total_duration": sum(step[1] for step in steps),
-                "all_steps_successful": True
-            }
+        span_id=span_id,
+        status="success",
+        result_summary={
+        "total_steps": len(steps),
+        "total_duration": sum(step[1] for step in steps),
+        "all_steps_successful": True
+        }
         )
         
         # Verify comprehensive monitoring
@@ -636,5 +615,5 @@ class TestWorkflowObservabilityIntegration:
         assert dashboard_data["active_workflows"] == 0  # Workflow completed
 
 
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    if __name__ == "__main__":
+        pytest.main([__file__, "-v"])

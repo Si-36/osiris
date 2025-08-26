@@ -63,8 +63,8 @@ class ExponentialBackoff:
         self.config = config
         self.logger = get_logger(__name__)
     
-    async def retry(self, 
-                   func: Callable,
+        async def retry(self,
+        func: Callable,
                    *args,
                    operation_name: str = "operation",
                    **kwargs) -> Any:
@@ -178,7 +178,7 @@ class CircuitBreaker:
         self.logger = get_logger(__name__)
         self.logger.info(f"⚡ Circuit breaker '{name}' initialized")
     
-    async def call(self, func: Callable, *args, **kwargs) -> Any:
+        async def call(self, func: Callable, *args, **kwargs) -> Any:
         """
         Execute function through circuit breaker.
         
@@ -225,6 +225,7 @@ class CircuitBreaker:
     
     def _should_attempt_reset(self) -> bool:
         """Check if circuit should attempt reset from OPEN to HALF_OPEN."""
+        pass
         
         if not self.last_failure_time:
             return True
@@ -280,6 +281,7 @@ class CircuitBreaker:
     
     def _should_open_circuit(self) -> bool:
         """Check if circuit should be opened due to failures."""
+        pass
         
         # Simple threshold check
         if self.failure_count >= self.config.failure_threshold:
@@ -300,6 +302,7 @@ class CircuitBreaker:
     
     def _cleanup_old_history(self):
         """Remove old entries from request history."""
+        pass
         
         cutoff_time = time.time() - self.config.window_size_seconds
         self.request_history = [
@@ -309,6 +312,7 @@ class CircuitBreaker:
     
     def get_status(self) -> Dict[str, Any]:
         """Get current circuit breaker status."""
+        pass
         
         recent_requests = [
             req for req in self.request_history
@@ -352,7 +356,7 @@ class DeadLetterQueue:
         self.logger.info(f"💀 Dead letter queue '{name}' initialized (max_size: {max_size})")
     
     def add_failed_operation(self, 
-                           operation_name: str,
+        operation_name: str,
                            operation_data: Dict[str, Any],
                            error_message: str,
                            retry_count: int = 0):
@@ -396,6 +400,7 @@ class DeadLetterQueue:
     
     def clear_queue(self) -> int:
         """Clear all entries from queue."""
+        pass
         
         count = len(self.queue)
         self.queue.clear()
@@ -406,6 +411,7 @@ class DeadLetterQueue:
     
     def get_status(self) -> Dict[str, Any]:
         """Get dead letter queue status."""
+        pass
         
         return {
             "name": self.name,

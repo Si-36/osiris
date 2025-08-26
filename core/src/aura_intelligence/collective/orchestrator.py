@@ -29,12 +29,13 @@ class CollectiveIntelligenceOrchestrator:
         self.subsystems: Dict[str, Any] = {}
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize the orchestrator"""
-        logger.info("Initializing Collective Intelligence Orchestrator")
+        pass
+            logger.info("Initializing Collective Intelligence Orchestrator")
         self._initialized = True
         
-    async def gather_insights(self, context: Dict[str, Any]) -> CollectiveInsight:
+        async def gather_insights(self, context: Dict[str, Any]) -> CollectiveInsight:
         """
         Gather insights from all available agents and subsystems.
         
@@ -44,11 +45,11 @@ class CollectiveIntelligenceOrchestrator:
         Returns:
             CollectiveInsight with consensus and reasoning
         """
-        if not self._initialized:
+            if not self._initialized:
             await self.initialize()
             
         # Simple consensus for now
-        return CollectiveInsight(
+            return CollectiveInsight(
             consensus="continue_monitoring",
             confidence=0.85,
             contributors=["tda", "agents", "memory"],
@@ -59,7 +60,7 @@ class CollectiveIntelligenceOrchestrator:
             }
         )
         
-    async def coordinate_response(self, insight: CollectiveInsight) -> Dict[str, Any]:
+        async def coordinate_response(self, insight: CollectiveInsight) -> Dict[str, Any]:
         """
         Coordinate system response based on collective insight.
         
@@ -69,18 +70,19 @@ class CollectiveIntelligenceOrchestrator:
         Returns:
             Response actions
         """
-        actions = {
+            actions = {
             "primary_action": insight.consensus,
             "confidence": insight.confidence,
             "follow_up": []
         }
         
-        if insight.confidence < 0.7:
+            if insight.confidence < 0.7:
             actions["follow_up"].append("gather_more_data")
             
-        return actions
+            return actions
         
-    async def shutdown(self):
+        async def shutdown(self):
         """Shutdown the orchestrator"""
-        logger.info("Shutting down Collective Intelligence Orchestrator")
+        pass
+            logger.info("Shutting down Collective Intelligence Orchestrator")
         self._initialized = False

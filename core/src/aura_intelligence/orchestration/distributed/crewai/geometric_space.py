@@ -95,7 +95,7 @@ class GeometricRouter:
         self.space = space
         self.routing_history = []
         
-    async def route_task(self, task_id: str, agents: List[str], criteria: Dict[str, Any] = None) -> str:
+        async def route_task(self, task_id: str, agents: List[str], criteria: Dict[str, Any] = None) -> str:
         """Route a task to the most appropriate agent based on geometric positioning."""
         if not agents:
             return None
@@ -145,8 +145,9 @@ class GeometricRouter:
             
         return coordinates
         
-    async def optimize_routing(self) -> Dict[str, Any]:
+        async def optimize_routing(self) -> Dict[str, Any]:
         """Optimize routing based on historical performance."""
+        pass
         if not self.routing_history:
             return {"status": "no_history"}
             
@@ -163,6 +164,7 @@ class GeometricRouter:
         
     def get_routing_stats(self) -> Dict[str, Any]:
         """Get routing statistics."""
+        pass
         if not self.routing_history:
             return {"routes": 0}
             

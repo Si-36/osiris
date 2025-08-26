@@ -52,14 +52,17 @@ class StreamingTDAProcessor(Protocol):
         
     async def get_current_diagram(self) -> PersistenceDiagram:
         """Get current persistence diagram"""
+        pass
         ...
         
     async def get_statistics(self) -> TDAStatistics:
         """Get processing statistics"""
+        pass
         ...
         
     async def reset(self) -> None:
         """Reset processor state"""
+        pass
         ...
 
 
@@ -76,6 +79,7 @@ class DataWindow(Protocol):
         
     def get_points(self) -> np.ndarray:
         """Get all points in window"""
+        pass
         ...
         
     def slide(self, n_points: int) -> np.ndarray:
@@ -85,11 +89,13 @@ class DataWindow(Protocol):
     @property
     def size(self) -> int:
         """Current number of points in window"""
+        pass
         ...
         
     @property
     def capacity(self) -> int:
         """Maximum window capacity"""
+        pass
         ...
 
 

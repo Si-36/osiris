@@ -71,6 +71,7 @@ class Goal:
     
     def is_expired(self) -> bool:
         """Check if goal has expired"""
+        pass
         return self.deadline is not None and time.time() > self.deadline
 
 
@@ -87,6 +88,7 @@ class Plan:
     
     def is_complete(self) -> bool:
         """Check if plan is complete"""
+        pass
         return self.current_step >= len(self.steps)
 
 
@@ -122,6 +124,7 @@ class WorkingMemory:
     
     def get_active_goals(self) -> List[Goal]:
         """Get all active goals sorted by priority"""
+        pass
         return sorted(
             self.active_goals.values(),
             key=lambda g: (g.priority.value, g.created_at),
@@ -130,6 +133,7 @@ class WorkingMemory:
     
     def calculate_interference(self) -> float:
         """Calculate interference between active goals"""
+        pass
         if len(self.active_goals) <= 1:
             return 0.0
         
@@ -149,7 +153,7 @@ class CognitiveFlexibility:
         self.switch_cost: float = 0.1  # Time penalty for context switching
         self.adaptation_rate: float = 0.1
         
-    async def switch_context(self, new_context: str) -> float:
+        async def switch_context(self, new_context: str) -> float:
         """Switch to new context and return switch cost"""
         if self.current_context == new_context:
             return 0.0
@@ -168,7 +172,7 @@ class CognitiveFlexibility:
         self.current_context = new_context
         return switch_cost
     
-    async def adapt_plan(self, plan: Plan, new_context: Dict[str, Any]) -> Plan:
+        async def adapt_plan(self, plan: Plan, new_context: Dict[str, Any]) -> Plan:
         """Adapt plan based on new context"""
         # Simple adaptation: adjust step priorities based on context
         adapted_steps = []
@@ -207,11 +211,11 @@ class InhibitoryControl:
         self.inhibited_actions: Set[str] = set()
         self.inhibition_history: List[Tuple[str, float, str]] = []
         
-    async def should_inhibit(
+        async def should_inhibit(
         self, 
         action: Dict[str, Any], 
         context: Dict[str, Any]
-    ) -> Tuple[bool, str]:
+        ) -> Tuple[bool, str]:
         """Determine if action should be inhibited"""
         action_type = action.get('type', 'unknown')
         
@@ -261,12 +265,12 @@ class PlanningSystem:
         }
         self.default_strategy = 'hierarchical'
         
-    async def create_plan(
+        async def create_plan(
         self, 
         goal: Goal, 
         context: Dict[str, Any],
         strategy: Optional[str] = None
-    ) -> Plan:
+        ) -> Plan:
         """Create execution plan for goal"""
         strategy = strategy or self.default_strategy
         planning_func = self.planning_strategies.get(strategy, self._hierarchical_planning)
@@ -283,11 +287,11 @@ class PlanningSystem:
         
         return plan
     
-    async def _hierarchical_planning(
+        async def _hierarchical_planning(
         self, 
         goal: Goal, 
         context: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Hierarchical task decomposition"""
         steps = []
         
@@ -308,11 +312,11 @@ class PlanningSystem:
         
         return steps
     
-    async def _means_ends_planning(
+        async def _means_ends_planning(
         self, 
         goal: Goal, 
         context: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Means-ends analysis planning"""
         steps = []
         current_state = context.get('current_state', {})
@@ -331,11 +335,11 @@ class PlanningSystem:
         
         return steps
     
-    async def _reactive_planning(
+        async def _reactive_planning(
         self, 
         goal: Goal, 
         context: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Reactive planning based on current context"""
         return [{
             'action': 'reactive_execute',
@@ -349,7 +353,7 @@ class PlanningSystem:
         self, 
         current_state: Dict[str, Any], 
         target_state: Dict[str, Any]
-    ) -> List[str]:
+        ) -> List[str]:
         """Find differences between current and target states"""
         differences = []
         
@@ -364,7 +368,7 @@ class PlanningSystem:
         self, 
         steps: List[Dict[str, Any]], 
         context: Dict[str, Any]
-    ) -> float:
+        ) -> float:
         """Estimate confidence in plan success"""
         if not steps:
             return 0.0
@@ -409,21 +413,23 @@ class ExecutiveFunction(SystemComponent):
             'working_memory_load': 0.0
         }
     
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start executive function system"""
+        pass
         self.current_state = ExecutiveState.IDLE
         print("🧠 Executive Function System started")
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop executive function system"""
+        pass
         self.current_state = ExecutiveState.IDLE
         print("🛑 Executive Function System stopped")
     
-    async def process_goal(
+        async def process_goal(
         self, 
         goal: Goal, 
         context: Dict[str, Any] = None
-    ) -> ConsciousDecision:
+        ) -> ConsciousDecision:
         """Process a goal through the executive function system"""
         context = context or {}
         
@@ -474,11 +480,11 @@ class ExecutiveFunction(SystemComponent):
             reasoning=[f"Executed plan with {len(plan.steps)} steps"]
         )
     
-    async def _execute_plan(
+        async def _execute_plan(
         self, 
         plan: Plan, 
         context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute a plan step by step"""
         results = []
         
@@ -519,11 +525,11 @@ class ExecutiveFunction(SystemComponent):
             'success': True
         }
     
-    async def _execute_step(
+        async def _execute_step(
         self, 
         step: Dict[str, Any], 
         context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute a single plan step"""
         # Simulate step execution
         execution_time = step.get('estimated_time', 1.0)
@@ -538,6 +544,7 @@ class ExecutiveFunction(SystemComponent):
     
     def _update_metrics(self) -> None:
         """Update executive function metrics"""
+        pass
         # Update working memory load
         self.metrics['working_memory_load'] = (
             len(self.working_memory.active_goals) / self.working_memory.capacity
@@ -550,6 +557,7 @@ class ExecutiveFunction(SystemComponent):
     
     def get_executive_state(self) -> Dict[str, Any]:
         """Get current executive function state"""
+        pass
         return {
             'current_state': self.current_state.value,
             'active_goals': len(self.working_memory.active_goals),
@@ -561,9 +569,9 @@ class ExecutiveFunction(SystemComponent):
 
 
 # Factory functions
-def create_executive_function() -> ExecutiveFunction:
-    """Create executive function system"""
-    return ExecutiveFunction()
+    def create_executive_function() -> ExecutiveFunction:
+        """Create executive function system"""
+        return ExecutiveFunction()
 
 
 def create_goal(

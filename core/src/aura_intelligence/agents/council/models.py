@@ -14,27 +14,30 @@ except ImportError:
     print("Warning: OpenTelemetry not available, using fallback")
     # Create mock objects
     class MockExporter:
-        def __init__(self, *args, **kwargs): pass
-        def export(self, *args, **kwargs): return True
+        def __init__(self, *args, **kwargs):
+            """TODO: Implement this method"""
+            pass
+            raise NotImplementedError("This method needs implementation")
+            def export(self, *args, **kwargs): return True
     
     class MockTrace:
-        def get_tracer(self, *args, **kwargs): 
+        def get_tracer(self, *args, **kwargs):
             return type('tracer', (), {
-                'start_span': lambda *a, **k: type('span', (), {
-                    '__enter__': lambda s: s, 
-                    '__exit__': lambda *a: None
-                })()
+            'start_span': lambda *a, **k: type('span', (), {
+            '__enter__': lambda s: s,
+            '__exit__': lambda *a: None
+            })()
             })()
     
-    jaeger = type('jaeger', (), {'JaegerExporter': MockExporter})
-    trace = MockTrace()
+            jaeger = type('jaeger', (), {'JaegerExporter': MockExporter})
+            trace = MockTrace()
 
-from typing import Dict, Any, Optional, List
-from datetime import datetime, timezone
-import uuid
+            from typing import Dict, Any, Optional, List
+            from datetime import datetime, timezone
+            import uuid
 
-from pydantic import BaseModel, Field, field_validator
-from ..base import AgentState
+            from pydantic import BaseModel, Field, field_validator
+            from ..base import AgentState
 
 
 class GPUAllocationRequest(BaseModel):

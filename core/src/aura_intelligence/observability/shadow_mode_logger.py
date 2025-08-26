@@ -72,6 +72,7 @@ class ShadowModeEntry:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
+        pass
         data = asdict(self)
         # Convert datetime objects to ISO strings
         data['timestamp'] = self.timestamp.isoformat()
@@ -79,7 +80,7 @@ class ShadowModeEntry:
             data['outcome_timestamp'] = self.outcome_timestamp.isoformat()
         return data
     
-    @classmethod
+        @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ShadowModeEntry':
         """Create from dictionary (for loading from storage)."""
         # Convert ISO strings back to datetime objects
@@ -101,7 +102,7 @@ class ShadowModeLogger:
     """
     
     def __init__(self, 
-                 db_path: str = "shadow_mode_logs.db",
+        db_path: str = "shadow_mode_logs.db",
                  json_backup_dir: str = "shadow_logs_backup"):
         self.db_path = db_path
         self.json_backup_dir = Path(json_backup_dir)
@@ -113,16 +114,18 @@ class ShadowModeLogger:
         
     async def initialize(self):
         """Initialize the shadow mode logging system."""
+        pass
         if not HAS_ASYNC_DEPS:
             logger.warning("⚠️ Async dependencies not available, using fallback mode")
-            return
+        return
         await self._create_database_schema()
         logger.info("🌙 Shadow Mode Logger initialized")
     
-    async def _create_database_schema(self):
-        """Create SQLite database schema for shadow mode logs."""
+        async def _create_database_schema(self):
+            """Create SQLite database schema for shadow mode logs."""
+        pass
         async with aiosqlite.connect(self.db_path) as db:
-            await db.execute("""
+        await db.execute("""
                 CREATE TABLE IF NOT EXISTS shadow_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     workflow_id TEXT NOT NULL,
@@ -152,7 +155,7 @@ class ShadowModeLogger:
                     -- Indexing
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+        """)
             
             # Create indices for performance
             await db.execute("CREATE INDEX IF NOT EXISTS idx_workflow_id ON shadow_logs(workflow_id)")
@@ -166,54 +169,54 @@ class ShadowModeLogger:
         Log a validator prediction in shadow mode.
 
         Returns:
-            str: Entry ID for later outcome correlation
+        str: Entry ID for later outcome correlation
         """
         if not HAS_ASYNC_DEPS:
             logger.debug("🌙 Shadow mode logging skipped (dependencies not available)")
-            return "fallback_id"
+        return "fallback_id"
 
         try:
             # Store in SQLite for fast queries
-            async with aiosqlite.connect(self.db_path) as db:
-                cursor = await db.execute("""
-                    INSERT INTO shadow_logs (
-                        workflow_id, thread_id, timestamp,
-                        predicted_success_probability, prediction_confidence_score,
-                        risk_score, routing_decision, decision_score,
-                        requires_human_approval, full_context
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    entry.workflow_id,
-                    entry.thread_id, 
-                    entry.timestamp.isoformat(),
-                    entry.predicted_success_probability,
-                    entry.prediction_confidence_score,
-                    entry.risk_score,
-                    entry.routing_decision,
-                    entry.decision_score,
-                    entry.requires_human_approval,
-                    json.dumps(entry.to_dict())
-                ))
+        async with aiosqlite.connect(self.db_path) as db:
+        cursor = await db.execute("""
+        INSERT INTO shadow_logs (
+        workflow_id, thread_id, timestamp,
+        predicted_success_probability, prediction_confidence_score,
+        risk_score, routing_decision, decision_score,
+        requires_human_approval, full_context
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+        entry.workflow_id,
+        entry.thread_id,
+        entry.timestamp.isoformat(),
+        entry.predicted_success_probability,
+        entry.prediction_confidence_score,
+        entry.risk_score,
+        entry.routing_decision,
+        entry.decision_score,
+        entry.requires_human_approval,
+        json.dumps(entry.to_dict())
+        ))
                 
-                entry_id = cursor.lastrowid
-                await db.commit()
+        entry_id = cursor.lastrowid
+        await db.commit()
             
-            # Also backup to JSON for data science analysis
-            backup_file = self.json_backup_dir / f"shadow_log_{datetime.now().strftime('%Y%m%d')}.jsonl"
-            async with aiofiles.open(backup_file, 'a') as f:
-                await f.write(json.dumps(entry.to_dict()) + '\n')
+        # Also backup to JSON for data science analysis
+        backup_file = self.json_backup_dir / f"shadow_log_{datetime.now().strftime('%Y%m%d')}.jsonl"
+        async with aiofiles.open(backup_file, 'a') as f:
+        await f.write(json.dumps(entry.to_dict()) + '\n')
             
-            self.entries_logged += 1
+        self.entries_logged += 1
             
-            logger.debug(f"🌙 Logged shadow mode prediction: {entry.workflow_id} -> {entry.routing_decision}")
-            return str(entry_id)
+        logger.debug(f"🌙 Logged shadow mode prediction: {entry.workflow_id} -> {entry.routing_decision}")
+        return str(entry_id)
             
         except Exception as e:
-            logger.error(f"❌ Failed to log shadow mode prediction: {e}")
-            raise
+        logger.error(f"❌ Failed to log shadow mode prediction: {e}")
+        raise
     
-    async def record_outcome(self,
-                           workflow_id: str,
+        async def record_outcome(self,
+        workflow_id: str,
                            actual_outcome: str,
                            execution_time: Optional[float] = None,
                            error_details: Optional[Dict[str, Any]] = None) -> bool:
@@ -238,7 +241,7 @@ class ShadowModeLogger:
             
             async with aiosqlite.connect(self.db_path) as db:
                 # Update the most recent entry for this workflow
-                await db.execute("""
+        await db.execute("""
                     UPDATE shadow_logs 
                     SET actual_outcome = ?,
                         actual_execution_time = ?,
@@ -247,7 +250,7 @@ class ShadowModeLogger:
                     AND actual_outcome IS NULL
                     ORDER BY timestamp DESC
                     LIMIT 1
-                """, (
+        """, (
                     actual_outcome,
                     execution_time,
                     outcome_timestamp.isoformat(),
@@ -270,38 +273,38 @@ class ShadowModeLogger:
     async def _calculate_accuracy_metrics(self, workflow_id: str):
         """Calculate prediction accuracy metrics for a completed entry."""
         async with aiosqlite.connect(self.db_path) as db:
-            # Get the entry we just updated
-            async with db.execute("""
-                SELECT predicted_success_probability, actual_outcome, risk_score
-                FROM shadow_logs 
-                WHERE workflow_id = ? AND actual_outcome IS NOT NULL
-                ORDER BY timestamp DESC LIMIT 1
-            """, (workflow_id,)) as cursor:
-                row = await cursor.fetchone()
+        # Get the entry we just updated
+        async with db.execute("""
+        SELECT predicted_success_probability, actual_outcome, risk_score
+        FROM shadow_logs
+        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
+        ORDER BY timestamp DESC LIMIT 1
+        """, (workflow_id,)) as cursor:
+        row = await cursor.fetchone()
                 
-                if row:
-                    predicted_prob, actual_outcome, risk_score = row
+        if row:
+            predicted_prob, actual_outcome, risk_score = row
                     
-                    # Calculate prediction accuracy (1.0 if correct, 0.0 if wrong)
-                    actual_success = 1.0 if actual_outcome == "success" else 0.0
-                    prediction_accuracy = 1.0 - abs(predicted_prob - actual_success)
+        # Calculate prediction accuracy (1.0 if correct, 0.0 if wrong)
+        actual_success = 1.0 if actual_outcome == "success" else 0.0
+        prediction_accuracy = 1.0 - abs(predicted_prob - actual_success)
                     
-                    # Calculate risk assessment accuracy
-                    actual_risk = 1.0 - actual_success  # High risk if failed
-                    risk_assessment_accuracy = 1.0 - abs(risk_score - actual_risk)
+        # Calculate risk assessment accuracy
+        actual_risk = 1.0 - actual_success  # High risk if failed
+        risk_assessment_accuracy = 1.0 - abs(risk_score - actual_risk)
                     
-                    # Update the entry with calculated metrics
-                    await db.execute("""
-                        UPDATE shadow_logs 
-                        SET prediction_accuracy = ?,
-                            risk_assessment_accuracy = ?
-                        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
-                        ORDER BY timestamp DESC LIMIT 1
-                    """, (prediction_accuracy, risk_assessment_accuracy, workflow_id))
+        # Update the entry with calculated metrics
+        await db.execute("""
+        UPDATE shadow_logs
+        SET prediction_accuracy = ?,
+        risk_assessment_accuracy = ?
+        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
+        ORDER BY timestamp DESC LIMIT 1
+        """, (prediction_accuracy, risk_assessment_accuracy, workflow_id))
                     
-                    await db.commit()
+        await db.commit()
     
-    async def get_accuracy_metrics(self, days: int = 7) -> Dict[str, Any]:
+        async def get_accuracy_metrics(self, days: int = 7) -> Dict[str, Any]:
         """
         Get accuracy metrics for the governance dashboard.
         
@@ -315,7 +318,7 @@ class ShadowModeLogger:
         
         async with aiosqlite.connect(self.db_path) as db:
             # Overall accuracy
-            async with db.execute("""
+        async with db.execute("""
                 SELECT 
                     AVG(prediction_accuracy) as avg_prediction_accuracy,
                     AVG(risk_assessment_accuracy) as avg_risk_accuracy,
@@ -324,12 +327,12 @@ class ShadowModeLogger:
                     SUM(CASE WHEN requires_human_approval = 1 THEN 1 ELSE 0 END) as human_approvals_required
                 FROM shadow_logs 
                 WHERE timestamp >= ? AND actual_outcome IS NOT NULL
-            """, (cutoff_date,)) as cursor:
+        """, (cutoff_date,)) as cursor:
                 overall_stats = await cursor.fetchone()
             
             # Accuracy by routing decision
             routing_stats = []
-            async with db.execute("""
+        async with db.execute("""
                 SELECT 
                     routing_decision,
                     AVG(prediction_accuracy) as accuracy,
@@ -337,7 +340,7 @@ class ShadowModeLogger:
                 FROM shadow_logs 
                 WHERE timestamp >= ? AND actual_outcome IS NOT NULL
                 GROUP BY routing_decision
-            """, (cutoff_date,)) as cursor:
+        """, (cutoff_date,)) as cursor:
                 async for row in cursor:
                     routing_stats.append({
                         'routing_decision': row[0],

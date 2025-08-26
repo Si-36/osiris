@@ -69,19 +69,21 @@ class ShadowMemoryWrapper:
     
     def _should_use_new_system(self) -> bool:
         """Check if we should serve from new system."""
+        pass
         return self.feature_flags.get("SHAPE_MEMORY_V2_SERVE", False)
     
     def _should_shadow_write(self) -> bool:
         """Check if we should write to new system."""
+        pass
         return self.feature_flags.get("SHAPE_MEMORY_V2_SHADOW", True)
     
-    async def store(
+        async def store(
         self,
         content: Dict[str, Any],
         tda_result: TDAResult,
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> str:
+        ) -> str:
         """
         Store in both systems (if shadow enabled).
         
@@ -107,12 +109,12 @@ class ShadowMemoryWrapper:
         
         return old_id
     
-    async def retrieve(
+        async def retrieve(
         self,
         query_tda: TDAResult,
         k: int = 10,
         context_filter: Optional[str] = None
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
         """
         Retrieve from primary system and optionally compare.
         """
@@ -164,7 +166,7 @@ class ShadowMemoryWrapper:
         new_results: List[Tuple[Dict[str, Any], float]],
         latency_old: float,
         latency_new: float
-    ) -> ComparisonResult:
+        ) -> ComparisonResult:
         """Compare results from both systems."""
         # Extract top IDs
         old_ids = [r[0]["id"] for r in old_results[:5]]
@@ -191,13 +193,15 @@ class ShadowMemoryWrapper:
             mismatch=mismatch
         )
     
-    async def _async_wrapper(self, sync_func, *args, **kwargs):
+        async def _async_wrapper(self, sync_func, *args, **kwargs):
         """Wrap sync functions for async execution."""
+        pass
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, sync_func, *args, **kwargs)
     
     def get_shadow_stats(self) -> Dict[str, Any]:
         """Get shadow deployment statistics."""
+        pass
         mismatch_rate = (
             self.mismatch_count / self.comparison_count 
             if self.comparison_count > 0 else 0

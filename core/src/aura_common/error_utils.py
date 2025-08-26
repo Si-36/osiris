@@ -34,63 +34,63 @@ def resilient_operation(
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs) -> T:
-            last_exception = None
-            current_delay = delay
+        last_exception = None
+        current_delay = delay
             
-            for attempt in range(max_retries + 1):
-                try:
-                    return func(*args, **kwargs)
-                except exceptions as e:
-                    last_exception = e
-                    if attempt < max_retries:
-                        logger.warning(
-                            f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
-                            error=str(e),
-                            retry_in=current_delay
-                        )
-                        time.sleep(current_delay)
-                        current_delay *= backoff_factor
-                    else:
-                        logger.error(
-                            f"All {max_retries + 1} attempts failed for {func.__name__}",
-                            error=str(e)
-                        )
+        for attempt in range(max_retries + 1):
+        try:
+        return func(*args, **kwargs)
+        except exceptions as e:
+        last_exception = e
+        if attempt < max_retries:
+        logger.warning(
+        f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
+        error=str(e),
+        retry_in=current_delay
+        )
+        time.sleep(current_delay)
+        current_delay *= backoff_factor
+        else:
+        logger.error(
+        f"All {max_retries + 1} attempts failed for {func.__name__}",
+        error=str(e)
+        )
             
-            raise last_exception
+        raise last_exception
         
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs) -> T:
-            last_exception = None
-            current_delay = delay
+        last_exception = None
+        current_delay = delay
             
-            for attempt in range(max_retries + 1):
-                try:
-                    return await func(*args, **kwargs)
-                except exceptions as e:
-                    last_exception = e
-                    if attempt < max_retries:
-                        logger.warning(
-                            f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
-                            error=str(e),
-                            retry_in=current_delay
-                        )
-                        await asyncio.sleep(current_delay)
-                        current_delay *= backoff_factor
-                    else:
-                        logger.error(
-                            f"All {max_retries + 1} attempts failed for {func.__name__}",
-                            error=str(e)
-                        )
+        for attempt in range(max_retries + 1):
+        try:
+        return await func(*args, **kwargs)
+        except exceptions as e:
+        last_exception = e
+        if attempt < max_retries:
+        logger.warning(
+        f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
+        error=str(e),
+        retry_in=current_delay
+        )
+        await asyncio.sleep(current_delay)
+        current_delay *= backoff_factor
+        else:
+        logger.error(
+        f"All {max_retries + 1} attempts failed for {func.__name__}",
+        error=str(e)
+        )
             
-            raise last_exception
+        raise last_exception
         
         # Return appropriate wrapper based on function type
         if asyncio.iscoroutinefunction(func):
-            return async_wrapper
+        return async_wrapper
         else:
-            return sync_wrapper
+        return sync_wrapper
     
-    return decorator
+        return decorator
 
 
 class AuraError(Exception):

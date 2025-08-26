@@ -31,8 +31,8 @@ class RiskAssessmentEngine:
         
         logger.info("⚖️ Risk Assessment Engine initialized")
     
-    async def calculate_risk_score(self, evidence_log: List[Dict[str, Any]], 
-                                 proposed_action: str) -> float:
+        async def calculate_risk_score(self, evidence_log: List[Dict[str, Any]],
+        proposed_action: str) -> float:
         """
         Calculate comprehensive risk score.
         
@@ -111,7 +111,7 @@ class RiskAssessmentEngine:
         return min(error_ratio * 0.8, 0.7)
     
     def _assess_context_risk(self, evidence_log: List[Dict[str, Any]], 
-                           proposed_action: str) -> float:
+        proposed_action: str) -> float:
         """Assess contextual risk factors."""
         risk_factors = 0.0
         
@@ -131,8 +131,8 @@ class RiskAssessmentEngine:
         
         return min(risk_factors, 0.8)
     
-    async def _assess_pattern_risk(self, evidence_log: List[Dict[str, Any]], 
-                                 proposed_action: str) -> float:
+        async def _assess_pattern_risk(self, evidence_log: List[Dict[str, Any]],
+        proposed_action: str) -> float:
         """
         Assess risk based on historical patterns.
         
@@ -151,7 +151,7 @@ class RiskAssessmentEngine:
         logger.info(f"🎯 Risk thresholds updated: {self.thresholds}")
     
     def get_risk_explanation(self, evidence_log: List[Dict[str, Any]], 
-                           proposed_action: str, risk_score: float) -> Dict[str, Any]:
+        proposed_action: str, risk_score: float) -> Dict[str, Any]:
         """
         Generate human-readable explanation of risk assessment.
         

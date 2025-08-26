@@ -99,6 +99,7 @@ class TDACoordinator:
     
     def _build_workflow(self) -> StateGraph:
         """Build the TDA-guided LangGraph workflow."""
+        pass
         
         workflow = StateGraph(TDACoordinatorState)
         
@@ -145,8 +146,8 @@ class TDACoordinator:
         
         return workflow.compile()
     
-    async def coordinate_response(self, events: List[Dict[str, Any]], 
-                                request_id: str = None,
+        async def coordinate_response(self, events: List[Dict[str, Any]],
+        request_id: str = None,
                                 priority: str = "medium") -> Dict[str, Any]:
         """
         Coordinate system response using TDA-guided routing.
@@ -202,7 +203,7 @@ class TDACoordinator:
             self.logger.error(f"❌ TDA coordination failed: {request_id} - {e}")
             return self._create_error_response(request_id, str(e))
     
-    async def _tda_analysis_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _tda_analysis_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Perform TDA analysis of events."""
         
         state['current_step'] = "tda_analysis"
@@ -235,7 +236,7 @@ class TDACoordinator:
         
         return state
     
-    async def _routing_decision_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _routing_decision_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Make routing decision based on TDA analysis."""
         
         state['current_step'] = "routing_decision"
@@ -284,7 +285,7 @@ class TDACoordinator:
         }
         return pattern_to_agent.get(pattern, 'monitor')
     
-    async def _guardian_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _guardian_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Execute Guardian agent response."""
         
         state['current_step'] = "guardian_response"
@@ -317,7 +318,7 @@ class TDACoordinator:
         
         return state
     
-    async def _optimizer_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _optimizer_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Execute Optimizer agent response."""
         
         state['current_step'] = "optimizer_response"
@@ -347,7 +348,7 @@ class TDACoordinator:
         
         return state
     
-    async def _researcher_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _researcher_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Execute Researcher agent response."""
         
         state['current_step'] = "researcher_response"
@@ -377,7 +378,7 @@ class TDACoordinator:
         
         return state
     
-    async def _analyzer_deep_dive_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _analyzer_deep_dive_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Execute deep analysis for complex patterns."""
         
         state['current_step'] = "analyzer_deep_dive"
@@ -410,7 +411,7 @@ class TDACoordinator:
         
         return state
     
-    async def _monitor_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _monitor_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Execute monitoring response for normal patterns."""
         
         state['current_step'] = "monitor_response"
@@ -440,7 +441,7 @@ class TDACoordinator:
         
         return state
     
-    async def _pattern_storage_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _pattern_storage_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Store causal patterns for learning."""
         
         state['current_step'] = "pattern_storage"
@@ -476,7 +477,7 @@ class TDACoordinator:
         
         return state
     
-    async def _final_synthesis_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
+        async def _final_synthesis_node(self, state: TDACoordinatorState) -> TDACoordinatorState:
         """Synthesize final response."""
         
         state['current_step'] = "final_synthesis"

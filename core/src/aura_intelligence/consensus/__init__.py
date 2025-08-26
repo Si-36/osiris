@@ -68,7 +68,7 @@ from .workflows import (
     BFTConsensusWorkflow
 )
 
-# from .events import (
+# from aura_intelligence.events import (
 #     ConsensusProposalEvent,
 #     ConsensusVoteEvent,
 #     ConsensusDecisionEvent,
@@ -96,7 +96,7 @@ class SimpleConsensus:
         for key, value in kwargs.items():
             setattr(self, key, value)
     
-    async def decide(self, request):
+        async def decide(self, request):
         return {"decision": "approved", "confidence": 0.8}
 
 class Decision:
@@ -110,59 +110,59 @@ __version__ = "1.0.0"
 
 __all__ = [
     # Types
-    "DecisionType",
-    "ConsensusRequest",
-    "ConsensusResult",
-    "ConsensusState",
-    "Vote",
-    "VoteType",
-    "RaftState",
-    "BFTPhase",
-    "ConsensusProof",
-    "DecisionExplanation",
+        "DecisionType",
+        "ConsensusRequest",
+        "ConsensusResult",
+        "ConsensusState",
+        "Vote",
+        "VoteType",
+        "RaftState",
+        "BFTPhase",
+        "ConsensusProof",
+        "DecisionExplanation",
     
     # Manager
-    "ConsensusManager",
-    "ConsensusConfig",
-    "HierarchicalConsensus",
+        "ConsensusManager",
+        "ConsensusConfig",
+        "HierarchicalConsensus",
     
     # Raft
-    "RaftConsensus",
-    "RaftConfig",
-    "RaftNode",
-    "LogEntry",
-    "RaftElectionWorkflow",
-    "RaftReplicationWorkflow",
+        "RaftConsensus",
+        "RaftConfig",
+        "RaftNode",
+        "LogEntry",
+        "RaftElectionWorkflow",
+        "RaftReplicationWorkflow",
     
     # Byzantine
-    "ByzantineConsensus",
-    "BFTConfig",
-    "BFTMessage",
-    "HotStuffConsensus",
-    "BFTProof",
+        "ByzantineConsensus",
+        "BFTConfig",
+        "BFTMessage",
+        "HotStuffConsensus",
+        "BFTProof",
     
     # Multi-Raft
-    "MultiRaftConsensus",
-    "MultiRaftConfig",
-    "RaftGroup",
-    "CrossGroupCoordinator",
+        "MultiRaftConsensus",
+        "MultiRaftConfig",
+        "RaftGroup",
+        "CrossGroupCoordinator",
     
     # Validation
-    "NeuroSymbolicValidator",
-    "ValidatorConfig",
-    "ValidationResult",
-    "CausalInferenceEngine",
-    "SymbolicReasoner",
+        "NeuroSymbolicValidator",
+        "ValidatorConfig",
+        "ValidationResult",
+        "CausalInferenceEngine",
+        "SymbolicReasoner",
     
     # Workflows
-    "ConsensusWorkflow",
-    "ConsensusWorkflowInput",
-    "ConsensusVotingWorkflow",
-    "BFTConsensusWorkflow",
+        "ConsensusWorkflow",
+        "ConsensusWorkflowInput",
+        "ConsensusVotingWorkflow",
+        "BFTConsensusWorkflow",
     
     # Events
-    "ConsensusProposalEvent",
-    "ConsensusVoteEvent",
-    "ConsensusDecisionEvent",
-    "ConsensusStreamProcessor"
+        "ConsensusProposalEvent",
+        "ConsensusVoteEvent",
+        "ConsensusDecisionEvent",
+        "ConsensusStreamProcessor"
 ]

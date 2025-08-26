@@ -110,6 +110,7 @@ class FallbackEngine:
     
     def _calculate_degradation_level(self) -> DegradationLevel:
         """Calculate appropriate degradation level based on failed subsystems."""
+        pass
         if not self.failed_subsystems:
             return DegradationLevel.FULL_FUNCTIONALITY
         
@@ -119,12 +120,12 @@ class FallbackEngine:
         if any(sys in self.failed_subsystems for sys in critical_systems):
             if len(self.failed_subsystems) >= 3:
                 return DegradationLevel.EMERGENCY_MODE
-            else:
-                return DegradationLevel.RULE_BASED_ONLY
-        elif any(sys in self.failed_subsystems for sys in ai_systems):
-            return DegradationLevel.REDUCED_AI
         else:
-            return DegradationLevel.FULL_FUNCTIONALITY
+        return DegradationLevel.RULE_BASED_ONLY
+        elif any(sys in self.failed_subsystems for sys in ai_systems):
+        return DegradationLevel.REDUCED_AI
+        else:
+        return DegradationLevel.FULL_FUNCTIONALITY
     
     def _emergency_mode_decision(self, state: MockLNNCouncilState) -> Dict[str, Any]:
         """Emergency mode: minimal resource allocation logic."""
@@ -157,11 +158,11 @@ class FallbackEngine:
         request = state.current_request
         if not request:
             return {
-                "neural_decision": "deny",
-                "confidence_score": 0.5,
-                "fallback_reason": "rule_based_no_request",
-                "degradation_level": "rule_based"
-            }
+        "neural_decision": "deny",
+        "confidence_score": 0.5,
+        "fallback_reason": "rule_based_no_request",
+        "degradation_level": "rule_based"
+        }
         
         # Comprehensive rule-based logic
         decision_factors = []
@@ -176,11 +177,11 @@ class FallbackEngine:
         if request.gpu_count <= 2:
             resource_score = 30
         elif request.gpu_count <= 4:
-            resource_score = 20
+        resource_score = 20
         elif request.gpu_count <= 8:
-            resource_score = 10
+        resource_score = 10
         else:
-            resource_score = 0
+        resource_score = 0
         score += resource_score
         decision_factors.append(f"resource_efficiency={resource_score}")
         
@@ -188,14 +189,14 @@ class FallbackEngine:
         if hasattr(request, 'compute_hours') and request.compute_hours:
             if request.compute_hours <= 4:
                 time_score = 20
-            elif request.compute_hours <= 12:
-                time_score = 15
-            elif request.compute_hours <= 24:
-                time_score = 10
-            else:
-                time_score = 5
+        elif request.compute_hours <= 12:
+        time_score = 15
+        elif request.compute_hours <= 24:
+        time_score = 10
         else:
-            time_score = 10  # Default
+        time_score = 5
+        else:
+        time_score = 10  # Default
         score += time_score
         decision_factors.append(f"time_efficiency={time_score}")
         
@@ -207,24 +208,24 @@ class FallbackEngine:
         # Decision logic
         if score >= 70:
             decision = "approve"
-            confidence = min(0.8, score / 100)
+        confidence = min(0.8, score / 100)
         elif score >= 50:
-            decision = "defer"
-            confidence = 0.6
+        decision = "defer"
+        confidence = 0.6
         else:
-            decision = "deny"
-            confidence = 0.7
+        decision = "deny"
+        confidence = 0.7
         
         return {
-            "neural_decision": decision,
-            "confidence_score": confidence,
-            "fallback_reason": "rule_based_comprehensive",
-            "degradation_level": "rule_based",
-            "decision_factors": decision_factors,
-            "rule_score": score
+        "neural_decision": decision,
+        "confidence_score": confidence,
+        "fallback_reason": "rule_based_comprehensive",
+        "degradation_level": "rule_based",
+        "decision_factors": decision_factors,
+        "rule_score": score
         }
     
-    async def _reduced_ai_decision(self, state: MockLNNCouncilState, trigger: FallbackTrigger) -> Dict[str, Any]:
+        async def _reduced_ai_decision(self, state: MockLNNCouncilState, trigger: FallbackTrigger) -> Dict[str, Any]:
         """Reduced AI mode: use available AI components."""
         request = state.current_request
         if not request:
@@ -250,7 +251,7 @@ class FallbackEngine:
                     base_decision["confidence_score"] *= 1.1  # Slight boost
                     enhancements.append("memory_context")
             except Exception:
-                pass
+        pass
         
         # If knowledge graph is working, try to use it
         if "knowledge_context" not in self.failed_subsystems:
@@ -260,7 +261,7 @@ class FallbackEngine:
                 base_decision["confidence_score"] *= knowledge_boost
                 enhancements.append("knowledge_context")
             except Exception:
-                pass
+        pass
         
         base_decision.update({
             "fallback_reason": "reduced_ai_enhanced",
@@ -275,32 +276,33 @@ class FallbackEngine:
         request = state.current_request
         if not request:
             return {
-                "neural_decision": "deny",
-                "confidence_score": 0.5,
-                "fallback_reason": "minimal_fallback_no_request",
-                "degradation_level": "full"
-            }
+        "neural_decision": "deny",
+        "confidence_score": 0.5,
+        "fallback_reason": "minimal_fallback_no_request",
+        "degradation_level": "full"
+        }
         
         # Simple priority-based decision
         if request.priority >= 7:
             decision = "approve"
-            confidence = 0.75
+        confidence = 0.75
         elif request.priority >= 4:
-            decision = "defer"
-            confidence = 0.65
+        decision = "defer"
+        confidence = 0.65
         else:
-            decision = "deny"
-            confidence = 0.7
+        decision = "deny"
+        confidence = 0.7
         
         return {
-            "neural_decision": decision,
-            "confidence_score": confidence,
-            "fallback_reason": "minimal_priority_based",
-            "degradation_level": "full"
+        "neural_decision": decision,
+        "confidence_score": confidence,
+        "fallback_reason": "minimal_priority_based",
+        "degradation_level": "full"
         }
     
-    async def _get_memory_context(self, request) -> Optional[Dict[str, Any]]:
+        async def _get_memory_context(self, request) -> Optional[Dict[str, Any]]:
         """Simplified memory context retrieval."""
+        pass
         return {
             "similar_requests": 0,
             "success_rate": 0.8,
@@ -309,12 +311,13 @@ class FallbackEngine:
     
     def _get_knowledge_boost(self, request) -> float:
         """Simple knowledge-based confidence boost."""
+        pass
         if hasattr(request, 'project_id') and request.project_id:
             return 1.05  # 5% boost for known projects
         return 1.0
     
     def _update_timing_metrics(self, fallback_time: float):
-        """Update timing metrics for fallback operations."""
+            """Update timing metrics for fallback operations."""
         if self.metrics.total_fallbacks == 1:
             self.metrics.average_fallback_time = fallback_time
         else:
@@ -324,12 +327,12 @@ class FallbackEngine:
                 / self.metrics.total_fallbacks
             )
     
-    async def _execute_fallback_strategy(
+        async def _execute_fallback_strategy(
         self, 
         state: MockLNNCouncilState, 
         trigger: FallbackTrigger, 
         degradation: DegradationLevel
-    ) -> MockLNNCouncilState:
+        ) -> MockLNNCouncilState:
         """Execute appropriate fallback strategy based on trigger and degradation level."""
         
         # Mark fallback triggered
@@ -361,7 +364,7 @@ class FallbackEngine:
         
         return state
     
-    async def handle_failure(self, state: MockLNNCouncilState, failed_step: str, error: Exception) -> MockLNNCouncilState:
+        async def handle_failure(self, state: MockLNNCouncilState, failed_step: str, error: Exception) -> MockLNNCouncilState:
         """Handle step failure with comprehensive fallback logic."""
         start_time = time.time()
         
@@ -371,7 +374,7 @@ class FallbackEngine:
         # Update metrics
         self.metrics.total_fallbacks += 1
         self.metrics.fallbacks_by_trigger[trigger.value] = (
-            self.metrics.fallbacks_by_trigger.get(trigger.value, 0) + 1
+        self.metrics.fallbacks_by_trigger.get(trigger.value, 0) + 1
         )
         
         # Mark subsystem as failed
@@ -393,7 +396,7 @@ class FallbackEngine:
         
         return state
     
-    async def attempt_recovery(self, subsystem: str) -> bool:
+        async def attempt_recovery(self, subsystem: str) -> bool:
         """Attempt to recover a failed subsystem."""
         if subsystem not in self.failed_subsystems:
             return True
@@ -423,23 +426,25 @@ class FallbackEngine:
     
     def get_health_status(self) -> Dict[str, Any]:
         """Get comprehensive health status of the fallback system."""
+        pass
         return {
-            "degradation_level": self.current_degradation.value,
-            "failed_subsystems": list(self.failed_subsystems),
-            "recovery_attempts": dict(self.recovery_attempts),
-            "metrics": {
-                "total_fallbacks": self.metrics.total_fallbacks,
-                "fallbacks_by_trigger": dict(self.metrics.fallbacks_by_trigger),
-                "fallbacks_by_level": dict(self.metrics.fallbacks_by_level),
-                "average_fallback_time": self.metrics.average_fallback_time,
-                "success_rate": self.metrics.success_rate
-            },
-            "last_fallback_time": self.last_fallback_time,
-            "enabled": self.config.enable_fallback
+        "degradation_level": self.current_degradation.value,
+        "failed_subsystems": list(self.failed_subsystems),
+        "recovery_attempts": dict(self.recovery_attempts),
+        "metrics": {
+        "total_fallbacks": self.metrics.total_fallbacks,
+        "fallbacks_by_trigger": dict(self.metrics.fallbacks_by_trigger),
+        "fallbacks_by_level": dict(self.metrics.fallbacks_by_level),
+        "average_fallback_time": self.metrics.average_fallback_time,
+        "success_rate": self.metrics.success_rate
+        },
+        "last_fallback_time": self.last_fallback_time,
+        "enabled": self.config.enable_fallback
         }
     
     def reset_metrics(self):
-        """Reset fallback metrics (useful for testing)."""
+            """Reset fallback metrics (useful for testing)."""
+        pass
         self.metrics = FallbackMetrics()
         self.failed_subsystems.clear()
         self.recovery_attempts.clear()
@@ -455,7 +460,8 @@ class TestFallbackEngine:
         self.engine = FallbackEngine(self.config)
     
     def test_fallback_trigger_classification(self):
-        """Test failure classification into appropriate triggers"""
+            """Test failure classification into appropriate triggers"""
+        pass
         test_cases = [
             ("timeout error", TimeoutError("Operation timed out"), FallbackTrigger.TIMEOUT_EXCEEDED),
             ("memory_integration", ValueError("Memory system failed"), FallbackTrigger.MEMORY_SYSTEM_FAILURE),
@@ -475,27 +481,29 @@ class TestFallbackEngine:
     
     def test_degradation_level_calculation(self):
         """Test degradation level calculation based on failed subsystems"""
+        pass
         test_cases = [
-            (set(), DegradationLevel.FULL_FUNCTIONALITY),
-            ({"confidence_scoring"}, DegradationLevel.REDUCED_AI),
-            ({"memory_integration", "knowledge_context"}, DegradationLevel.REDUCED_AI),
-            ({"lnn_inference"}, DegradationLevel.RULE_BASED_ONLY),
-            ({"neural_engine"}, DegradationLevel.RULE_BASED_ONLY),
-            ({"lnn_inference", "memory_integration", "knowledge_context"}, DegradationLevel.EMERGENCY_MODE),
+        (set(), DegradationLevel.FULL_FUNCTIONALITY),
+        ({"confidence_scoring"}, DegradationLevel.REDUCED_AI),
+        ({"memory_integration", "knowledge_context"}, DegradationLevel.REDUCED_AI),
+        ({"lnn_inference"}, DegradationLevel.RULE_BASED_ONLY),
+        ({"neural_engine"}, DegradationLevel.RULE_BASED_ONLY),
+        ({"lnn_inference", "memory_integration", "knowledge_context"}, DegradationLevel.EMERGENCY_MODE),
         ]
         
         for failed_systems, expected_level in test_cases:
-            self.engine.failed_subsystems = failed_systems
-            level = self.engine._calculate_degradation_level()
-            if level != expected_level:
-                print(f"❌ Degradation calculation failed: {failed_systems} -> {level.value}, expected {expected_level.value}")
-                return False
+        self.engine.failed_subsystems = failed_systems
+        level = self.engine._calculate_degradation_level()
+        if level != expected_level:
+            print(f"❌ Degradation calculation failed: {failed_systems} -> {level.value}, expected {expected_level.value}")
+        return False
         
         print("✅ Degradation level calculation: PASSED")
         return True
     
-    async def test_emergency_mode_decision(self):
-        """Test emergency mode decision making"""
+        async def test_emergency_mode_decision(self):
+            """Test emergency mode decision making"""
+        pass
         # Test with high priority request
         state = MockLNNCouncilState(
             current_request=MockGPURequest(priority=9)
@@ -528,20 +536,21 @@ class TestFallbackEngine:
     
     def test_rule_based_decision(self):
         """Test comprehensive rule-based decision logic"""
+        pass
         # Test high-score request (should approve)
         state = MockLNNCouncilState(
-            current_request=MockGPURequest(
-                priority=8,  # 32 points
-                gpu_count=2,  # 30 points
-                compute_hours=2.0  # 20 points
-            )
+        current_request=MockGPURequest(
+        priority=8,  # 32 points
+        gpu_count=2,  # 30 points
+        compute_hours=2.0  # 20 points
+        )
         )
         
         result = self.engine._rule_based_decision(state)
         
         if result["neural_decision"] != "approve":
             print(f"❌ Rule-based high score failed: {result['neural_decision']}, score: {result.get('rule_score')}")
-            return False
+        return False
         
         # Test medium-score request (should defer)
         state.current_request.priority = 5  # 20 points
@@ -552,7 +561,7 @@ class TestFallbackEngine:
         
         if result["neural_decision"] != "defer":
             print(f"❌ Rule-based medium score failed: {result['neural_decision']}, score: {result.get('rule_score')}")
-            return False
+        return False
         
         # Test low-score request (should deny)
         state.current_request.priority = 2  # 8 points
@@ -563,13 +572,14 @@ class TestFallbackEngine:
         
         if result["neural_decision"] != "deny":
             print(f"❌ Rule-based low score failed: {result['neural_decision']}, score: {result.get('rule_score')}")
-            return False
+        return False
         
         print("✅ Rule-based decision logic: PASSED")
         return True
     
-    async def test_reduced_ai_decision(self):
-        """Test reduced AI mode with partial system availability"""
+        async def test_reduced_ai_decision(self):
+            """Test reduced AI mode with partial system availability"""
+        pass
         state = MockLNNCouncilState(
             current_request=MockGPURequest(priority=6)
         )
@@ -589,10 +599,11 @@ class TestFallbackEngine:
         print("✅ Reduced AI decision: PASSED")
         return True
     
-    async def test_full_fallback_workflow(self):
+        async def test_full_fallback_workflow(self):
         """Test complete fallback workflow from failure to recovery"""
+        pass
         state = MockLNNCouncilState(
-            current_request=MockGPURequest(priority=7)
+        current_request=MockGPURequest(priority=7)
         )
         
         # Simulate LNN inference failure
@@ -604,28 +615,29 @@ class TestFallbackEngine:
         # Verify fallback was triggered
         if not result_state.fallback_triggered:
             print("❌ Fallback not triggered")
-            return False
+        return False
         
         # Verify metrics were updated
         if self.engine.metrics.total_fallbacks == 0:
             print("❌ Fallback metrics not updated")
-            return False
+        return False
         
         # Verify degradation level changed
         if self.engine.current_degradation == DegradationLevel.FULL_FUNCTIONALITY:
             print("❌ Degradation level not updated")
-            return False
+        return False
         
         # Verify decision was made
         if "neural_decision" not in result_state.context:
             print("❌ No fallback decision made")
-            return False
+        return False
         
         print("✅ Full fallback workflow: PASSED")
         return True
     
-    async def test_recovery_mechanism(self):
-        """Test subsystem recovery mechanism"""
+        async def test_recovery_mechanism(self):
+            """Test subsystem recovery mechanism"""
+        pass
         # Add a failed subsystem
         self.engine.failed_subsystems.add("memory_integration")
         
@@ -646,19 +658,20 @@ class TestFallbackEngine:
     
     def test_metrics_tracking(self):
         """Test comprehensive metrics tracking"""
+        pass
         # Reset metrics
         self.engine.reset_metrics()
         
         # Simulate some fallbacks
         self.engine.metrics.total_fallbacks = 5
         self.engine.metrics.fallbacks_by_trigger = {
-            "lnn_inference_failure": 2,
-            "memory_system_failure": 2,
-            "timeout_exceeded": 1
+        "lnn_inference_failure": 2,
+        "memory_system_failure": 2,
+        "timeout_exceeded": 1
         }
         self.engine.metrics.fallbacks_by_level = {
-            "rule_based": 3,
-            "reduced_ai": 2
+        "rule_based": 3,
+        "reduced_ai": 2
         }
         
         # Test timing metrics update
@@ -671,26 +684,27 @@ class TestFallbackEngine:
         expected_avg = (0.5 + 1.0) / 2
         if abs(self.engine.metrics.average_fallback_time - expected_avg) > 0.01:
             print(f"❌ Timing metrics incorrect: {self.engine.metrics.average_fallback_time}, expected {expected_avg}")
-            return False
+        return False
         
         # Test health status
         health = self.engine.get_health_status()
         
         required_fields = [
-            "degradation_level", "failed_subsystems", "recovery_attempts",
-            "metrics", "last_fallback_time", "enabled"
+        "degradation_level", "failed_subsystems", "recovery_attempts",
+        "metrics", "last_fallback_time", "enabled"
         ]
         
         for field in required_fields:
-            if field not in health:
-                print(f"❌ Health status missing field: {field}")
-                return False
+        if field not in health:
+            print(f"❌ Health status missing field: {field}")
+        return False
         
         print("✅ Metrics tracking: PASSED")
         return True
     
-    async def test_performance_under_load(self):
-        """Test fallback performance under multiple failures"""
+        async def test_performance_under_load(self):
+            """Test fallback performance under multiple failures"""
+        pass
         state = MockLNNCouncilState(
             current_request=MockGPURequest(priority=6)
         )
@@ -720,13 +734,13 @@ class TestFallbackEngine:
 
 
 async def run_all_tests():
-    """Run all fallback engine tests"""
-    print("🧪 Fallback Engine Comprehensive Tests - Task 8 Implementation")
-    print("=" * 70)
+        """Run all fallback engine tests"""
+        print("🧪 Fallback Engine Comprehensive Tests - Task 8 Implementation")
+        print("=" * 70)
     
-    tester = TestFallbackEngine()
+        tester = TestFallbackEngine()
     
-    tests = [
+        tests = [
         ("Fallback Trigger Classification", tester.test_fallback_trigger_classification),
         ("Degradation Level Calculation", tester.test_degradation_level_calculation),
         ("Emergency Mode Decision", tester.test_emergency_mode_decision),
@@ -736,30 +750,30 @@ async def run_all_tests():
         ("Recovery Mechanism", tester.test_recovery_mechanism),
         ("Metrics Tracking", tester.test_metrics_tracking),
         ("Performance Under Load", tester.test_performance_under_load),
-    ]
+        ]
     
-    passed = 0
-    total = len(tests)
+        passed = 0
+        total = len(tests)
     
-    for test_name, test_func in tests:
+        for test_name, test_func in tests:
         print(f"\n🔍 Running: {test_name}")
         try:
-            if asyncio.iscoroutinefunction(test_func):
-                result = await test_func()
-            else:
-                result = test_func()
+        if asyncio.iscoroutinefunction(test_func):
+            result = await test_func()
+        else:
+        result = test_func()
             
-            if result:
-                passed += 1
-            else:
-                print(f"❌ {test_name}: FAILED")
+        if result:
+        passed += 1
+        else:
+        print(f"❌ {test_name}: FAILED")
         except Exception as e:
-            print(f"❌ {test_name}: ERROR - {e}")
+        print(f"❌ {test_name}: ERROR - {e}")
     
-    print("\n" + "=" * 70)
-    print(f"📊 Test Results: {passed}/{total} passed")
+        print("\n" + "=" * 70)
+        print(f"📊 Test Results: {passed}/{total} passed")
     
-    if passed == total:
+        if passed == total:
         print("🎉 ALL FALLBACK ENGINE TESTS PASSED!")
         print("\n✅ Task 8 Implementation Complete:")
         print("   • Multi-level degradation system ✅")
@@ -769,11 +783,11 @@ async def run_all_tests():
         print("   • Performance monitoring and metrics ✅")
         print("   • Unit tests for all fallback scenarios ✅")
         print("\n🚀 Ready for Task 9: Performance Monitoring and Observability")
-    else:
+        else:
         print("❌ Some tests failed")
     
-    return passed == total
+        return passed == total
 
 
-if __name__ == "__main__":
-    asyncio.run(run_all_tests())
+        if __name__ == "__main__":
+        asyncio.run(run_all_tests())

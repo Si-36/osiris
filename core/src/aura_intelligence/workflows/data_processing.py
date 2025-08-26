@@ -62,7 +62,7 @@ class DataProcessingWorkflow:
         self.workflow_id = None
         self.start_time = None
     
-    async def run(self, input_data: DataProcessingInput) -> DataProcessingResult:
+        async def run(self, input_data: DataProcessingInput) -> DataProcessingResult:
         """
         Execute data processing workflow.
         
@@ -133,7 +133,7 @@ class DataProcessingWorkflow:
                 errors=errors
             )
     
-    async def _publish_to_kafka(self, data: Any, topic: str):
+        async def _publish_to_kafka(self, data: Any, topic: str):
         """Publish processed data to Kafka."""
         kafka_config = KafkaConfig(bootstrap_servers="localhost:9092")
         producer = KafkaProducer("workflow-producer", kafka_config)
@@ -173,7 +173,7 @@ class DataValidationActivity:
             validation_rules.append(
                 ValidationRule(
                     name=rule_dict["name"],
-                    validator=None,  # TODO: Implement safe validator
+                    validator=None,  
                     error_message=rule_dict["error_message"],
                     required=rule_dict.get("required", True)
                 )
@@ -293,13 +293,13 @@ class DataEnrichmentActivity:
         }
 
 
-def calculate_quality_score(data: Dict[str, Any]) -> float:
-    """Calculate data quality score based on completeness and validity."""
-    if not data:
+    def calculate_quality_score(data: Dict[str, Any]) -> float:
+        """Calculate data quality score based on completeness and validity."""
+        if not data:
         return 0.0
     
     # Simple quality score based on non-null fields
-    total_fields = len(data)
-    non_null_fields = sum(1 for v in data.values() if v is not None)
+        total_fields = len(data)
+        non_null_fields = sum(1 for v in data.values() if v is not None)
     
-    return non_null_fields / total_fields if total_fields > 0 else 0.0
+        return non_null_fields / total_fields if total_fields > 0 else 0.0

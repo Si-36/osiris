@@ -27,8 +27,9 @@ class ProductionMetabolicManager:
         self._running = True
         asyncio.create_task(self._periodic_update_safe())
     
-    async def _periodic_update_safe(self):
+        async def _periodic_update_safe(self):
         """Safe periodic update that won't crash"""
+        pass
         while self._running:
             try:
                 await self._update_all_budgets()
@@ -37,8 +38,9 @@ class ProductionMetabolicManager:
                 print(f"Metabolic update error: {e}")
                 await asyncio.sleep(10.0)  # Wait longer on error
     
-    async def _update_all_budgets(self):
+        async def _update_all_budgets(self):
         """Update budgets for all components using real AURA signals"""
+        pass
         # Get all 209 components
         components = self.wiring.registry.components
         
@@ -77,8 +79,8 @@ class ProductionMetabolicManager:
                 # Continue with other components on error
                 continue
     
-    async def process_with_metabolism(self, component_id: str, data: Any, 
-                                    context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        async def process_with_metabolism(self, component_id: str, data: Any,
+        context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Process with metabolic regulation"""
         context = context or {}
         
@@ -150,6 +152,7 @@ class ProductionMetabolicManager:
     
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive metabolic status"""
+        pass
         active_components = [cid for cid, cons in self.consumption.items() if cons > 0]
         total_consumption = sum(self.consumption.values())
         
@@ -182,13 +185,14 @@ class ProductionMetabolicManager:
     
     def stop(self):
         """Stop periodic updates"""
+        pass
         self._running = False
 
 # Global production metabolic manager
 _production_metabolic = None
 
-def get_production_metabolic():
-    global _production_metabolic
-    if _production_metabolic is None:
+    def get_production_metabolic():
+        global _production_metabolic
+        if _production_metabolic is None:
         _production_metabolic = ProductionMetabolicManager()
-    return _production_metabolic
+        return _production_metabolic

@@ -16,8 +16,8 @@ from langgraph.graph import StateGraph, END
 import structlog
 
 from ..base import AgentBase, AgentConfig, AgentState
-from ..observability import AgentInstrumentor
-from ...observability.knowledge_graph import KnowledgeGraphManager  # Fixed import name
+from aura_intelligence.observability import AgentInstrumentor
+from aura_intelligence.observability.knowledge_graph import KnowledgeGraphManager  # Fixed import name
 
 
 class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
@@ -57,6 +57,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
     
     def build_graph(self) -> StateGraph:
         """Build the observation workflow graph."""
+        pass
         workflow = StateGraph(AgentState)
         
         # Add nodes
@@ -76,7 +77,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         return workflow
     
-    async def _execute_step(self, state: AgentState, step_name: str) -> AgentState:
+        async def _execute_step(self, state: AgentState, step_name: str) -> AgentState:
         """Execute a specific workflow step."""
         step_methods = {
             "gather_context": self.gather_context_step,
@@ -91,7 +92,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         else:
             raise ValueError(f"Unknown step: {step_name}")
     
-    async def gather_context_step(self, state: AgentState) -> AgentState:
+        async def gather_context_step(self, state: AgentState) -> AgentState:
         """Gather context from knowledge graph and previous observations."""
         self.logger.info("Gathering observation context")
         
@@ -116,13 +117,13 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
             try:
                 # Get recent observations
                 recent_obs = await self.kg_client.query(
-                    """
+        """
                     MATCH (o:Observation)-[:OBSERVED_BY]->(a:Agent {id: $agent_id})
                     WHERE o.timestamp > datetime() - duration('PT1H')
                     RETURN o
                     ORDER BY o.timestamp DESC
                     LIMIT 10
-                    """,
+        """,
                     {"agent_id": state.agent_id}
                 )
                 
@@ -141,7 +142,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         return state
     
-    async def observe_system_step(self, state: AgentState) -> AgentState:
+        async def observe_system_step(self, state: AgentState) -> AgentState:
         """Perform system observations."""
         self.logger.info("Observing system state")
         
@@ -154,7 +155,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         # Simulate system observation (in production, would query actual systems)
         async def observe_metrics():
-            # In production: query Prometheus, CloudWatch, etc.
+        # In production: query Prometheus, CloudWatch, etc.
             return {
                 "cpu_usage": 45.2,
                 "memory_usage": 62.8,
@@ -167,7 +168,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
             }
         
         async def observe_processes():
-            # In production: query process managers, container orchestrators
+        # In production: query process managers, container orchestrators
             return [
                 {"name": "api-server", "status": "healthy", "cpu": 12.5, "memory": 512},
                 {"name": "database", "status": "healthy", "cpu": 25.0, "memory": 2048},
@@ -176,7 +177,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
             ]
         
         async def observe_events():
-            # In production: query event streams, logs
+        # In production: query event streams, logs
             return [
                 {"type": "deployment", "service": "api-server", "version": "2.1.0", "time": "10m ago"},
                 {"type": "alert", "severity": "warning", "message": "High CPU on worker-1", "time": "5m ago"},
@@ -229,7 +230,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         return state
     
-    async def detect_patterns_step(self, state: AgentState) -> AgentState:
+        async def detect_patterns_step(self, state: AgentState) -> AgentState:
         """Detect patterns in observations."""
         self.logger.info("Detecting patterns")
         
@@ -283,7 +284,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         return state
     
-    async def enrich_observations_step(self, state: AgentState) -> AgentState:
+        async def enrich_observations_step(self, state: AgentState) -> AgentState:
         """Enrich observations with historical context and predictions."""
         self.logger.info("Enriching observations")
         
@@ -347,7 +348,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
         
         return state
     
-    async def generate_report_step(self, state: AgentState) -> AgentState:
+        async def generate_report_step(self, state: AgentState) -> AgentState:
         """Generate comprehensive observation report."""
         self.logger.info("Generating observation report")
         
@@ -452,7 +453,7 @@ class ObserverAgentV2(AgentBase[Dict[str, Any], Dict[str, Any], AgentState]):
             "state": final_state.dict()
         })
     
-    async def process_state(self, state: AgentState) -> Dict[str, Any]:
+        async def process_state(self, state: AgentState) -> Dict[str, Any]:
         """Process with existing state (for Temporal integration)."""
         # Run the workflow with provided state
         result_state = await self._run_graph(state)

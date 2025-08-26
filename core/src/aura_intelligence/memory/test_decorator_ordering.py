@@ -18,15 +18,17 @@ class TestDecoratorOrdering(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures."""
+        pass
         self.call_count = 0
         self.breaker = CircuitBreaker(
-            fail_max=2,
-            reset_timeout=1,
-            exclude=[KeyError]  # Don't break on logical errors
+        fail_max=2,
+        reset_timeout=1,
+        exclude=[KeyError]  # Don't break on logical errors
         )
     
     def test_retry_inside_breaker(self):
-        """Test that retry logic works inside circuit breaker."""
+            """Test that retry logic works inside circuit breaker."""
+        pass
         # This simulates our corrected decorator order:
         # @breaker (outer)
         # @retry (inner)
@@ -38,31 +40,32 @@ class TestDecoratorOrdering(unittest.TestCase):
             wait=wait_fixed(0.1),
             retry=retry_if_exception_type(ConnectionError)
         )
-        def flaky_operation():
+    def flaky_operation():
             self.call_count += 1
             if self.call_count < 3:
                 raise ConnectionError("Transient error")
             return "success"
         
-        # First call: should retry 2 times then succeed
-        result = flaky_operation()
-        self.assertEqual(result, "success")
-        self.assertEqual(self.call_count, 3)
+            # First call: should retry 2 times then succeed
+            result = flaky_operation()
+            self.assertEqual(result, "success")
+            self.assertEqual(self.call_count, 3)
         
-        # Breaker should still be closed (only saw 1 "failure" from its perspective)
-        self.assertEqual(self.breaker.current_state, "closed")
+            # Breaker should still be closed (only saw 1 "failure" from its perspective)
+            self.assertEqual(self.breaker.current_state, "closed")
     
     def test_breaker_opens_after_retry_exhaustion(self):
-        """Test that breaker opens when retries are exhausted."""
+                """Test that breaker opens when retries are exhausted."""
+            pass
         
-        @self.breaker
-        @retry(
+            @self.breaker
+            @retry(
             stop=stop_after_attempt(3),
             wait=wait_fixed(0.01),
             retry=retry_if_exception_type(ConnectionError)
-        )
-        def always_fails():
-            raise ConnectionError("Permanent error")
+            )
+    def always_fails():
+        raise ConnectionError("Permanent error")
         
         # First call: retries 3 times, then breaker sees 1 failure
         with self.assertRaises(RetryError):
@@ -82,6 +85,7 @@ class TestDecoratorOrdering(unittest.TestCase):
     
     def test_wrong_order_bypasses_retry(self):
         """Demonstrate the bug when decorators are in wrong order."""
+        pass
         # This simulates the WRONG order:
         # @retry (outer)
         # @breaker (inner)
@@ -90,15 +94,15 @@ class TestDecoratorOrdering(unittest.TestCase):
         call_count = 0
         
         @retry(
-            stop=stop_after_attempt(3),
-            wait=wait_fixed(0.01),
-            retry=retry_if_exception_type(ConnectionError)
+        stop=stop_after_attempt(3),
+        wait=wait_fixed(0.01),
+        retry=retry_if_exception_type(ConnectionError)
         )
         @self.breaker
-        def wrong_order_operation():
-            nonlocal call_count
-            call_count += 1
-            raise ConnectionError("Error")
+    def wrong_order_operation():
+        nonlocal call_count
+        call_count += 1
+        raise ConnectionError("Error")
         
         # The breaker will open after 2 calls
         with self.assertRaises(RetryError):
@@ -116,8 +120,9 @@ class TestRedisStoreDecoratorIntegration(unittest.TestCase):
     @patch('redis.Redis')
     def test_redis_store_handles_transient_errors(self, mock_redis):
         """Test that Redis store retries transient errors correctly."""
+        pass
         from circle.core.src.aura_intelligence.memory.redis_store import (
-            RedisVectorStore, RedisConfig
+        RedisVectorStore, RedisConfig
         )
         
         # Set up mock to fail twice then succeed
@@ -126,12 +131,12 @@ class TestRedisStoreDecoratorIntegration(unittest.TestCase):
         
         # Create a mock that fails twice then succeeds
         call_count = 0
-        def side_effect(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 3:
-                raise ConnectionError("Transient Redis error")
-            return True
+    def side_effect(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        if call_count < 3:
+            raise ConnectionError("Transient Redis error")
+        return True
         
         # Mock the pipeline execution
         mock_pipeline = Mock()
@@ -151,10 +156,10 @@ class TestRedisStoreDecoratorIntegration(unittest.TestCase):
         # This should retry the transient errors and eventually succeed
         import numpy as np
         result = store.add(
-            memory_id="test-123",
-            embedding=np.array([1.0] * 128),
-            content={"test": "data"},
-            context_type="test"
+        memory_id="test-123",
+        embedding=np.array([1.0] * 128),
+        content={"test": "data"},
+        context_type="test"
         )
         
         # Should have succeeded after retries
@@ -162,13 +167,13 @@ class TestRedisStoreDecoratorIntegration(unittest.TestCase):
         self.assertEqual(call_count, 3)  # Failed twice, succeeded on third
 
 
-def retry_if_exception_type(exc_type):
-    """Helper to create retry predicate."""
+    def retry_if_exception_type(exc_type):
+        """Helper to create retry predicate."""
     def predicate(retry_state):
         return retry_state.outcome.failed and \
-               isinstance(retry_state.outcome.exception(), exc_type)
-    return predicate
+        isinstance(retry_state.outcome.exception(), exc_type)
+        return predicate
 
 
-if __name__ == '__main__':
-    unittest.main()
+        if __name__ == '__main__':
+        unittest.main()

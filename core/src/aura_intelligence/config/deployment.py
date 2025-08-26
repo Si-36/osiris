@@ -160,14 +160,17 @@ class DeploymentSettings(BaseSettings):
     @property
     def is_shadow_mode(self) -> bool:
         """Check if running in shadow mode."""
+        pass
         return self.deployment_mode == "shadow" and self.shadow_enabled
     
     @property
     def is_canary_mode(self) -> bool:
         """Check if running in canary mode."""
+        pass
         return self.deployment_mode == "canary" and self.canary_enabled
     
     @property
     def full_image_name(self) -> str:
         """Get full container image name with registry and tag."""
+        pass
         return f"{self.container_registry}/{self.container_image}:{self.container_tag}"

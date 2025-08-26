@@ -43,8 +43,9 @@ class TDANeo4jAdapter:
     """
     
     def __init__(self, uri: Optional[str] = None, user: Optional[str] = None, 
-                 password: Optional[str] = None, database: Optional[str] = None):
+        password: Optional[str] = None, database: Optional[str] = None):
         """Initialize Neo4j connection with configuration."""
+        pass
         config = get_config()
         
         self.uri = uri or config.database.neo4j_uri
@@ -57,6 +58,7 @@ class TDANeo4jAdapter:
         
     async def initialize(self):
         """Initialize connection and create indexes."""
+        pass
         if self._initialized:
             return
             
@@ -81,6 +83,7 @@ class TDANeo4jAdapter:
             
     async def _create_indexes(self):
         """Create indexes for optimal query performance."""
+        pass
         async with self.driver.session(database=self.database) as session:
             # Index on TDA node ID
             await session.run(
@@ -137,7 +140,7 @@ class TDANeo4jAdapter:
             try:
                 # Store node
                 result = await session.run(
-                    """
+        """
                     CREATE (t:TDAResult {
                         id: $id,
                         algorithm: $algorithm,
@@ -148,7 +151,7 @@ class TDANeo4jAdapter:
                         metadata: $metadata
                     })
                     RETURN t.id as id
-                    """,
+        """,
                     id=node.id,
                     algorithm=node.algorithm,
                     timestamp=node.timestamp.isoformat(),
@@ -203,46 +206,46 @@ class TDANeo4jAdapter:
             
         return features
         
-    async def _create_data_relationship(
+        async def _create_data_relationship(
         self, session, tda_id: str, data_id: str
-    ):
+        ):
         """Create relationship between TDA result and source data."""
         await session.run(
-            """
+        """
             MATCH (t:TDAResult {id: $tda_id})
             MERGE (d:Data {id: $data_id})
             CREATE (d)-[:ANALYZED_BY]->(t)
-            """,
+        """,
             tda_id=tda_id,
             data_id=data_id
         )
         
-    async def _store_persistence_diagrams(
+        async def _store_persistence_diagrams(
         self, session, tda_id: str, diagrams: List[Any]
-    ):
+        ):
         """Store individual persistence diagrams."""
         for i, diagram in enumerate(diagrams):
             await session.run(
-                """
+        """
                 MATCH (t:TDAResult {id: $tda_id})
                 CREATE (p:PersistenceDiagram {
                     dimension: $dimension,
                     intervals: $intervals
                 })
                 CREATE (t)-[:HAS_DIAGRAM]->(p)
-                """,
+        """,
                 tda_id=tda_id,
                 dimension=i,
                 intervals=json.dumps(diagram.intervals)
             )
             
-    async def _create_anomaly_relationships(
+        async def _create_anomaly_relationships(
         self, session, tda_id: str, score: float
-    ):
+        ):
         """Create relationships to similar anomalies."""
         # Find similar anomalies
         result = await session.run(
-            """
+        """
             MATCH (t:TDAResult {id: $tda_id})
             MATCH (other:TDAResult)
             WHERE other.id <> $tda_id
@@ -252,16 +255,16 @@ class TDANeo4jAdapter:
             ORDER BY similarity
             LIMIT 5
             CREATE (t)-[:SIMILAR_TO {score: 1 - similarity}]->(other)
-            """,
+        """,
             tda_id=tda_id,
             score=score
         )
         
-    async def query_tda_results(
+        async def query_tda_results(
         self,
         filters: Optional[Dict[str, Any]] = None,
         limit: int = 100
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """
         Query TDA results with filters.
         
@@ -323,9 +326,9 @@ class TDANeo4jAdapter:
                 
             return results
             
-    async def get_topological_context(
+        async def get_topological_context(
         self, data_id: str, depth: int = 2
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Get topological context for a data point.
         
@@ -378,8 +381,9 @@ class TDANeo4jAdapter:
                     
             return context
             
-    async def close(self):
+        async def close(self):
         """Close Neo4j connection."""
+        pass
         if self.driver:
             await self.driver.close()
             self._initialized = False

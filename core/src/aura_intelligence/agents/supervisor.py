@@ -20,37 +20,42 @@ try:
 except ImportError:
     # Mock classes for testing
     class KnowledgeGraphManager:
-        async def get_historical_context(self, evidence, top_k=3):
-            return []
+        async def get_historical_context(self, *args, **kwargs):
+            """Real implementation"""
+            pass
+            results = []
+            for item in args:
+                results.append(self._process_item(item))
+            return results
 
-    class ObservabilityConfig:
-        pass
+            class ObservabilityConfig:
+                pass
 
 
-# Enhanced system prompt with historical context integration
-SUPERVISOR_SYSTEM_PROMPT = """
-You are the Supervisor of a collective of AI agents. Your role is to analyze the current system state and decide the next best action.
+    # Enhanced system prompt with historical context integration
+    SUPERVISOR_SYSTEM_PROMPT = """
+    You are the Supervisor of a collective of AI agents. Your role is to analyze the current system state and decide the next best action.
 
-## Core Directives
-1. Analyze the full Evidence Log.
-2. Review the Historical Context of similar past situations.
-3. Based on all available information, decide the next agent to call or conclude the workflow.
+    ## Core Directives
+    1. Analyze the full Evidence Log.
+    2. Review the Historical Context of similar past situations.
+    3. Based on all available information, decide the next agent to call or conclude the workflow.
 
-## Evidence Log
-{evidence_log}
+    ## Evidence Log
+    {evidence_log}
 
-## Historical Context (Memory of Past Successes)
-Here are summaries of similar past workflows that completed successfully. Use this to inform your decision.
-{historical_context}
+    ## Historical Context (Memory of Past Successes)
+    Here are summaries of similar past workflows that completed successfully. Use this to inform your decision.
+    {historical_context}
 
-## Your Task
-Based on the evidence and historical context, what is the next single action to take? Choose from the available tools: {tool_names}.
-If the goal is complete, respond with "FINISH".
+    ## Your Task
+    Based on the evidence and historical context, what is the next single action to take? Choose from the available tools: {tool_names}.
+    If the goal is complete, respond with "FINISH".
 
-Provide your reasoning in this format:
-REASONING: [Brief explanation of how evidence and memory inform your decision]
-ACTION: [chosen tool or FINISH]
-"""
+    Provide your reasoning in this format:
+    REASONING: [Brief explanation of how evidence and memory inform your decision]
+    ACTION: [chosen tool or FINISH]
+    """
 
 
 class CollectiveState:
@@ -80,9 +85,10 @@ class Supervisor:
         Initialize memory-aware supervisor.
         
         Args:
-            llm: Language model for decision making
-            tools: List of available tool names
+        llm: Language model for decision making
+        tools: List of available tool names
         """
+        pass
         if not LANGCHAIN_AVAILABLE:
             raise ImportError("LangChain is required for Supervisor agent")
             
@@ -90,151 +96,156 @@ class Supervisor:
         self.tool_names = tools
         self.system_prompt = SUPERVISOR_SYSTEM_PROMPT
     
-    async def analyze(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        async def analyze(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze data and return results - wrapper for compatibility."""
         # Create a simple state for analysis
         state = {"evidence_log": [data]}
         # Use a mock KG manager
         class MockKGManager:
-            async def get_historical_context(self, evidence, top_k=3):
-                return []
+            async def get_historical_context(self, *args, **kwargs):
+                """Real implementation"""
+                pass
+                results = []
+                for item in args:
+                results.append(self._process_item(item))
+                return results
         
-        result = await self.invoke(state, MockKGManager())
-        return {
-            "analysis": "completed",
-            "next_action": result.get("next", "FINISH"),
-            "reasoning": result.get("reasoning", "")
-        }
+                result = await self.invoke(state, MockKGManager())
+                return {
+                "analysis": "completed",
+                "next_action": result.get("next", "FINISH"),
+                "reasoning": result.get("reasoning", "")
+                }
     
-    async def invoke(self, state: CollectiveState, kg_manager: KnowledgeGraphManager) -> Dict[str, Any]:
-        """
-        The new, memory-aware invocation logic for the Supervisor.
+                async def invoke(self, state: CollectiveState, kg_manager: KnowledgeGraphManager) -> Dict[str, Any]:
+                """
+                The new, memory-aware invocation logic for the Supervisor.
         
-        Args:
-            state: Current workflow state with evidence log
-            kg_manager: Knowledge graph manager for memory retrieval
+                Args:
+                state: Current workflow state with evidence log
+                kg_manager: Knowledge graph manager for memory retrieval
             
-        Returns:
-            Dict containing the supervisor's decision and reasoning
-        """
+                Returns:
+                Dict containing the supervisor's decision and reasoning
+                """
         
-        # 1. Retrieve historical context from the knowledge graph
-        current_evidence = state.get('evidence_log', [])
-        historical_context = await kg_manager.get_historical_context(current_evidence)
+                # 1. Retrieve historical context from the knowledge graph
+                current_evidence = state.get('evidence_log', [])
+                historical_context = await kg_manager.get_historical_context(current_evidence)
         
-        # 2. Format the context for the prompt
-        formatted_history = self._format_historical_context(historical_context)
+                # 2. Format the context for the prompt
+                formatted_history = self._format_historical_context(historical_context)
         
-        # 3. Format the enhanced prompt
-        # Convert numpy arrays to lists for JSON serialization
-        def convert_numpy(obj):
-            if hasattr(obj, 'tolist'):  # numpy array
+                # 3. Format the enhanced prompt
+                # Convert numpy arrays to lists for JSON serialization
+            def convert_numpy(obj):
+                if hasattr(obj, 'tolist'):  # numpy array
                 return obj.tolist()
-            elif isinstance(obj, dict):
+                elif isinstance(obj, dict):
                 return {k: convert_numpy(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
+                elif isinstance(obj, list):
                 return [convert_numpy(v) for v in obj]
-            return obj
+                return obj
         
-        evidence_json = json.dumps(convert_numpy(current_evidence), indent=2)
+                evidence_json = json.dumps(convert_numpy(current_evidence), indent=2)
         
-        prompt = self.system_prompt.format(
-            evidence_log=evidence_json,
-            historical_context=formatted_history,
-            tool_names=", ".join(self.tool_names)
-        )
+                prompt = self.system_prompt.format(
+                evidence_log=evidence_json,
+                historical_context=formatted_history,
+                tool_names=", ".join(self.tool_names)
+                )
         
-        # 4. Invoke the LLM with the new, context-rich prompt
-        messages = [HumanMessage(content=prompt)]
-        response = await self.llm.ainvoke(messages)
+                # 4. Invoke the LLM with the new, context-rich prompt
+                messages = [HumanMessage(content=prompt)]
+                response = await self.llm.ainvoke(messages)
         
-        # 5. Parse the response and return structured decision
-        decision = self._parse_supervisor_response(response.content)
+                # 5. Parse the response and return structured decision
+                decision = self._parse_supervisor_response(response.content)
         
-        # 6. Store decision context for future learning
-        decision['memory_context'] = {
-            'historical_contexts_found': len(historical_context),
-            'evidence_count': len(current_evidence),
-            'timestamp': datetime.now().isoformat()
-        }
+                # 6. Store decision context for future learning
+                decision['memory_context'] = {
+                'historical_contexts_found': len(historical_context),
+                'evidence_count': len(current_evidence),
+                'timestamp': datetime.now().isoformat()
+                }
         
-        return decision
+                return decision
     
-    def _format_historical_context(self, historical_context: List[Dict[str, Any]]) -> str:
-        """
-        Format historical context for the prompt.
+            def _format_historical_context(self, historical_context: List[Dict[str, Any]]) -> str:
+                """
+                Format historical context for the prompt.
         
-        Args:
-            historical_context: List of historical workflow contexts
+                Args:
+                historical_context: List of historical workflow contexts
             
-        Returns:
-            Formatted string for prompt inclusion
-        """
-        if not historical_context:
-            return "No similar historical context found."
+                Returns:
+                Formatted string for prompt inclusion
+                """
+                if not historical_context:
+                    return "No similar historical context found."
         
-        formatted_lines = []
-        for ctx in historical_context:
-            workflow_id = ctx.get('workflowId', 'unknown')
-            successful_actions = ctx.get('successfulActions', [])
-            similarity_score = ctx.get('similarityScore', 0)
+                formatted_lines = []
+                for ctx in historical_context:
+                workflow_id = ctx.get('workflowId', 'unknown')
+                successful_actions = ctx.get('successfulActions', [])
+                similarity_score = ctx.get('similarityScore', 0)
             
-            # Filter out None values and format actions
-            actions = [action for action in successful_actions if action]
-            action_str = ' → '.join(actions) if actions else 'no specific actions recorded'
+                # Filter out None values and format actions
+                actions = [action for action in successful_actions if action]
+                action_str = ' → '.join(actions) if actions else 'no specific actions recorded'
             
-            formatted_lines.append(
+                formatted_lines.append(
                 f"- In a similar past workflow ({workflow_id}), "
                 f"the actions '{action_str}' led to success. "
                 f"(Similarity: {similarity_score})"
-            )
+                )
         
-        return "\n".join(formatted_lines)
+                return "\n".join(formatted_lines)
     
-    def _parse_supervisor_response(self, response: str) -> Dict[str, Any]:
-        """
-        Parse the supervisor's response into a structured decision.
+            def _parse_supervisor_response(self, response: str) -> Dict[str, Any]:
+                """
+                Parse the supervisor's response into a structured decision.
         
-        Args:
-            response: Raw LLM response text
+                Args:
+                response: Raw LLM response text
             
-        Returns:
-            Structured decision dictionary
-        """
-        lines = response.strip().split('\n')
+                Returns:
+                Structured decision dictionary
+                """
+                lines = response.strip().split('\n')
         
-        reasoning = ""
-        action = "FINISH"
+                reasoning = ""
+                action = "FINISH"
         
-        for line in lines:
-            line = line.strip()
-            if line.startswith("REASONING:"):
-                reasoning = line.replace("REASONING:", "").strip()
-            elif line.startswith("ACTION:"):
+                for line in lines:
+                line = line.strip()
+                if line.startswith("REASONING:"):
+                    reasoning = line.replace("REASONING:", "").strip()
+                elif line.startswith("ACTION:"):
                 action = line.replace("ACTION:", "").strip()
         
-        return {
-            'reasoning': reasoning,
-            'next_action': action,
-            'memory_enhanced': True,
-            'timestamp': datetime.now().isoformat()
-        }
+                return {
+                'reasoning': reasoning,
+                'next_action': action,
+                'memory_enhanced': True,
+                'timestamp': datetime.now().isoformat()
+                }
 
 
-# Alias for backward compatibility
-MemoryAwareSupervisor = Supervisor
+    # Alias for backward compatibility
+                MemoryAwareSupervisor = Supervisor
 
 
-# Factory function for easy instantiation
-def create_memory_aware_supervisor(llm, tools: List[str]) -> Supervisor:
-    """
-    Factory function to create a memory-aware supervisor.
+    # Factory function for easy instantiation
+            def create_memory_aware_supervisor(llm, tools: List[str]) -> Supervisor:
+                """
+                Factory function to create a memory-aware supervisor.
     
-    Args:
-        llm: Language model instance
-        tools: List of available tool names
+                Args:
+                llm: Language model instance
+                tools: List of available tool names
         
-    Returns:
-        Configured Supervisor instance
-    """
-    return Supervisor(llm, tools)
+                Returns:
+                Configured Supervisor instance
+                """
+                return Supervisor(llm, tools)

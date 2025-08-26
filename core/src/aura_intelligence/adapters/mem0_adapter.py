@@ -21,7 +21,7 @@ from opentelemetry import trace
 import httpx
 
 from ..resilience import resilient, ResilienceLevel
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 
 logger = structlog.get_logger()
 tracer = create_tracer("mem0_adapter")
@@ -101,8 +101,9 @@ class Mem0Adapter:
         self._client: Optional[httpx.AsyncClient] = None
         self._initialized = False
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize the Mem0 client."""
+        pass
         if self._initialized:
             return
             
@@ -135,18 +136,19 @@ class Mem0Adapter:
                 logger.error("Failed to initialize Mem0", error=str(e))
                 raise
                 
-    async def close(self):
+        async def close(self):
         """Close the Mem0 client."""
+        pass
         if self._client:
             await self._client.aclose()
             self._initialized = False
             logger.info("Mem0 adapter closed")
             
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def add_memory(
+        async def add_memory(
         self,
         memory: Memory
-    ) -> str:
+        ) -> str:
         """Add a new memory."""
         with tracer.start_as_current_span("mem0_add_memory") as span:
             span.set_attribute("mem0.agent_id", memory.agent_id)
@@ -185,10 +187,10 @@ class Mem0Adapter:
                 raise
                 
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def add_memories_batch(
+        async def add_memories_batch(
         self,
         memories: List[Memory]
-    ) -> List[str]:
+        ) -> List[str]:
         """Add multiple memories in batch."""
         with tracer.start_as_current_span("mem0_add_memories_batch") as span:
             span.set_attribute("mem0.batch_size", len(memories))
@@ -228,10 +230,10 @@ class Mem0Adapter:
                 raise
                 
     @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def search_memories(
+        async def search_memories(
         self,
         query: SearchQuery
-    ) -> List[Memory]:
+        ) -> List[Memory]:
         """Search for memories."""
         with tracer.start_as_current_span("mem0_search_memories") as span:
             span.set_attribute("mem0.query_text", query.query_text or "")
@@ -291,10 +293,10 @@ class Mem0Adapter:
                            error=str(e))
                 raise
                 
-    async def get_memory(
+        async def get_memory(
         self,
         memory_id: str
-    ) -> Optional[Memory]:
+        ) -> Optional[Memory]:
         """Get a specific memory by ID."""
         with tracer.start_as_current_span("mem0_get_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -327,11 +329,11 @@ class Mem0Adapter:
                            error=str(e))
                 raise
                 
-    async def update_memory(
+        async def update_memory(
         self,
         memory_id: str,
         updates: Dict[str, Any]
-    ) -> bool:
+        ) -> bool:
         """Update an existing memory."""
         with tracer.start_as_current_span("mem0_update_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -353,10 +355,10 @@ class Mem0Adapter:
                            error=str(e))
                 return False
                 
-    async def delete_memory(
+        async def delete_memory(
         self,
         memory_id: str
-    ) -> bool:
+        ) -> bool:
         """Delete a memory."""
         with tracer.start_as_current_span("mem0_delete_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
@@ -375,12 +377,12 @@ class Mem0Adapter:
                            error=str(e))
                 return False
                 
-    async def prune_memories(
+        async def prune_memories(
         self,
         agent_id: Optional[str] = None,
         older_than: Optional[datetime] = None,
         memory_type: Optional[MemoryType] = None
-    ) -> int:
+        ) -> int:
         """Prune old memories based on criteria."""
         with tracer.start_as_current_span("mem0_prune_memories") as span:
             span.set_attribute("mem0.agent_id", agent_id or "all")
@@ -415,12 +417,12 @@ class Mem0Adapter:
                 
     # Context-specific methods for LNN integration
     
-    async def get_context_window(
+        async def get_context_window(
         self,
         agent_id: str,
         window_size: int = 100,
         memory_types: Optional[List[MemoryType]] = None
-    ) -> List[Memory]:
+        ) -> List[Memory]:
         """Get a context window of recent memories for an agent."""
         query = SearchQuery(
             agent_ids=[agent_id],
@@ -439,12 +441,12 @@ class Mem0Adapter:
         
         return memories[:window_size]
         
-    async def find_similar_decisions(
+        async def find_similar_decisions(
         self,
         embedding: List[float],
         limit: int = 10,
         threshold: float = None
-    ) -> List[Memory]:
+        ) -> List[Memory]:
         """Find similar past decisions based on embedding."""
         query = SearchQuery(
             query_embedding=embedding,
@@ -460,12 +462,12 @@ class Mem0Adapter:
             
         return memories
         
-    async def get_agent_history(
+        async def get_agent_history(
         self,
         agent_id: str,
         hours: int = 24,
         memory_types: Optional[List[MemoryType]] = None
-    ) -> List[Memory]:
+        ) -> List[Memory]:
         """Get agent's recent history."""
         end_time = datetime.now(timezone.utc)
         start_time = end_time - timedelta(hours=hours)

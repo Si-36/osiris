@@ -115,7 +115,7 @@ class ConfidenceScorer:
         state: LNNCouncilState,
         decision: str,
         context_quality: Optional[float] = None
-    ) -> ConfidenceMetrics:
+        ) -> ConfidenceMetrics:
         """Calculate comprehensive confidence score for a decision."""
         
         metrics = ConfidenceMetrics()
@@ -338,7 +338,7 @@ class DecisionValidator:
         decision: str,
         request: GPUAllocationRequest,
         state: LNNCouncilState
-    ) -> ValidationResult:
+        ) -> ValidationResult:
         """Validate a decision against all constraints."""
         
         result = ValidationResult()
@@ -444,7 +444,7 @@ class ReasoningPathGenerator:
         confidence_metrics: ConfidenceMetrics,
         validation_result: ValidationResult,
         state: LNNCouncilState
-    ) -> List[str]:
+        ) -> List[str]:
         """Generate a comprehensive reasoning path for the decision."""
         
         reasoning_path = []
@@ -523,9 +523,9 @@ class ReasoningPathGenerator:
 
 
 # Test functions
-def test_confidence_scorer_basic():
-    """Test basic confidence scorer functionality."""
-    try:
+    def test_confidence_scorer_basic():
+        """Test basic confidence scorer functionality."""
+        try:
         config = {
             "confidence_threshold": 0.7,
             "entropy_weight": 0.2,
@@ -554,14 +554,14 @@ def test_confidence_scorer_basic():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Confidence scorer basic test failed: {e}")
         return False
 
 
-def test_decision_validator_basic():
-    """Test basic decision validator functionality."""
-    try:
+    def test_decision_validator_basic():
+        """Test basic decision validator functionality."""
+        try:
         config = {
             "max_gpu_allocation": 8,
             "max_duration_hours": 168,
@@ -601,14 +601,14 @@ def test_decision_validator_basic():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Decision validator basic test failed: {e}")
         return False
 
 
-def test_full_confidence_calculation():
-    """Test full confidence calculation pipeline."""
-    try:
+    def test_full_confidence_calculation():
+        """Test full confidence calculation pipeline."""
+        try:
         config = {
             "confidence_threshold": 0.7,
             "entropy_weight": 0.2,
@@ -664,14 +664,14 @@ def test_full_confidence_calculation():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Full confidence calculation test failed: {e}")
         return False
 
 
-def test_reasoning_path_generator():
-    """Test reasoning path generator functionality."""
-    try:
+    def test_reasoning_path_generator():
+        """Test reasoning path generator functionality."""
+        try:
         config = {
             "include_technical_details": True,
             "max_reasoning_steps": 10
@@ -726,14 +726,14 @@ def test_reasoning_path_generator():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Reasoning path generator test failed: {e}")
         return False
 
 
-def test_integration_scenario():
-    """Test integration scenario with all components."""
-    try:
+    def test_integration_scenario():
+        """Test integration scenario with all components."""
+        try:
         # Initialize all components
         config = {
             "confidence_threshold": 0.7,
@@ -813,26 +813,26 @@ def test_integration_scenario():
         
         return True
         
-    except Exception as e:
+        except Exception as e:
         print(f"❌ Integration scenario test failed: {e}")
         return False
 
 
-def main():
-    """Run all confidence scoring tests."""
-    print("🧪 Confidence Scoring Standalone Tests - Task 7 Implementation")
-    print("=" * 70)
+    def main():
+        """Run all confidence scoring tests."""
+        print("🧪 Confidence Scoring Standalone Tests - Task 7 Implementation")
+        print("=" * 70)
     
-    tests = [
+        tests = [
         ("Confidence Scorer Basic", test_confidence_scorer_basic),
         ("Decision Validator Basic", test_decision_validator_basic),
         ("Full Confidence Calculation", test_full_confidence_calculation),
         ("Reasoning Path Generator", test_reasoning_path_generator),
         ("Integration Scenario", test_integration_scenario)
-    ]
+        ]
     
-    results = []
-    for test_name, test_func in tests:
+        results = []
+        for test_name, test_func in tests:
         print(f"\n🔍 Running: {test_name}")
         try:
             result = test_func()
@@ -845,10 +845,10 @@ def main():
             print(f"❌ {test_name}: ERROR - {e}")
             results.append(False)
     
-    print("\n" + "=" * 70)
-    print(f"📊 Test Results: {sum(results)}/{len(results)} passed")
+        print("\n" + "=" * 70)
+        print(f"📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 ALL CONFIDENCE SCORING TESTS PASSED!")
         print("\n✅ Task 7 Implementation Complete:")
         print("   • Confidence scoring based on neural network outputs ✅")
@@ -857,10 +857,10 @@ def main():
         print("   • Unit tests for confidence calculation and validation logic ✅")
         print("\n🚀 Ready for Task 8: Implement Fallback Mechanisms")
         return 0
-    else:
+        else:
         print("❌ Some tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit(main())
+        if __name__ == "__main__":
+        exit(main())

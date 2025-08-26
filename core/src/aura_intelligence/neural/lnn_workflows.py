@@ -14,7 +14,7 @@ from temporalio import workflow, activity
 from temporalio.common import RetryPolicy
 import structlog
 
-from .lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig, benchmark_lnn
+from aura_intelligence.lnn import LiquidNeuralNetwork, EdgeLNN, LNNConfig, benchmark_lnn
 from .lnn_consensus import (
     DistributedLNN,
     LNNConsensusOrchestrator,
@@ -81,7 +81,7 @@ class LNNActivities:
         self.orchestrators: Dict[str, LNNConsensusOrchestrator] = {}
     
     @activity.defn(name="load_dataset")
-    async def load_dataset(self, dataset_path: str) -> Dict[str, Any]:
+        async def load_dataset(self, dataset_path: str) -> Dict[str, Any]:
         """Load and preprocess dataset for training."""
         # In production, this would load from S3, database, etc.
         # For now, generate synthetic data
@@ -105,7 +105,7 @@ class LNNActivities:
         }
     
     @activity.defn(name="create_lnn_model")
-    async def create_lnn_model(self, config_dict: Dict[str, Any]) -> str:
+        async def create_lnn_model(self, config_dict: Dict[str, Any]) -> str:
         """Create and initialize LNN model."""
         config = LNNConfig(**config_dict)
         model = LiquidNeuralNetwork(config)
@@ -118,7 +118,7 @@ class LNNActivities:
         return model_id
     
     @activity.defn(name="train_epoch")
-    async def train_epoch(
+        async def train_epoch(
         self,
         model_id: str,
         epoch: int,
@@ -126,7 +126,7 @@ class LNNActivities:
         y_train: List[int],
         batch_size: int,
         learning_rate: float
-    ) -> Dict[str, float]:
+        ) -> Dict[str, float]:
         """Train model for one epoch."""
         model = self.models.get(model_id)
         if not model:
@@ -175,12 +175,12 @@ class LNNActivities:
         }
     
     @activity.defn(name="validate_model")
-    async def validate_model(
+        async def validate_model(
         self,
         model_id: str,
         X_val: List[List[float]],
         y_val: List[int]
-    ) -> Dict[str, float]:
+        ) -> Dict[str, float]:
         """Validate model performance."""
         model = self.models.get(model_id)
         if not model:
@@ -204,12 +204,12 @@ class LNNActivities:
         }
     
     @activity.defn(name="save_checkpoint")
-    async def save_checkpoint(
+        async def save_checkpoint(
         self,
         model_id: str,
         epoch: int,
         metrics: Dict[str, float]
-    ) -> str:
+        ) -> str:
         """Save model checkpoint."""
         model = self.models.get(model_id)
         if not model:
@@ -229,12 +229,12 @@ class LNNActivities:
         return checkpoint_path
     
     @activity.defn(name="create_consensus_cluster")
-    async def create_consensus_cluster(
+        async def create_consensus_cluster(
         self,
         model_id: str,
         num_nodes: int,
         config_dict: Dict[str, Any]
-    ) -> str:
+        ) -> str:
         """Create consensus cluster for distributed inference."""
         lnn_config = LNNConfig(**config_dict)
         
@@ -253,14 +253,14 @@ class LNNActivities:
         return cluster_id
     
     @activity.defn(name="run_inference")
-    async def run_inference(
+        async def run_inference(
         self,
         model_id: str,
         input_data: List[float],
         input_shape: List[int],
         use_consensus: bool,
         cluster_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Run inference on input data."""
         # Reshape input
         X = torch.tensor(input_data).reshape(*input_shape)
@@ -296,11 +296,11 @@ class LNNActivities:
             }
     
     @activity.defn(name="adapt_model")
-    async def adapt_model(
+        async def adapt_model(
         self,
         model_id: str,
         feedback: List[float]
-    ) -> bool:
+        ) -> bool:
         """Adapt model based on feedback."""
         model = self.models.get(model_id)
         if not model:
@@ -313,12 +313,12 @@ class LNNActivities:
         return True
     
     @activity.defn(name="benchmark_model")
-    async def benchmark_model(
+        async def benchmark_model(
         self,
         model_id: str,
         input_shape: List[int],
         num_iterations: int = 100
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Benchmark model performance."""
         model = self.models.get(model_id)
         if not model:

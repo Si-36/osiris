@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import json
 import structlog
 
-from .config import LNNCouncilConfig
+from aura_intelligence.config import LNNCouncilConfig
 from .models import LNNCouncilState, GPUAllocationRequest, GPUAllocationDecision
 
 logger = structlog.get_logger()
@@ -48,10 +48,11 @@ class LNNMemoryIntegration:
     
     def set_mem0_adapter(self, adapter):
         """Inject Mem0 adapter (dependency injection pattern)."""
+        pass
         self.mem0_adapter = adapter
         logger.info("Mem0 adapter connected to LNN Memory Integration")
     
-    async def get_memory_context(self, state: LNNCouncilState) -> Optional[torch.Tensor]:
+        async def get_memory_context(self, state: LNNCouncilState) -> Optional[torch.Tensor]:
         """
         Get comprehensive memory context for decision making.
         
@@ -111,7 +112,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get memory context: {e}")
             return None
     
-    async def _get_episodic_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
+        async def _get_episodic_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
         """Get episodic memory context (recent similar decisions)."""
         
         if not self.mem0_adapter:
@@ -119,7 +120,7 @@ class LNNMemoryIntegration:
         
         try:
             # Search for recent decisions by this user
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -164,7 +165,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get episodic context: {e}")
             return None
     
-    async def _get_semantic_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
+        async def _get_semantic_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
         """Get semantic memory context (pattern-based similarities)."""
         
         if not self.mem0_adapter:
@@ -174,7 +175,7 @@ class LNNMemoryIntegration:
             # Semantic search for similar GPU requests
             semantic_query = f"GPU:{request.gpu_type} memory:{request.memory_gb}GB hours:{request.compute_hours}"
             
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -220,7 +221,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get semantic context: {e}")
             return None
     
-    async def _get_meta_learning_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
+        async def _get_meta_learning_context(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
         """Get meta-learning context (learning from decision outcomes)."""
         
         if not self.mem0_adapter:
@@ -228,7 +229,7 @@ class LNNMemoryIntegration:
         
         try:
             # Search for decision outcomes and learning patterns
-            from ...adapters.mem0_adapter import SearchQuery
+            from aura_intelligence.adapters.mem0_adapter import SearchQuery
             
             query = SearchQuery(
                 agent_id="lnn_council_agent",
@@ -269,7 +270,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get meta-learning context: {e}")
             return None
     
-    async def _get_temporal_patterns(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
+        async def _get_temporal_patterns(self, request: GPUAllocationRequest) -> Optional[Dict[str, Any]]:
         """Get temporal decision patterns."""
         
         if not self.mem0_adapter:
@@ -287,7 +288,7 @@ class LNNMemoryIntegration:
             temporal_data = {}
             
             for start_time, end_time, period_name in time_periods:
-                from ...adapters.mem0_adapter import SearchQuery
+                from aura_intelligence.adapters.mem0_adapter import SearchQuery
                 
                 query = SearchQuery(
                     agent_id="lnn_council_agent",
@@ -320,7 +321,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get temporal patterns: {e}")
             return None
 
-    async def _get_user_context(self, user_id: str) -> Optional[Dict[str, Any]]:
+        async def _get_user_context(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Get historical context for a user."""
         
         if not self.mem0_adapter:
@@ -352,7 +353,7 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get user context: {e}")
             return None
     
-    async def _get_project_context(self, project_id: str) -> Optional[Dict[str, Any]]:
+        async def _get_project_context(self, project_id: str) -> Optional[Dict[str, Any]]:
         """Get historical context for a project."""
         
         if not self.mem0_adapter:
@@ -384,8 +385,9 @@ class LNNMemoryIntegration:
             logger.warning(f"Failed to get project context: {e}")
             return None
     
-    async def _get_similar_requests(self, request) -> Optional[Dict[str, Any]]:
+        async def _get_similar_requests(self, request) -> Optional[Dict[str, Any]]:
         """Get context from similar historical requests."""
+        pass
         
         if not self.mem0_adapter:
             return self._get_mock_similar_context(request)
@@ -490,6 +492,7 @@ class LNNMemoryIntegration:
     
     def _get_mock_similar_context(self, request) -> Dict[str, Any]:
         """Mock similar requests context for testing."""
+        pass
         return {
             "similar_count": 8,
             "similar_approval_rate": 0.75,
@@ -497,12 +500,12 @@ class LNNMemoryIntegration:
             "pattern_strength": 1.0
         }
     
-    async def store_decision_outcome(
+        async def store_decision_outcome(
         self, 
         request: GPUAllocationRequest, 
         decision: GPUAllocationDecision,
         outcome: Optional[Dict[str, Any]] = None
-    ):
+        ):
         """
         Store decision outcome for future learning.
         
@@ -556,7 +559,7 @@ class LNNMemoryIntegration:
                 })
             
             # Store in Mem0
-            from ...adapters.mem0_adapter import Memory, MemoryType
+            from aura_intelligence.adapters.mem0_adapter import Memory, MemoryType
             
             memory = Memory(
                 agent_id="lnn_council_agent",
@@ -583,12 +586,12 @@ class LNNMemoryIntegration:
         except Exception as e:
             logger.warning(f"Failed to store decision outcome: {e}")
     
-    async def learn_from_outcome(
+        async def learn_from_outcome(
         self,
         request: GPUAllocationRequest,
         decision: GPUAllocationDecision,
         actual_outcome: Dict[str, Any]
-    ):
+        ):
         """
         Learn from decision outcomes to improve future decisions.
         
@@ -621,7 +624,7 @@ class LNNMemoryIntegration:
                     **learning_signal
                 }
                 
-                from ...adapters.mem0_adapter import Memory, MemoryType
+                from aura_intelligence.adapters.mem0_adapter import Memory, MemoryType
                 
                 learning_memory = Memory(
                     agent_id="lnn_council_agent",
@@ -675,6 +678,7 @@ class LNNMemoryIntegration:
     
     def _adaptive_learning_rate(self) -> float:
         """Calculate adaptive learning rate based on experience."""
+        pass
         base_rate = 0.1
         experience_factor = min(self.decision_count / 1000.0, 1.0)
         
@@ -795,6 +799,7 @@ class LNNMemoryIntegration:
     
     def get_memory_stats(self) -> Dict[str, Any]:
         """Get memory integration statistics."""
+        pass
         return {
             "decision_count": self.decision_count,
             "learning_updates": self.learning_updates,
@@ -810,6 +815,7 @@ class LNNMemoryIntegration:
     # Mock methods for testing without Mem0
     def _get_mock_episodic_context(self, request) -> Dict[str, Any]:
         """Mock episodic context for testing."""
+        pass
         return {
             "episodic_approval_rate": 0.8,
             "episodic_confidence": 0.75,
@@ -820,6 +826,7 @@ class LNNMemoryIntegration:
     
     def _get_mock_semantic_context(self, request) -> Dict[str, Any]:
         """Mock semantic context for testing."""
+        pass
         return {
             "semantic_approval_rate": 0.7,
             "semantic_pattern_strength": 0.8,
@@ -829,6 +836,7 @@ class LNNMemoryIntegration:
     
     def _get_mock_meta_context(self, request) -> Dict[str, Any]:
         """Mock meta-learning context for testing."""
+        pass
         return {
             "meta_confidence_calibration": 0.8,
             "meta_decision_accuracy": 0.85,
@@ -838,6 +846,7 @@ class LNNMemoryIntegration:
     
     def _get_mock_temporal_context(self, request) -> Dict[str, Any]:
         """Mock temporal context for testing."""
+        pass
         return {
             "recent_approval_rate": 0.8,
             "medium_approval_rate": 0.7,

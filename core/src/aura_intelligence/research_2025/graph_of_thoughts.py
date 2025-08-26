@@ -25,7 +25,7 @@ class GraphOfThoughts:
         self.thought_graph = nx.DiGraph()
         self.node_counter = 0
         
-    async def reason_with_got(self, problem: Dict[str, Any]) -> Dict[str, Any]:
+        async def reason_with_got(self, problem: Dict[str, Any]) -> Dict[str, Any]:
         start_time = time.time()
         
         # Initialize root thought
@@ -72,7 +72,7 @@ class GraphOfThoughts:
             
         return node_id
     
-    async def _expand_thoughts(self, node_id: str, max_depth: int):
+        async def _expand_thoughts(self, node_id: str, max_depth: int):
         node_data = self.thought_graph.nodes[node_id]['thought']
         
         if node_data.depth >= max_depth:
@@ -168,5 +168,5 @@ class GraphOfThoughts:
         return useful_nodes / total_nodes if total_nodes > 0 else 0.0
 
 
-def get_got_system() -> GraphOfThoughts:
-    return GraphOfThoughts()
+    def get_got_system() -> GraphOfThoughts:
+        return GraphOfThoughts()

@@ -39,7 +39,7 @@ class KnowledgeGraphService:
     """
     
     def __init__(self,
-                 uri: str = "bolt://localhost:7687",
+        uri: str = "bolt://localhost:7687",
                  username: str = "neo4j",
                  password: str = "password",
                  database: str = "aura_intelligence",
@@ -54,6 +54,7 @@ class KnowledgeGraphService:
             database: Database name
             enable_monitoring: Enable performance monitoring
         """
+        pass
         self.logger = get_logger(__name__)
         self.uri = uri
         self.username = username
@@ -74,30 +75,32 @@ class KnowledgeGraphService:
     
     async def initialize(self) -> bool:
         """Initialize Neo4j connection and create schema."""
+        pass
         try:
             # Initialize async Neo4j driver
-            self.driver = AsyncGraphDatabase.driver(
-                self.uri,
-                auth=(self.username, self.password)
-                # Use default database instead of specific name
-            )
+        self.driver = AsyncGraphDatabase.driver(
+        self.uri,
+        auth=(self.username, self.password)
+        # Use default database instead of specific name
+        )
             
-            # Test connection
-            await self.driver.verify_connectivity()
+        # Test connection
+        await self.driver.verify_connectivity()
             
-            # Create schema and constraints
-            await self._create_schema()
+        # Create schema and constraints
+        await self._create_schema()
             
-            self.initialized = True
-            self.logger.info("✅ Knowledge Graph Service initialized successfully")
-            return True
+        self.initialized = True
+        self.logger.info("✅ Knowledge Graph Service initialized successfully")
+        return True
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to initialize Knowledge Graph: {e}")
-            return False
+        self.logger.error(f"❌ Failed to initialize Knowledge Graph: {e}")
+        return False
     
-    async def _create_schema(self):
-        """Create Neo4j schema with constraints and indexes."""
+        async def _create_schema(self):
+            """Create Neo4j schema with constraints and indexes."""
+        pass
         schema_queries = [
             # Create constraints for unique identifiers
             "CREATE CONSTRAINT signature_hash_unique IF NOT EXISTS FOR (s:Signature) REQUIRE s.hash IS UNIQUE",
@@ -132,10 +135,10 @@ class KnowledgeGraphService:
         Store a topological signature in the knowledge graph.
         
         Args:
-            signature: TopologicalSignature to store
+        signature: TopologicalSignature to store
             
         Returns:
-            bool: Success status
+        bool: Success status
         """
         if not self.initialized:
             await self.initialize()
@@ -143,46 +146,46 @@ class KnowledgeGraphService:
         try:
             start_time = time.time()
             
-            query = """
-            MERGE (s:Signature {hash: $hash})
-            SET s.betti_numbers = $betti_numbers,
-                s.consciousness_level = $consciousness_level,
-                s.quantum_coherence = $quantum_coherence,
-                s.algorithm_used = $algorithm_used,
-                s.timestamp = datetime($timestamp),
-                s.agent_context = $agent_context,
-                s.performance_metrics = $performance_metrics
-            RETURN s.hash as hash
-            """
+        query = """
+        MERGE (s:Signature {hash: $hash})
+        SET s.betti_numbers = $betti_numbers,
+        s.consciousness_level = $consciousness_level,
+        s.quantum_coherence = $quantum_coherence,
+        s.algorithm_used = $algorithm_used,
+        s.timestamp = datetime($timestamp),
+        s.agent_context = $agent_context,
+        s.performance_metrics = $performance_metrics
+        RETURN s.hash as hash
+        """
             
-            parameters = {
-                "hash": signature.signature_hash,
-                "betti_numbers": signature.betti_numbers,
-                "consciousness_level": signature.consciousness_level,
-                "quantum_coherence": signature.quantum_coherence,
-                "algorithm_used": signature.algorithm_used,
-                "timestamp": signature.timestamp.isoformat(),
-                "agent_context": signature.agent_context,
-                "performance_metrics": signature.performance_metrics
-            }
+        parameters = {
+        "hash": signature.signature_hash,
+        "betti_numbers": signature.betti_numbers,
+        "consciousness_level": signature.consciousness_level,
+        "quantum_coherence": signature.quantum_coherence,
+        "algorithm_used": signature.algorithm_used,
+        "timestamp": signature.timestamp.isoformat(),
+        "agent_context": signature.agent_context,
+        "performance_metrics": signature.performance_metrics
+        }
             
-            async with self.driver.session() as session:
-                result = await session.run(query, parameters)
-                record = await result.single()
+        async with self.driver.session() as session:
+        result = await session.run(query, parameters)
+        record = await result.single()
                 
-                if record:
-                    storage_time = (time.time() - start_time) * 1000
-                    self.logger.debug(f"📦 Stored signature {signature.signature_hash[:8]}... in {storage_time:.2f}ms")
-                    return True
+        if record:
+            storage_time = (time.time() - start_time) * 1000
+        self.logger.debug(f"📦 Stored signature {signature.signature_hash[:8]}... in {storage_time:.2f}ms")
+        return True
                 
-            return False
+        return False
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to store signature: {e}")
-            return False
+        self.logger.error(f"❌ Failed to store signature: {e}")
+        return False
     
-    async def store_event_chain(self,
-                              signature: TopologicalSignature,
+        async def store_event_chain(self,
+        signature: TopologicalSignature,
                               event: SystemEvent,
                               action: Optional[AgentAction] = None,
                               outcome: Optional[Outcome] = None) -> bool:
@@ -198,7 +201,7 @@ class KnowledgeGraphService:
             start_time = time.time()
             
             # Build the chain creation query
-            query = """
+        query = """
             // Create or update signature
             MERGE (s:Signature {hash: $sig_hash})
             SET s.betti_numbers = $betti_numbers,
@@ -216,7 +219,7 @@ class KnowledgeGraphService:
             
             // Create relationship: Signature generated by Event
             MERGE (s)-[:GENERATED_BY]->(e)
-            """
+        """
             
             parameters = {
                 "sig_hash": signature.signature_hash,
@@ -247,7 +250,7 @@ class KnowledgeGraphService:
                 
                 // Create relationship: Event triggered Action
                 MERGE (e)<-[:TRIGGERED_BY]-(a)
-                """
+        """
                 
                 parameters.update({
                     "action_id": action.action_id,
@@ -277,7 +280,7 @@ class KnowledgeGraphService:
                 
                 // Create feedback loop: Outcome influences future Events
                 MERGE (o)-[:INFLUENCES {weight: $impact_score}]->(e)
-                """
+        """
                 
                 parameters.update({
                     "outcome_id": outcome.outcome_id,
@@ -311,11 +314,11 @@ class KnowledgeGraphService:
         Get causal context for a signature by traversing the graph.
         
         Args:
-            signature_hash: Hash of the signature to analyze
-            depth: Maximum traversal depth
+        signature_hash: Hash of the signature to analyze
+        depth: Maximum traversal depth
             
         Returns:
-            Causal context with related events, actions, and outcomes
+        Causal context with related events, actions, and outcomes
         """
         if not self.initialized:
             await self.initialize()
@@ -323,58 +326,58 @@ class KnowledgeGraphService:
         try:
             start_time = time.time()
             
-            query = f"""
-            MATCH (s:Signature {{hash: $signature_hash}})
-            OPTIONAL MATCH path1 = (s)-[:GENERATED_BY]->(e:Event)
-            OPTIONAL MATCH path2 = (e)<-[:TRIGGERED_BY]-(a:Action)
-            OPTIONAL MATCH path3 = (a)-[:LED_TO]->(o:Outcome)
-            OPTIONAL MATCH path4 = (o)-[:INFLUENCES]->(future_e:Event)
+        query = f"""
+        MATCH (s:Signature {{hash: $signature_hash}})
+        OPTIONAL MATCH path1 = (s)-[:GENERATED_BY]->(e:Event)
+        OPTIONAL MATCH path2 = (e)<-[:TRIGGERED_BY]-(a:Action)
+        OPTIONAL MATCH path3 = (a)-[:LED_TO]->(o:Outcome)
+        OPTIONAL MATCH path4 = (o)-[:INFLUENCES]->(future_e:Event)
             
-            // Find similar signatures (same Betti numbers)
-            OPTIONAL MATCH (similar:Signature)
-            WHERE similar.betti_numbers = s.betti_numbers 
-              AND similar.hash <> s.hash
-            LIMIT 5
+        // Find similar signatures (same Betti numbers)
+        OPTIONAL MATCH (similar:Signature)
+        WHERE similar.betti_numbers = s.betti_numbers
+        AND similar.hash <> s.hash
+        LIMIT 5
             
-            RETURN s, e, a, o, future_e,
-                   collect(DISTINCT similar) as similar_signatures,
-                   [path1, path2, path3, path4] as paths
-            """
+        RETURN s, e, a, o, future_e,
+        collect(DISTINCT similar) as similar_signatures,
+        [path1, path2, path3, path4] as paths
+        """
             
-            async with self.driver.session() as session:
-                result = await session.run(query, {"signature_hash": signature_hash})
-                record = await result.single()
+        async with self.driver.session() as session:
+        result = await session.run(query, {"signature_hash": signature_hash})
+        record = await result.single()
                 
-                if not record:
-                    return {"error": "Signature not found"}
+        if not record:
+            return {"error": "Signature not found"}
                 
-                # Process the results
-                context = {
-                    "signature": dict(record["s"]) if record["s"] else None,
-                    "event": dict(record["e"]) if record["e"] else None,
-                    "action": dict(record["a"]) if record["a"] else None,
-                    "outcome": dict(record["o"]) if record["o"] else None,
-                    "future_event": dict(record["future_e"]) if record["future_e"] else None,
-                    "similar_signatures": [dict(sig) for sig in record["similar_signatures"]],
-                    "causal_chain_length": sum(1 for path in record["paths"] if path),
-                    "query_time_ms": (time.time() - start_time) * 1000
-                }
+        # Process the results
+        context = {
+        "signature": dict(record["s"]) if record["s"] else None,
+        "event": dict(record["e"]) if record["e"] else None,
+        "action": dict(record["a"]) if record["a"] else None,
+        "outcome": dict(record["o"]) if record["o"] else None,
+        "future_event": dict(record["future_e"]) if record["future_e"] else None,
+        "similar_signatures": [dict(sig) for sig in record["similar_signatures"]],
+        "causal_chain_length": sum(1 for path in record["paths"] if path),
+        "query_time_ms": (time.time() - start_time) * 1000
+        }
                 
-                # Update performance metrics
-                query_time = (time.time() - start_time) * 1000
-                self.query_count += 1
-                self.total_query_time += query_time
-                self.avg_query_time = self.total_query_time / self.query_count
+        # Update performance metrics
+        query_time = (time.time() - start_time) * 1000
+        self.query_count += 1
+        self.total_query_time += query_time
+        self.avg_query_time = self.total_query_time / self.query_count
                 
-                self.logger.debug(f"🔍 Retrieved causal context in {query_time:.2f}ms")
+        self.logger.debug(f"🔍 Retrieved causal context in {query_time:.2f}ms")
                 
-                return context
+        return context
                 
         except Exception as e:
-            self.logger.error(f"❌ Failed to get causal context: {e}")
-            return {"error": str(e)}
+        self.logger.error(f"❌ Failed to get causal context: {e}")
+        return {"error": str(e)}
     
-    async def find_pattern_relationships(self, pattern_type: str, limit: int = 10) -> List[Dict[str, Any]]:
+        async def find_pattern_relationships(self, pattern_type: str, limit: int = 10) -> List[Dict[str, Any]]:
         """
         Find relationships between patterns of a specific type.
         
@@ -412,7 +415,7 @@ class KnowledgeGraphService:
                    e2.timestamp as timestamp2
             ORDER BY betti_diff ASC
             LIMIT $limit
-            """
+        """
             
             async with self.driver.session() as session:
                 result = await session.run(query, {"pattern_type": pattern_type, "limit": limit})
@@ -437,42 +440,44 @@ class KnowledgeGraphService:
     
     async def get_graph_stats(self) -> Dict[str, Any]:
         """Get knowledge graph statistics."""
+        pass
         if not self.initialized:
             await self.initialize()
         
         try:
             query = """
-            MATCH (s:Signature) WITH count(s) as signatures
-            MATCH (e:Event) WITH signatures, count(e) as events
-            MATCH (a:Action) WITH signatures, events, count(a) as actions
-            MATCH (o:Outcome) WITH signatures, events, actions, count(o) as outcomes
-            MATCH ()-[r]->() WITH signatures, events, actions, outcomes, count(r) as relationships
-            RETURN signatures, events, actions, outcomes, relationships
-            """
+        MATCH (s:Signature) WITH count(s) as signatures
+        MATCH (e:Event) WITH signatures, count(e) as events
+        MATCH (a:Action) WITH signatures, events, count(a) as actions
+        MATCH (o:Outcome) WITH signatures, events, actions, count(o) as outcomes
+        MATCH ()-[r]->() WITH signatures, events, actions, outcomes, count(r) as relationships
+        RETURN signatures, events, actions, outcomes, relationships
+        """
             
-            async with self.driver.session() as session:
-                result = await session.run(query)
-                record = await result.single()
+        async with self.driver.session() as session:
+        result = await session.run(query)
+        record = await result.single()
                 
-                if record:
-                    return {
-                        "signatures": record["signatures"],
-                        "events": record["events"],
-                        "actions": record["actions"],
-                        "outcomes": record["outcomes"],
-                        "relationships": record["relationships"],
-                        "avg_query_time_ms": round(self.avg_query_time, 2),
-                        "total_queries": self.query_count
-                    }
+        if record:
+            return {
+        "signatures": record["signatures"],
+        "events": record["events"],
+        "actions": record["actions"],
+        "outcomes": record["outcomes"],
+        "relationships": record["relationships"],
+        "avg_query_time_ms": round(self.avg_query_time, 2),
+        "total_queries": self.query_count
+        }
                 
-            return {"error": "No data found"}
+        return {"error": "No data found"}
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to get graph stats: {e}")
-            return {"error": str(e)}
+        self.logger.error(f"❌ Failed to get graph stats: {e}")
+        return {"error": str(e)}
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Perform health check on the knowledge graph."""
+        pass
         try:
             if not self.initialized:
                 return {"status": "unhealthy", "reason": "not_initialized"}
@@ -502,6 +507,7 @@ class KnowledgeGraphService:
     
     async def close(self):
         """Close the Neo4j driver connection."""
+        pass
         if self.driver:
             await self.driver.close()
-            self.logger.info("🔌 Knowledge Graph Service connection closed")
+        self.logger.info("🔌 Knowledge Graph Service connection closed")

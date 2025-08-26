@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 
 try:
-    from .config import ObservabilityConfig
     from .opentelemetry_integration import OpenTelemetryManager
     from .langsmith_integration import LangSmithManager
     from .prometheus_metrics import PrometheusMetricsManager
@@ -21,8 +20,7 @@ try:
     from .health_monitor import OrganismHealthMonitor
     from .context_managers import ObservabilityContext
 except ImportError:
-    # Fallback for direct import - use absolute imports
-    from aura_intelligence.observability.config import ObservabilityConfig
+    # Fallback for absolute imports
     from aura_intelligence.observability.langsmith_integration import LangSmithManager
     from aura_intelligence.observability.prometheus_metrics import PrometheusMetricsManager
     from aura_intelligence.observability.structured_logging import StructuredLoggingManager
@@ -33,9 +31,23 @@ except ImportError:
     try:
         from aura_intelligence.observability.opentelemetry_integration import OpenTelemetryManager
     except ImportError:
-        OpenTelemetryMa
+        OpenTelemetryManager = None
 
-# Mock CollectiveState for standalone testing
+# Create config class
+class ObservabilityConfig:
+    def __init__(self):
+        self.enable_metrics = True
+        self.enable_tracing = True
+        self.prometheus_enabled = True
+        self.langsmith_enabled = False
+        self.organism_id = "aura_organism"
+        self.organism_generation = "2025"
+        self.langsmith_api_key = None
+        
+    def is_feature_enabled(self, feature):
+        return True
+
+    # Mock CollectiveState for standalone testing
 class CollectiveState:
     """Mock CollectiveState for standalone testing."""
     def __init__(self):
@@ -64,8 +76,9 @@ class NeuralObservabilityCore:
         Initialize the neural observability core.
         
         Args:
-            config: Observability configuration (uses default if None)
+        config: Observability configuration (uses default if None)
         """
+        pass
         
         self.config = config or ObservabilityConfig()
         self.start_time = time.time()
@@ -82,7 +95,7 @@ class NeuralObservabilityCore:
         # Current context tracking
         self._current_contexts: Dict[str, ObservabilityContext] = {}
     
-    async def initialize(self) -> None:
+        async def initialize(self) -> None:
         """
         Initialize all observability components.
         
@@ -125,16 +138,15 @@ class NeuralObservabilityCore:
             print(f"⚠️ Neural observability initialization warning: {e}")
             self.is_initialized = True  # Continue with partial functionality
     
-    async def _initialize_structured_logging(self) -> None:
+        async def _initialize_structured_logging(self) -> None:
         """Initialize structured logging first (needed by other components)."""
-        
         try:
             self._logging = StructuredLoggingManager(self.config)
             await self._logging.initialize()
         except Exception as e:
             print(f"⚠️ Structured logging initialization failed: {e}")
     
-    async def _initialize_opentelemetry(self) -> None:
+        async def _initialize_opentelemetry(self) -> None:
         """Initialize OpenTelemetry tracing and metrics."""
         
         try:
@@ -144,9 +156,8 @@ class NeuralObservabilityCore:
             if self._logging:
                 self._logging.logger.warning("opentelemetry_init_failed", error=str(e))
     
-    async def _initialize_langsmith(self) -> None:
+        async def _initialize_langsmith(self) -> None:
         """Initialize LangSmith 2.0 integration."""
-        
         try:
             if self.config.langsmith_api_key:
                 self._langsmith = LangSmithManager(self.config)
@@ -155,7 +166,7 @@ class NeuralObservabilityCore:
             if self._logging:
                 self._logging.logger.warning("langsmith_init_failed", error=str(e))
     
-    async def _initialize_prometheus(self) -> None:
+        async def _initialize_prometheus(self) -> None:
         """Initialize Prometheus metrics."""
         
         try:
@@ -165,9 +176,8 @@ class NeuralObservabilityCore:
             if self._logging:
                 self._logging.logger.warning("prometheus_init_failed", error=str(e))
     
-    async def _initialize_knowledge_graph(self) -> None:
+        async def _initialize_knowledge_graph(self) -> None:
         """Initialize knowledge graph for memory consolidation."""
-        
         try:
             if self.config.is_feature_enabled("memory_consolidation"):
                 self._knowledge_graph = KnowledgeGraphManager(self.config)
@@ -176,7 +186,7 @@ class NeuralObservabilityCore:
             if self._logging:
                 self._logging.logger.warning("knowledge_graph_init_failed", error=str(e))
     
-    async def _initialize_health_monitor(self) -> None:
+        async def _initialize_health_monitor(self) -> None:
         """Initialize organism health monitoring."""
         
         try:
@@ -191,11 +201,11 @@ class NeuralObservabilityCore:
                 self._logging.logger.warning("health_monitor_init_failed", error=str(e))
     
     @asynccontextmanager
-    async def observe_workflow(
+        async def observe_workflow(
         self, 
         state: CollectiveState, 
         workflow_type: str = "collective_intelligence"
-    ):
+        ):
         """
         Observe a complete workflow execution with full telemetry.
         
@@ -262,7 +272,7 @@ class NeuralObservabilityCore:
             # Cleanup
             self._current_contexts.pop(workflow_id, None)
     
-    async def _start_workflow_tracing(self, context: ObservabilityContext, state: CollectiveState) -> None:
+        async def _start_workflow_tracing(self, context: ObservabilityContext, state: CollectiveState) -> None:
         """Start tracing across all observability systems."""
         
         # OpenTelemetry tracing
@@ -285,14 +295,14 @@ class NeuralObservabilityCore:
         if self._health_monitor:
             await self._health_monitor.on_workflow_started(context, state)
     
-    async def _complete_workflow_tracing(
+        async def _complete_workflow_tracing(
         self, 
         context: ObservabilityContext, 
         state: CollectiveState, 
         duration: float, 
         status: str, 
         error: Optional[str] = None
-    ) -> None:
+        ) -> None:
         """Complete tracing across all observability systems."""
         
         # Update context with completion data
@@ -337,12 +347,12 @@ class NeuralObservabilityCore:
         return list(agents)
     
     @asynccontextmanager
-    async def observe_agent_call(
+        async def observe_agent_call(
         self, 
         agent_name: str, 
         tool_name: str, 
         inputs: Dict[str, Any] = None
-    ):
+        ):
         """
         Observe individual agent/tool calls with comprehensive telemetry.
         
@@ -388,7 +398,7 @@ class NeuralObservabilityCore:
             await self._complete_agent_tracing(agent_context, duration, "failed", str(e))
             raise
     
-    async def _start_agent_tracing(self, agent_context: Dict[str, Any]) -> None:
+        async def _start_agent_tracing(self, agent_context: Dict[str, Any]) -> None:
         """Start agent tracing across all systems."""
         
         if self._opentelemetry:
@@ -400,13 +410,13 @@ class NeuralObservabilityCore:
         if self._logging:
             self._logging.log_agent_started(agent_context)
     
-    async def _complete_agent_tracing(
+        async def _complete_agent_tracing(
         self, 
         agent_context: Dict[str, Any], 
         duration: float, 
         status: str, 
         error: Optional[str] = None
-    ) -> None:
+        ) -> None:
         """Complete agent tracing across all systems."""
         
         agent_context.update({
@@ -424,14 +434,14 @@ class NeuralObservabilityCore:
         if self._logging:
             self._logging.log_agent_completed(agent_context)
     
-    async def track_llm_usage(
+        async def track_llm_usage(
         self, 
         model_name: str, 
         input_tokens: int, 
         output_tokens: int,
         latency_seconds: float, 
         cost_usd: Optional[float] = None
-    ) -> None:
+        ) -> None:
         """Track LLM usage with latest 2025 cost and performance patterns."""
         
         if self._prometheus:
@@ -444,12 +454,12 @@ class NeuralObservabilityCore:
                 model_name, input_tokens, output_tokens, latency_seconds, cost_usd
             )
     
-    async def track_error_recovery(
+        async def track_error_recovery(
         self, 
         error_type: str, 
         recovery_strategy: str, 
         success: bool
-    ) -> None:
+        ) -> None:
         """Track error recovery attempts (integrates with Phase 1, Step 2)."""
         
         if self._prometheus:
@@ -461,7 +471,7 @@ class NeuralObservabilityCore:
         if self._health_monitor:
             await self._health_monitor.on_error_recovery(error_type, recovery_strategy, success)
     
-    async def update_system_health(self, health_score: float) -> None:
+        async def update_system_health(self, health_score: float) -> None:
         """Update overall system health score."""
         
         if self._prometheus:
@@ -473,7 +483,7 @@ class NeuralObservabilityCore:
         if self._health_monitor:
             await self._health_monitor.update_health_score(health_score)
     
-    async def shutdown(self) -> None:
+        async def shutdown(self) -> None:
         """Gracefully shutdown all observability components."""
         
         if self._logging:

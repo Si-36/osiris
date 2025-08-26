@@ -13,7 +13,7 @@ from langgraph.graph import StateGraph, END
 from pydantic import Field
 
 from ..base import AgentBase, AgentConfig, AgentState
-from ..observability import AgentInstrumentor, GenAIAttributes
+from aura_intelligence.observability import AgentInstrumentor, GenAIAttributes
 
 
 class ResearchAnalysisState(AgentState):
@@ -44,6 +44,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
     
     def __init__(self, config: AgentConfig = None):
         """Initialize research agent."""
+        pass
         if config is None:
             config = AgentConfig(name="research_agent", model="gpt-4")
         super().__init__(config)
@@ -51,6 +52,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
     
     def build_graph(self) -> StateGraph:
         """Build the research workflow graph."""
+        pass
         workflow = StateGraph(ResearchAnalysisState)
         
         # Define nodes
@@ -64,7 +66,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
         
         return workflow
     
-    async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
+        async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
         """Execute a specific step in the research workflow."""
         if step_name == "research":
             return await self.research_step(state)
@@ -73,7 +75,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
         else:
             raise ValueError(f"Unknown step: {step_name}")
     
-    async def research_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+        async def research_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
         """Perform research on the given query."""
         # In production, this would call search APIs or databases
         async with self.instrumentor.trace_llm_call(
@@ -126,7 +128,7 @@ class ResearchAgent(AgentBase[str, Dict[str, Any], ResearchAnalysisState]):
         state.next_step = "validate"
         return state
     
-    async def validate_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+        async def validate_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
         """Validate research results."""
         # Check if we have enough quality results
         high_quality_results = [
@@ -179,6 +181,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
     
     def __init__(self, config: AgentConfig = None):
         """Initialize analysis agent."""
+        pass
         if config is None:
             config = AgentConfig(name="analysis_agent", model="gpt-4", temperature=0.3)
         super().__init__(config)
@@ -186,6 +189,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
     
     def build_graph(self) -> StateGraph:
         """Build the analysis workflow graph."""
+        pass
         workflow = StateGraph(ResearchAnalysisState)
         
         # Define nodes
@@ -201,7 +205,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         
         return workflow
     
-    async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
+        async def _execute_step(self, state: ResearchAnalysisState, step_name: str) -> ResearchAnalysisState:
         """Execute a specific step in the analysis workflow."""
         if step_name == "analyze":
             return await self.analyze_step(state)
@@ -212,7 +216,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         else:
             raise ValueError(f"Unknown step: {step_name}")
     
-    async def analyze_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+        async def analyze_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
         """Analyze research results to extract insights."""
         async with self.instrumentor.trace_llm_call(
             agent_name=self.name,
@@ -243,7 +247,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         state.next_step = "synthesize"
         return state
     
-    async def synthesize_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+        async def synthesize_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
         """Synthesize findings into a summary."""
         # Create summary from insights
         state.analysis_summary = (
@@ -264,7 +268,7 @@ class AnalysisAgent(AgentBase[ResearchAnalysisState, Dict[str, Any], ResearchAna
         state.next_step = "recommend"
         return state
     
-    async def recommend_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
+        async def recommend_step(self, state: ResearchAnalysisState) -> ResearchAnalysisState:
         """Generate recommendations based on analysis."""
         # Generate recommendations (mock)
         state.recommendations = [
@@ -313,6 +317,7 @@ class ResearchAnalysisWorkflow:
     
     def __init__(self):
         """Initialize the workflow with both agents."""
+        pass
         self.research_agent = ResearchAgent()
         self.analysis_agent = AnalysisAgent()
         
@@ -321,7 +326,7 @@ class ResearchAnalysisWorkflow:
         self.research_agent = instrumentor.instrument_agent(self.research_agent)
         self.analysis_agent = instrumentor.instrument_agent(self.analysis_agent)
     
-    async def run(self, query: str) -> Dict[str, Any]:
+        async def run(self, query: str) -> Dict[str, Any]:
         """
         Run the complete research and analysis workflow.
         

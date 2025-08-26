@@ -18,7 +18,7 @@ from .fastrp import FastRP, FastRPConfig
 from .storage_interface import MemoryStorage, InMemoryStorage
 from .redis_store import RedisVectorStore, RedisConfig
 from .fusion_scorer import AdaptiveFusionScorer, FusionConfig
-from .observability import instrument, update_recall, update_false_positive_rate
+from aura_intelligence.observability import instrument, update_recall, update_false_positive_rate
 from ..tda.models import TDAResult, BettiNumbers
 
 logger = logging.getLogger(__name__)
@@ -84,6 +84,7 @@ class ShapeMemoryV2:
     
     def _create_storage(self) -> MemoryStorage:
         """Create appropriate storage backend."""
+        pass
         if self.config.storage_backend == "redis":
             redis_config = RedisConfig(url=self.config.redis_url)
             return RedisVectorStore(redis_config)
@@ -97,7 +98,7 @@ class ShapeMemoryV2:
         tda_result: TDAResult,
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> str:
+        ) -> str:
         """
         Store a new memory with its topological signature.
         
@@ -172,7 +173,7 @@ class ShapeMemoryV2:
         context_filter: Optional[str] = None,
         score_threshold: float = 0.0,
         enable_fusion: Optional[bool] = None
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
         """
         Retrieve memories similar to the query topology.
         
@@ -293,6 +294,7 @@ class ShapeMemoryV2:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get system statistics."""
+        pass
         stats = {
             "stores": self._store_counter,
             "retrieves": self._retrieve_counter,
@@ -314,16 +316,17 @@ class ShapeMemoryV2:
     
     def close(self):
         """Clean up resources."""
+        pass
         if hasattr(self.storage, 'close'):
             self.storage.close()
         logger.info("ShapeMemoryV2 closed")
 
 
 # Utility functions for metrics updates
-def update_shape_memory_recall(value: float):
-    """Update the recall@5 metric."""
-    update_recall(value)
+    def update_shape_memory_recall(value: float):
+        """Update the recall@5 metric."""
+        update_recall(value)
 
-def update_shape_memory_false_positive_rate(value: float):
-    """Update the false positive rate metric."""
-    update_false_positive_rate(value)
+    def update_shape_memory_false_positive_rate(value: float):
+        """Update the false positive rate metric."""
+        update_false_positive_rate(value)

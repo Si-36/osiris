@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .config import ActivationType, LayerConfig
+from aura_intelligence.config import ActivationType, LayerConfig
 
 
 class LiquidTimeStep(nn.Module):
@@ -53,6 +53,7 @@ class LiquidTimeStep(nn.Module):
     
     def _initialize_weights(self):
         """Initialize weights using Xavier initialization."""
+        pass
         nn.init.xavier_uniform_(self.W_in.weight)
         nn.init.xavier_uniform_(self.W_h.weight)
         nn.init.zeros_(self.W_in.bias)
@@ -63,7 +64,7 @@ class LiquidTimeStep(nn.Module):
         x: torch.Tensor,
         h: torch.Tensor,
         dt: float = 0.1
-    ) -> torch.Tensor:
+        ) -> torch.Tensor:
         """
         Forward pass with liquid dynamics.
         
@@ -132,6 +133,7 @@ class AdaptiveLayer(nn.Module):
     
     def _initialize_weights(self):
         """Initialize weights."""
+        pass
         nn.init.kaiming_normal_(self.linear.weight, nonlinearity='relu')
         if self.linear.bias is not None:
             nn.init.zeros_(self.linear.bias)
@@ -196,6 +198,7 @@ class SparseConnection(nn.Module):
     
     def _create_sparse_mask(self) -> torch.Tensor:
         """Create sparse connectivity mask."""
+        pass
         mask = torch.rand(self.output_size, self.input_size)
         threshold = torch.quantile(mask.flatten(), self.sparsity)
         return (mask > threshold).float()

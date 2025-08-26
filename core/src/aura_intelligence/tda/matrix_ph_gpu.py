@@ -65,6 +65,7 @@ class MatrixPHGPU:
     
     def _compile_kernels(self):
         """Pre-compile CUDA kernels for better performance"""
+        pass
         # Boundary matrix construction kernel
         self.boundary_kernel = self._get_boundary_kernel()
         
@@ -74,16 +75,17 @@ class MatrixPHGPU:
         # Persistence extraction kernel
         self.persistence_kernel = self._get_persistence_kernel()
     
-    @staticmethod
-    @cuda.jit
-    def _boundary_matrix_kernel(
+        @staticmethod
+        @cuda.jit
+        def _boundary_matrix_kernel(
         simplices, 
         indices, 
         indptr, 
         data,
         n_simplices
-    ):
+        ):
         """CUDA kernel for boundary matrix construction"""
+        pass
         tid = cuda.grid(1)
         
         if tid < n_simplices:
@@ -110,11 +112,12 @@ class MatrixPHGPU:
     
     def _get_boundary_kernel(self):
         """Get compiled boundary matrix kernel"""
+        pass
         return self._boundary_matrix_kernel
     
-    @staticmethod
-    @cuda.jit
-    def _fused_reduction_kernel(
+        @staticmethod
+        @cuda.jit
+        def _fused_reduction_kernel(
         matrix_data,
         matrix_indices,
         matrix_indptr,
@@ -122,11 +125,12 @@ class MatrixPHGPU:
         low_array,
         n_cols,
         block_size
-    ):
+        ):
         """
         Fused kernel for matrix reduction
         Power Sprint: Combines multiple operations in single kernel
         """
+        pass
         block_id = cuda.blockIdx.x
         thread_id = cuda.threadIdx.x
         
@@ -179,13 +183,15 @@ class MatrixPHGPU:
     
     def _get_reduction_kernel(self):
         """Get compiled reduction kernel"""
+        pass
         return self._fused_reduction_kernel
     
     def _get_persistence_kernel(self):
-        """Get persistence diagram extraction kernel"""
+            """Get persistence diagram extraction kernel"""
+        pass
         @cuda.jit
         def extract_persistence(
-            pivots,
+        pivots,
             low_array,
             simplex_dimensions,
             filtration_values,
@@ -218,7 +224,7 @@ class MatrixPHGPU:
         self, 
         simplices: List[Tuple[int, ...]], 
         filtration: List[float]
-    ) -> PHResult:
+        ) -> PHResult:
         """
         Compute persistence diagram using Matrix-PH
         
@@ -267,7 +273,7 @@ class MatrixPHGPU:
         self, 
         simplices: List[Tuple[int, ...]], 
         filtration: List[float]
-    ) -> torch.sparse.Tensor:
+        ) -> torch.sparse.Tensor:
         """Build sparse boundary matrix on GPU"""
         n = len(simplices)
         
@@ -306,7 +312,7 @@ class MatrixPHGPU:
                         values[idx] = (-1) ** j
                         idx += 1
                     except ValueError:
-                        pass
+        pass
         
         # Create sparse tensor
         boundary = torch.sparse_coo_tensor(
@@ -321,7 +327,7 @@ class MatrixPHGPU:
     def _fused_matrix_reduction(
         self, 
         boundary: torch.sparse.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Perform matrix reduction with fused kernels
         
@@ -363,7 +369,7 @@ class MatrixPHGPU:
     def _standard_matrix_reduction(
         self, 
         boundary: torch.sparse.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Standard matrix reduction (fallback)"""
         n = boundary.shape[1]
         pivots = torch.full((n,), -1, device=self.device, dtype=torch.long)
@@ -409,7 +415,7 @@ class MatrixPHGPU:
         low: torch.Tensor,
         simplices: List[Tuple[int, ...]],
         filtration: List[float]
-    ) -> List[Tuple[int, float, float]]:
+        ) -> List[Tuple[int, float, float]]:
         """Extract persistence diagram from reduced matrix"""
         diagram = []
         n = len(simplices)
@@ -444,7 +450,7 @@ class MatrixPHGPU:
     def _compute_betti_gpu(
         self, 
         diagram: List[Tuple[int, float, float]]
-    ) -> Dict[int, int]:
+        ) -> Dict[int, int]:
         """Compute Betti numbers from persistence diagram"""
         betti = {}
         
@@ -471,17 +477,17 @@ class MatrixPHGPU:
         
         # Add vertices
         for i in range(n_points):
-            simplices.append((i,))
-            filtration.append(0.0)
+        simplices.append((i,))
+        filtration.append(0.0)
         
         # Add edges (simplified - only close pairs)
         dists = torch.cdist(points, points)
         close_pairs = (dists < 0.5).nonzero()
         
         for i, j in close_pairs:
-            if i < j:
-                simplices.append((i.item(), j.item()))
-                filtration.append(dists[i, j].item())
+        if i < j:
+            simplices.append((i.item(), j.item()))
+        filtration.append(dists[i, j].item())
         
         # Benchmark
         torch.cuda.synchronize()
@@ -493,20 +499,20 @@ class MatrixPHGPU:
         total_time = time.time() - start
         
         return {
-            "total_time": total_time,
-            "n_simplices": len(simplices),
-            "n_features": len(result.diagram),
-            "memory_mb": result.memory_used / 1024 / 1024,
-            "throughput": len(simplices) / total_time
+        "total_time": total_time,
+        "n_simplices": len(simplices),
+        "n_features": len(result.diagram),
+        "memory_mb": result.memory_used / 1024 / 1024,
+        "throughput": len(simplices) / total_time
         }
 
 
-# Factory function
-def create_matrix_ph_gpu(**kwargs) -> MatrixPHGPU:
-    """Create Matrix-PH GPU computer with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+    # Factory function
+    def create_matrix_ph_gpu(**kwargs) -> MatrixPHGPU:
+        """Create Matrix-PH GPU computer with feature flag support"""
+        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.MATRIX_PH_GPU_ENABLED):
+        if not is_feature_enabled(FeatureFlag.MATRIX_PH_GPU_ENABLED):
         raise RuntimeError("Matrix-PH GPU is not enabled. Enable with feature flag.")
     
-    return MatrixPHGPU(**kwargs)
+        return MatrixPHGPU(**kwargs)

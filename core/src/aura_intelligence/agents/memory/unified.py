@@ -26,22 +26,22 @@ from opentelemetry.trace import Status, StatusCode
 
 # Import your existing memory components with graceful fallbacks
 try:
-    from ...enterprise.mem0_hot.ingest import HotMemoryIngest
+    from aura_intelligence.enterprise.mem0_hot.ingest import HotMemoryIngest
 except ImportError:
     HotMemoryIngest = None
 
 try:
-    from ...enterprise.mem0_semantic.sync import SemanticSync
+    from aura_intelligence.enterprise.mem0_semantic.sync import SemanticSync
 except ImportError:
     SemanticSync = None
 
 try:
-    from ...enterprise.cold_storage.archive import ArchivalJob
+    from aura_intelligence.enterprise.cold_storage.archive import ArchivalJob
 except ImportError:
     ArchivalJob = None
 
 try:
-    from ...api.search import SearchRouter
+    from aura_intelligence.api.search import SearchRouter
 except ImportError:
     SearchRouter = None
 
@@ -109,6 +109,7 @@ class FusedQueryResult:
     
     def get_best_result(self) -> Optional[QueryResult]:
         """Get the highest confidence result."""
+        pass
         if not self.results:
             return None
         return max(self.results, key=lambda r: r.confidence)
@@ -148,6 +149,7 @@ class UnifiedMemory:
             fusion_top_k: Number of results to retrieve per tier
             confidence_threshold: Minimum confidence for results
         """
+        pass
         self.search_router = search_router
         self.hot_memory = hot_memory
         self.semantic_sync = semantic_sync
@@ -164,6 +166,7 @@ class UnifiedMemory:
     
     def _initialize_fusion_retriever(self) -> None:
         """Initialize LlamaIndex fusion retriever."""
+        pass
         if not LLAMA_INDEX_AVAILABLE:
             return
         
@@ -201,24 +204,27 @@ class UnifiedMemory:
     
     def _create_hot_retriever(self) -> Optional[BaseRetriever]:
         """Create retriever for hot memory tier."""
+        pass
         # This would wrap your existing DuckDB search
         # For now, return None - will implement custom retriever
         return None
     
     def _create_semantic_retriever(self) -> Optional[BaseRetriever]:
         """Create retriever for semantic memory tier."""
+        pass
         # This would wrap your existing Redis vector search
         # For now, return None - will implement custom retriever
         return None
     
     def _create_cold_retriever(self) -> Optional[BaseRetriever]:
         """Create retriever for cold storage tier."""
+        pass
         # This would wrap your existing S3 Parquet search
         # For now, return None - will implement custom retriever
         return None
     
     @tracer.start_as_current_span("unified_memory_query")
-    async def query(
+        async def query(
         self,
         query: str,
         tier: MemoryTier = MemoryTier.AUTO,
@@ -226,7 +232,7 @@ class UnifiedMemory:
         limit: int = 10,
         threshold: float = None,
         context: Optional[Dict[str, Any]] = None
-    ) -> FusedQueryResult:
+        ) -> FusedQueryResult:
         """
         Query the unified memory system.
         
@@ -276,13 +282,13 @@ class UnifiedMemory:
             span.set_status(Status(StatusCode.ERROR, str(e)))
             raise
     
-    async def _fusion_query(
+        async def _fusion_query(
         self,
         query: str,
         limit: int,
         threshold: float,
         context: Optional[Dict[str, Any]]
-    ) -> FusedQueryResult:
+        ) -> FusedQueryResult:
         """Perform fusion query across multiple tiers."""
         
         if not self.fusion_retriever:
@@ -326,7 +332,7 @@ class UnifiedMemory:
             # Fallback to direct querying
             return await self._direct_query(query, MemoryTier.AUTO, QueryType.HYBRID, limit, threshold, context)
     
-    async def _direct_query(
+        async def _direct_query(
         self,
         query: str,
         tier: MemoryTier,
@@ -334,7 +340,7 @@ class UnifiedMemory:
         limit: int,
         threshold: float,
         context: Optional[Dict[str, Any]]
-    ) -> FusedQueryResult:
+        ) -> FusedQueryResult:
         """Perform direct query using existing search router."""
         
         start_time = time.time()
@@ -410,17 +416,18 @@ class UnifiedMemory:
     
     def _determine_source_tier(self, node) -> MemoryTier:
         """Determine which tier a LlamaIndex node came from."""
+        pass
         # This would analyze the node metadata to determine source
         # For now, default to semantic
         return MemoryTier.SEMANTIC
     
     @tracer.start_as_current_span("unified_memory_store")
-    async def store(
+        async def store(
         self,
         content: Any,
         tier: MemoryTier = MemoryTier.HOT,
         metadata: Optional[Dict[str, Any]] = None
-    ) -> str:
+        ) -> str:
         """
         Store content in the specified memory tier.
         
@@ -469,8 +476,9 @@ class UnifiedMemory:
             span.set_status(Status(StatusCode.ERROR, str(e)))
             raise
     
-    async def get_memory_stats(self) -> Dict[str, Any]:
+        async def get_memory_stats(self) -> Dict[str, Any]:
         """Get statistics about memory usage across tiers."""
+        pass
         stats = {
             "hot_tier": {"available": False},
             "semantic_tier": {"available": False},
@@ -489,7 +497,8 @@ class UnifiedMemory:
         
         return stats
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Cleanup resources."""
+        pass
         # Cleanup any resources if needed
         pass

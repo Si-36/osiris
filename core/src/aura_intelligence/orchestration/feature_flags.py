@@ -211,6 +211,7 @@ class FeatureFlagManager:
     
     def _load_overrides(self):
         """Load feature flag overrides from environment or config file"""
+        pass
         # Check for environment variable overrides
         for flag in FeatureFlag:
             env_key = f"AURA_FF_{flag.value.upper()}"
@@ -277,6 +278,7 @@ class FeatureFlagManager:
     
     def get_power_sprint_status(self) -> Dict[int, Dict[str, Any]]:
         """Get Power Sprint optimization status by week"""
+        pass
         status = {1: {}, 2: {}, 3: {}, 4: {}}
         
         for flag, config in self.flags.items():
@@ -309,14 +311,14 @@ class FeatureFlagManager:
 _feature_flag_manager = None
 
 
-def get_feature_flag_manager() -> FeatureFlagManager:
-    """Get or create the global feature flag manager"""
-    global _feature_flag_manager
-    if _feature_flag_manager is None:
+    def get_feature_flag_manager() -> FeatureFlagManager:
+        """Get or create the global feature flag manager"""
+        global _feature_flag_manager
+        if _feature_flag_manager is None:
         _feature_flag_manager = FeatureFlagManager()
-    return _feature_flag_manager
+        return _feature_flag_manager
 
 
-def is_feature_enabled(flag: FeatureFlag, tenant_id: Optional[str] = None) -> bool:
-    """Convenience function to check if a feature is enabled"""
-    return get_feature_flag_manager().is_enabled(flag, tenant_id)
+    def is_feature_enabled(flag: FeatureFlag, tenant_id: Optional[str] = None) -> bool:
+        """Convenience function to check if a feature is enabled"""
+        return get_feature_flag_manager().is_enabled(flag, tenant_id)

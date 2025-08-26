@@ -39,36 +39,37 @@ class TopologicalSignature:
         """Calculate topological distance to another signature."""
         # Betti number distance
         betti_dist = np.sqrt(
-            (self.betti_numbers.b0 - other.betti_numbers.b0) ** 2 +
-            (self.betti_numbers.b1 - other.betti_numbers.b1) ** 2 +
-            (self.betti_numbers.b2 - other.betti_numbers.b2) ** 2
+        (self.betti_numbers.b0 - other.betti_numbers.b0) ** 2 +
+        (self.betti_numbers.b1 - other.betti_numbers.b1) ** 2 +
+        (self.betti_numbers.b2 - other.betti_numbers.b2) ** 2
         )
         
         # Wasserstein distance for persistence diagrams
         if self.persistence_diagram.size > 0 and other.persistence_diagram.size > 0:
             # Ensure diagrams have same shape
-            min_points = min(len(self.persistence_diagram), len(other.persistence_diagram))
-            pd1 = self.persistence_diagram[:min_points]
-            pd2 = other.persistence_diagram[:min_points]
+        min_points = min(len(self.persistence_diagram), len(other.persistence_diagram))
+        pd1 = self.persistence_diagram[:min_points]
+        pd2 = other.persistence_diagram[:min_points]
             
-            # Calculate Wasserstein distance
-            if pd1.ndim == 2 and pd2.ndim == 2:
-                birth1, death1 = pd1[:, 0], pd1[:, 1]
-                birth2, death2 = pd2[:, 0], pd2[:, 1]
+        # Calculate Wasserstein distance
+        if pd1.ndim == 2 and pd2.ndim == 2:
+            birth1, death1 = pd1[:, 0], pd1[:, 1]
+        birth2, death2 = pd2[:, 0], pd2[:, 1]
                 
-                birth_dist = wasserstein_distance(birth1, birth2)
-                death_dist = wasserstein_distance(death1, death2)
-                persistence_dist = (birth_dist + death_dist) / 2
-            else:
-                persistence_dist = 0.0
+        birth_dist = wasserstein_distance(birth1, birth2)
+        death_dist = wasserstein_distance(death1, death2)
+        persistence_dist = (birth_dist + death_dist) / 2
         else:
-            persistence_dist = 0.0
+        persistence_dist = 0.0
+        else:
+        persistence_dist = 0.0
         
         # Weighted combination
         return 0.3 * betti_dist + 0.7 * persistence_dist
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
+        pass
         return {
             "betti_0": float(self.betti_numbers.b0),
             "betti_1": float(self.betti_numbers.b1),
@@ -81,17 +82,17 @@ class TopologicalSignature:
     def from_dict(cls, data: Dict[str, Any]) -> 'TopologicalSignature':
         """Create from dictionary."""
         return cls(
-            betti_numbers=BettiNumbers(
-                b0=data["betti_0"],
-                b1=data["betti_1"],
-                b2=data["betti_2"]
-            ),
-            persistence_diagram=np.array(data["persistence_diagram"]),
-            timestamp=datetime.fromisoformat(data["timestamp"])
+        betti_numbers=BettiNumbers(
+        b0=data["betti_0"],
+        b1=data["betti_1"],
+        b2=data["betti_2"]
+        ),
+        persistence_diagram=np.array(data["persistence_diagram"]),
+        timestamp=datetime.fromisoformat(data["timestamp"])
         )
 
 
-@dataclass
+    @dataclass
 class ShapeMemory:
     """A memory entry with topological context."""
     
@@ -108,6 +109,7 @@ class ShapeMemory:
     
     def update_access(self) -> None:
         """Update access statistics."""
+        pass
         self.access_count += 1
         self.last_accessed = datetime.now(timezone.utc)
         # Boost relevance based on access patterns
@@ -140,13 +142,14 @@ class ShapeAwareMemorySystem:
     
     async def initialize(self) -> None:
         """Initialize database connections."""
+        pass
         if self._initialized:
             return
         
         # Neo4j for persistent storage
         self._driver = AsyncGraphDatabase.driver(
-            self.neo4j_uri,
-            auth=(self.neo4j_user, self.neo4j_password)
+        self.neo4j_uri,
+        auth=(self.neo4j_user, self.neo4j_password)
         )
         
         # Redis for fast cache
@@ -154,17 +157,17 @@ class ShapeAwareMemorySystem:
         
         # Create Neo4j indices
         async with self._driver.session() as session:
-            await session.run("""
-                CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemory) ON (m.memory_id)
-            """)
-            await session.run("""
-                CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemory) ON (m.betti_0, m.betti_1, m.betti_2)
-            """)
+        await session.run("""
+        CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemory) ON (m.memory_id)
+        """)
+        await session.run("""
+        CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemory) ON (m.betti_0, m.betti_1, m.betti_2)
+        """)
         
         self._initialized = True
         metrics_collector.shape_memory_initialized.inc()
     
-    async def store_memory(
+        async def store_memory(
         self,
         content: Dict[str, Any],
         tda_result: TDAResult,
@@ -187,7 +190,7 @@ class ShapeAwareMemorySystem:
         
         # Store in Neo4j
         async with self._driver.session() as session:
-            await session.run("""
+        await session.run("""
                 CREATE (m:ShapeMemory {
                     memory_id: $memory_id,
                     content: $content,
@@ -199,7 +202,7 @@ class ShapeAwareMemorySystem:
                     relevance_score: $relevance_score,
                     created_at: $created_at
                 })
-            """, {
+        """, {
                 "memory_id": memory.memory_id,
                 "content": json.dumps(content),
                 "betti_0": float(signature.betti_numbers.b0),
@@ -239,17 +242,17 @@ class ShapeAwareMemorySystem:
         # Search Neo4j for comprehensive results
         async with self._driver.session() as session:
             # Use Betti numbers for initial filtering
-            query = """
+        query = """
                 MATCH (m:ShapeMemory)
                 WHERE abs(m.betti_0 - $b0) < $threshold
                   AND abs(m.betti_1 - $b1) < $threshold
                   AND abs(m.betti_2 - $b2) < $threshold
-            """
+        """
             
             if context_filter:
                 query += " AND m.context_type = $context_type"
             
-            query += """
+        query += """
                 RETURN m.memory_id as memory_id,
                        m.content as content,
                        m.betti_0 as b0,
@@ -261,7 +264,7 @@ class ShapeAwareMemorySystem:
                        m.created_at as created_at
                 ORDER BY m.relevance_score DESC
                 LIMIT $limit
-            """
+        """
             
             params = {
                 "b0": float(query_signature.betti_numbers.b0),
@@ -335,7 +338,7 @@ class ShapeAwareMemorySystem:
         cutoff_date = datetime.now(timezone.utc).timestamp() - (historical_window * 86400)
         
         async with self._driver.session() as session:
-            result = await session.run("""
+        result = await session.run("""
                 MATCH (m:ShapeMemory)
                 WHERE m.context_type = 'anomaly'
                   AND m.created_at > $cutoff_date
@@ -349,7 +352,7 @@ class ShapeAwareMemorySystem:
                        m.created_at as created_at
                 ORDER BY m.created_at DESC
                 LIMIT 100
-            """, {"cutoff_date": cutoff_date})
+        """, {"cutoff_date": cutoff_date})
             
             records = await result.data()
         
@@ -388,10 +391,10 @@ class ShapeAwareMemorySystem:
         """Cache memory in Redis for fast access."""
         key = f"shape_memory:{memory.memory_id}"
         value = {
-            "content": json.dumps(memory.content),
-            "signature": memory.signature.to_dict(),
-            "context_type": memory.context_type,
-            "relevance_score": memory.relevance_score
+        "content": json.dumps(memory.content),
+        "signature": memory.signature.to_dict(),
+        "context_type": memory.context_type,
+        "relevance_score": memory.relevance_score
         }
         
         # Store with TTL based on relevance
@@ -399,7 +402,7 @@ class ShapeAwareMemorySystem:
         await self._redis.hset(key, mapping=value)
         await self._redis.expire(key, ttl)
     
-    async def _search_cache(
+        async def _search_cache(
         self,
         query_signature: TopologicalSignature,
         limit: int
@@ -435,19 +438,20 @@ class ShapeAwareMemorySystem:
         memory.update_access()
         
         async with self._driver.session() as session:
-            await session.run("""
-                MATCH (m:ShapeMemory {memory_id: $memory_id})
-                SET m.access_count = m.access_count + 1,
-                    m.last_accessed = $now,
-                    m.relevance_score = $relevance_score
-            """, {
-                "memory_id": memory.memory_id,
-                "now": memory.last_accessed.isoformat(),
-                "relevance_score": memory.relevance_score
-            })
+        await session.run("""
+        MATCH (m:ShapeMemory {memory_id: $memory_id})
+        SET m.access_count = m.access_count + 1,
+        m.last_accessed = $now,
+        m.relevance_score = $relevance_score
+        """, {
+        "memory_id": memory.memory_id,
+        "now": memory.last_accessed.isoformat(),
+        "relevance_score": memory.relevance_score
+        })
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Clean up connections."""
+        pass
         if self._driver:
             await self._driver.close()
         if self._redis:
@@ -460,51 +464,51 @@ async def demo_shape_aware_memory():
     
     # Initialize system
     memory_system = ShapeAwareMemorySystem(
-        neo4j_uri="bolt://localhost:7687",
-        neo4j_user="neo4j",
-        neo4j_password="password",
-        redis_url="redis://localhost:6379"
+    neo4j_uri="bolt://localhost:7687",
+    neo4j_user="neo4j",
+    neo4j_password="password",
+    redis_url="redis://localhost:6379"
     )
     
     await memory_system.initialize()
     
     # Store a memory with topological signature
     tda_result = TDAResult(
-        betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
-        persistence_diagram=np.array([[0.1, 0.5], [0.2, 0.8], [0.3, 0.7]]),
-        topological_features={"holes": 2, "components": 1}
+    betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
+    persistence_diagram=np.array([[0.1, 0.5], [0.2, 0.8], [0.3, 0.7]]),
+    topological_features={"holes": 2, "components": 1}
     )
     
     memory = await memory_system.store_memory(
-        content={
-            "event": "Network anomaly detected",
-            "severity": "high",
-            "pattern": "Unusual topology in traffic flow"
-        },
-        tda_result=tda_result,
-        context_type="anomaly"
+    content={
+    "event": "Network anomaly detected",
+    "severity": "high",
+    "pattern": "Unusual topology in traffic flow"
+    },
+    tda_result=tda_result,
+    context_type="anomaly"
     )
     
     print(f"Stored memory: {memory.memory_id}")
     
     # Retrieve similar memories by shape
     query_signature = TopologicalSignature(
-        betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
-        persistence_diagram=np.array([[0.1, 0.6], [0.2, 0.7], [0.3, 0.8]])
+    betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
+    persistence_diagram=np.array([[0.1, 0.6], [0.2, 0.7], [0.3, 0.8]])
     )
     
     similar_memories = await memory_system.retrieve_by_shape(
-        query_signature=query_signature,
-        limit=5,
-        context_filter="anomaly"
+    query_signature=query_signature,
+    limit=5,
+    context_filter="anomaly"
     )
     
     print(f"\nFound {len(similar_memories)} similar memories by shape:")
     for mem in similar_memories:
-        print(f"  - {mem.memory_id}: {mem.content}")
+    print(f"  - {mem.memory_id}: {mem.content}")
     
     await memory_system.cleanup()
 
 
-if __name__ == "__main__":
-    asyncio.run(demo_shape_aware_memory())
+    if __name__ == "__main__":
+        asyncio.run(demo_shape_aware_memory())

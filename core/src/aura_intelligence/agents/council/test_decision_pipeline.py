@@ -31,6 +31,7 @@ class MockLNNCouncilConfig:
     
     def to_liquid_config(self):
         """Mock liquid config conversion."""
+        pass
         return type('LiquidConfig', (), {
             'tau_m': 20.0,
             'tau_s': 5.0,
@@ -87,8 +88,9 @@ class MockContextAwareLNN:
         self.config = config
         self.inference_count = 0
     
-    async def forward_with_context(self, state, return_attention=False):
+        async def forward_with_context(self, state, return_attention=False):
         """Mock forward pass with context."""
+        pass
         self.inference_count += 1
         
         # Simulate neural network output based on request
@@ -127,8 +129,9 @@ class MockMemoryProvider:
         self.config = config
         self.query_count = 0
     
-    async def get_memory_context(self, state):
+        async def get_memory_context(self, state):
         """Mock memory context retrieval."""
+        pass
         self.query_count += 1
         
         # Simulate memory context based on user history
@@ -157,8 +160,9 @@ class MockKnowledgeProvider:
         self.config = config
         self.query_count = 0
     
-    async def get_knowledge_context(self, state):
+        async def get_knowledge_context(self, state):
         """Mock knowledge graph context retrieval."""
+        pass
         self.query_count += 1
         
         # Simulate knowledge graph features
@@ -205,8 +209,9 @@ class MockDecisionPipeline:
         self._knowledge_provider = None
         self._context_encoder = None
     
-    async def initialize(self):
+        async def initialize(self):
         """Initialize mock components."""
+        pass
         if self.initialized:
             return
         
@@ -217,8 +222,9 @@ class MockDecisionPipeline:
         
         self.initialized = True
     
-    async def process_decision(self, request):
+        async def process_decision(self, request):
         """Process decision through mock pipeline."""
+        pass
         if not self.initialized:
             await self.initialize()
         
@@ -258,8 +264,9 @@ class MockDecisionPipeline:
         
         return final_decision, metrics
     
-    async def _analyze_request_step(self, state):
+        async def _analyze_request_step(self, state):
         """Mock request analysis."""
+        pass
         request = state.current_request
         complexity = (request.gpu_count + request.compute_hours + (10 - request.priority)) / 30.0
         
@@ -269,8 +276,9 @@ class MockDecisionPipeline:
             "priority_tier": "high" if request.priority >= 8 else "normal"
         })
     
-    async def _gather_context_step(self, state):
+        async def _gather_context_step(self, state):
         """Mock context gathering."""
+        pass
         # Simulate parallel context gathering
         memory_context = await self._memory_provider.get_memory_context(state)
         knowledge_context = await self._knowledge_provider.get_knowledge_context(state)
@@ -291,8 +299,9 @@ class MockDecisionPipeline:
             "context_sources": 2
         }
     
-    async def _neural_inference_step(self, state, decision_context):
+        async def _neural_inference_step(self, state, decision_context):
         """Mock neural inference."""
+        pass
         output, attention_info = await self._context_lnn.forward_with_context(
             state, return_attention=True
         )
@@ -312,8 +321,9 @@ class MockDecisionPipeline:
             "context_aware": True
         }
     
-    async def _validate_decision_step(self, state, neural_result):
+        async def _validate_decision_step(self, state, neural_result):
         """Mock decision validation."""
+        pass
         request = state.current_request
         decision = neural_result["decision"]
         confidence = neural_result["confidence_score"]
@@ -336,6 +346,7 @@ class MockDecisionPipeline:
     
     def get_pipeline_stats(self):
         """Get pipeline statistics."""
+        pass
         if not self.metrics_history:
             return {"status": "no_executions"}
         
@@ -347,8 +358,9 @@ class MockDecisionPipeline:
             "fallback_rate": sum(1 for m in recent if m.fallback_triggered) / len(recent)
         }
     
-    async def health_check(self):
+        async def health_check(self):
         """Pipeline health check."""
+        pass
         return {
             "pipeline_initialized": self.initialized,
             "components": {
@@ -360,31 +372,31 @@ class MockDecisionPipeline:
 
 
 async def test_pipeline_initialization():
-    """Test pipeline initialization."""
-    print("🧪 Testing Pipeline Initialization")
+        """Test pipeline initialization."""
+        print("🧪 Testing Pipeline Initialization")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Test initialization
-    await pipeline.initialize()
+        await pipeline.initialize()
     
-    print("✅ Pipeline initialization completed")
-    print(f"   Initialized: {pipeline.initialized}")
-    print(f"   Components loaded: {len([c for c in [pipeline._context_lnn, pipeline._memory_provider, pipeline._knowledge_provider] if c])}")
+        print("✅ Pipeline initialization completed")
+        print(f"   Initialized: {pipeline.initialized}")
+        print(f"   Components loaded: {len([c for c in [pipeline._context_lnn, pipeline._memory_provider, pipeline._knowledge_provider] if c])}")
     
-    return True
+        return True
 
 
 async def test_complete_decision_pipeline():
-    """Test complete decision processing pipeline (Task 6 main requirement)."""
-    print("\n🧪 Testing Complete Decision Pipeline")
+        """Test complete decision processing pipeline (Task 6 main requirement)."""
+        print("\n🧪 Testing Complete Decision Pipeline")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Create test request
-    request = MockGPURequest(
+        request = MockGPURequest(
         request_id="pipeline_test_001",
         user_id="user_pipeline",
         project_id="proj_pipeline",
@@ -392,102 +404,102 @@ async def test_complete_decision_pipeline():
         gpu_count=4,
         priority=8,
         compute_hours=12.0
-    )
+        )
     
     # Process decision through complete pipeline
-    decision, metrics = await pipeline.process_decision(request)
+        decision, metrics = await pipeline.process_decision(request)
     
-    print("✅ Complete decision pipeline tested")
-    print(f"   Request ID: {decision.request_id}")
-    print(f"   Decision: {decision.decision}")
-    print(f"   Confidence: {decision.confidence_score:.3f}")
-    print(f"   Total time: {metrics.total_time_ms:.1f}ms")
-    print(f"   Context sources: {metrics.context_quality_score:.3f}")
-    print(f"   Memory queries: {metrics.memory_queries}")
-    print(f"   Knowledge queries: {metrics.knowledge_queries}")
+        print("✅ Complete decision pipeline tested")
+        print(f"   Request ID: {decision.request_id}")
+        print(f"   Decision: {decision.decision}")
+        print(f"   Confidence: {decision.confidence_score:.3f}")
+        print(f"   Total time: {metrics.total_time_ms:.1f}ms")
+        print(f"   Context sources: {metrics.context_quality_score:.3f}")
+        print(f"   Memory queries: {metrics.memory_queries}")
+        print(f"   Knowledge queries: {metrics.knowledge_queries}")
     
-    return True
+        return True
 
 
 async def test_analyze_request_step():
-    """Test analyze_request step implementation (Task 6 requirement)."""
-    print("\n🧪 Testing Analyze Request Step")
+        """Test analyze_request step implementation (Task 6 requirement)."""
+        print("\n🧪 Testing Analyze Request Step")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
-    await pipeline.initialize()
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
+        await pipeline.initialize()
     
     # Test different request complexities
-    test_requests = [
+        test_requests = [
         MockGPURequest(gpu_count=1, compute_hours=2, priority=9),  # Simple
         MockGPURequest(gpu_count=8, compute_hours=48, priority=3),  # Complex
         MockGPURequest(gpu_count=4, compute_hours=12, priority=6),  # Medium
-    ]
+        ]
     
-    complexities = []
-    for request in test_requests:
+        complexities = []
+        for request in test_requests:
         state = MockLNNCouncilState(request)
         await pipeline._analyze_request_step(state)
         complexities.append(state.context["request_complexity"])
     
-    print("✅ Analyze request step tested")
-    print(f"   Simple request complexity: {complexities[0]:.3f}")
-    print(f"   Complex request complexity: {complexities[1]:.3f}")
-    print(f"   Medium request complexity: {complexities[2]:.3f}")
-    print(f"   Complexity range: [{min(complexities):.3f}, {max(complexities):.3f}]")
+        print("✅ Analyze request step tested")
+        print(f"   Simple request complexity: {complexities[0]:.3f}")
+        print(f"   Complex request complexity: {complexities[1]:.3f}")
+        print(f"   Medium request complexity: {complexities[2]:.3f}")
+        print(f"   Complexity range: [{min(complexities):.3f}, {max(complexities):.3f}]")
     
-    return True
+        return True
 
 
 async def test_context_gathering_integration():
-    """Test context gathering from memory and knowledge graph (Task 6 requirement)."""
-    print("\n🧪 Testing Context Gathering Integration")
+        """Test context gathering from memory and knowledge graph (Task 6 requirement)."""
+        print("\n🧪 Testing Context Gathering Integration")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
-    await pipeline.initialize()
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
+        await pipeline.initialize()
     
-    request = MockGPURequest()
-    state = MockLNNCouncilState(request)
+        request = MockGPURequest()
+        state = MockLNNCouncilState(request)
     
     # Test context gathering
-    decision_context = await pipeline._gather_context_step(state)
+        decision_context = await pipeline._gather_context_step(state)
     
-    print("✅ Context gathering integration tested")
-    print(f"   Memory context available: {decision_context['memory_context'] is not None}")
-    print(f"   Knowledge context available: {decision_context['knowledge_context'] is not None}")
-    print(f"   Context quality: {decision_context['context_quality']:.3f}")
-    print(f"   Context sources: {decision_context['context_sources']}")
+        print("✅ Context gathering integration tested")
+        print(f"   Memory context available: {decision_context['memory_context'] is not None}")
+        print(f"   Knowledge context available: {decision_context['knowledge_context'] is not None}")
+        print(f"   Context quality: {decision_context['context_quality']:.3f}")
+        print(f"   Context sources: {decision_context['context_sources']}")
     
     # Verify context tensors
-    if decision_context['memory_context'] is not None:
+        if decision_context['memory_context'] is not None:
         memory_shape = decision_context['memory_context'].shape
         print(f"   Memory context shape: {memory_shape}")
     
-    if decision_context['knowledge_context'] is not None:
+        if decision_context['knowledge_context'] is not None:
         knowledge_shape = decision_context['knowledge_context'].shape
         print(f"   Knowledge context shape: {knowledge_shape}")
     
-    return True
+        return True
 
 
 async def test_neural_inference_step():
-    """Test neural inference step with LNN integration (Task 6 requirement)."""
-    print("\n🧪 Testing Neural Inference Step")
+        """Test neural inference step with LNN integration (Task 6 requirement)."""
+        print("\n🧪 Testing Neural Inference Step")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
-    await pipeline.initialize()
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
+        await pipeline.initialize()
     
     # Test different scenarios
-    test_cases = [
+        test_cases = [
         {"priority": 9, "expected_decision": "approve"},
         {"priority": 6, "expected_decision": "defer"},
         {"priority": 2, "expected_decision": "deny"}
-    ]
+        ]
     
-    results = []
-    for case in test_cases:
+        results = []
+        for case in test_cases:
         request = MockGPURequest(priority=case["priority"])
         state = MockLNNCouncilState(request)
         state.context = {"context_quality": 0.8, "context_sources": 2}
@@ -502,30 +514,30 @@ async def test_neural_inference_step():
             "expected": case["expected_decision"]
         })
     
-    print("✅ Neural inference step tested")
-    for result in results:
+        print("✅ Neural inference step tested")
+        for result in results:
         print(f"   Priority {result['priority']}: {result['decision']} (confidence: {result['confidence']:.3f})")
     
-    return True
+        return True
 
 
 async def test_decision_validation_step():
-    """Test decision validation with constraint checking (Task 6 requirement)."""
-    print("\n🧪 Testing Decision Validation Step")
+        """Test decision validation with constraint checking (Task 6 requirement)."""
+        print("\n🧪 Testing Decision Validation Step")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
-    await pipeline.initialize()
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
+        await pipeline.initialize()
     
     # Test validation scenarios
-    test_scenarios = [
+        test_scenarios = [
         {"confidence": 0.9, "decision": "approve", "should_pass": True},
         {"confidence": 0.5, "decision": "approve", "should_pass": False},  # Below threshold
         {"confidence": 0.8, "decision": "deny", "should_pass": True},
-    ]
+        ]
     
-    validation_results = []
-    for scenario in test_scenarios:
+        validation_results = []
+        for scenario in test_scenarios:
         request = MockGPURequest()
         state = MockLNNCouncilState(request)
         
@@ -545,50 +557,50 @@ async def test_decision_validation_step():
             "validation_passed": scenario["should_pass"]
         })
     
-    print("✅ Decision validation step tested")
-    for result in validation_results:
+        print("✅ Decision validation step tested")
+        for result in validation_results:
         print(f"   {result['original_decision']} ({result['original_confidence']:.3f}) → {result['final_decision']}")
     
-    return True
+        return True
 
 
 async def test_pipeline_performance_metrics():
-    """Test pipeline performance monitoring."""
-    print("\n🧪 Testing Pipeline Performance Metrics")
+        """Test pipeline performance monitoring."""
+        print("\n🧪 Testing Pipeline Performance Metrics")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Process multiple requests to generate metrics
-    requests = [
+        requests = [
         MockGPURequest(request_id=f"perf_test_{i}", priority=5+i%5)
         for i in range(5)
-    ]
+        ]
     
-    for request in requests:
+        for request in requests:
         await pipeline.process_decision(request)
     
     # Get performance statistics
-    stats = pipeline.get_pipeline_stats()
+        stats = pipeline.get_pipeline_stats()
     
-    print("✅ Pipeline performance metrics tested")
-    print(f"   Total executions: {stats['total_executions']}")
-    print(f"   Average total time: {stats['avg_total_time_ms']:.1f}ms")
-    print(f"   Average confidence: {stats['avg_confidence']:.3f}")
-    print(f"   Fallback rate: {stats['fallback_rate']:.3f}")
+        print("✅ Pipeline performance metrics tested")
+        print(f"   Total executions: {stats['total_executions']}")
+        print(f"   Average total time: {stats['avg_total_time_ms']:.1f}ms")
+        print(f"   Average confidence: {stats['avg_confidence']:.3f}")
+        print(f"   Fallback rate: {stats['fallback_rate']:.3f}")
     
-    return True
+        return True
 
 
 async def test_pipeline_error_handling():
-    """Test pipeline error handling and fallback mechanisms."""
-    print("\n🧪 Testing Pipeline Error Handling")
+        """Test pipeline error handling and fallback mechanisms."""
+        print("\n🧪 Testing Pipeline Error Handling")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Test with invalid request (should trigger fallback)
-    try:
+        try:
         invalid_request = MockGPURequest()
         invalid_request.gpu_count = -1  # Invalid
         
@@ -599,43 +611,43 @@ async def test_pipeline_error_handling():
         print(f"   Fallback used: {decision.fallback_used}")
         print(f"   Reasoning count: {len(decision.reasoning)}")
         
-    except Exception as e:
+        except Exception as e:
         print(f"✅ Pipeline error handling tested (exception caught: {type(e).__name__})")
     
-    return True
+        return True
 
 
 async def test_pipeline_health_check():
-    """Test pipeline health monitoring."""
-    print("\n🧪 Testing Pipeline Health Check")
+        """Test pipeline health monitoring."""
+        print("\n🧪 Testing Pipeline Health Check")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Health check before initialization
-    health_before = await pipeline.health_check()
+        health_before = await pipeline.health_check()
     
     # Initialize and check again
-    await pipeline.initialize()
-    health_after = await pipeline.health_check()
+        await pipeline.initialize()
+        health_after = await pipeline.health_check()
     
-    print("✅ Pipeline health check tested")
-    print(f"   Health before init: {health_before['pipeline_initialized']}")
-    print(f"   Health after init: {health_after['pipeline_initialized']}")
-    print(f"   Components healthy: {len(health_after['components'])}")
+        print("✅ Pipeline health check tested")
+        print(f"   Health before init: {health_before['pipeline_initialized']}")
+        print(f"   Health after init: {health_after['pipeline_initialized']}")
+        print(f"   Components healthy: {len(health_after['components'])}")
     
-    return True
+        return True
 
 
 async def test_end_to_end_integration():
-    """Test complete end-to-end integration (Task 6 comprehensive test)."""
-    print("\n🧪 Testing End-to-End Integration")
+        """Test complete end-to-end integration (Task 6 comprehensive test)."""
+        print("\n🧪 Testing End-to-End Integration")
     
-    config = MockLNNCouncilConfig()
-    pipeline = MockDecisionPipeline(config)
+        config = MockLNNCouncilConfig()
+        pipeline = MockDecisionPipeline(config)
     
     # Test realistic scenario
-    request = MockGPURequest(
+        request = MockGPURequest(
         request_id="e2e_test_001",
         user_id="researcher_001",
         project_id="ml_training_proj",
@@ -644,39 +656,39 @@ async def test_end_to_end_integration():
         memory_gb=80,
         compute_hours=24.0,
         priority=8
-    )
+        )
     
     # Process through complete pipeline
-    start_time = asyncio.get_event_loop().time()
-    decision, metrics = await pipeline.process_decision(request)
-    end_time = asyncio.get_event_loop().time()
+        start_time = asyncio.get_event_loop().time()
+        decision, metrics = await pipeline.process_decision(request)
+        end_time = asyncio.get_event_loop().time()
     
-    print("✅ End-to-end integration tested")
-    print(f"   Request: {request.gpu_count}x {request.gpu_type} for {request.compute_hours}h")
-    print(f"   Decision: {decision.decision}")
-    print(f"   Confidence: {decision.confidence_score:.3f}")
-    print(f"   Processing time: {(end_time - start_time)*1000:.1f}ms")
-    print(f"   Context quality: {metrics.context_quality_score:.3f}")
-    print(f"   Reasoning steps: {len(decision.reasoning)}")
+        print("✅ End-to-end integration tested")
+        print(f"   Request: {request.gpu_count}x {request.gpu_type} for {request.compute_hours}h")
+        print(f"   Decision: {decision.decision}")
+        print(f"   Confidence: {decision.confidence_score:.3f}")
+        print(f"   Processing time: {(end_time - start_time)*1000:.1f}ms")
+        print(f"   Context quality: {metrics.context_quality_score:.3f}")
+        print(f"   Reasoning steps: {len(decision.reasoning)}")
     
     # Verify all pipeline components were used
-    component_usage = {
+        component_usage = {
         "memory_queries": metrics.memory_queries > 0,
         "knowledge_queries": metrics.knowledge_queries > 0,
         "neural_inference": metrics.neural_inference_ms > 0,
         "validation": metrics.validation_ms > 0
-    }
+        }
     
-    print(f"   Component usage: {sum(component_usage.values())}/{len(component_usage)} components used")
+        print(f"   Component usage: {sum(component_usage.values())}/{len(component_usage)} components used")
     
-    return True
+        return True
 
 
 async def main():
-    """Run all decision pipeline integration tests."""
-    print("🚀 Decision Processing Pipeline Integration Tests (Task 6)\n")
+        """Run all decision pipeline integration tests."""
+        print("🚀 Decision Processing Pipeline Integration Tests (Task 6)\n")
     
-    tests = [
+        tests = [
         test_pipeline_initialization,
         test_complete_decision_pipeline,
         test_analyze_request_step,
@@ -687,10 +699,10 @@ async def main():
         test_pipeline_error_handling,
         test_pipeline_health_check,
         test_end_to_end_integration
-    ]
+        ]
     
-    results = []
-    for test in tests:
+        results = []
+        for test in tests:
         try:
             result = await test()
             results.append(result)
@@ -700,9 +712,9 @@ async def main():
             traceback.print_exc()
             results.append(False)
     
-    print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
+        print(f"\n📊 Test Results: {sum(results)}/{len(results)} passed")
     
-    if all(results):
+        if all(results):
         print("🎉 Task 6 Complete - All integration tests passed!")
         print("\n✅ Task 6 Requirements Fulfilled:")
         print("   • Decision pipeline integrating LNN, memory, and knowledge graph ✅")
@@ -719,11 +731,11 @@ async def main():
         print("   • End-to-end decision processing")
         print("\n🚀 Ready for Task 7: Confidence Scoring and Decision Validation")
         return 0
-    else:
+        else:
         print("❌ Some Task 6 integration tests failed")
         return 1
 
 
-if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+        if __name__ == "__main__":
+        exit_code = asyncio.run(main())
+        exit(exit_code)

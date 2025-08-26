@@ -38,7 +38,7 @@ from sklearn.metrics import mutual_info_score
 
 from .types import AuraType, TypeUniverse, PathSpace, HigherGroupoid
 from .exceptions import AuraError, ConsciousnessError, TopologicalComputationError
-from .config import get_config
+from aura_intelligence.config import get_config
 
 
 class TestingLevel(Enum):
@@ -97,9 +97,9 @@ class PropertyBasedTester:
         self.properties: Dict[str, PropertySpecification] = {}
         self.test_results: List[TestResult] = []
         self.hypothesis_settings = settings(
-            max_examples=1000,
-            deadline=30000,  # 30 seconds
-            verbosity=Verbosity.normal
+        max_examples=1000,
+        deadline=30000,  # 30 seconds
+        verbosity=Verbosity.normal
         )
     
     def register_property(self, spec: PropertySpecification) -> None:
@@ -116,54 +116,55 @@ class PropertyBasedTester:
         
         try:
             # Create the hypothesis test
-            @given(spec.input_strategy)
-            @self.hypothesis_settings
-            def test_function(input_data):
-                # Check preconditions
-                for precond in spec.preconditions:
-                    assume(precond(input_data))
+        @given(spec.input_strategy)
+        @self.hypothesis_settings
+    def test_function(input_data):
+        # Check preconditions
+        for precond in spec.preconditions:
+        assume(precond(input_data))
                 
-                # Execute the property function
-                result = spec.property_function(input_data)
+        # Execute the property function
+        result = spec.property_function(input_data)
                 
-                # Check postconditions
-                for postcond in spec.postconditions:
-                    assert postcond(input_data, result), f"Postcondition failed: {postcond.__name__}"
+        # Check postconditions
+        for postcond in spec.postconditions:
+        assert postcond(input_data, result), f"Postcondition failed: {postcond.__name__}"
                 
-                # Check invariants
-                for invariant in spec.invariants:
-                    assert invariant(input_data, result), f"Invariant violated: {invariant.__name__}"
+        # Check invariants
+        for invariant in spec.invariants:
+        assert invariant(input_data, result), f"Invariant violated: {invariant.__name__}"
                 
-                return result
+        return result
             
-            # Run the test
-            test_function()
+        # Run the test
+        test_function()
             
-            execution_time = time.time() - start_time
-            result = TestResult(
-                test_name=property_name,
-                test_type=TestingLevel.PROPERTY,
-                passed=True,
-                execution_time=execution_time,
-                verification_result=VerificationResult.VERIFIED
-            )
+        execution_time = time.time() - start_time
+        result = TestResult(
+        test_name=property_name,
+        test_type=TestingLevel.PROPERTY,
+        passed=True,
+        execution_time=execution_time,
+        verification_result=VerificationResult.VERIFIED
+        )
             
         except Exception as e:
-            execution_time = time.time() - start_time
-            result = TestResult(
-                test_name=property_name,
-                test_type=TestingLevel.PROPERTY,
-                passed=False,
-                execution_time=execution_time,
-                error_message=str(e),
-                verification_result=VerificationResult.FALSIFIED
-            )
+        execution_time = time.time() - start_time
+        result = TestResult(
+        test_name=property_name,
+        test_type=TestingLevel.PROPERTY,
+        passed=False,
+        execution_time=execution_time,
+        error_message=str(e),
+        verification_result=VerificationResult.FALSIFIED
+        )
         
         self.test_results.append(result)
         return result
     
     def test_all_properties(self) -> List[TestResult]:
         """Test all registered properties."""
+        pass
         results = []
         for property_name in self.properties:
             result = self.test_property(property_name)
@@ -181,34 +182,34 @@ class PropertyBasedTester:
         # Use Hypothesis to find counterexamples
         try:
             @given(spec.input_strategy)
-            @settings(max_examples=max_examples * 10)
-            def find_counterexamples(input_data):
-                try:
-                    # Check preconditions
-                    for precond in spec.preconditions:
-                        assume(precond(input_data))
+        @settings(max_examples=max_examples * 10)
+    def find_counterexamples(input_data):
+        try:
+            # Check preconditions
+        for precond in spec.preconditions:
+        assume(precond(input_data))
                     
-                    # Execute the property function
-                    result = spec.property_function(input_data)
+        # Execute the property function
+        result = spec.property_function(input_data)
                     
-                    # Check if any postcondition or invariant fails
-                    for postcond in spec.postconditions:
-                        if not postcond(input_data, result):
-                            counterexamples.append(input_data)
-                            return
+        # Check if any postcondition or invariant fails
+        for postcond in spec.postconditions:
+        if not postcond(input_data, result):
+            counterexamples.append(input_data)
+        return
                     
-                    for invariant in spec.invariants:
-                        if not invariant(input_data, result):
-                            counterexamples.append(input_data)
-                            return
+        for invariant in spec.invariants:
+        if not invariant(input_data, result):
+            counterexamples.append(input_data)
+        return
                             
-                except Exception:
-                    counterexamples.append(input_data)
+        except Exception:
+        counterexamples.append(input_data)
             
-            find_counterexamples()
+        find_counterexamples()
             
         except Exception:
-            pass  # Expected when counterexamples are found
+        pass  # Expected when counterexamples are found
         
         return counterexamples[:max_examples]
 
@@ -271,19 +272,19 @@ class ModelChecker:
         # Simplified CTL checking
         try:
             if "AG" in formula:  # All paths, globally
-                return self._check_all_globally(formula, initial_state)
-            elif "EG" in formula:  # Exists path, globally
-                return self._check_exists_globally(formula, initial_state)
-            elif "AF" in formula:  # All paths, finally
-                return self._check_all_finally(formula, initial_state)
-            elif "EF" in formula:  # Exists path, finally
-                return self._check_exists_finally(formula, initial_state)
-            else:
-                return VerificationResult.UNKNOWN
+        return self._check_all_globally(formula, initial_state)
+        elif "EG" in formula:  # Exists path, globally
+        return self._check_exists_globally(formula, initial_state)
+        elif "AF" in formula:  # All paths, finally
+        return self._check_all_finally(formula, initial_state)
+        elif "EF" in formula:  # Exists path, finally
+        return self._check_exists_finally(formula, initial_state)
+        else:
+        return VerificationResult.UNKNOWN
                 
         except Exception as e:
-            logging.error(f"CTL formula checking failed: {e}")
-            return VerificationResult.ERROR
+        logging.error(f"CTL formula checking failed: {e}")
+        return VerificationResult.ERROR
     
     def _check_globally(self, formula: str, state: str) -> VerificationResult:
         """Check if a property holds globally (always)."""
@@ -316,22 +317,22 @@ class ModelChecker:
         stack = [state]
         
         while stack:
-            current = stack.pop()
-            if current in visited:
-                continue
-            visited.add(current)
+        current = stack.pop()
+        if current in visited:
+            continue
+        visited.add(current)
             
-            # Extract the proposition from the formula
-            prop_name = formula.replace("F", "").strip()
-            if prop_name in self.atomic_propositions:
-                predicate = self.atomic_propositions[prop_name]
-                if predicate(self.states[current]):
-                    return VerificationResult.VERIFIED
+        # Extract the proposition from the formula
+        prop_name = formula.replace("F", "").strip()
+        if prop_name in self.atomic_propositions:
+            predicate = self.atomic_propositions[prop_name]
+        if predicate(self.states[current]):
+            return VerificationResult.VERIFIED
             
-            # Add successors to stack
-            for successor in self.transitions.get(current, []):
-                if successor not in visited:
-                    stack.append(successor)
+        # Add successors to stack
+        for successor in self.transitions.get(current, []):
+        if successor not in visited:
+            stack.append(successor)
         
         return VerificationResult.FALSIFIED
     
@@ -378,9 +379,9 @@ class TheoremProver:
     
     def __init__(self):
         self.provers: Dict[str, bool] = {
-            "coq": False,
-            "lean": False,
-            "isabelle": False
+        "coq": False,
+        "lean": False,
+        "isabelle": False
         }
         self.theorems: Dict[str, Dict[str, Any]] = {}
         self.proofs: Dict[str, str] = {}
@@ -394,9 +395,9 @@ class TheoremProver:
     def add_theorem(self, name: str, statement: str, prover: str = "coq") -> None:
         """Add a theorem to be proved."""
         self.theorems[name] = {
-            "statement": statement,
-            "prover": prover,
-            "status": "unproven"
+        "statement": statement,
+        "prover": prover,
+        "status": "unproven"
         }
     
     def prove_theorem(self, theorem_name: str, proof_script: str) -> VerificationResult:
@@ -433,9 +434,9 @@ class TheoremProver:
         if len(proof) > 50 and "Qed" in proof:
             return VerificationResult.VERIFIED
         elif "admit" in proof or "sorry" in proof:
-            return VerificationResult.UNKNOWN
+        return VerificationResult.UNKNOWN
         else:
-            return VerificationResult.FALSIFIED
+        return VerificationResult.FALSIFIED
     
     def generate_proof_obligations(self, code: str) -> List[str]:
         """Generate proof obligations from code."""
@@ -509,16 +510,16 @@ class ConsciousnessTester:
         """Test Global Workspace Theory integration."""
         try:
             # Check if information is being broadcast globally
-            broadcast_info = workspace_state.get("broadcast_info", [])
-            attending_components = workspace_state.get("attending_components", [])
+        broadcast_info = workspace_state.get("broadcast_info", [])
+        attending_components = workspace_state.get("attending_components", [])
             
-            # Integration test: information should reach multiple components
-            integration_ratio = len(attending_components) / max(len(broadcast_info), 1)
+        # Integration test: information should reach multiple components
+        integration_ratio = len(attending_components) / max(len(broadcast_info), 1)
             
-            return integration_ratio > 0.5  # At least 50% integration
+        return integration_ratio > 0.5  # At least 50% integration
             
         except Exception:
-            return False
+        return False
     
     def test_attention_focus(self, attention_state: Dict[str, Any]) -> bool:
         """Test attention mechanism focus and selectivity."""
@@ -539,14 +540,14 @@ class ConsciousnessTester:
         """Test executive function capabilities."""
         try:
             planning_active = executive_state.get("planning_active", False)
-            inhibition_active = executive_state.get("inhibition_active", False)
-            working_memory_load = executive_state.get("working_memory_load", 0)
+        inhibition_active = executive_state.get("inhibition_active", False)
+        working_memory_load = executive_state.get("working_memory_load", 0)
             
-            # Executive function should manage multiple processes
-            return planning_active and inhibition_active and working_memory_load > 0
+        # Executive function should manage multiple processes
+        return planning_active and inhibition_active and working_memory_load > 0
             
         except Exception:
-            return False
+        return False
     
     def test_metacognitive_awareness(self, metacognitive_state: Dict[str, Any]) -> bool:
         """Test metacognitive awareness and self-monitoring."""
@@ -569,51 +570,51 @@ class ConsciousnessTester:
         
         try:
             # Calculate Φ (integrated information)
-            phi = self.calculate_phi(system_state)
+        phi = self.calculate_phi(system_state)
             
-            # Run individual consciousness tests
-            tests = [
-                ("global_workspace", self.test_global_workspace_integration),
-                ("attention_focus", self.test_attention_focus),
-                ("executive_function", self.test_executive_function),
-                ("metacognitive_awareness", self.test_metacognitive_awareness)
-            ]
+        # Run individual consciousness tests
+        tests = [
+        ("global_workspace", self.test_global_workspace_integration),
+        ("attention_focus", self.test_attention_focus),
+        ("executive_function", self.test_executive_function),
+        ("metacognitive_awareness", self.test_metacognitive_awareness)
+        ]
             
-            test_results = {}
-            all_passed = True
+        test_results = {}
+        all_passed = True
             
-            for test_name, test_func in tests:
-                test_state = system_state.get(test_name, {})
-                result = test_func(test_state)
-                test_results[test_name] = result
-                if not result:
-                    all_passed = False
+        for test_name, test_func in tests:
+        test_state = system_state.get(test_name, {})
+        result = test_func(test_state)
+        test_results[test_name] = result
+        if not result:
+            all_passed = False
             
-            execution_time = time.time() - start_time
+        execution_time = time.time() - start_time
             
-            return TestResult(
-                test_name="consciousness_test_suite",
-                test_type=TestingLevel.SYSTEM,
-                passed=all_passed and phi > 0.1,  # Minimum consciousness threshold
-                execution_time=execution_time,
-                metadata={
-                    "phi": phi,
-                    "individual_tests": test_results,
-                    "consciousness_level": "high" if phi > 0.5 else "low" if phi > 0.1 else "none"
-                },
-                verification_result=VerificationResult.VERIFIED if all_passed else VerificationResult.FALSIFIED
-            )
+        return TestResult(
+        test_name="consciousness_test_suite",
+        test_type=TestingLevel.SYSTEM,
+        passed=all_passed and phi > 0.1,  # Minimum consciousness threshold
+        execution_time=execution_time,
+        metadata={
+        "phi": phi,
+        "individual_tests": test_results,
+        "consciousness_level": "high" if phi > 0.5 else "low" if phi > 0.1 else "none"
+        },
+        verification_result=VerificationResult.VERIFIED if all_passed else VerificationResult.FALSIFIED
+        )
             
         except Exception as e:
-            execution_time = time.time() - start_time
-            return TestResult(
-                test_name="consciousness_test_suite",
-                test_type=TestingLevel.SYSTEM,
-                passed=False,
-                execution_time=execution_time,
-                error_message=str(e),
-                verification_result=VerificationResult.ERROR
-            )
+        execution_time = time.time() - start_time
+        return TestResult(
+        test_name="consciousness_test_suite",
+        test_type=TestingLevel.SYSTEM,
+        passed=False,
+        execution_time=execution_time,
+        error_message=str(e),
+        verification_result=VerificationResult.ERROR
+        )
 
 
 class QuantumTester:
@@ -638,44 +639,44 @@ class QuantumTester:
             if circuit_name not in self.quantum_circuits:
                 raise ValueError(f"Circuit {circuit_name} not found")
             
-            circuit = self.quantum_circuits[circuit_name]
-            passed_tests = 0
-            total_tests = len(test_cases)
+        circuit = self.quantum_circuits[circuit_name]
+        passed_tests = 0
+        total_tests = len(test_cases)
             
-            for input_data, expected_output in test_cases:
-                # Simulate quantum circuit execution
-                result = self._simulate_quantum_execution(circuit, input_data)
+        for input_data, expected_output in test_cases:
+        # Simulate quantum circuit execution
+        result = self._simulate_quantum_execution(circuit, input_data)
                 
-                # Check if result matches expected output (within quantum tolerance)
-                if self._quantum_results_match(result, expected_output):
-                    passed_tests += 1
+        # Check if result matches expected output (within quantum tolerance)
+        if self._quantum_results_match(result, expected_output):
+            passed_tests += 1
             
-            success_rate = passed_tests / max(total_tests, 1)
-            execution_time = time.time() - start_time
+        success_rate = passed_tests / max(total_tests, 1)
+        execution_time = time.time() - start_time
             
-            return TestResult(
-                test_name=f"quantum_correctness_{circuit_name}",
-                test_type=TestingLevel.UNIT,
-                passed=success_rate >= 0.8,  # 80% success rate for quantum algorithms
-                execution_time=execution_time,
-                metadata={
-                    "success_rate": success_rate,
-                    "passed_tests": passed_tests,
-                    "total_tests": total_tests
-                },
-                verification_result=VerificationResult.VERIFIED if success_rate >= 0.8 else VerificationResult.FALSIFIED
-            )
+        return TestResult(
+        test_name=f"quantum_correctness_{circuit_name}",
+        test_type=TestingLevel.UNIT,
+        passed=success_rate >= 0.8,  # 80% success rate for quantum algorithms
+        execution_time=execution_time,
+        metadata={
+        "success_rate": success_rate,
+        "passed_tests": passed_tests,
+        "total_tests": total_tests
+        },
+        verification_result=VerificationResult.VERIFIED if success_rate >= 0.8 else VerificationResult.FALSIFIED
+        )
             
         except Exception as e:
-            execution_time = time.time() - start_time
-            return TestResult(
-                test_name=f"quantum_correctness_{circuit_name}",
-                test_type=TestingLevel.UNIT,
-                passed=False,
-                execution_time=execution_time,
-                error_message=str(e),
-                verification_result=VerificationResult.ERROR
-            )
+        execution_time = time.time() - start_time
+        return TestResult(
+        test_name=f"quantum_correctness_{circuit_name}",
+        test_type=TestingLevel.UNIT,
+        passed=False,
+        execution_time=execution_time,
+        error_message=str(e),
+        verification_result=VerificationResult.ERROR
+        )
     
     def test_quantum_advantage(self, algorithm_name: str, problem_sizes: List[int]) -> TestResult:
         """Test if quantum algorithm shows advantage over classical."""
@@ -760,9 +761,9 @@ class QuantumTester:
         if "grover" in algorithm.lower():
             return problem_size ** 0.5  # O(√N) for Grover's algorithm
         elif "shor" in algorithm.lower():
-            return (problem_size ** 3) * np.log(problem_size)  # O(n³ log n) for Shor's algorithm
+        return (problem_size ** 3) * np.log(problem_size)  # O(n³ log n) for Shor's algorithm
         else:
-            return problem_size  # Linear for generic quantum algorithms
+        return problem_size  # Linear for generic quantum algorithms
     
     def _simulate_classical_time(self, algorithm: str, problem_size: int) -> float:
         """Simulate classical algorithm execution time."""
@@ -839,51 +840,51 @@ class ChaosTester:
         
         try:
             baseline_performance = self._measure_performance(system_component)
-            performance_improvements = []
+        performance_improvements = []
             
-            for stress_level in stress_levels:
-                # Apply controlled stress
-                self._apply_stress(system_component, stress_level)
+        for stress_level in stress_levels:
+        # Apply controlled stress
+        self._apply_stress(system_component, stress_level)
                 
-                # Measure performance after stress
-                stressed_performance = self._measure_performance(system_component)
+        # Measure performance after stress
+        stressed_performance = self._measure_performance(system_component)
                 
-                # Calculate improvement
-                improvement = (stressed_performance - baseline_performance) / baseline_performance
-                performance_improvements.append(improvement)
+        # Calculate improvement
+        improvement = (stressed_performance - baseline_performance) / baseline_performance
+        performance_improvements.append(improvement)
                 
-                # Reset system
-                self._reset_system(system_component)
+        # Reset system
+        self._reset_system(system_component)
             
-            # Antifragility: performance should improve with moderate stress
-            antifragile = any(improvement > 0.1 for improvement in performance_improvements)
+        # Antifragility: performance should improve with moderate stress
+        antifragile = any(improvement > 0.1 for improvement in performance_improvements)
             
-            execution_time = time.time() - start_time
+        execution_time = time.time() - start_time
             
-            return TestResult(
-                test_name="antifragility",
-                test_type=TestingLevel.CHAOS,
-                passed=antifragile,
-                execution_time=execution_time,
-                metadata={
-                    "baseline_performance": baseline_performance,
-                    "performance_improvements": performance_improvements,
-                    "stress_levels": stress_levels,
-                    "max_improvement": max(performance_improvements) if performance_improvements else 0
-                },
-                verification_result=VerificationResult.VERIFIED if antifragile else VerificationResult.FALSIFIED
-            )
+        return TestResult(
+        test_name="antifragility",
+        test_type=TestingLevel.CHAOS,
+        passed=antifragile,
+        execution_time=execution_time,
+        metadata={
+        "baseline_performance": baseline_performance,
+        "performance_improvements": performance_improvements,
+        "stress_levels": stress_levels,
+        "max_improvement": max(performance_improvements) if performance_improvements else 0
+        },
+        verification_result=VerificationResult.VERIFIED if antifragile else VerificationResult.FALSIFIED
+        )
             
         except Exception as e:
-            execution_time = time.time() - start_time
-            return TestResult(
-                test_name="antifragility",
-                test_type=TestingLevel.CHAOS,
-                passed=False,
-                execution_time=execution_time,
-                error_message=str(e),
-                verification_result=VerificationResult.ERROR
-            )
+        execution_time = time.time() - start_time
+        return TestResult(
+        test_name="antifragility",
+        test_type=TestingLevel.CHAOS,
+        passed=False,
+        execution_time=execution_time,
+        error_message=str(e),
+        verification_result=VerificationResult.ERROR
+        )
     
     def _capture_system_state(self, system: Any) -> Dict[str, Any]:
         """Capture current system state."""
@@ -956,23 +957,23 @@ class AdvancedTestingFramework:
         
         # Consciousness testing
         consciousness_result = self.consciousness_tester.run_consciousness_test_suite({
-            "components": ["attention", "workspace", "executive"],
-            "connections": [("attention", "workspace"), ("workspace", "executive")],
-            "global_workspace": {"broadcast_info": ["info1", "info2"], "attending_components": ["comp1", "comp2"]},
-            "attention_focus": {"focus_strength": 0.8, "attention_window": ["item1"], "distractors": ["dist1"]},
-            "executive_function": {"planning_active": True, "inhibition_active": True, "working_memory_load": 5},
-            "metacognitive_awareness": {"self_monitoring": True, "confidence_estimates": [0.8, 0.9], "error_detection": True}
+        "components": ["attention", "workspace", "executive"],
+        "connections": [("attention", "workspace"), ("workspace", "executive")],
+        "global_workspace": {"broadcast_info": ["info1", "info2"], "attending_components": ["comp1", "comp2"]},
+        "attention_focus": {"focus_strength": 0.8, "attention_window": ["item1"], "distractors": ["dist1"]},
+        "executive_function": {"planning_active": True, "inhibition_active": True, "working_memory_load": 5},
+        "metacognitive_awareness": {"self_monitoring": True, "confidence_estimates": [0.8, 0.9], "error_detection": True}
         })
         results.append(consciousness_result)
         
         # Chaos testing
         resilience_result = self.chaos_tester.test_system_resilience(
-            system_under_test, ["network_partition", "high_latency", "memory_pressure"]
+        system_under_test, ["network_partition", "high_latency", "memory_pressure"]
         )
         results.append(resilience_result)
         
         antifragility_result = self.chaos_tester.test_antifragility(
-            system_under_test, [0.1, 0.3, 0.5, 0.7]
+        system_under_test, [0.1, 0.3, 0.5, 0.7]
         )
         results.append(antifragility_result)
         
@@ -981,6 +982,7 @@ class AdvancedTestingFramework:
     
     def generate_test_report(self) -> Dict[str, Any]:
         """Generate comprehensive test report."""
+        pass
         total_tests = len(self.test_results)
         passed_tests = sum(1 for result in self.test_results if result.passed)
         
@@ -1020,102 +1022,102 @@ class AdvancedTestingFramework:
 
 
 # Factory functions
-def create_advanced_testing_framework() -> AdvancedTestingFramework:
-    """Create and configure the advanced testing framework."""
-    framework = AdvancedTestingFramework()
+    def create_advanced_testing_framework() -> AdvancedTestingFramework:
+        """Create and configure the advanced testing framework."""
+        framework = AdvancedTestingFramework()
     
     # Register common property specifications
-    _register_common_properties(framework.property_tester)
+        _register_common_properties(framework.property_tester)
     
     # Set up model checker with common temporal formulas
-    _setup_model_checker(framework.model_checker)
+        _setup_model_checker(framework.model_checker)
     
     # Configure theorem prover with common theorems
-    _setup_theorem_prover(framework.theorem_prover)
+        _setup_theorem_prover(framework.theorem_prover)
     
-    return framework
+        return framework
 
 
-def _register_common_properties(property_tester: PropertyBasedTester) -> None:
-    """Register common mathematical properties for testing."""
+    def _register_common_properties(property_tester: PropertyBasedTester) -> None:
+        """Register common mathematical properties for testing."""
     
     # Homotopy type theory properties
-    property_tester.register_property(PropertySpecification(
+        property_tester.register_property(PropertySpecification(
         name="univalence_axiom",
         description="Univalence axiom: equivalent types are equal",
         property_function=lambda x: True,  # Placeholder
         input_strategy=st.integers(min_value=1, max_value=100)
-    ))
+        ))
     
     # Consciousness properties
-    property_tester.register_property(PropertySpecification(
+        property_tester.register_property(PropertySpecification(
         name="consciousness_integration",
         description="Consciousness requires information integration",
         property_function=lambda x: x > 0,  # Phi > 0
         input_strategy=st.floats(min_value=0.0, max_value=1.0)
-    ))
+        ))
     
     # Topological properties
-    property_tester.register_property(PropertySpecification(
+        property_tester.register_property(PropertySpecification(
         name="persistence_stability",
         description="Persistent homology is stable under perturbations",
         property_function=lambda x: True,  # Placeholder
         input_strategy=st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1, max_size=100)
-    ))
+        ))
 
 
-def _setup_model_checker(model_checker: ModelChecker) -> None:
-    """Set up model checker with common states and formulas."""
+    def _setup_model_checker(model_checker: ModelChecker) -> None:
+        """Set up model checker with common states and formulas."""
     
     # Add common system states
-    model_checker.add_state("healthy", {"status": "healthy", "load": 0.3})
-    model_checker.add_state("stressed", {"status": "stressed", "load": 0.8})
-    model_checker.add_state("failed", {"status": "failed", "load": 1.0})
+        model_checker.add_state("healthy", {"status": "healthy", "load": 0.3})
+        model_checker.add_state("stressed", {"status": "stressed", "load": 0.8})
+        model_checker.add_state("failed", {"status": "failed", "load": 1.0})
     
     # Add transitions
-    model_checker.add_transition("healthy", "stressed")
-    model_checker.add_transition("stressed", "failed")
-    model_checker.add_transition("stressed", "healthy")
-    model_checker.add_transition("failed", "healthy")
+        model_checker.add_transition("healthy", "stressed")
+        model_checker.add_transition("stressed", "failed")
+        model_checker.add_transition("stressed", "healthy")
+        model_checker.add_transition("failed", "healthy")
     
     # Add atomic propositions
-    model_checker.add_atomic_proposition("healthy", lambda state: state["status"] == "healthy")
-    model_checker.add_atomic_proposition("failed", lambda state: state["status"] == "failed")
+        model_checker.add_atomic_proposition("healthy", lambda state: state["status"] == "healthy")
+        model_checker.add_atomic_proposition("failed", lambda state: state["status"] == "failed")
     
     # Add temporal formulas
-    model_checker.add_temporal_formula("always_recoverable", "G(failed -> F healthy)")
-    model_checker.add_temporal_formula("eventually_stable", "F G healthy")
+        model_checker.add_temporal_formula("always_recoverable", "G(failed -> F healthy)")
+        model_checker.add_temporal_formula("eventually_stable", "F G healthy")
 
 
-def _setup_theorem_prover(theorem_prover: TheoremProver) -> None:
-    """Set up theorem prover with common theorems."""
+    def _setup_theorem_prover(theorem_prover: TheoremProver) -> None:
+        """Set up theorem prover with common theorems."""
     
-    theorem_prover.add_theorem(
+        theorem_prover.add_theorem(
         "consciousness_emergence",
         "∀ system. (integrated_information(system) > threshold) → conscious(system)",
         "coq"
-    )
+        )
     
-    theorem_prover.add_theorem(
+        theorem_prover.add_theorem(
         "topological_stability",
         "∀ f g. (distance(f, g) < ε) → (persistence(f) ≈ persistence(g))",
         "lean"
-    )
+        )
     
-    theorem_prover.add_theorem(
+        theorem_prover.add_theorem(
         "quantum_advantage",
         "∃ algorithm. quantum_time(algorithm) < classical_time(algorithm)",
         "isabelle"
-    )
+        )
 
 
-# Global testing framework instance
-_testing_framework: Optional[AdvancedTestingFramework] = None
+    # Global testing framework instance
+        _testing_framework: Optional[AdvancedTestingFramework] = None
 
 
-def get_testing_framework() -> AdvancedTestingFramework:
-    """Get the global testing framework instance."""
-    global _testing_framework
-    if _testing_framework is None:
+    def get_testing_framework() -> AdvancedTestingFramework:
+        """Get the global testing framework instance."""
+        global _testing_framework
+        if _testing_framework is None:
         _testing_framework = create_advanced_testing_framework()
-    return _testing_framework
+        return _testing_framework

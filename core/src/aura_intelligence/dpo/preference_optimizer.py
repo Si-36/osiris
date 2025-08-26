@@ -145,7 +145,7 @@ class ConstitutionalAI3:
         return features[:256]
     
     def _evaluate_rule_compliance(self, action: Dict[str, Any], 
-                                context: Dict[str, Any], rule: Dict[str, Any]) -> float:
+        context: Dict[str, Any], rule: Dict[str, Any]) -> float:
         """Evaluate compliance with specific constitutional rule"""
         rule_id = rule['id']
         base_score = 0.8
@@ -204,7 +204,7 @@ class ConstitutionalAI3:
         
         return corrected
     
-    async def self_improve(self, recent_actions: List[Dict[str, Any]]) -> Dict[str, Any]:
+        async def self_improve(self, recent_actions: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Self-improvement mechanism using RLAIF"""
         if len(recent_actions) < 10:
             return {'improvement': 'insufficient_data'}
@@ -255,7 +255,7 @@ class DirectPreferenceOptimizer:
         self.training_history = []
         
     def collect_preference_pair(self, preferred_action: Dict[str, Any], 
-                              rejected_action: Dict[str, Any],
+        rejected_action: Dict[str, Any],
                               context: Dict[str, Any]) -> None:
         """Collect preference pair from action confidence scores"""
         
@@ -326,7 +326,7 @@ class DirectPreferenceOptimizer:
         
         return torch.stack(losses).mean()
     
-    async def train_batch(self, batch_size: int = 32) -> Dict[str, Any]:
+        async def train_batch(self, batch_size: int = 32) -> Dict[str, Any]:
         """Train DPO policy on batch of preference pairs"""
         if len(self.preference_pairs) < batch_size:
             return {'status': 'insufficient_data', 'pairs_available': len(self.preference_pairs)}
@@ -363,8 +363,8 @@ class DirectPreferenceOptimizer:
             'training_steps': len(self.training_history)
         }
     
-    async def evaluate_action_preference(self, action: Dict[str, Any], 
-                                       context: Dict[str, Any]) -> Dict[str, Any]:
+        async def evaluate_action_preference(self, action: Dict[str, Any],
+        context: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate action using trained DPO policy + Constitutional AI"""
         
         # DPO preference score
@@ -387,8 +387,9 @@ class DirectPreferenceOptimizer:
             'confidence': abs(combined_score - 0.5) * 2  # Convert to confidence
         }
     
-    async def self_improve_system(self) -> Dict[str, Any]:
+        async def self_improve_system(self) -> Dict[str, Any]:
         """Self-improvement using Constitutional AI + DPO"""
+        pass
         recent_actions = []
         
         # Collect recent actions from preference pairs
@@ -409,6 +410,7 @@ class DirectPreferenceOptimizer:
     
     def get_dpo_stats(self) -> Dict[str, Any]:
         """Get comprehensive DPO statistics"""
+        pass
         avg_loss = np.mean([step['loss'] for step in self.training_history]) if self.training_history else 0.0
         
         return {
@@ -441,8 +443,8 @@ class DirectPreferenceOptimizer:
 # Global instance
 _dpo_optimizer = None
 
-def get_dpo_optimizer():
-    global _dpo_optimizer
-    if _dpo_optimizer is None:
+    def get_dpo_optimizer():
+        global _dpo_optimizer
+        if _dpo_optimizer is None:
         _dpo_optimizer = DirectPreferenceOptimizer()
-    return _dpo_optimizer
+        return _dpo_optimizer

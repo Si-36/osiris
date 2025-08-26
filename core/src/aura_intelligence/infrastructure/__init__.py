@@ -51,35 +51,35 @@ except ImportError:
     class Event:
         pass
 
-__all__ = [
-    # Gemini AI Client
-    'GeminiClient',
-    'GeminiClientManager', 
-    'ChatGemini',
-    'GeminiConfig',
-    'GeminiResponse',
-    'create_gemini_client',
-    'test_gemini_connection',
+    __all__ = [
+            # Gemini AI Client
+            'GeminiClient',
+            'GeminiClientManager',
+            'ChatGemini',
+            'GeminiConfig',
+            'GeminiResponse',
+            'create_gemini_client',
+            'test_gemini_connection',
     
-    # Enterprise Guardrails
-    'EnterpriseGuardrails',
-    'GuardrailsConfig',
-    'RateLimiter',
-    'CostTracker',
-    'SecurityValidator',
-    'CircuitBreaker',
-    'get_guardrails',
-    'secure_ainvoke',
+            # Enterprise Guardrails
+            'EnterpriseGuardrails',
+            'GuardrailsConfig',
+            'RateLimiter',
+            'CostTracker',
+            'SecurityValidator',
+            'CircuitBreaker',
+            'get_guardrails',
+            'secure_ainvoke',
     
-    # Event Mesh (if available)
-    'KafkaEventMesh',
-    'KafkaConfig',
-    'Event',
-    'EventMesh',
-    'KAFKA_AVAILABLE'
-]
+            # Event Mesh (if available)
+            'KafkaEventMesh',
+            'KafkaConfig',
+            'Event',
+            'EventMesh',
+            'KAFKA_AVAILABLE'
+    ]
 
-# Module metadata
-__version__ = "2.0.0"
-__author__ = "AURA Intelligence Team"
-__description__ = "Enterprise infrastructure for AI systems"
+    # Module metadata
+    __version__ = "2.0.0"
+    __author__ = "AURA Intelligence Team"
+    __description__ = "Enterprise infrastructure for AI systems"

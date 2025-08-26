@@ -74,8 +74,8 @@ class EventRouter:
         
         logger.info(f"Registered handler {handler.handler_id} for {len(handler.event_types)} event types")
     
-    async def route_event(self, event: Dict[str, Any], 
-                         pattern_matches: List[PatternMatch] = None) -> bool:
+        async def route_event(self, event: Dict[str, Any],
+        pattern_matches: List[PatternMatch] = None) -> bool:
         """Route single event to appropriate handlers"""
         start_time = datetime.utcnow()
         self.metrics.total_events += 1
@@ -122,7 +122,7 @@ class EventRouter:
             return False
     
     def _select_handlers(self, event: Dict[str, Any], 
-                        pattern_matches: List[PatternMatch] = None) -> List[str]:
+        pattern_matches: List[PatternMatch] = None) -> List[str]:
         """Select handlers based on routing strategy"""
         event_type = event.get('type', '')
         
@@ -172,7 +172,7 @@ class EventRouter:
         return eligible_handlers[:1]  # Default: first eligible
     
     def _tda_aware_selection(self, event: Dict[str, Any], 
-                           eligible_handlers: List[str],
+        eligible_handlers: List[str],
                            pattern_matches: List[PatternMatch] = None) -> List[str]:
         """TDA-aware handler selection"""
         tda_score = event.get('tda_anomaly_score', 0.0)
@@ -217,8 +217,8 @@ class EventRouter:
         best_handler = max(handler_scores.keys(), key=lambda h: handler_scores[h])
         return [best_handler]
     
-    async def _execute_handler(self, handler: EventHandler, event: Dict[str, Any],
-                             pattern_matches: List[PatternMatch] = None) -> None:
+        async def _execute_handler(self, handler: EventHandler, event: Dict[str, Any],
+        pattern_matches: List[PatternMatch] = None) -> None:
         """Execute event handler with timeout"""
         task = asyncio.current_task()
         
@@ -260,6 +260,7 @@ class EventRouter:
     
     def get_routing_stats(self) -> Dict[str, Any]:
         """Get routing performance statistics"""
+        pass
         total_events = self.metrics.total_events
         success_rate = (
             self.metrics.successful_routes / max(1, total_events) * 100

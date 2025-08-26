@@ -25,8 +25,8 @@ from .types import (
     RaftVoteRequest, RaftVoteResponse,
     AppendEntriesRequest, AppendEntriesResponse
 )
-from ...events import EventProducer
-from ...agents.temporal import execute_workflow
+from aura_intelligence.events import EventProducer
+from aura_intelligence.agents.temporal import execute_workflow
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
@@ -38,16 +38,16 @@ class RaftMetrics:
     
     def __init__(self):
         self.state_changes = meter.create_counter(
-            name="raft.state.changes",
-            description="Number of Raft state changes"
+        name="raft.state.changes",
+        description="Number of Raft state changes"
         )
         self.elections = meter.create_counter(
-            name="raft.elections",
-            description="Number of Raft elections"
+        name="raft.elections",
+        description="Number of Raft elections"
         )
         self.log_size = meter.create_gauge(
-            name="raft.log.size",
-            description="Size of Raft log"
+        name="raft.log.size",
+        description="Size of Raft log"
         )
 
 
@@ -57,7 +57,7 @@ class RaftRPC(Protocol):
     async def send_vote_request(self, target: str, request: RaftVoteRequest) -> Optional[RaftVoteResponse]:
         ...
     
-    async def send_append_entries(self, target: str, request: AppendEntriesRequest) -> Optional[AppendEntriesResponse]:
+        async def send_append_entries(self, target: str, request: AppendEntriesRequest) -> Optional[AppendEntriesResponse]:
         ...
 
 
@@ -67,18 +67,18 @@ class TemporalRaftRPC:
     def __init__(self, node_id: str):
         self.node_id = node_id
     
-    async def send_vote_request(self, target: str, request: RaftVoteRequest) -> Optional[RaftVoteResponse]:
+        async def send_vote_request(self, target: str, request: RaftVoteRequest) -> Optional[RaftVoteResponse]:
         return await execute_workflow(
             "RaftRPCWorkflow",
             {"from": self.node_id, "to": target, "type": "vote", "request": request},
             id=f"raft-vote-{self.node_id}-{target}-{datetime.now(timezone.utc).timestamp()}"
         )
     
-    async def send_append_entries(self, target: str, request: AppendEntriesRequest) -> Optional[AppendEntriesResponse]:
+        async def send_append_entries(self, target: str, request: AppendEntriesRequest) -> Optional[AppendEntriesResponse]:
         return await execute_workflow(
-            "RaftRPCWorkflow",
-            {"from": self.node_id, "to": target, "type": "append", "request": request},
-            id=f"raft-append-{self.node_id}-{target}-{datetime.now(timezone.utc).timestamp()}"
+        "RaftRPCWorkflow",
+        {"from": self.node_id, "to": target, "type": "append", "request": request},
+        id=f"raft-append-{self.node_id}-{target}-{datetime.now(timezone.utc).timestamp()}"
         )
 
 
@@ -105,6 +105,7 @@ class RaftLog:
     
     def last(self) -> Optional[LogEntry]:
         """Get last entry."""
+        pass
         return self.entries[-1] if self.entries else None
     
     def truncate(self, index: int):
@@ -112,7 +113,8 @@ class RaftLog:
         self.entries = self.entries[:index]
     
     def _create_snapshot(self):
-        """Create snapshot and compact log."""
+            """Create snapshot and compact log."""
+        pass
         # In production: persist snapshot to disk
         self.snapshot_index = len(self.entries) // 2
         self.entries = self.entries[self.snapshot_index:]
@@ -127,20 +129,21 @@ class RaftTimer:
     
     def election_timeout(self) -> timedelta:
         """Generate random election timeout."""
+        pass
         base = self.config.election_timeout_ms
         jitter = random.randint(0, base)
         return timedelta(milliseconds=base + jitter)
     
-    async def reset_election_timer(self, callback: Callable):
+        async def reset_election_timer(self, callback: Callable):
         """Reset election timer."""
         self.cancel("election")
         timeout = self.election_timeout()
         self._tasks["election"] = asyncio.create_task(
-            self._timer("election", timeout, callback)
+        self._timer("election", timeout, callback)
         )
     
-    async def start_heartbeat_timer(self, callback: Callable):
-        """Start heartbeat timer."""
+        async def start_heartbeat_timer(self, callback: Callable):
+            """Start heartbeat timer."""
         self.cancel("heartbeat")
         interval = timedelta(milliseconds=self.config.heartbeat_interval_ms)
         self._tasks["heartbeat"] = asyncio.create_task(
@@ -151,30 +154,31 @@ class RaftTimer:
         """Cancel named timer."""
         if name in self._tasks:
             self._tasks[name].cancel()
-            del self._tasks[name]
+        del self._tasks[name]
     
     def cancel_all(self):
-        """Cancel all timers."""
+            """Cancel all timers."""
+        pass
         for task in self._tasks.values():
             task.cancel()
         self._tasks.clear()
     
-    async def _timer(self, name: str, timeout: timedelta, callback: Callable):
+        async def _timer(self, name: str, timeout: timedelta, callback: Callable):
         """Single-shot timer."""
         try:
             await asyncio.sleep(timeout.total_seconds())
-            await callback()
+        await callback()
         except asyncio.CancelledError:
-            pass
+        pass
     
-    async def _repeating_timer(self, name: str, interval: timedelta, callback: Callable):
-        """Repeating timer."""
+        async def _repeating_timer(self, name: str, interval: timedelta, callback: Callable):
+            """Repeating timer."""
         try:
             while True:
                 await asyncio.sleep(interval.total_seconds())
                 await callback()
         except asyncio.CancelledError:
-            pass
+        pass
 
 
 class RaftStateMachine:
@@ -190,7 +194,7 @@ class RaftStateMachine:
         self.last_heartbeat = datetime.now(timezone.utc)
     
     def transition_to(self, new_state: RaftState):
-        """Transition to new state."""
+            """Transition to new state."""
         if self.state != new_state:
             logger.info(
                 f"State transition",
@@ -212,7 +216,7 @@ class RaftStateMachine:
         self.leader_id = None
     
     def record_vote(self, term: int, candidate: str):
-        """Record vote for term."""
+            """Record vote for term."""
         if term > self.term:
             self.start_new_term(term)
         self.voted_for = candidate
@@ -261,12 +265,14 @@ class RaftCore:
     
     async def start(self):
         """Start Raft node."""
+        pass
         await self.event_producer.start()
         await self.timer.reset_election_timer(self._on_election_timeout)
         await self._publish_state_change()
     
-    async def stop(self):
-        """Stop Raft node."""
+        async def stop(self):
+            """Stop Raft node."""
+        pass
         self.timer.cancel_all()
         await self.event_producer.stop()
     
@@ -274,20 +280,20 @@ class RaftCore:
         """Propose value for consensus."""
         with tracer.start_as_current_span("raft.propose") as span:
             span.set_attributes({
-                "node_id": self.config.node_id,
-                "state": self.state_machine.state.value,
-                "request_id": request.request_id
-            })
+        "node_id": self.config.node_id,
+        "state": self.state_machine.state.value,
+        "request_id": request.request_id
+        })
             
-            if self.state_machine.state != RaftState.LEADER:
-                return await self._handle_non_leader_proposal(request)
+        if self.state_machine.state != RaftState.LEADER:
+            return await self._handle_non_leader_proposal(request)
             
-            if self.config.pipeline_enabled:
-                return await self._batch_propose(request)
-            else:
-                return await self._direct_propose(request)
+        if self.config.pipeline_enabled:
+            return await self._batch_propose(request)
+        else:
+        return await self._direct_propose(request)
     
-    async def _handle_non_leader_proposal(self, request: ConsensusRequest) -> ConsensusResult:
+        async def _handle_non_leader_proposal(self, request: ConsensusRequest) -> ConsensusResult:
         """Handle proposal when not leader."""
         if self.state_machine.leader_id:
             # Forward to leader
@@ -312,10 +318,10 @@ class RaftCore:
     async def _direct_propose(self, request: ConsensusRequest) -> ConsensusResult:
         """Direct proposal without batching."""
         entry = LogEntry(
-            term=self.state_machine.term,
-            index=len(self.log.entries),
-            command=request.proposal,
-            request_id=request.request_id
+        term=self.state_machine.term,
+        index=len(self.log.entries),
+        command=request.proposal,
+        request_id=request.request_id
         )
         
         index = self.log.append(entry)
@@ -328,15 +334,15 @@ class RaftCore:
         
         try:
             await asyncio.wait_for(future, timeout=request.timeout.total_seconds())
-            return future.result()
+        return future.result()
         except asyncio.TimeoutError:
-            return ConsensusResult(
-                request_id=request.request_id,
-                status=ConsensusState.TIMEOUT,
-                reason="Consensus timeout"
-            )
+        return ConsensusResult(
+        request_id=request.request_id,
+        status=ConsensusState.TIMEOUT,
+        reason="Consensus timeout"
+        )
     
-    async def _batch_propose(self, request: ConsensusRequest) -> ConsensusResult:
+        async def _batch_propose(self, request: ConsensusRequest) -> ConsensusResult:
         """Batch proposal for efficiency."""
         async with self.batch_lock:
             self.batch_buffer.append(request)
@@ -358,25 +364,26 @@ class RaftCore:
     
     async def _process_batch(self):
         """Process batched requests."""
+        pass
         if not self.batch_buffer:
             return
         
         batch_entry = LogEntry(
-            term=self.state_machine.term,
-            index=len(self.log.entries),
-            command={
-                "batch": [req.proposal for req in self.batch_buffer],
-                "ids": [req.request_id for req in self.batch_buffer]
-            },
-            request_id=f"batch-{datetime.now(timezone.utc).timestamp()}"
+        term=self.state_machine.term,
+        index=len(self.log.entries),
+        command={
+        "batch": [req.proposal for req in self.batch_buffer],
+        "ids": [req.request_id for req in self.batch_buffer]
+        },
+        request_id=f"batch-{datetime.now(timezone.utc).timestamp()}"
         )
         
         self.batch_buffer.clear()
         self.log.append(batch_entry)
         await self._replicate_entry(batch_entry)
     
-    async def _replicate_entry(self, entry: LogEntry):
-        """Replicate to followers in parallel."""
+        async def _replicate_entry(self, entry: LogEntry):
+            """Replicate to followers in parallel."""
         tasks = [
             self._send_append_entries_to_peer(peer, [entry])
             for peer in self.config.peers
@@ -393,16 +400,16 @@ class RaftCore:
         
         if prev_index >= 0:
             prev_entry = self.log.get(prev_index)
-            if prev_entry:
-                prev_term = prev_entry.term
+        if prev_entry:
+            prev_term = prev_entry.term
         
         request = AppendEntriesRequest(
-            term=self.state_machine.term,
-            leader_id=self.config.node_id,
-            prev_log_index=prev_index,
-            prev_log_term=prev_term,
-            entries=entries,
-            leader_commit=self.commit_index
+        term=self.state_machine.term,
+        leader_id=self.config.node_id,
+        prev_log_index=prev_index,
+        prev_log_term=prev_term,
+        entries=entries,
+        leader_commit=self.commit_index
         )
         
         response = await self.rpc.send_append_entries(peer, request)
@@ -410,14 +417,15 @@ class RaftCore:
         if response and response.success:
             if entries:
                 self.next_index[peer] = entries[-1].index + 1
-                self.match_index[peer] = entries[-1].index
-            await self._check_commit()
-            return True
+        self.match_index[peer] = entries[-1].index
+        await self._check_commit()
+        return True
         
         return False
     
-    async def _check_commit(self):
-        """Check if entries can be committed."""
+        async def _check_commit(self):
+            """Check if entries can be committed."""
+        pass
         for i in range(len(self.log.entries) - 1, self.commit_index, -1):
             entry = self.log.get(i)
             if entry and entry.term == self.state_machine.term:
@@ -433,20 +441,21 @@ class RaftCore:
     
     async def _apply_committed(self):
         """Apply committed entries."""
+        pass
         while self.last_applied < self.commit_index:
-            self.last_applied += 1
-            entry = self.log.get(self.last_applied)
-            if not entry:
-                continue
+        self.last_applied += 1
+        entry = self.log.get(self.last_applied)
+        if not entry:
+            continue
             
-            if "batch" in entry.command:
-                for req_id in entry.command["ids"]:
-                    await self._complete_request(req_id, entry.command)
-            else:
-                await self._complete_request(entry.request_id, entry.command)
+        if "batch" in entry.command:
+            for req_id in entry.command["ids"]:
+        await self._complete_request(req_id, entry.command)
+        else:
+        await self._complete_request(entry.request_id, entry.command)
     
-    async def _complete_request(self, request_id: str, decision: Any):
-        """Complete pending request."""
+        async def _complete_request(self, request_id: str, decision: Any):
+            """Complete pending request."""
         if request_id in self.pending_requests:
             future = self.pending_requests.pop(request_id)
             future.set_result(ConsensusResult(
@@ -458,13 +467,15 @@ class RaftCore:
     
     async def _on_election_timeout(self):
         """Handle election timeout."""
+        pass
         if self.state_machine.state != RaftState.LEADER:
             time_since = datetime.now(timezone.utc) - self.state_machine.last_heartbeat
-            if time_since > self.timer.election_timeout():
-                await self._start_election()
+        if time_since > self.timer.election_timeout():
+            await self._start_election()
     
-    async def _start_election(self):
-        """Start leader election."""
+        async def _start_election(self):
+            """Start leader election."""
+        pass
         self.state_machine.start_new_term(self.state_machine.term + 1)
         self.state_machine.transition_to(RaftState.CANDIDATE)
         self.state_machine.record_vote(self.state_machine.term, self.config.node_id)
@@ -490,22 +501,23 @@ class RaftCore:
         last_entry = self.log.last()
         
         request = RaftVoteRequest(
-            term=self.state_machine.term,
-            candidate_id=self.config.node_id,
-            last_log_index=len(self.log.entries) - 1,
-            last_log_term=last_entry.term if last_entry else 0
+        term=self.state_machine.term,
+        candidate_id=self.config.node_id,
+        last_log_index=len(self.log.entries) - 1,
+        last_log_term=last_entry.term if last_entry else 0
         )
         
         response = await self.rpc.send_vote_request(peer, request)
         
         if response and response.vote_granted:
             self.votes_received.add(response.voter_id)
-            return True
+        return True
         
         return False
     
-    async def _become_leader(self):
-        """Become leader."""
+        async def _become_leader(self):
+            """Become leader."""
+        pass
         self.state_machine.transition_to(RaftState.LEADER)
         
         # Initialize leader state
@@ -519,17 +531,19 @@ class RaftCore:
     
     async def _send_heartbeats(self):
         """Send heartbeats to all followers."""
+        pass
         tasks = [
-            self._send_append_entries_to_peer(peer, [])
-            for peer in self.config.peers
-            if peer != self.config.node_id
+        self._send_append_entries_to_peer(peer, [])
+        for peer in self.config.peers
+        if peer != self.config.node_id
         ]
         
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
     
-    async def _publish_state_change(self):
-        """Publish state change event."""
+        async def _publish_state_change(self):
+            """Publish state change event."""
+        pass
         await self.event_producer.send_event("raft.state.changes", {
             "node_id": self.config.node_id,
             "state": self.state_machine.state.value,
@@ -567,27 +581,30 @@ class RaftConsensus:
         rpc = TemporalRaftRPC(config.node_id) if config.use_temporal_for_rpc else None
         self.core = RaftCore(config, rpc, self.event_producer, self.metrics)
     
-    async def start(self):
-        """Start Raft consensus."""
+        async def start(self):
+            """Start Raft consensus."""
+        pass
         await self.core.start()
     
-    async def stop(self):
+        async def stop(self):
         """Stop Raft consensus."""
+        pass
         await self.core.stop()
     
-    async def propose(self, request: ConsensusRequest) -> ConsensusResult:
+        async def propose(self, request: ConsensusRequest) -> ConsensusResult:
         """Propose value for consensus."""
         return await self.core.propose(request)
     
-    async def get_status(self) -> Dict[str, Any]:
+        async def get_status(self) -> Dict[str, Any]:
         """Get consensus status."""
+        pass
         return {
-            "node_id": self.config.node_id,
-            "state": self.core.state_machine.state.value,
-            "term": self.core.state_machine.term,
-            "leader": self.core.state_machine.leader_id,
-            "log_size": len(self.core.log.entries),
-            "commit_index": self.core.commit_index,
-            "last_applied": self.core.last_applied,
-            "peers": self.config.peers
+        "node_id": self.config.node_id,
+        "state": self.core.state_machine.state.value,
+        "term": self.core.state_machine.term,
+        "leader": self.core.state_machine.leader_id,
+        "log_size": len(self.core.log.entries),
+        "commit_index": self.core.commit_index,
+        "last_applied": self.core.last_applied,
+        "peers": self.config.peers
         }

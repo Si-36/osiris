@@ -86,6 +86,7 @@ class AdaptiveCheckpointCoalescer:
     
     async def start(self):
         """Start the coalescing background task"""
+        pass
         if self._running:
             return
             
@@ -95,6 +96,7 @@ class AdaptiveCheckpointCoalescer:
     
     async def stop(self):
         """Stop the coalescing background task"""
+        pass
         self._running = False
         if self._coalescing_task:
             await self._coalescing_task
@@ -199,8 +201,9 @@ class AdaptiveCheckpointCoalescer:
             
         return False
     
-    async def _coalescing_loop(self):
+        async def _coalescing_loop(self):
         """Background task for adaptive coalescing"""
+        pass
         while self._running:
             try:
                 # Adaptive sleep based on current interval
@@ -218,8 +221,9 @@ class AdaptiveCheckpointCoalescer:
             except Exception as e:
                 logger.error(f"Error in coalescing loop: {e}")
     
-    async def _flush_old_checkpoints(self):
+        async def _flush_old_checkpoints(self):
         """Flush checkpoints that have aged out"""
+        pass
         now = datetime.now()
         keys_to_flush = []
         
@@ -237,7 +241,7 @@ class AdaptiveCheckpointCoalescer:
                 self._flush_key(key) for key in keys_to_flush
             ])
     
-    async def _flush_key(self, key: str):
+        async def _flush_key(self, key: str):
         """Flush all pending checkpoints for a key"""
         pending = self.pending_checkpoints[key]
         if not pending:
@@ -255,7 +259,7 @@ class AdaptiveCheckpointCoalescer:
     def _coalesce_checkpoints(
         self, 
         checkpoints: List[Tuple[Any, CheckpointMetadata]]
-    ) -> List[Tuple[Any, CheckpointMetadata]]:
+        ) -> List[Tuple[Any, CheckpointMetadata]]:
         """
         Coalesce multiple checkpoints into fewer writes
         
@@ -346,11 +350,11 @@ class AdaptiveCheckpointCoalescer:
             # Default: return the latest state
             return states[-1]
     
-    async def _write_checkpoint(
+        async def _write_checkpoint(
         self, 
         key: str, 
         checkpoints: List[Tuple[Any, CheckpointMetadata]]
-    ):
+        ):
         """Write checkpoints to backend"""
         if not self.backend:
             logger.warning("No backend configured, skipping write")
@@ -381,6 +385,7 @@ class AdaptiveCheckpointCoalescer:
     
     def _adapt_interval(self):
         """Adapt coalescing interval based on write patterns"""
+        pass
         if len(self.write_history) < 10:
             return
             
@@ -417,6 +422,7 @@ class AdaptiveCheckpointCoalescer:
     
     def _update_statistics(self):
         """Update running statistics"""
+        pass
         if self.stats["total_writes_requested"] > 0:
             reduction = 1.0 - (
                 self.stats["total_writes_performed"] / 
@@ -434,8 +440,9 @@ class AdaptiveCheckpointCoalescer:
                     total_coalesced / self.stats["total_writes_performed"]
                 )
     
-    async def _flush_all_pending(self):
+        async def _flush_all_pending(self):
         """Flush all pending checkpoints"""
+        pass
         keys = list(self.pending_checkpoints.keys())
         await asyncio.gather(*[
             self._flush_key(key) for key in keys
@@ -443,6 +450,7 @@ class AdaptiveCheckpointCoalescer:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get coalescing statistics"""
+        pass
         stats = self.stats.copy()
         
         # Calculate write reduction
@@ -463,6 +471,7 @@ class AdaptiveCheckpointCoalescer:
     
     def get_pending_info(self) -> Dict[str, List[Dict[str, Any]]]:
         """Get information about pending checkpoints"""
+        pass
         info = {}
         
         for key, checkpoints in self.pending_checkpoints.items():
@@ -481,11 +490,11 @@ class AdaptiveCheckpointCoalescer:
 
 
 # Factory function
-def create_adaptive_checkpoint_coalescer(**kwargs) -> AdaptiveCheckpointCoalescer:
-    """Create adaptive checkpoint coalescer with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+    def create_adaptive_checkpoint_coalescer(**kwargs) -> AdaptiveCheckpointCoalescer:
+        """Create adaptive checkpoint coalescer with feature flag support"""
+        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.ADAPTIVE_CHECKPOINT_ENABLED):
+        if not is_feature_enabled(FeatureFlag.ADAPTIVE_CHECKPOINT_ENABLED):
         raise RuntimeError("Adaptive checkpoint coalescing is not enabled. Enable with feature flag.")
     
-    return AdaptiveCheckpointCoalescer(**kwargs)
+        return AdaptiveCheckpointCoalescer(**kwargs)

@@ -30,8 +30,9 @@ class EventBus:
         self._running = False
         self._task: Optional[asyncio.Task] = None
         
-    async def start(self):
+        async def start(self):
         """Start the event bus processor"""
+        pass
         if self._running:
             return
             
@@ -39,15 +40,17 @@ class EventBus:
         self._task = asyncio.create_task(self._process_events())
         logger.info("EventBus started")
         
-    async def stop(self):
+        async def stop(self):
         """Stop the event bus processor"""
+        pass
         self._running = False
         if self._task:
             await self._task
         logger.info("EventBus stopped")
         
-    async def _process_events(self):
+        async def _process_events(self):
         """Process events from the queue"""
+        pass
         while self._running:
             try:
                 event = await asyncio.wait_for(self._queue.get(), timeout=1.0)
@@ -57,7 +60,7 @@ class EventBus:
             except Exception as e:
                 logger.error(f"Error processing event: {e}")
                 
-    async def _dispatch_event(self, event: Event):
+        async def _dispatch_event(self, event: Event):
         """Dispatch event to subscribers"""
         subscribers = self._subscribers.get(event.event_type, [])
         
@@ -82,11 +85,11 @@ class EventBus:
         if event_type in self._subscribers:
             self._subscribers[event_type].remove(handler)
             
-    async def publish(self, event: Event):
+        async def publish(self, event: Event):
         """Publish an event"""
         await self._queue.put(event)
         
-    async def publish_event(self, event_type: str, payload: Dict[str, Any], metadata: Optional[Dict[str, Any]] = None):
+        async def publish_event(self, event_type: str, payload: Dict[str, Any], metadata: Optional[Dict[str, Any]] = None):
         """Convenience method to publish an event"""
         event = Event(
             event_type=event_type,
@@ -100,12 +103,12 @@ class EventBus:
 _event_bus: Optional[EventBus] = None
 
 
-def get_event_bus() -> EventBus:
-    """Get the global event bus instance"""
-    global _event_bus
-    if _event_bus is None:
+    def get_event_bus() -> EventBus:
+        """Get the global event bus instance"""
+        global _event_bus
+        if _event_bus is None:
         _event_bus = EventBus()
-    return _event_bus
+        return _event_bus
 
 
 __all__ = ["EventBus", "Event", "get_event_bus"]

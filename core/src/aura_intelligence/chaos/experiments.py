@@ -36,28 +36,29 @@ class ChaosExperiment(ABC):
         self.status = "pending"
         self.results: Dict[str, Any] = {}
     
-    @abstractmethod
-    async def setup(self) -> None:
+        @abstractmethod
+        async def setup(self) -> None:
         """Setup experiment prerequisites"""
         pass
     
     @abstractmethod
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Inject the failure condition"""
         pass
     
-    @abstractmethod
-    async def verify_hypothesis(self) -> bool:
+        @abstractmethod
+        async def verify_hypothesis(self) -> bool:
         """Verify if system behaved as expected"""
         pass
     
     @abstractmethod
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Clean up after experiment"""
         pass
     
-    async def run(self) -> Dict[str, Any]:
+        async def run(self) -> Dict[str, Any]:
         """Execute the chaos experiment"""
+        pass
         logger.info(
             "Starting chaos experiment",
             experiment=self.name,
@@ -122,16 +123,18 @@ class ChaosExperiment(ABC):
         # Generate report
         return self._generate_report()
     
-    async def _capture_steady_state(self) -> Dict[str, Any]:
+        async def _capture_steady_state(self) -> Dict[str, Any]:
         """Capture system steady state metrics"""
+        pass
         # Override in subclasses for specific metrics
         return {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "status": "captured"
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "status": "captured"
         }
     
     def _generate_report(self) -> Dict[str, Any]:
         """Generate experiment report"""
+        pass
         duration = (self.end_time - self.start_time).total_seconds() if self.end_time else 0
         
         return {
@@ -151,19 +154,21 @@ class EventStoreFailureExperiment(ChaosExperiment):
     
     def __init__(self, event_store, health_check_fn: Callable):
         super().__init__(
-            name="event_store_failure",
-            description="Simulate event store unavailability"
+        name="event_store_failure",
+        description="Simulate event store unavailability"
         )
         self.event_store = event_store
         self.health_check_fn = health_check_fn
         self._original_connect = None
     
-    async def setup(self) -> None:
+        async def setup(self) -> None:
         """Backup original connection method"""
+        pass
         self._original_connect = self.event_store.connect
     
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Disconnect event store and prevent reconnection"""
+        pass
         logger.warning("Injecting event store failure")
         
         # Disconnect
@@ -171,12 +176,13 @@ class EventStoreFailureExperiment(ChaosExperiment):
         
         # Override connect to fail
         async def failing_connect():
-            raise RuntimeError("Event store connection disabled by chaos experiment")
+        raise RuntimeError("Event store connection disabled by chaos experiment")
         
         self.event_store.connect = failing_connect
     
-    async def verify_hypothesis(self) -> bool:
+        async def verify_hypothesis(self) -> bool:
         """Verify system remains healthy despite event store failure"""
+        pass
         # System should degrade gracefully
         health_status = await self.health_check_fn()
         
@@ -193,8 +199,9 @@ class EventStoreFailureExperiment(ChaosExperiment):
         logger.info("System handling event store failure gracefully")
         return True
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Restore event store connection"""
+        pass
         logger.info("Restoring event store connection")
         self.event_store.connect = self._original_connect
         await self.event_store.connect()
@@ -205,38 +212,41 @@ class ProjectionLagExperiment(ChaosExperiment):
     
     def __init__(self, projection_manager, max_lag_seconds: int = 60):
         super().__init__(
-            name="projection_lag",
-            description="Simulate projection processing lag"
+        name="projection_lag",
+        description="Simulate projection processing lag"
         )
         self.projection_manager = projection_manager
         self.max_lag_seconds = max_lag_seconds
         self._original_handle_event = {}
     
-    async def setup(self) -> None:
+        async def setup(self) -> None:
         """Backup original event handlers"""
+        pass
         for projection in self.projection_manager.projections:
             self._original_handle_event[projection.name] = projection.handle_event
     
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Add artificial delay to projection processing"""
+        pass
         logger.warning(
-            "Injecting projection lag",
-            max_lag_seconds=self.max_lag_seconds
+        "Injecting projection lag",
+        max_lag_seconds=self.max_lag_seconds
         )
         
         for projection in self.projection_manager.projections:
-            original_handler = self._original_handle_event[projection.name]
+        original_handler = self._original_handle_event[projection.name]
             
-            async def delayed_handler(event, original=original_handler):
-                # Add random delay
-                delay = random.uniform(0, self.max_lag_seconds)
-                await asyncio.sleep(delay)
-                return await original(event)
+        async def delayed_handler(event, original=original_handler):
+        # Add random delay
+        delay = random.uniform(0, self.max_lag_seconds)
+        await asyncio.sleep(delay)
+        return await original(event)
             
-            projection.handle_event = delayed_handler
+        projection.handle_event = delayed_handler
     
-    async def verify_hypothesis(self) -> bool:
+        async def verify_hypothesis(self) -> bool:
         """Verify system handles projection lag appropriately"""
+        pass
         # Check if lag monitoring is working
         from ..observability.metrics import projection_lag
         
@@ -254,11 +264,12 @@ class ProjectionLagExperiment(ChaosExperiment):
         logger.info("Projection lag properly detected and monitored")
         return True
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Restore normal projection processing"""
+        pass
         logger.info("Removing projection lag injection")
         for projection in self.projection_manager.projections:
-            projection.handle_event = self._original_handle_event[projection.name]
+        projection.handle_event = self._original_handle_event[projection.name]
 
 
 class NetworkPartitionExperiment(ChaosExperiment):
@@ -266,30 +277,33 @@ class NetworkPartitionExperiment(ChaosExperiment):
     
     def __init__(self, network_controller, partition_config: Dict[str, List[str]]):
         super().__init__(
-            name="network_partition",
-            description="Simulate network partition between services"
+        name="network_partition",
+        description="Simulate network partition between services"
         )
         self.network_controller = network_controller
         self.partition_config = partition_config
     
-    async def setup(self) -> None:
+        async def setup(self) -> None:
         """Verify network controller is ready"""
+        pass
         if not hasattr(self.network_controller, 'create_partition'):
             raise RuntimeError("Network controller must support partition creation")
     
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Create network partition"""
+        pass
         logger.warning(
-            "Creating network partition",
-            config=self.partition_config
+        "Creating network partition",
+        config=self.partition_config
         )
         
         for source, targets in self.partition_config.items():
-            for target in targets:
-                await self.network_controller.create_partition(source, target)
+        for target in targets:
+        await self.network_controller.create_partition(source, target)
     
-    async def verify_hypothesis(self) -> bool:
+        async def verify_hypothesis(self) -> bool:
         """Verify system handles partition correctly"""
+        pass
         # System should detect partition and handle appropriately
         # This is a simplified check - real implementation would be more thorough
         
@@ -300,13 +314,14 @@ class NetworkPartitionExperiment(ChaosExperiment):
         logger.info("Assuming partition handling is correct for demo")
         return True
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Remove network partition"""
+        pass
         logger.info("Removing network partition")
         
         for source, targets in self.partition_config.items():
-            for target in targets:
-                await self.network_controller.remove_partition(source, target)
+        for target in targets:
+        await self.network_controller.remove_partition(source, target)
 
 
 class DebateTimeoutExperiment(ChaosExperiment):
@@ -314,26 +329,29 @@ class DebateTimeoutExperiment(ChaosExperiment):
     
     def __init__(self, debate_system, timeout_probability: float = 0.8):
         super().__init__(
-            name="debate_timeout",
-            description="Force debates to timeout before consensus"
+        name="debate_timeout",
+        description="Force debates to timeout before consensus"
         )
         self.debate_system = debate_system
         self.timeout_probability = timeout_probability
         self._original_timeout = None
     
-    async def setup(self) -> None:
+        async def setup(self) -> None:
         """Backup original timeout setting"""
+        pass
         self._original_timeout = self.debate_system.debate_timeout
     
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Set very short timeout for debates"""
+        pass
         logger.warning("Injecting debate timeouts")
         
         # Set timeout to 5 seconds (normally would be minutes)
         self.debate_system.debate_timeout = timedelta(seconds=5)
     
-    async def verify_hypothesis(self) -> bool:
+        async def verify_hypothesis(self) -> bool:
         """Verify system handles debate timeouts gracefully"""
+        pass
         # Start a test debate
         debate_id = await self.debate_system.start_debate(
             topic="Test topic for chaos experiment",
@@ -358,8 +376,9 @@ class DebateTimeoutExperiment(ChaosExperiment):
         logger.info("Debate timeout handled correctly")
         return True
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Restore original timeout"""
+        pass
         logger.info("Restoring debate timeout")
         self.debate_system.debate_timeout = self._original_timeout
 
@@ -369,21 +388,22 @@ class MemoryPressureExperiment(ChaosExperiment):
     
     def __init__(self, target_memory_mb: int = 1000):
         super().__init__(
-            name="memory_pressure",
-            description="Simulate high memory usage"
+        name="memory_pressure",
+        description="Simulate high memory usage"
         )
         self.target_memory_mb = target_memory_mb
         self._memory_hog = []
     
-    async def setup(self) -> None:
+        async def setup(self) -> None:
         """Prepare for memory allocation"""
         pass
     
-    async def inject_failure(self) -> None:
+        async def inject_failure(self) -> None:
         """Allocate memory to create pressure"""
+        pass
         logger.warning(
-            "Creating memory pressure",
-            target_mb=self.target_memory_mb
+        "Creating memory pressure",
+        target_mb=self.target_memory_mb
         )
         
         # Allocate memory in chunks
@@ -391,12 +411,13 @@ class MemoryPressureExperiment(ChaosExperiment):
         total_allocated = 0
         
         while total_allocated < self.target_memory_mb * 1024 * 1024:
-            self._memory_hog.append(bytearray(chunk_size))
-            total_allocated += chunk_size
-            await asyncio.sleep(0.1)  # Gradual allocation
+        self._memory_hog.append(bytearray(chunk_size))
+        total_allocated += chunk_size
+        await asyncio.sleep(0.1)  # Gradual allocation
     
-    async def verify_hypothesis(self) -> bool:
+        async def verify_hypothesis(self) -> bool:
         """Verify system handles memory pressure"""
+        pass
         # Check if system is still responsive
         # In real implementation, would check various health metrics
         
@@ -413,8 +434,9 @@ class MemoryPressureExperiment(ChaosExperiment):
             logger.error("System unable to handle memory pressure")
             return False
     
-    async def cleanup(self) -> None:
+        async def cleanup(self) -> None:
         """Release allocated memory"""
+        pass
         logger.info("Releasing memory")
         self._memory_hog.clear()
 
@@ -430,32 +452,33 @@ class ChaosOrchestrator:
         """Add experiment to queue"""
         self.experiments.append(experiment)
     
-    async def run_all(self, parallel: bool = False) -> List[Dict[str, Any]]:
+        async def run_all(self, parallel: bool = False) -> List[Dict[str, Any]]:
         """Run all experiments"""
         logger.info(
-            "Starting chaos orchestration",
-            experiment_count=len(self.experiments),
-            parallel=parallel
+        "Starting chaos orchestration",
+        experiment_count=len(self.experiments),
+        parallel=parallel
         )
         
         if parallel:
             # Run experiments in parallel
-            tasks = [exp.run() for exp in self.experiments]
-            self.results = await asyncio.gather(*tasks, return_exceptions=True)
+        tasks = [exp.run() for exp in self.experiments]
+        self.results = await asyncio.gather(*tasks, return_exceptions=True)
         else:
-            # Run experiments sequentially
-            self.results = []
-            for exp in self.experiments:
-                result = await exp.run()
-                self.results.append(result)
+        # Run experiments sequentially
+        self.results = []
+        for exp in self.experiments:
+        result = await exp.run()
+        self.results.append(result)
                 
-                # Wait between experiments
-                await asyncio.sleep(30)
+        # Wait between experiments
+        await asyncio.sleep(30)
         
         return self.results
     
     def generate_report(self) -> Dict[str, Any]:
         """Generate summary report of all experiments"""
+        pass
         total = len(self.results)
         successful = sum(1 for r in self.results if r.get("status") == "completed")
         failed = total - successful
@@ -479,48 +502,48 @@ class ChaosOrchestrator:
 
 # Example usage
 async def run_chaos_suite(system_components: Dict[str, Any]) -> Dict[str, Any]:
-    """Run a suite of chaos experiments"""
-    orchestrator = ChaosOrchestrator()
+        """Run a suite of chaos experiments"""
+        orchestrator = ChaosOrchestrator()
     
     # Add experiments based on available components
-    if "event_store" in system_components:
+        if "event_store" in system_components:
         orchestrator.add_experiment(
-            EventStoreFailureExperiment(
-                system_components["event_store"],
-                system_components["health_check"]
-            )
+        EventStoreFailureExperiment(
+        system_components["event_store"],
+        system_components["health_check"]
+        )
         )
     
-    if "projection_manager" in system_components:
+        if "projection_manager" in system_components:
         orchestrator.add_experiment(
-            ProjectionLagExperiment(
-                system_components["projection_manager"],
-                max_lag_seconds=30
-            )
+        ProjectionLagExperiment(
+        system_components["projection_manager"],
+        max_lag_seconds=30
+        )
         )
     
-    if "debate_system" in system_components:
+        if "debate_system" in system_components:
         orchestrator.add_experiment(
-            DebateTimeoutExperiment(
-                system_components["debate_system"],
-                timeout_probability=0.9
-            )
+        DebateTimeoutExperiment(
+        system_components["debate_system"],
+        timeout_probability=0.9
+        )
         )
     
     # Add memory pressure test
-    orchestrator.add_experiment(
+        orchestrator.add_experiment(
         MemoryPressureExperiment(target_memory_mb=500)
-    )
+        )
     
     # Run experiments
-    results = await orchestrator.run_all(parallel=False)
+        results = await orchestrator.run_all(parallel=False)
     
     # Generate report
-    report = orchestrator.generate_report()
+        report = orchestrator.generate_report()
     
-    logger.info(
+        logger.info(
         "Chaos experiments completed",
         resilience_score=report["summary"]["resilience_score"]
-    )
+        )
     
-    return report
+        return report

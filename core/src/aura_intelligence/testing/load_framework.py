@@ -61,6 +61,7 @@ class LoadScenario:
     
     def _default_data_generator(self) -> np.ndarray:
         """Generate default streaming data points"""
+        pass
         # Simulate sensor data with noise
         base = np.random.randn(self.point_dimensions)
         noise = np.random.randn(self.point_dimensions) * 0.1
@@ -99,8 +100,9 @@ class LoadGenerator:
         self._running = False
         self.tracer = get_tracer()
         
-    async def generate_load(self) -> AsyncIterator[float]:
+        async def generate_load(self) -> AsyncIterator[float]:
         """Generate load according to pattern"""
+        pass
         self.start_time = time.time()
         self._running = True
         
@@ -173,6 +175,7 @@ class LoadGenerator:
     
     def stop(self):
         """Stop load generation"""
+        pass
         self._running = False
 
 
@@ -190,8 +193,9 @@ class StreamingTDALoadTester:
         self._active_tasks = 0
         self.tracer = get_tracer()
         
-    async def initialize(self):
+        async def initialize(self):
         """Initialize streaming windows"""
+        pass
         for size in self.scenario.window_sizes:
             self.windows[size] = StreamingWindow(
                 capacity=size,
@@ -199,8 +203,9 @@ class StreamingTDALoadTester:
             )
             await self.windows[size].initialize()
             
-    async def run_test(self) -> LoadTestResult:
+        async def run_test(self) -> LoadTestResult:
         """Run the load test"""
+        pass
         await self.initialize()
         
         self.start_time = datetime.now()
@@ -239,7 +244,7 @@ class StreamingTDALoadTester:
         # Calculate results
         return self._calculate_results(request_count)
     
-    async def _execute_request(self, request_id: int):
+        async def _execute_request(self, request_id: int):
         """Execute a single streaming TDA request"""
         async with self.tracer.trace_async_operation(
             "load_test_request",
@@ -293,8 +298,9 @@ class StreamingTDALoadTester:
                 ACTIVE_CONNECTIONS.labels(scenario=self.scenario.name).dec()
                 self._active_tasks -= 1
     
-    async def _monitor_throughput(self):
+        async def _monitor_throughput(self):
         """Monitor and record throughput"""
+        pass
         last_count = 0
         
         while True:
@@ -350,7 +356,7 @@ class StreamingTDALoadTester:
             memory_usage_mb=memory_usage
         )
     
-    async def save_results(self, result: LoadTestResult, filepath: str):
+        async def save_results(self, result: LoadTestResult, filepath: str):
         """Save test results to file"""
         result_dict = {
             "scenario_name": result.scenario_name,

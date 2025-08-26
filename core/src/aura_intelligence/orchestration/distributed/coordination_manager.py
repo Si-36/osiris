@@ -28,7 +28,7 @@ from .coordination_core import (
     NodeId, MessageId, DistributedMessage, MessageType, VectorClock,
     NodeInfo, NodeState, MessageTransport
 )
-from .consensus import ModernRaftConsensus
+from aura_intelligence.consensus import ModernRaftConsensus
 from .load_balancing import TDALoadBalancer, LoadBalancingStrategy, LoadMetrics
 
 class CoordinationEvent(Enum):
@@ -92,20 +92,21 @@ class MockMessageTransport:
         self.message_queues: Dict[str, List[DistributedMessage]] = defaultdict(list)
         self.broadcast_messages: List[DistributedMessage] = []
     
-    async def send_message(self, message: DistributedMessage, target_address: str) -> bool:
+        async def send_message(self, message: DistributedMessage, target_address: str) -> bool:
         """Send message to specific target"""
         self.message_queues[target_address].append(message)
         return True
     
-    async def broadcast_message(self, message: DistributedMessage, targets: List[str]) -> int:
+        async def broadcast_message(self, message: DistributedMessage, targets: List[str]) -> int:
         """Broadcast message to multiple targets"""
         self.broadcast_messages.append(message)
         for target in targets:
-            self.message_queues[target].append(message)
+        self.message_queues[target].append(message)
         return len(targets)
     
-    async def receive_messages(self) -> List[DistributedMessage]:
+        async def receive_messages(self) -> List[DistributedMessage]:
         """Receive messages for this node"""
+        pass
         # Simulate receiving messages
         await asyncio.sleep(0.001)
         return []
@@ -157,6 +158,7 @@ class DistributedCoordinationManager:
     
     async def start(self):
         """Start the coordination manager"""
+        pass
         self.running = True
         
         # Initialize cluster state
@@ -167,21 +169,22 @@ class DistributedCoordinationManager:
         
         # Start coordination tasks
         tasks = [
-            consensus_task,
-            asyncio.create_task(self._event_processor()),
-            asyncio.create_task(self._health_monitor()),
-            asyncio.create_task(self._request_processor()),
-            asyncio.create_task(self._metrics_collector())
+        consensus_task,
+        asyncio.create_task(self._event_processor()),
+        asyncio.create_task(self._health_monitor()),
+        asyncio.create_task(self._request_processor()),
+        asyncio.create_task(self._metrics_collector())
         ]
         
         try:
             await asyncio.gather(*tasks)
         except asyncio.CancelledError:
-            await self.stop()
-            raise
+        await self.stop()
+        raise
     
-    async def stop(self):
-        """Stop the coordination manager"""
+        async def stop(self):
+            """Stop the coordination manager"""
+        pass
         self.running = False
         await self.consensus.stop()
     
@@ -189,41 +192,41 @@ class DistributedCoordinationManager:
         """Join a node to the cluster"""
         try:
             # Add node to load balancer
-            await self.load_balancer.add_node(node_info)
+        await self.load_balancer.add_node(node_info)
             
-            # Update cluster state
-            self.cluster_state[node_info.node_id] = node_info
-            self.node_health[node_info.node_id] = datetime.now(timezone.utc)
+        # Update cluster state
+        self.cluster_state[node_info.node_id] = node_info
+        self.node_health[node_info.node_id] = datetime.now(timezone.utc)
             
-            # Emit event
-            await self._emit_event(CoordinationEvent.NODE_JOINED, {
-                "node_id": node_info.node_id,
-                "node_info": {
-                    "address": node_info.address,
-                    "port": node_info.port,
-                    "capabilities": list(node_info.capabilities),
-                    "load_factor": node_info.load_factor
-                }
-            })
+        # Emit event
+        await self._emit_event(CoordinationEvent.NODE_JOINED, {
+        "node_id": node_info.node_id,
+        "node_info": {
+        "address": node_info.address,
+        "port": node_info.port,
+        "capabilities": list(node_info.capabilities),
+        "load_factor": node_info.load_factor
+        }
+        })
             
-            # Notify TDA
-            if self.tda_integration:
-                await self.tda_integration.send_orchestration_result(
-                    {
-                        "event": "node_joined",
-                        "node_id": node_info.node_id,
-                        "cluster_size": len(self.cluster_state),
-                        "capabilities": list(node_info.capabilities)
-                    },
-                    f"cluster_{self.node_id}"
-                )
+        # Notify TDA
+        if self.tda_integration:
+            await self.tda_integration.send_orchestration_result(
+        {
+        "event": "node_joined",
+        "node_id": node_info.node_id,
+        "cluster_size": len(self.cluster_state),
+        "capabilities": list(node_info.capabilities)
+        },
+        f"cluster_{self.node_id}"
+        )
             
-            return True
+        return True
             
         except Exception as e:
-            return False
+        return False
     
-    async def leave_cluster(self, node_id: NodeId) -> bool:
+        async def leave_cluster(self, node_id: NodeId) -> bool:
         """Remove a node from the cluster"""
         try:
             # Remove from load balancer
@@ -252,93 +255,94 @@ class DistributedCoordinationManager:
         
         try:
             # Record observability
-            if self.observability_manager:
-                await self.observability_manager.record_step_execution(
-                    workflow_id=request.workflow_id,
-                    step_name=f"agent_request_{request.agent_type}",
-                    duration_seconds=0.0,  # Will update later
-                    status="started",
-                    metadata={
-                        "agent_type": request.agent_type,
-                        "operation": request.operation,
-                        "node_id": self.node_id
-                    }
-                )
+        if self.observability_manager:
+            await self.observability_manager.record_step_execution(
+        workflow_id=request.workflow_id,
+        step_name=f"agent_request_{request.agent_type}",
+        duration_seconds=0.0,  # Will update later
+        status="started",
+        metadata={
+        "agent_type": request.agent_type,
+        "operation": request.operation,
+        "node_id": self.node_id
+        }
+        )
             
-            # Select optimal node for execution
-            selection_request = {
-                "workflow_id": request.workflow_id,
-                "agent_type": request.agent_type,
-                "required_capabilities": list(request.required_capabilities),
-                "tda_correlation_id": request.tda_correlation_id,
-                "priority": request.priority
-            }
+        # Select optimal node for execution
+        selection_request = {
+        "workflow_id": request.workflow_id,
+        "agent_type": request.agent_type,
+        "required_capabilities": list(request.required_capabilities),
+        "tda_correlation_id": request.tda_correlation_id,
+        "priority": request.priority
+        }
             
-            selected_node = await self.load_balancer.select_node(selection_request)
+        selected_node = await self.load_balancer.select_node(selection_request)
             
-            if not selected_node:
-                raise Exception("No available nodes for request")
+        if not selected_node:
+            raise Exception("No available nodes for request")
             
-            # Execute request
-            if selected_node == self.node_id:
-                # Execute locally
-                response = await self._execute_local_agent_request(request)
-            else:
-                # Execute remotely
-                response = await self._execute_remote_agent_request(request, selected_node)
+        # Execute request
+        if selected_node == self.node_id:
+            # Execute locally
+        response = await self._execute_local_agent_request(request)
+        else:
+        # Execute remotely
+        response = await self._execute_remote_agent_request(request, selected_node)
             
-            # Record metrics
-            execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
-            self.request_metrics[request.agent_type].append(execution_time)
+        # Record metrics
+        execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
+        self.request_metrics[request.agent_type].append(execution_time)
             
-            # Update load balancer
-            await self._update_node_load_metrics(selected_node, execution_time, response.status == "success")
+        # Update load balancer
+        await self._update_node_load_metrics(selected_node, execution_time, response.status == "success")
             
-            # Record observability
-            if self.observability_manager:
-                await self.observability_manager.record_step_execution(
-                    workflow_id=request.workflow_id,
-                    step_name=f"agent_request_{request.agent_type}",
-                    duration_seconds=execution_time,
-                    status=response.status,
-                    metadata={
-                        "agent_type": request.agent_type,
-                        "operation": request.operation,
-                        "selected_node": selected_node,
-                        "execution_time": execution_time
-                    }
-                )
+        # Record observability
+        if self.observability_manager:
+            await self.observability_manager.record_step_execution(
+        workflow_id=request.workflow_id,
+        step_name=f"agent_request_{request.agent_type}",
+        duration_seconds=execution_time,
+        status=response.status,
+        metadata={
+        "agent_type": request.agent_type,
+        "operation": request.operation,
+        "selected_node": selected_node,
+        "execution_time": execution_time
+        }
+        )
             
-            return response
+        return response
             
         except Exception as e:
-            execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
+        execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
             
-            # Record failure
-            if self.observability_manager:
-                await self.observability_manager.record_step_execution(
-                    workflow_id=request.workflow_id,
-                    step_name=f"agent_request_{request.agent_type}",
-                    duration_seconds=execution_time,
-                    status="failed",
-                    metadata={
-                        "agent_type": request.agent_type,
-                        "operation": request.operation,
-                        "error": str(e)
-                    }
-                )
+        # Record failure
+        if self.observability_manager:
+            await self.observability_manager.record_step_execution(
+        workflow_id=request.workflow_id,
+        step_name=f"agent_request_{request.agent_type}",
+        duration_seconds=execution_time,
+        status="failed",
+        metadata={
+        "agent_type": request.agent_type,
+        "operation": request.operation,
+        "error": str(e)
+        }
+        )
             
-            return AgentResponse(
-                request_id=request.request_id,
-                node_id=self.node_id,
-                status="failed",
-                result={},
-                execution_time=execution_time,
-                error=str(e)
-            )
+        return AgentResponse(
+        request_id=request.request_id,
+        node_id=self.node_id,
+        status="failed",
+        result={},
+        execution_time=execution_time,
+        error=str(e)
+        )
     
-    async def get_cluster_status(self) -> Dict[str, Any]:
+        async def get_cluster_status(self) -> Dict[str, Any]:
         """Get comprehensive cluster status"""
+        pass
         cluster_load = await self.load_balancer.get_cluster_load()
         
         return {
@@ -362,7 +366,7 @@ class DistributedCoordinationManager:
         """Propose a cluster-wide decision using consensus"""
         return await self.consensus.propose_value(decision)
     
-    async def get_cluster_decision(self, key: str = "default") -> Optional[Any]:
+        async def get_cluster_decision(self, key: str = "default") -> Optional[Any]:
         """Get the current cluster consensus decision"""
         return await self.consensus.get_consensus_value(key)
     
@@ -370,8 +374,9 @@ class DistributedCoordinationManager:
         """Subscribe to coordination events"""
         self.event_handlers[event_type].append(handler)
     
-    async def _initialize_cluster_state(self):
-        """Initialize cluster state"""
+        async def _initialize_cluster_state(self):
+            """Initialize cluster state"""
+        pass
         # Add self to cluster
         self_info = NodeInfo(
             node_id=self.node_id,
@@ -385,50 +390,50 @@ class DistributedCoordinationManager:
         
         await self.join_cluster(self_info)
     
-    async def _execute_local_agent_request(self, request: AgentRequest) -> AgentResponse:
+        async def _execute_local_agent_request(self, request: AgentRequest) -> AgentResponse:
         """Execute agent request locally"""
         start_time = datetime.now(timezone.utc)
         
         try:
             # Simulate agent execution
-            await asyncio.sleep(0.1)  # Simulate processing time
+        await asyncio.sleep(0.1)  # Simulate processing time
             
-            # Mock successful execution
-            result = {
-                "agent_type": request.agent_type,
-                "operation": request.operation,
-                "status": "completed",
-                "output": f"Result from {request.operation}",
-                "processed_parameters": request.parameters
-            }
+        # Mock successful execution
+        result = {
+        "agent_type": request.agent_type,
+        "operation": request.operation,
+        "status": "completed",
+        "output": f"Result from {request.operation}",
+        "processed_parameters": request.parameters
+        }
             
-            execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
+        execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
             
-            return AgentResponse(
-                request_id=request.request_id,
-                node_id=self.node_id,
-                status="success",
-                result=result,
-                execution_time=execution_time
-            )
+        return AgentResponse(
+        request_id=request.request_id,
+        node_id=self.node_id,
+        status="success",
+        result=result,
+        execution_time=execution_time
+        )
             
         except Exception as e:
-            execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
+        execution_time = (datetime.now(timezone.utc) - start_time).total_seconds()
             
-            return AgentResponse(
-                request_id=request.request_id,
-                node_id=self.node_id,
-                status="failed",
-                result={},
-                execution_time=execution_time,
-                error=str(e)
-            )
+        return AgentResponse(
+        request_id=request.request_id,
+        node_id=self.node_id,
+        status="failed",
+        result={},
+        execution_time=execution_time,
+        error=str(e)
+        )
     
-    async def _execute_remote_agent_request(
+        async def _execute_remote_agent_request(
         self, 
         request: AgentRequest, 
         target_node: NodeId
-    ) -> AgentResponse:
+        ) -> AgentResponse:
         """Execute agent request on remote node"""
         # Create distributed message
         message = DistributedMessage(
@@ -495,12 +500,12 @@ class DistributedCoordinationManager:
                 error=str(e)
             )
     
-    async def _update_node_load_metrics(
+        async def _update_node_load_metrics(
         self, 
         node_id: NodeId, 
         execution_time: float, 
         success: bool
-    ):
+        ):
         """Update node load metrics after request execution"""
         # Create load metrics
         metrics = LoadMetrics(
@@ -514,19 +519,20 @@ class DistributedCoordinationManager:
         
         await self.load_balancer.update_node_load(node_id, metrics)
     
-    async def _emit_event(self, event_type: CoordinationEvent, data: Dict[str, Any]):
+        async def _emit_event(self, event_type: CoordinationEvent, data: Dict[str, Any]):
         """Emit coordination event"""
         event_data = {
-            "event_type": event_type,
-            "data": data,
-            "timestamp": datetime.now(timezone.utc),
-            "node_id": self.node_id
+        "event_type": event_type,
+        "data": data,
+        "timestamp": datetime.now(timezone.utc),
+        "node_id": self.node_id
         }
         
         await self.event_stream.put(event_data)
     
-    async def _event_processor(self):
-        """Process coordination events"""
+        async def _event_processor(self):
+            """Process coordination events"""
+        pass
         while self.running:
             try:
                 event = await asyncio.wait_for(self.event_stream.get(), timeout=1.0)
@@ -543,44 +549,46 @@ class DistributedCoordinationManager:
                             handler(event)
                     except Exception as e:
                         # Log handler error but continue
-                        pass
+        pass
                 
             except asyncio.TimeoutError:
                 continue
             except Exception as e:
                 await asyncio.sleep(0.1)
     
-    async def _health_monitor(self):
+        async def _health_monitor(self):
         """Monitor cluster health"""
+        pass
         while self.running:
-            try:
-                current_time = datetime.now(timezone.utc)
-                failed_nodes = []
+        try:
+            current_time = datetime.now(timezone.utc)
+        failed_nodes = []
                 
-                # Check node health
-                for node_id, last_seen in self.node_health.items():
-                    if current_time - last_seen > timedelta(seconds=30):  # 30 second timeout
-                        failed_nodes.append(node_id)
+        # Check node health
+        for node_id, last_seen in self.node_health.items():
+        if current_time - last_seen > timedelta(seconds=30):  # 30 second timeout
+        failed_nodes.append(node_id)
                 
-                # Handle failed nodes
-                for node_id in failed_nodes:
-                    if node_id in self.cluster_state:
-                        self.cluster_state[node_id] = self.cluster_state[node_id]._replace(
-                            state=NodeState.FAILED
-                        )
+        # Handle failed nodes
+        for node_id in failed_nodes:
+        if node_id in self.cluster_state:
+            self.cluster_state[node_id] = self.cluster_state[node_id]._replace(
+        state=NodeState.FAILED
+        )
                         
-                        await self._emit_event(CoordinationEvent.NODE_FAILED, {
-                            "node_id": node_id,
-                            "last_seen": self.node_health[node_id].isoformat()
-                        })
+        await self._emit_event(CoordinationEvent.NODE_FAILED, {
+        "node_id": node_id,
+        "last_seen": self.node_health[node_id].isoformat()
+        })
                 
-                await asyncio.sleep(10.0)  # Check every 10 seconds
+        await asyncio.sleep(10.0)  # Check every 10 seconds
                 
-            except Exception as e:
-                await asyncio.sleep(1.0)
+        except Exception as e:
+        await asyncio.sleep(1.0)
     
-    async def _request_processor(self):
-        """Process incoming requests"""
+        async def _request_processor(self):
+            """Process incoming requests"""
+        pass
         while self.running:
             try:
                 # Process incoming messages
@@ -597,45 +605,45 @@ class DistributedCoordinationManager:
             except Exception as e:
                 await asyncio.sleep(0.1)
     
-    async def _handle_agent_request_message(self, message: DistributedMessage):
+        async def _handle_agent_request_message(self, message: DistributedMessage):
         """Handle incoming agent request message"""
         try:
             request_data = message.payload["request"]
             
-            # Create agent request
-            request = AgentRequest(
-                request_id=request_data["request_id"],
-                workflow_id=request_data["workflow_id"],
-                agent_type=request_data["agent_type"],
-                operation=request_data["operation"],
-                parameters=request_data["parameters"],
-                timeout_seconds=request_data["timeout_seconds"],
-                tda_correlation_id=request_data.get("tda_correlation_id")
-            )
+        # Create agent request
+        request = AgentRequest(
+        request_id=request_data["request_id"],
+        workflow_id=request_data["workflow_id"],
+        agent_type=request_data["agent_type"],
+        operation=request_data["operation"],
+        parameters=request_data["parameters"],
+        timeout_seconds=request_data["timeout_seconds"],
+        tda_correlation_id=request_data.get("tda_correlation_id")
+        )
             
-            # Execute locally
-            response = await self._execute_local_agent_request(request)
+        # Execute locally
+        response = await self._execute_local_agent_request(request)
             
-            # Send response back
-            response_message = DistributedMessage(
-                message_id=str(uuid.uuid4()),
-                message_type=MessageType.AGENT_RESPONSE,
-                sender_id=self.node_id,
-                recipient_id=message.sender_id,
-                payload={"response": response},
-                vector_clock=self.vector_clock.increment(self.node_id),
-                correlation_id=message.correlation_id
-            )
+        # Send response back
+        response_message = DistributedMessage(
+        message_id=str(uuid.uuid4()),
+        message_type=MessageType.AGENT_RESPONSE,
+        sender_id=self.node_id,
+        recipient_id=message.sender_id,
+        payload={"response": response},
+        vector_clock=self.vector_clock.increment(self.node_id),
+        correlation_id=message.correlation_id
+        )
             
-            sender_address = f"{message.sender_id}_address"
-            await self.transport.send_message(response_message, sender_address)
+        sender_address = f"{message.sender_id}_address"
+        await self.transport.send_message(response_message, sender_address)
             
         except Exception as e:
-            # Send error response
-            pass
+        # Send error response
+        pass
     
-    async def _handle_agent_response_message(self, message: DistributedMessage):
-        """Handle incoming agent response message"""
+        async def _handle_agent_response_message(self, message: DistributedMessage):
+            """Handle incoming agent response message"""
         try:
             response_data = message.payload["response"]
             request_id = response_data["request_id"]
@@ -648,27 +656,28 @@ class DistributedCoordinationManager:
                     future.set_result(response)
             
         except Exception as e:
-            pass
+        pass
     
-    async def _metrics_collector(self):
+        async def _metrics_collector(self):
         """Collect and report metrics"""
+        pass
         while self.running:
-            try:
-                # Collect metrics
-                cluster_status = await self.get_cluster_status()
+        try:
+            # Collect metrics
+        cluster_status = await self.get_cluster_status()
                 
-                # Send to TDA
-                if self.tda_integration:
-                    await self.tda_integration.send_orchestration_result(
-                        {
-                            "event": "cluster_metrics",
-                            "metrics": cluster_status,
-                            "timestamp": datetime.now(timezone.utc).isoformat()
-                        },
-                        f"cluster_metrics_{self.node_id}"
-                    )
+        # Send to TDA
+        if self.tda_integration:
+            await self.tda_integration.send_orchestration_result(
+        {
+        "event": "cluster_metrics",
+        "metrics": cluster_status,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+        },
+        f"cluster_metrics_{self.node_id}"
+        )
                 
-                await asyncio.sleep(30.0)  # Report every 30 seconds
+        await asyncio.sleep(30.0)  # Report every 30 seconds
                 
-            except Exception as e:
-                await asyncio.sleep(5.0)
+        except Exception as e:
+        await asyncio.sleep(5.0)

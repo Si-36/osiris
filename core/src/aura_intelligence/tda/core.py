@@ -118,14 +118,16 @@ class ProductionTDAEngine:
     
     def _initialize_cpu_fallback(self) -> Dict[TDAAlgorithm, Any]:
         """Initialize CPU-only fallback algorithms."""
+        pass
         self.logger.warning("🔄 Initializing CPU fallback algorithms")
         
         return {
-            TDAAlgorithm.SPECSEQ_PLUS_PLUS: SpecSeqPlusPlus(cuda_accelerator=None)
+        TDAAlgorithm.SPECSEQ_PLUS_PLUS: SpecSeqPlusPlus(cuda_accelerator=None)
         }
     
     def _log_system_info(self):
-        """Log system information for debugging."""
+            """Log system information for debugging."""
+        pass
         if PSUTIL_AVAILABLE:
             # CPU info
             cpu_count = psutil.cpu_count()
@@ -142,15 +144,15 @@ class ProductionTDAEngine:
             except Exception as e:
                 self.logger.warning(f"⚠️ Could not get GPU info: {e}")
     
-    async def compute_tda(self, request: TDARequest) -> TDAResponse:
+        async def compute_tda(self, request: TDARequest) -> TDAResponse:
         """
         Compute TDA with enterprise-grade reliability.
         
         Args:
-            request: Validated TDA computation request
+        request: Validated TDA computation request
             
         Returns:
-            TDA response with results and metrics
+        TDA response with results and metrics
         """
         start_time = time.time()
         if PROMETHEUS_AVAILABLE:
@@ -173,7 +175,7 @@ class ProductionTDAEngine:
             computation_time = time.time() - start_time
             if PROMETHEUS_AVAILABLE:
                 TDA_COMPUTATION_TIME.labels(algorithm=request.algorithm).observe(computation_time)
-                TDA_REQUESTS_TOTAL.labels(algorithm=request.algorithm, status=response.status).inc()
+            TDA_REQUESTS_TOTAL.labels(algorithm=request.algorithm, status=response.status).inc()
             
             self.logger.info(
                 f"✅ TDA computation completed: {request.request_id} "
@@ -198,7 +200,7 @@ class ProductionTDAEngine:
             if request.request_id in self.active_requests:
                 del self.active_requests[request.request_id]
     
-    async def _validate_request(self, request: TDARequest):
+        async def _validate_request(self, request: TDARequest):
         """Validate request against enterprise constraints."""
         
         # Check resource limits
@@ -226,20 +228,20 @@ class ProductionTDAEngine:
         # Fallback to default algorithm
         if self.config.default_algorithm in self.algorithms:
             self.logger.warning(
-                f"⚠️ Requested algorithm {request.algorithm} not available, "
-                f"using {self.config.default_algorithm}"
-            )
-            return self.algorithms[self.config.default_algorithm]
+        f"⚠️ Requested algorithm {request.algorithm} not available, "
+        f"using {self.config.default_algorithm}"
+        )
+        return self.algorithms[self.config.default_algorithm]
         
         # Last resort: use any available algorithm
         if self.algorithms:
             fallback_algo = next(iter(self.algorithms.keys()))
-            self.logger.warning(f"⚠️ Using fallback algorithm: {fallback_algo}")
-            return self.algorithms[fallback_algo]
+        self.logger.warning(f"⚠️ Using fallback algorithm: {fallback_algo}")
+        return self.algorithms[fallback_algo]
         
         raise RuntimeError("No TDA algorithms available")
     
-    async def _execute_with_timeout(self, request: TDARequest, algorithm: Any) -> TDAResponse:
+        async def _execute_with_timeout(self, request: TDARequest, algorithm: Any) -> TDAResponse:
         """Execute TDA computation with timeout protection."""
         
         try:
@@ -267,73 +269,74 @@ class ProductionTDAEngine:
         
         try:
             # Update GPU utilization metric
-            if (self.cuda_accelerator and self.cuda_accelerator.is_available() and 
-                GPUTIL_AVAILABLE and PROMETHEUS_AVAILABLE):
-                try:
-                    gpus = GPUtil.getGPUs()
-                    if gpus:
-                        TDA_GPU_UTILIZATION.set(gpus[0].load * 100)
-                except:
-                    pass
+        if (self.cuda_accelerator and self.cuda_accelerator.is_available() and
+        GPUTIL_AVAILABLE and PROMETHEUS_AVAILABLE):
+        try:
+            gpus = GPUtil.getGPUs()
+        if gpus:
+            TDA_GPU_UTILIZATION.set(gpus[0].load * 100)
+        except:
+        pass
             
-            # Execute algorithm
-            if hasattr(algorithm, 'compute_persistence'):
-                result = algorithm.compute_persistence(
-                    data=request.data,
-                    max_dimension=request.max_dimension,
-                    max_edge_length=request.max_edge_length,
-                    resolution=request.resolution
-                )
-            else:
-                # Fallback to basic computation
-                result = self._basic_tda_computation(request)
+        # Execute algorithm
+        if hasattr(algorithm, 'compute_persistence'):
+            result = algorithm.compute_persistence(
+        data=request.data,
+        max_dimension=request.max_dimension,
+        max_edge_length=request.max_edge_length,
+        resolution=request.resolution
+        )
+        else:
+        # Fallback to basic computation
+        result = self._basic_tda_computation(request)
             
-            # Calculate metrics
-            computation_time = (time.time() - start_time) * 1000  # Convert to ms
-            peak_memory = 0
+        # Calculate metrics
+        computation_time = (time.time() - start_time) * 1000  # Convert to ms
+        peak_memory = 0
             
-            if PSUTIL_AVAILABLE:
-                peak_memory = (psutil.Process().memory_info().rss - start_memory) / (1024**2)  # MB
+        if PSUTIL_AVAILABLE:
+            peak_memory = (psutil.Process().memory_info().rss - start_memory) / (1024**2)  # MB
                 
-                # Update memory usage metric
-                if PROMETHEUS_AVAILABLE:
-                    TDA_MEMORY_USAGE.set(psutil.Process().memory_info().rss)
+        # Update memory usage metric
+        if PROMETHEUS_AVAILABLE:
+            TDA_MEMORY_USAGE.set(psutil.Process().memory_info().rss)
             
-            # Create response
-            response = TDAResponse(
-                request_id=request.request_id,
-                algorithm_used=request.algorithm,
-                persistence_diagrams=result.get('persistence_diagrams', []),
-                betti_numbers=result.get('betti_numbers', []),
-                metrics=TDAMetrics(
-                    computation_time_ms=computation_time,
-                    memory_usage_mb=peak_memory,
-                    numerical_stability=result.get('numerical_stability', 0.95),
-                    simplices_processed=result.get('simplices_processed', 0),
-                    filtration_steps=result.get('filtration_steps', 0),
-                    gpu_utilization_percent=result.get('gpu_utilization', None),
-                    speedup_factor=result.get('speedup_factor', None),
-                    accuracy_score=result.get('accuracy_score', None)
-                ),
-                status="success",
-                audit_trail={
-                    'algorithm_used': str(request.algorithm),
-                    'computation_time_ms': computation_time,
-                    'memory_usage_mb': peak_memory,
-                    'gpu_enabled': self.config.enable_gpu,
-                    'timestamp': time.time()
-                },
-                resource_usage=self._get_resource_usage()
-            )
+        # Create response
+        response = TDAResponse(
+        request_id=request.request_id,
+        algorithm_used=request.algorithm,
+        persistence_diagrams=result.get('persistence_diagrams', []),
+        betti_numbers=result.get('betti_numbers', []),
+        metrics=TDAMetrics(
+        computation_time_ms=computation_time,
+        memory_usage_mb=peak_memory,
+        numerical_stability=result.get('numerical_stability', 0.95),
+        simplices_processed=result.get('simplices_processed', 0),
+        filtration_steps=result.get('filtration_steps', 0),
+        gpu_utilization_percent=result.get('gpu_utilization', None),
+        speedup_factor=result.get('speedup_factor', None),
+        accuracy_score=result.get('accuracy_score', None)
+        ),
+        status="success",
+        audit_trail={
+        'algorithm_used': str(request.algorithm),
+        'computation_time_ms': computation_time,
+        'memory_usage_mb': peak_memory,
+        'gpu_enabled': self.config.enable_gpu,
+        'timestamp': time.time()
+        },
+        resource_usage=self._get_resource_usage()
+        )
             
-            return response
+        return response
             
         except Exception as e:
-            self.logger.error(f"❌ TDA computation error: {e}")
-            return self._create_error_response(request, str(e))
+        self.logger.error(f"❌ TDA computation error: {e}")
+        return self._create_error_response(request, str(e))
     
     def _get_resource_usage(self) -> Dict[str, float]:
         """Get current resource usage."""
+        pass
         if PSUTIL_AVAILABLE:
             return {
                 'cpu_percent': psutil.cpu_percent(),
@@ -357,36 +360,36 @@ class ProductionTDAEngine:
         betti_numbers = []
 
         for dim in range(request.max_dimension + 1):
-            # Generate random persistence intervals
-            num_intervals = random.randint(5, 20)
-            intervals = []
+        # Generate random persistence intervals
+        num_intervals = random.randint(5, 20)
+        intervals = []
 
-            for _ in range(num_intervals):
-                birth = random.uniform(0, 1)
-                death = birth + random.uniform(0.1, 2.0)
-                intervals.append([birth, death])
+        for _ in range(num_intervals):
+        birth = random.uniform(0, 1)
+        death = birth + random.uniform(0.1, 2.0)
+        intervals.append([birth, death])
 
-            # Sort by birth time
-            intervals.sort(key=lambda x: x[0])
+        # Sort by birth time
+        intervals.sort(key=lambda x: x[0])
 
-            persistence_diagrams.append(PersistenceDiagram(
-                dimension=dim,
-                intervals=intervals
-            ))
+        persistence_diagrams.append(PersistenceDiagram(
+        dimension=dim,
+        intervals=intervals
+        ))
 
-            # Calculate Betti number (number of long-lived features)
-            long_lived = sum(1 for birth, death in intervals if death - birth > 0.5)
-            betti_numbers.append(long_lived)
+        # Calculate Betti number (number of long-lived features)
+        long_lived = sum(1 for birth, death in intervals if death - birth > 0.5)
+        betti_numbers.append(long_lived)
 
         return {
-            'persistence_diagrams': persistence_diagrams,
-            'betti_numbers': betti_numbers,
-            'numerical_stability': 0.95,
-            'simplices_processed': len(request.data) * 10,
-            'filtration_steps': 100,
-            'gpu_utilization': 85.0 if self.config.enable_gpu else None,
-            'speedup_factor': 30.0 if self.config.enable_gpu else 1.0,
-            'accuracy_score': 0.98
+        'persistence_diagrams': persistence_diagrams,
+        'betti_numbers': betti_numbers,
+        'numerical_stability': 0.95,
+        'simplices_processed': len(request.data) * 10,
+        'filtration_steps': 100,
+        'gpu_utilization': 85.0 if self.config.enable_gpu else None,
+        'speedup_factor': 30.0 if self.config.enable_gpu else 1.0,
+        'accuracy_score': 0.98
         }
 
     def _create_error_response(self, request: TDARequest, error_message: str) -> TDAResponse:
@@ -415,29 +418,30 @@ class ProductionTDAEngine:
     def _create_timeout_response(self, request: TDARequest) -> TDAResponse:
         """Create timeout response."""
         return TDAResponse(
-            request_id=request.request_id,
-            algorithm_used=request.algorithm,
-            persistence_diagrams=[],
-            betti_numbers=[],
-            metrics=TDAMetrics(
-                computation_time_ms=request.timeout_seconds * 1000,
-                memory_usage_mb=0.0,
-                numerical_stability=0.0,
-                simplices_processed=0,
-                filtration_steps=0
-            ),
-            status="timeout",
-            error_message=f"Computation exceeded timeout of {request.timeout_seconds} seconds",
-            warnings=["Computation was terminated due to timeout"],
-            audit_trail={
-                'timeout_seconds': request.timeout_seconds,
-                'timestamp': time.time()
-            },
-            resource_usage=self._get_resource_usage()
+        request_id=request.request_id,
+        algorithm_used=request.algorithm,
+        persistence_diagrams=[],
+        betti_numbers=[],
+        metrics=TDAMetrics(
+        computation_time_ms=request.timeout_seconds * 1000,
+        memory_usage_mb=0.0,
+        numerical_stability=0.0,
+        simplices_processed=0,
+        filtration_steps=0
+        ),
+        status="timeout",
+        error_message=f"Computation exceeded timeout of {request.timeout_seconds} seconds",
+        warnings=["Computation was terminated due to timeout"],
+        audit_trail={
+        'timeout_seconds': request.timeout_seconds,
+        'timestamp': time.time()
+        },
+        resource_usage=self._get_resource_usage()
         )
 
-    async def get_system_status(self) -> Dict[str, Any]:
+        async def get_system_status(self) -> Dict[str, Any]:
         """Get comprehensive system status."""
+        pass
         status = {
             'engine_status': 'healthy',
             'active_requests': len(self.active_requests),
@@ -468,8 +472,9 @@ class ProductionTDAEngine:
 
         return status
 
-    async def shutdown(self):
+        async def shutdown(self):
         """Graceful shutdown of TDA engine."""
+        pass
         self.logger.info("🔄 Shutting down TDA engine...")
 
         # Wait for active requests to complete (with timeout)
@@ -477,8 +482,8 @@ class ProductionTDAEngine:
         start_time = time.time()
 
         while self.active_requests and (time.time() - start_time) < shutdown_timeout:
-            self.logger.info(f"⏳ Waiting for {len(self.active_requests)} active requests...")
-            await asyncio.sleep(1)
+        self.logger.info(f"⏳ Waiting for {len(self.active_requests)} active requests...")
+        await asyncio.sleep(1)
 
         # Force shutdown if timeout exceeded
         if self.active_requests:
@@ -493,9 +498,9 @@ class ProductionTDAEngine:
 
         self.logger.info("✅ TDA engine shutdown complete")
 
-    @asynccontextmanager
-    async def request_context(self, request: TDARequest):
-        """Context manager for request lifecycle."""
+        @asynccontextmanager
+        async def request_context(self, request: TDARequest):
+            """Context manager for request lifecycle."""
         self.logger.debug(f"🔄 Starting request: {request.request_id}")
 
         try:
@@ -505,24 +510,25 @@ class ProductionTDAEngine:
 
     def get_performance_stats(self) -> Dict[str, Any]:
         """Get performance statistics."""
+        pass
         if not self.request_history:
             return {'message': 'No requests processed yet'}
 
         # Calculate statistics from request history
         computation_times = [
-            r.metrics.computation_time_ms for r in self.request_history[-100:]  # Last 100 requests
+        r.metrics.computation_time_ms for r in self.request_history[-100:]  # Last 100 requests
         ]
 
         memory_usage = [
-            r.metrics.memory_usage_mb for r in self.request_history[-100:]
+        r.metrics.memory_usage_mb for r in self.request_history[-100:]
         ]
 
         return {
-            'total_requests': len(self.request_history),
-            'avg_computation_time_ms': sum(computation_times) / len(computation_times),
-            'min_computation_time_ms': min(computation_times),
-            'max_computation_time_ms': max(computation_times),
-            'avg_memory_usage_mb': sum(memory_usage) / len(memory_usage),
-            'success_rate': sum(1 for r in self.request_history[-100:] if r.status == 'success') / min(100, len(self.request_history)),
-            'algorithms_used': list(set(r.algorithm_used for r in self.request_history[-100:]))
+        'total_requests': len(self.request_history),
+        'avg_computation_time_ms': sum(computation_times) / len(computation_times),
+        'min_computation_time_ms': min(computation_times),
+        'max_computation_time_ms': max(computation_times),
+        'avg_memory_usage_mb': sum(memory_usage) / len(memory_usage),
+        'success_rate': sum(1 for r in self.request_history[-100:] if r.status == 'success') / min(100, len(self.request_history)),
+        'algorithms_used': list(set(r.algorithm_used for r in self.request_history[-100:]))
         }

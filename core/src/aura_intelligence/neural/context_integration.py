@@ -16,7 +16,7 @@ from opentelemetry import trace
 
 from ..neural.lnn import LiquidNeuralNetwork, LNNConfig
 from ..resilience import resilient, ResilienceLevel
-from ..observability import create_tracer
+from aura_intelligence.observability import create_tracer
 
 logger = logging.getLogger(__name__)
 tracer = create_tracer("context_aware_lnn")
@@ -33,24 +33,25 @@ class ContextWindow:
     
     def to_tensor(self) -> torch.Tensor:
         """Convert context window to tensor for LNN input."""
+        pass
         # Simplified encoding - in production, use proper embeddings
         features = []
         
         # Encode historical patterns (take last 10)
         for pattern in self.historical_patterns[-10:]:
-            features.extend(pattern.get("features", [0.0] * 10))
+        features.extend(pattern.get("features", [0.0] * 10))
             
         # Encode recent decisions (take last 5)
         for decision in self.recent_decisions[-5:]:
-            features.append(decision.get("confidence", 0.0))
-            features.append(decision.get("value", 0.0))
+        features.append(decision.get("confidence", 0.0))
+        features.append(decision.get("value", 0.0))
             
         # Pad or truncate to fixed size
         target_size = 128
         if len(features) < target_size:
             features.extend([0.0] * (target_size - len(features)))
         else:
-            features = features[:target_size]
+        features = features[:target_size]
             
         return torch.tensor(features, dtype=torch.float32)
 
@@ -225,11 +226,11 @@ class ContextAwareLNN:
         # Query relationships
         relationships = {}
         for entity in entities[:5]:  # Limit to prevent explosion
-            query = """
+        query = """
             MATCH (e:Entity {id: $entity_id})-[r]-(related)
             RETURN type(r) as relationship, collect(related.id) as related_ids
             LIMIT 20
-            """
+        """
             results = await self.graph.query(query, {"entity_id": entity})
             relationships[entity] = {
                 r["relationship"]: r["related_ids"] 
@@ -307,28 +308,28 @@ class ContextAwareLNN:
         """Update context stores with new decision."""
         try:
             # Update memory
-            if self.memory:
-                await self.memory.add_memory(
-                    agent_id="lnn",
-                    memory_type="decision",
-                    content=result,
-                    metadata={
-                        "timestamp": datetime.now(timezone.utc),
-                        "confidence": result.get("confidence", 0.0),
-                        "context_influence": result.get("context_influence", 0.0)
-                    }
-                )
+        if self.memory:
+            await self.memory.add_memory(
+        agent_id="lnn",
+        memory_type="decision",
+        content=result,
+        metadata={
+        "timestamp": datetime.now(timezone.utc),
+        "confidence": result.get("confidence", 0.0),
+        "context_influence": result.get("context_influence", 0.0)
+        }
+        )
                 
-            # Update graph
-            if self.graph and "entity_updates" in result:
-                for entity_id, updates in result["entity_updates"].items():
-                    await self.graph.update_entity(entity_id, updates)
+        # Update graph
+        if self.graph and "entity_updates" in result:
+            for entity_id, updates in result["entity_updates"].items():
+        await self.graph.update_entity(entity_id, updates)
                     
         except Exception as e:
-            logger.error(f"Context update failed: {e}")
+        logger.error(f"Context update failed: {e}")
     
-    async def _emit_decision_event(self, result: Dict[str, Any]):
-        """Emit decision event to Kafka."""
+        async def _emit_decision_event(self, result: Dict[str, Any]):
+            """Emit decision event to Kafka."""
         try:
             event = {
                 "event_type": "lnn.decision",
@@ -368,25 +369,25 @@ class ContextAwareLNN:
         # Recency score based on decision age
         if context.recent_decisions:
             latest = context.recent_decisions[0]
-            age_hours = (datetime.now(timezone.utc) - latest.get("timestamp", datetime.now(timezone.utc))).total_seconds() / 3600
-            scores["recency"] = max(0.0, 1.0 - (age_hours / 24.0))
+        age_hours = (datetime.now(timezone.utc) - latest.get("timestamp", datetime.now(timezone.utc))).total_seconds() / 3600
+        scores["recency"] = max(0.0, 1.0 - (age_hours / 24.0))
         else:
-            scores["recency"] = 0.0
+        scores["recency"] = 0.0
             
         # Completeness score
         scores["completeness"] = (
-            (0.4 if context.historical_patterns else 0.0) +
-            (0.3 if context.recent_decisions else 0.0) +
-            (0.3 if context.entity_relationships else 0.0)
+        (0.4 if context.historical_patterns else 0.0) +
+        (0.3 if context.recent_decisions else 0.0) +
+        (0.3 if context.entity_relationships else 0.0)
         )
         
         return scores
     
-    def _calculate_context_influence(
+        def _calculate_context_influence(
         self,
         hidden_states: List[torch.Tensor],
         context: ContextWindow
-    ) -> float:
+        ) -> float:
         """Calculate how much context influenced the decision."""
         if not hidden_states or not context.historical_patterns:
             return 0.0

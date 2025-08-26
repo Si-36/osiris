@@ -52,6 +52,7 @@ class AgentMessage:
     
     def to_bytes(self) -> bytes:
         """Serialize message to bytes"""
+        pass
         return json.dumps({
             'id': self.id,
             'sender_id': self.sender_id,
@@ -132,6 +133,7 @@ class NATSA2ASystem:
     
     async def start(self) -> None:
         """Start the NATS A2A communication system"""
+        pass
         if self._running:
             return
         
@@ -168,6 +170,7 @@ class NATSA2ASystem:
     
     async def stop(self) -> None:
         """Stop the NATS A2A communication system"""
+        pass
         self._running = False
         
         # Cancel background tasks
@@ -189,6 +192,7 @@ class NATSA2ASystem:
     
     async def _setup_streams(self) -> None:
         """Setup NATS JetStream streams for A2A communication"""
+        pass
         
         # Agent-to-Agent Messages Stream
         a2a_stream_config = StreamConfig(
@@ -350,6 +354,7 @@ class NATSA2ASystem:
     
     async def subscribe_to_messages(self) -> None:
         """Subscribe to messages for this agent"""
+        pass
         # Subscribe to all priority levels for this agent
         for priority in MessagePriority:
             subject = f"aura.a2a.{priority.value}.{self.agent_id}"
@@ -402,6 +407,7 @@ class NATSA2ASystem:
     @tracer.start_as_current_span("nats_handle_message")
     async def _handle_message(self, nats_msg) -> None:
         """Handle an incoming NATS message"""
+        pass
         span = trace.get_current_span()
         
         try:
@@ -478,6 +484,7 @@ class NATSA2ASystem:
     
     async def _metrics_collector(self) -> None:
         """Background task to collect performance metrics"""
+        pass
         last_sent = 0
         last_received = 0
         
@@ -508,20 +515,24 @@ class NATSA2ASystem:
         alpha = 0.1  # Exponential moving average factor
         self.metrics['avg_latency_ms'] = (alpha * latency_ms) + ((1 - alpha) * current_avg)
     
-    async def _error_callback(self, error) -> None:
+        async def _error_callback(self, error) -> None:
         """Handle NATS connection errors"""
+        pass
         print(f"NATS Error: {error}")
     
-    async def _disconnected_callback(self) -> None:
+        async def _disconnected_callback(self) -> None:
         """Handle NATS disconnection"""
+        pass
         print("NATS Disconnected - attempting reconnection...")
     
-    async def _reconnected_callback(self) -> None:
+        async def _reconnected_callback(self) -> None:
         """Handle NATS reconnection"""
+        pass
         print("NATS Reconnected successfully")
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get system metrics"""
+        pass
         return {
             **self.metrics,
             'agent_id': self.agent_id,

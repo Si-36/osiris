@@ -17,11 +17,11 @@ import numpy as np
 from pydantic import BaseModel, Field
 
 # Core imports
-from .constitutional import ConstitutionalAI, EthicalViolationError
-from .tda_engine import ProductionGradeTDA, TopologySignature
+# from .constitutional import ConstitutionalAI, EthicalViolationError
+# from .tda_engine import ProductionGradeTDA, TopologySignature
 from .causal_store import CausalPatternStore, CausalPattern
-from .collective import CollectiveIntelligenceOrchestrator
-from .observability import ObservabilityLayer, NeuralMetrics
+# from .collective import CollectiveIntelligenceOrchestrator
+from aura_intelligence.observability import ObservabilityLayer, NeuralMetrics
 from .event_store import EventStore, DomainEvent
 from .vector_search import LlamaIndexClient
 from .cloud_integration import GoogleA2AClient
@@ -60,6 +60,7 @@ class UnifiedAURABrain:
     
     def __init__(self, config: UnifiedConfig):
         """Initialize the unified brain with all components"""
+        pass
         # High-performance TDA engine with GPU acceleration
         self.tda_engine = ProductionGradeTDA(config.tda)
         
@@ -87,6 +88,7 @@ class UnifiedAURABrain:
     
     def _init_metrics(self):
         """Initialize Prometheus metrics"""
+        pass
         self.observability.register_counter(
             "aura_brain_decisions_total",
             "Total number of decisions made"
@@ -100,7 +102,7 @@ class UnifiedAURABrain:
             "Current system risk score"
         )
     
-    async def analyze_and_act(self, data: Dict[str, Any]) -> AnalysisResult:
+        async def analyze_and_act(self, data: Dict[str, Any]) -> AnalysisResult:
         """
         Main entry point for unified analysis and action.
         
@@ -176,11 +178,11 @@ class UnifiedAURABrain:
                 span.set_status("error", str(e))
                 raise
     
-    async def _validate_ethics(self, data: Dict[str, Any]) -> Any:
+        async def _validate_ethics(self, data: Dict[str, Any]) -> Any:
         """Validate action against ethical constraints"""
         return await self.constitutional_ai.validate(data)
     
-    async def _analyze_topology(self, data: Dict[str, Any]) -> TopologySignature:
+        async def _analyze_topology(self, data: Dict[str, Any]) -> TopologySignature:
         """Perform GPU-accelerated topology analysis"""
         # Convert data to numpy array for TDA
         if isinstance(data.get("features"), np.ndarray):
@@ -191,11 +193,11 @@ class UnifiedAURABrain:
         # Compute topology with GPU acceleration
         return await self.tda_engine.compute(features)
     
-    async def _analyze_patterns(
+        async def _analyze_patterns(
         self, 
         data: Dict[str, Any], 
         topology: TopologySignature
-    ) -> List[CausalPattern]:
+        ) -> List[CausalPattern]:
         """Analyze causal patterns and learn from experience"""
         # Extract features for pattern matching
         features = self.pattern_store.extract_features(data, topology)
@@ -209,12 +211,12 @@ class UnifiedAURABrain:
         
         return similar_patterns
     
-    async def _enrich_context(
+        async def _enrich_context(
         self,
         data: Dict[str, Any],
         topology: TopologySignature,
         patterns: List[CausalPattern]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Enrich context with vector search and external data"""
         # Parallel context enrichment
         vector_context, cloud_context = await asyncio.gather(
@@ -231,13 +233,13 @@ class UnifiedAURABrain:
             "timestamp": datetime.now(timezone.utc)
         }
     
-    async def _make_collective_decision(
+        async def _make_collective_decision(
         self,
         data: Dict[str, Any],
         topology: TopologySignature,
         patterns: List[CausalPattern],
         context: Dict[str, Any]
-    ) -> Any:
+        ) -> Any:
         """Make decision using collective intelligence"""
         # Prepare state for collective intelligence
         state = {
@@ -250,11 +252,11 @@ class UnifiedAURABrain:
         # Run through collective intelligence orchestrator
         return await self.collective.process(state)
     
-    async def _plan_execution(
+        async def _plan_execution(
         self,
         decision: Any,
         context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Plan safe execution with rollback capability"""
         # Create execution plan based on decision
         plan = {
@@ -273,7 +275,7 @@ class UnifiedAURABrain:
         
         return plan
     
-    async def _create_rollback_plan(self, decision: Any) -> Dict[str, Any]:
+        async def _create_rollback_plan(self, decision: Any) -> Dict[str, Any]:
         """Create rollback plan for safe execution"""
         return {
             "trigger_conditions": [
@@ -290,12 +292,12 @@ class UnifiedAURABrain:
             "recovery_timeout": 60
         }
     
-    async def _store_event(
+        async def _store_event(
         self,
         data: Dict[str, Any],
         decision: Any,
         execution_plan: Dict[str, Any]
-    ):
+        ):
         """Store event in event store for auditability"""
         event = DomainEvent(
             event_type="aura.decision.made",
@@ -319,8 +321,9 @@ class UnifiedAURABrain:
             decision.duration if hasattr(decision, "duration") else 0.1
         )
     
-    async def get_system_health(self) -> Dict[str, Any]:
+        async def get_system_health(self) -> Dict[str, Any]:
         """Get comprehensive system health status"""
+        pass
         # Collect health from all components
         health_checks = await asyncio.gather(
             self.tda_engine.health_check(),
@@ -353,11 +356,11 @@ class UnifiedAURABrain:
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
-    async def replay_decisions(
+        async def replay_decisions(
         self,
         from_timestamp: Optional[datetime] = None,
         to_timestamp: Optional[datetime] = None
-    ) -> AsyncIterator[DomainEvent]:
+        ) -> AsyncIterator[DomainEvent]:
         """Replay decisions for debugging or analysis"""
         async for event in self.event_store.replay(
             event_type="aura.decision.made",
@@ -369,9 +372,9 @@ class UnifiedAURABrain:
 
 # Example usage
 async def main():
-    """Example of using the Unified AURA Brain"""
+        """Example of using the Unified AURA Brain"""
     # Configure the brain
-    config = UnifiedConfig(
+        config = UnifiedConfig(
         tda={
             "gpu_enabled": True,
             "max_points": 10000
@@ -396,33 +399,33 @@ async def main():
             "jaeger_endpoint": "http://localhost:14268",
             "prometheus_port": 9090
         }
-    )
+        )
     
     # Initialize the brain
-    brain = UnifiedAURABrain(config)
+        brain = UnifiedAURABrain(config)
     
     # Example data
-    data = {
+        data = {
         "type": "system_anomaly",
         "features": np.random.randn(100, 3),  # 100 3D points
         "severity": "high",
         "source": "production_cluster",
         "timestamp": datetime.now(timezone.utc)
-    }
+        }
     
     # Analyze and act
-    result = await brain.analyze_and_act(data)
+        result = await brain.analyze_and_act(data)
     
-    print(f"Decision: {result.decision}")
-    print(f"Confidence: {result.confidence:.2%}")
-    print(f"Risk Score: {result.risk_score:.2f}")
-    print(f"Ethical Status: {result.ethical_status}")
-    print(f"Recommendations: {result.recommendations}")
+        print(f"Decision: {result.decision}")
+        print(f"Confidence: {result.confidence:.2%}")
+        print(f"Risk Score: {result.risk_score:.2f}")
+        print(f"Ethical Status: {result.ethical_status}")
+        print(f"Recommendations: {result.recommendations}")
     
     # Check system health
-    health = await brain.get_system_health()
-    print(f"System Health: {health['status']}")
+        health = await brain.get_system_health()
+        print(f"System Health: {health['status']}")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+        if __name__ == "__main__":
+        asyncio.run(main())

@@ -214,7 +214,7 @@ class AgentTopologyAnalyzer:
             'poor': 0.3
         }
     
-    async def analyze_agent_system(self, agent_data: Dict[str, Any]) -> AgentSystemHealth:
+        async def analyze_agent_system(self, agent_data: Dict[str, Any]) -> AgentSystemHealth:
         """Analyze the topology and health of an agentic system."""
         system_id = agent_data.get('system_id', 'unknown')
         
@@ -272,7 +272,7 @@ class AgentTopologyAnalyzer:
         
         return G
     
-    async def _compute_topology_score(self, graph: nx.Graph, agent_data: Dict[str, Any]) -> float:
+        async def _compute_topology_score(self, graph: nx.Graph, agent_data: Dict[str, Any]) -> float:
         """Compute overall topology health score."""
         if len(graph.nodes) == 0:
             return 0.0
@@ -398,7 +398,7 @@ class AgentTopologyAnalyzer:
         else:
             return "low"
     
-    async def _compute_persistence_diagram(self, graph: nx.Graph) -> np.ndarray:
+        async def _compute_persistence_diagram(self, graph: nx.Graph) -> np.ndarray:
         """Compute persistence diagram of the communication graph."""
         if len(graph.nodes) < 2:
             return np.array([[0, 0]])
@@ -464,7 +464,7 @@ class UnifiedTDAEngine2025:
         self.analysis_count = 0
         self.avg_analysis_time = 0.0
     
-    async def analyze_agentic_system(self, system_data: Dict[str, Any]) -> AgentSystemHealth:
+        async def analyze_agentic_system(self, system_data: Dict[str, Any]) -> AgentSystemHealth:
         """
         Main entry point: Analyze an agentic system's topology and health.
         
@@ -497,7 +497,7 @@ class UnifiedTDAEngine2025:
                 causal_graph={}
             )
     
-    async def get_system_recommendations(self, system_id: str) -> Dict[str, Any]:
+        async def get_system_recommendations(self, system_id: str) -> Dict[str, Any]:
         """Get detailed recommendations for a specific system."""
         if system_id not in self.health_history:
             return {"error": "System not found in history"}
@@ -518,8 +518,9 @@ class UnifiedTDAEngine2025:
         
         return detailed_recommendations
     
-    async def get_dashboard_data(self) -> Dict[str, Any]:
+        async def get_dashboard_data(self) -> Dict[str, Any]:
         """Get data for the health monitoring dashboard."""
+        pass
         dashboard_data = {
             "total_systems_analyzed": len(self.health_history),
             "total_analyses": self.analysis_count,
@@ -551,7 +552,7 @@ class UnifiedTDAEngine2025:
         
         return dashboard_data
     
-    async def _learn_from_system(self, system_data: Dict[str, Any], health: AgentSystemHealth) -> None:
+        async def _learn_from_system(self, system_data: Dict[str, Any], health: AgentSystemHealth) -> None:
         """Learn patterns from analyzed systems."""
         system_id = health.system_id
         
@@ -663,18 +664,18 @@ class UnifiedTDAEngine2025:
 
 
 # Factory function
-def create_unified_tda_engine() -> UnifiedTDAEngine2025:
-    """Create the 2025 state-of-the-art unified TDA engine."""
-    return UnifiedTDAEngine2025()
+    def create_unified_tda_engine() -> UnifiedTDAEngine2025:
+        """Create the 2025 state-of-the-art unified TDA engine."""
+        return UnifiedTDAEngine2025()
 
 
 # Global instance
 _global_tda_engine: Optional[UnifiedTDAEngine2025] = None
 
 
-def get_unified_tda_engine() -> UnifiedTDAEngine2025:
-    """Get the global unified TDA engine instance."""
-    global _global_tda_engine
-    if _global_tda_engine is None:
+    def get_unified_tda_engine() -> UnifiedTDAEngine2025:
+        """Get the global unified TDA engine instance."""
+        global _global_tda_engine
+        if _global_tda_engine is None:
         _global_tda_engine = create_unified_tda_engine()
-    return _global_tda_engine
+        return _global_tda_engine

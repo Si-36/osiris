@@ -24,8 +24,8 @@ from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
 
 from ..base import AgentBase, AgentState, AgentConfig
-from ...lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
-from ...config.agent import AgentSettings
+from aura_intelligence.lnn.core import LiquidNeuralNetwork, LiquidConfig, ActivationType, TimeConstants, WiringConfig
+from aura_intelligence.config.agent import AgentSettings
 
 # LangGraph imports for workflow building
 try:
@@ -132,6 +132,7 @@ class LNNCouncilConfig:
     
     def validate(self) -> None:
         """Validate configuration with comprehensive checks."""
+        pass
         if not self.name:
             raise ValueError("Agent name is required")
         
@@ -155,6 +156,7 @@ class LNNCouncilConfig:
     
     def to_liquid_config(self) -> LiquidConfig:
         """Convert to LiquidConfig for neural network initialization."""
+        pass
         time_constants = TimeConstants(
             tau_min=self.tau_min,
             tau_max=self.tau_max,
@@ -189,6 +191,7 @@ class LNNCouncilConfig:
     
     def to_agent_config(self) -> AgentConfig:
         """Convert to base AgentConfig for compatibility."""
+        pass
         return AgentConfig(
             name=self.name,
             model="lnn-council",  # Custom model identifier
@@ -230,6 +233,7 @@ class GPUAllocationRequest(BaseModel):
     @validator('special_requirements')
     def validate_special_requirements(cls, v):
         """Validate special requirements."""
+        pass
         allowed = {'high_memory', 'low_latency', 'multi_gpu', 'distributed', 'inference_only'}
         invalid = set(v) - allowed
         if invalid:
@@ -309,6 +313,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
     
     def __init__(self, config: Union[Dict[str, Any], LNNCouncilConfig, AgentConfig]):
         """Initialize LNN Council Agent with flexible configuration."""
+        pass
         
         # Handle different configuration types
         if isinstance(config, dict):
@@ -351,6 +356,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
     
     def _initialize_lnn_engine(self) -> LiquidNeuralNetwork:
         """Initialize the liquid neural network engine."""
+        pass
         liquid_config = self.lnn_config.to_liquid_config()
         
         lnn = LiquidNeuralNetwork(
@@ -385,6 +391,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         Returns:
             StateGraph defining the complete decision workflow
         """
+        pass
         if not LANGGRAPH_AVAILABLE:
             # Return a mock graph when LangGraph is not available
             self.logger.warning("LangGraph not available, using fallback workflow")
@@ -448,23 +455,23 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
             return "validate_decision"
     
     # LangGraph node wrappers (these call our existing methods)
-    async def _analyze_request_node(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _analyze_request_node(self, state: LNNCouncilState) -> LNNCouncilState:
         """LangGraph node wrapper for analyze_request."""
         return await self._analyze_request(state)
     
-    async def _gather_context_node(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _gather_context_node(self, state: LNNCouncilState) -> LNNCouncilState:
         """LangGraph node wrapper for gather_context."""
         return await self._gather_context(state)
     
-    async def _neural_inference_node(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _neural_inference_node(self, state: LNNCouncilState) -> LNNCouncilState:
         """LangGraph node wrapper for neural_inference."""
         return await self._neural_inference(state)
     
-    async def _validate_decision_node(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _validate_decision_node(self, state: LNNCouncilState) -> LNNCouncilState:
         """LangGraph node wrapper for validate_decision."""
         return await self._validate_decision(state)
     
-    async def _finalize_output_node(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _finalize_output_node(self, state: LNNCouncilState) -> LNNCouncilState:
         """LangGraph node wrapper for finalize_output."""
         return await self._finalize_output(state)
 
@@ -477,7 +484,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
             inference_start_time=asyncio.get_event_loop().time()
         )
     
-    async def _execute_step(self, state: LNNCouncilState, step_name: str) -> LNNCouncilState:
+        async def _execute_step(self, state: LNNCouncilState, step_name: str) -> LNNCouncilState:
         """
         Execute workflow step using real LNN inference and business logic.
         
@@ -603,7 +610,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
                 # No fallback available or already used, re-raise the error
                 raise RuntimeError(f"Step {step_name} failed: {str(e)}")
     
-    async def _analyze_request(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _analyze_request(self, state: LNNCouncilState) -> LNNCouncilState:
         """Analyze the incoming GPU allocation request."""
         
         request = state.current_request
@@ -640,12 +647,12 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         return state
     
-    async def _gather_context(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _gather_context(self, state: LNNCouncilState) -> LNNCouncilState:
         """Gather context from knowledge graphs and memory systems."""
         
         context_start = asyncio.get_event_loop().time()
         
-        # TODO: Integrate with actual Neo4j and Mem0 adapters
+        
         # For now, simulate context gathering
         await asyncio.sleep(0.1)  # Simulate I/O
         
@@ -668,7 +675,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         return state
     
-    async def _neural_inference(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _neural_inference(self, state: LNNCouncilState) -> LNNCouncilState:
         """Perform neural network inference for decision making with enhanced confidence scoring."""
         
         inference_start = asyncio.get_event_loop().time()
@@ -828,7 +835,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         return tensor
     
-    async def _validate_decision(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _validate_decision(self, state: LNNCouncilState) -> LNNCouncilState:
         """Validate the neural network decision against constraints using DecisionValidator."""
         
         decision = state.context.get("neural_decision")
@@ -895,7 +902,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         return state
     
-    async def _finalize_output(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _finalize_output(self, state: LNNCouncilState) -> LNNCouncilState:
         """Finalize the decision output."""
         
         state.completed = True
@@ -919,7 +926,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         
         return state
     
-    async def _fallback_decision(self, state: LNNCouncilState) -> LNNCouncilState:
+        async def _fallback_decision(self, state: LNNCouncilState) -> LNNCouncilState:
         """Make fallback decision using rule-based logic."""
         
         request = state.current_request
@@ -1069,8 +1076,9 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
         else:
             output.add_reasoning("context", "Limited context available")
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
         """Enhanced health check with LNN-specific metrics."""
+        pass
         
         base_health = await super().health_check()
         
@@ -1108,6 +1116,7 @@ class LNNCouncilAgent(AgentBase[GPUAllocationRequest, GPUAllocationDecision, LNN
     
     def get_capabilities(self) -> List[str]:
         """Get list of agent capabilities."""
+        pass
         base_capabilities = super().get_capabilities()
         lnn_capabilities = [
             "liquid_neural_networks",

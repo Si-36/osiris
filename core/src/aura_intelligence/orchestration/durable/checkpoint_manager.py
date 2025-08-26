@@ -427,10 +427,11 @@ class CheckpointManager:
         calculated_checksum = self._calculate_checksum(checkpoint)
         return calculated_checksum == checkpoint.checksum
     
-    async def cleanup_expired_checkpoints(self):
+        async def cleanup_expired_checkpoints(self):
         """
         Clean up expired checkpoints based on retention policy
         """
+        pass
         cutoff_time = datetime.now(timezone.utc) - timedelta(hours=self.checkpoint_retention_hours)
         expired_checkpoints = []
         
@@ -467,11 +468,11 @@ class CheckpointManager:
         
         return max(checkpoints, key=lambda c: c.timestamp)
     
-    async def _determine_optimal_recovery_strategy(
+        async def _determine_optimal_recovery_strategy(
         self,
         checkpoint_id: str,
         tda_correlation_id: Optional[str]
-    ) -> RecoveryStrategy:
+        ) -> RecoveryStrategy:
         """
         Intelligently determine the optimal recovery strategy based on context
         """
@@ -517,6 +518,7 @@ class CheckpointManager:
         """
         Get checkpoint management metrics
         """
+        pass
         total_checkpoints = len(self.checkpoints)
         active_checkpoints = sum(1 for c in self.checkpoints.values() if c.status == CheckpointStatus.ACTIVE)
         corrupted_checkpoints = sum(1 for c in self.checkpoints.values() if c.status == CheckpointStatus.CORRUPTED)

@@ -50,11 +50,11 @@ class CollectiveState(TypedDict):
     system_health: Dict[str, Any]
 
 
-def extract_config(config: RunnableConfig) -> Dict[str, Any]:
-    """Extract configuration using latest patterns from assistants-demo."""
-    configurable = config.get("configurable", {})
+    def extract_config(config: RunnableConfig) -> Dict[str, Any]:
+        """Extract configuration using latest patterns from assistants-demo."""
+        configurable = config.get("configurable", {})
 
-    return {
+        return {
         "supervisor_model": configurable.get("supervisor_model", "anthropic/claude-3-5-sonnet-latest"),
         "observer_model": configurable.get("observer_model", "anthropic/claude-3-haiku-latest"),
         "analyst_model": configurable.get("analyst_model", "anthropic/claude-3-5-sonnet-latest"),
@@ -74,27 +74,27 @@ def extract_config(config: RunnableConfig) -> Dict[str, Any]:
             "You are an expert collective intelligence supervisor. "
             "Analyze the current state and decide which tool to call next: "
             "observe_system_event, analyze_risk_patterns, execute_remediation, or FINISH."),
-    }
+        }
 
 
 # 🌙 Phase 3C: Shadow Mode Logging Infrastructure
 _shadow_logger: Optional[ShadowModeLogger] = None
 
 async def get_shadow_logger() -> ShadowModeLogger:
-    """Get or create the global shadow mode logger."""
-    global _shadow_logger
-    if _shadow_logger is None:
+        """Get or create the global shadow mode logger."""
+        global _shadow_logger
+        if _shadow_logger is None:
         _shadow_logger = ShadowModeLogger()
         await _shadow_logger.initialize()
-    return _shadow_logger
+        return _shadow_logger
 
 async def log_shadow_mode_prediction(state: CollectiveState, validation_result, proposed_action: str):
-    """
-    🌙 Log validator prediction in shadow mode for Phase 3C.
+        """
+        🌙 Log validator prediction in shadow mode for Phase 3C.
 
-    This creates the training data foundation for our eventual PredictiveDecisionEngine.
-    """
-    try:
+        This creates the training data foundation for our eventual PredictiveDecisionEngine.
+        """
+        try:
         shadow_logger = await get_shadow_logger()
 
         # Calculate routing decision based on validation result
@@ -134,36 +134,36 @@ async def log_shadow_mode_prediction(state: CollectiveState, validation_result, 
 
         logger.debug(f"🌙 Shadow mode prediction logged: {proposed_action} -> {routing_decision}")
 
-    except Exception as e:
+        except Exception as e:
         # Don't let shadow mode logging break the main workflow
         logger.warning(f"⚠️ Shadow mode logging failed (non-blocking): {e}")
 
 async def record_shadow_mode_outcome(workflow_id: str, outcome: str, execution_time: Optional[float] = None, error_details: Optional[Dict] = None):
-    """
-    🌙 Record actual outcome for shadow mode analysis.
+        """
+        🌙 Record actual outcome for shadow mode analysis.
 
-    Call this after action execution to complete the training data.
-    """
-    try:
+        Call this after action execution to complete the training data.
+        """
+        try:
         shadow_logger = await get_shadow_logger()
         await shadow_logger.record_outcome(workflow_id, outcome, execution_time, error_details)
         logger.debug(f"🌙 Shadow mode outcome recorded: {workflow_id} -> {outcome}")
-    except Exception as e:
+        except Exception as e:
         logger.warning(f"⚠️ Shadow mode outcome recording failed (non-blocking): {e}")
 
 async def shadow_aware_tool_node(state: CollectiveState) -> CollectiveState:
-    """
-    🌙 Tool execution wrapper with shadow mode outcome recording.
+        """
+        🌙 Tool execution wrapper with shadow mode outcome recording.
 
-    This wraps the standard ToolNode to record actual outcomes for our training data.
-    """
-    import time
-    from langgraph.prebuilt import ToolNode
+        This wraps the standard ToolNode to record actual outcomes for our training data.
+        """
+        import time
+        from langgraph.prebuilt import ToolNode
 
-    workflow_id = state.get("workflow_id", "unknown")
-    start_time = time.time()
+        workflow_id = state.get("workflow_id", "unknown")
+        start_time = time.time()
 
-    try:
+        try:
         # Execute tools using standard ToolNode
         tools = [observe_system_event, analyze_risk_patterns, execute_remediation]
         tool_node = ToolNode(tools)
@@ -192,7 +192,7 @@ async def shadow_aware_tool_node(state: CollectiveState) -> CollectiveState:
 
         return result_state
 
-    except Exception as e:
+        except Exception as e:
         execution_time = time.time() - start_time
         error_details = {"error": str(e), "traceback": traceback.format_exc()}
 
@@ -211,11 +211,11 @@ async def shadow_aware_tool_node(state: CollectiveState) -> CollectiveState:
 
 @tool
 async def observe_system_event(event_data: str) -> Dict[str, Any]:
-    """Observe system events using proven ObserverAgent patterns."""
-    import json
-    event = json.loads(event_data)
+        """Observe system events using proven ObserverAgent patterns."""
+        import json
+        event = json.loads(event_data)
 
-    return {
+        return {
         "evidence_type": "OBSERVATION",
         "source": event.get("source"),
         "severity": event.get("severity"),
@@ -224,39 +224,39 @@ async def observe_system_event(event_data: str) -> Dict[str, Any]:
         "timestamp": datetime.now().isoformat(),
         "confidence": 0.95,
         "signature": f"obs_sig_{hash(json.dumps(event, sort_keys=True))}"
-    }
+        }
 
 
 @tool
 async def analyze_risk_patterns(evidence_log: str) -> Dict[str, Any]:
-    """
-    Analyze risk patterns using advanced multi-dimensional analysis.
+        """
+        Analyze risk patterns using advanced multi-dimensional analysis.
 
-    Production-hardened with:
-    - Circuit breaker protection
-    - Retry logic with exponential backoff
-    - Comprehensive error handling
-    - Graceful degradation
-    """
+        Production-hardened with:
+        - Circuit breaker protection
+        - Retry logic with exponential backoff
+        - Comprehensive error handling
+        - Graceful degradation
+        """
 
-    from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-    from pybreaker import CircuitBreaker
-    import asyncio
-    import json
+        from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+        from pybreaker import CircuitBreaker
+        import asyncio
+        import json
 
     # Circuit breaker for external API calls (if any)
-    risk_analysis_breaker = CircuitBreaker(
+        risk_analysis_breaker = CircuitBreaker(
         fail_max=3,
         reset_timeout=30,
         exclude=[ValueError, json.JSONDecodeError]  # Don't break on data validation errors
-    )
+        )
 
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
         retry=retry_if_exception_type((ConnectionError, TimeoutError, asyncio.TimeoutError))
-    )
-    async def _perform_risk_analysis(evidence_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+        )
+        async def _perform_risk_analysis(evidence_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Core risk analysis with retry logic."""
 
         try:
@@ -379,7 +379,7 @@ async def analyze_risk_patterns(evidence_log: str) -> Dict[str, Any]:
             raise  # Re-raise for retry logic
 
     # Main execution with circuit breaker protection
-    try:
+        try:
         # Parse and validate input
         try:
             evidence_data = json.loads(evidence_log)
@@ -409,7 +409,7 @@ async def analyze_risk_patterns(evidence_log: str) -> Dict[str, Any]:
             **analysis_result
         }
 
-    except CircuitBreaker.CircuitBreakerError:
+        except CircuitBreaker.CircuitBreakerError:
         logger.error("Risk analysis circuit breaker is open - too many failures")
         return {
             "evidence_type": "ANALYSIS_ERROR",
@@ -422,7 +422,7 @@ async def analyze_risk_patterns(evidence_log: str) -> Dict[str, Any]:
             "retry_after": 30
         }
 
-    except Exception as e:
+        except Exception as e:
         logger.error(f"Risk analysis failed after all retries: {e}")
         return {
             "evidence_type": "ANALYSIS_ERROR",
@@ -437,29 +437,29 @@ async def analyze_risk_patterns(evidence_log: str) -> Dict[str, Any]:
 
 @tool
 async def execute_remediation(analysis_data: str) -> Dict[str, Any]:
-    """Execute remediation actions based on risk analysis."""
-    import json
-    analysis = json.loads(analysis_data)
-    risk_score = analysis.get("risk_score", 0.5)
+        """Execute remediation actions based on risk analysis."""
+        import json
+        analysis = json.loads(analysis_data)
+        risk_score = analysis.get("risk_score", 0.5)
 
-    actions = []
-    if risk_score > 0.8:
+        actions = []
+        if risk_score > 0.8:
         actions = [
             {"type": "create_incident", "priority": "P1", "auto_assign": True},
             {"type": "page_oncall", "severity": "critical"},
             {"type": "scale_resources", "factor": 2.0}
         ]
-    elif risk_score > 0.6:
+        elif risk_score > 0.6:
         actions = [
             {"type": "create_ticket", "priority": "P2"},
             {"type": "alert_team", "channel": "ops"}
         ]
-    elif risk_score > 0.3:
+        elif risk_score > 0.3:
         actions = [
             {"type": "log_incident", "category": "monitoring"}
         ]
 
-    return {
+        return {
         "evidence_type": "EXECUTION",
         "actions_planned": len(actions),
         "actions_executed": actions,
@@ -467,96 +467,96 @@ async def execute_remediation(analysis_data: str) -> Dict[str, Any]:
         "execution_time_ms": len(actions) * 100,
         "timestamp": datetime.now().isoformat(),
         "signature": f"exec_sig_{len(actions)}"
-    }
+        }
 
 
 async def error_handler(state: CollectiveState) -> CollectiveState:
-    """
-    Professional error handling node with intelligent recovery strategies.
+        """
+        Professional error handling node with intelligent recovery strategies.
 
-    Phase 1, Step 2: Graph-level error handling and recovery.
-    Implements enterprise-grade error processing with:
-    - Error classification and severity assessment
-    - Intelligent recovery strategies (retry, escalate, terminate)
-    - Circuit breaker integration
-    - Professional observability and alerting
-    """
+        Phase 1, Step 2: Graph-level error handling and recovery.
+        Implements enterprise-grade error processing with:
+        - Error classification and severity assessment
+        - Intelligent recovery strategies (retry, escalate, terminate)
+        - Circuit breaker integration
+        - Professional observability and alerting
+        """
 
-    from tenacity import retry, stop_after_attempt, wait_exponential
-    import traceback
+        from tenacity import retry, stop_after_attempt, wait_exponential
+        import traceback
 
-    logger.info("🚨 Error handler activated - analyzing system state")
+        logger.info("🚨 Error handler activated - analyzing system state")
 
     # Extract current error context
-    last_error = state.get("last_error", {})
-    error_log = state.get("error_log", [])
-    recovery_attempts = state.get("error_recovery_attempts", 0)
-    current_step = state.get("current_step", "unknown")
+        last_error = state.get("last_error", {})
+        error_log = state.get("error_log", [])
+        recovery_attempts = state.get("error_recovery_attempts", 0)
+        current_step = state.get("current_step", "unknown")
 
     # Error classification
-    error_type = last_error.get("error_type", "unknown")
-    error_severity = last_error.get("severity", "medium")
-    error_source = last_error.get("source", "unknown")
-    error_message = last_error.get("message", "Unknown error")
+        error_type = last_error.get("error_type", "unknown")
+        error_severity = last_error.get("severity", "medium")
+        error_source = last_error.get("source", "unknown")
+        error_message = last_error.get("message", "Unknown error")
 
-    logger.error(f"Processing error: {error_type} from {error_source} - {error_message}")
+        logger.error(f"Processing error: {error_type} from {error_source} - {error_message}")
 
     # Recovery strategy decision matrix
-    recovery_strategy = "terminate"  # Default safe fallback
+        recovery_strategy = "terminate"  # Default safe fallback
 
-    if error_type == "validation_error":
+        if error_type == "validation_error":
         if recovery_attempts < 2:
             recovery_strategy = "retry_with_sanitization"
         else:
             recovery_strategy = "escalate_to_human"
 
-    elif error_type == "circuit_breaker_open":
+        elif error_type == "circuit_breaker_open":
         if recovery_attempts < 1:
             recovery_strategy = "wait_and_retry"
         else:
             recovery_strategy = "fallback_mode"
 
-    elif error_type == "analysis_failure":
+        elif error_type == "analysis_failure":
         if recovery_attempts < 3:
             recovery_strategy = "retry_with_degraded_analysis"
         else:
             recovery_strategy = "escalate_to_human"
 
-    elif error_type == "network_error":
+        elif error_type == "network_error":
         if recovery_attempts < 5:
             recovery_strategy = "exponential_backoff_retry"
         else:
             recovery_strategy = "offline_mode"
 
-    else:
+        else:
         # Unknown error - be conservative
         if recovery_attempts < 1:
             recovery_strategy = "single_retry"
         else:
             recovery_strategy = "escalate_to_human"
 
-    logger.info(f"🔧 Recovery strategy selected: {recovery_strategy}")
+        logger.info(f"🔧 Recovery strategy selected: {recovery_strategy}")
 
     # Execute recovery strategy
-    recovery_result = await _execute_recovery_strategy(
+        recovery_result = await _execute_recovery_strategy(
         recovery_strategy,
         state,
         last_error,
         recovery_attempts
-    )
+        )
 
     # Update system health metrics
-    system_health = state.get("system_health", {})
-    system_health.update({
+        system_health = state.get("system_health", {})
+        system_health.update({
         "last_error_time": datetime.now().isoformat(),
         "total_errors": len(error_log) + 1,
         "recovery_success_rate": _calculate_recovery_success_rate(error_log),
         "current_health_status": recovery_result.get("health_status", "degraded"),
         "error_trends": _analyze_error_trends(error_log + [last_error])
-    })
+        })
 
     # Build updated state
-    updated_state = {
+        updated_state = {
         **state,
         "error_log": error_log + [{
             **last_error,
@@ -568,10 +568,10 @@ async def error_handler(state: CollectiveState) -> CollectiveState:
         "system_health": system_health,
         "current_step": recovery_result.get("next_step", "supervisor"),
         "last_error": None  # Clear the error after handling
-    }
+        }
 
     # Add recovery message to conversation
-    recovery_message = HumanMessage(content=f"""
+        recovery_message = HumanMessage(content=f"""
 🚨 Error Recovery Report:
 - Error Type: {error_type}
 - Recovery Strategy: {recovery_strategy}
@@ -580,22 +580,22 @@ async def error_handler(state: CollectiveState) -> CollectiveState:
 - System Health: {system_health.get('current_health_status', 'unknown')}
 """)
 
-    updated_state["messages"] = list(updated_state.get("messages", [])) + [recovery_message]
+        updated_state["messages"] = list(updated_state.get("messages", [])) + [recovery_message]
 
-    logger.info(f"✅ Error handling complete - next step: {recovery_result.get('next_step', 'supervisor')}")
+        logger.info(f"✅ Error handling complete - next step: {recovery_result.get('next_step', 'supervisor')}")
 
-    return updated_state
+        return updated_state
 
 
 async def _execute_recovery_strategy(
-    strategy: str,
-    state: CollectiveState,
-    error: Dict[str, Any],
-    attempts: int
+        strategy: str,
+        state: CollectiveState,
+        error: Dict[str, Any],
+        attempts: int
 ) -> Dict[str, Any]:
-    """Execute the selected recovery strategy."""
+        """Execute the selected recovery strategy."""
 
-    try:
+        try:
         if strategy == "retry_with_sanitization":
             logger.info("🔄 Attempting retry with data sanitization")
             # Clean and retry the failed operation
@@ -665,7 +665,7 @@ async def _execute_recovery_strategy(
                 "health_status": "failed"
             }
 
-    except Exception as recovery_error:
+        except Exception as recovery_error:
         logger.error(f"❌ Recovery strategy failed: {recovery_error}")
         return {
             "status": "recovery_failed",
@@ -675,34 +675,34 @@ async def _execute_recovery_strategy(
         }
 
 
-def _calculate_recovery_success_rate(error_log: List[Dict[str, Any]]) -> float:
-    """Calculate the success rate of error recovery attempts."""
-    if not error_log:
+    def _calculate_recovery_success_rate(error_log: List[Dict[str, Any]]) -> float:
+        """Calculate the success rate of error recovery attempts."""
+        if not error_log:
         return 1.0
 
-    successful_recoveries = sum(
+        successful_recoveries = sum(
         1 for error in error_log
         if error.get("recovery_result") in ["retry_scheduled", "retry_after_wait", "degraded_retry", "backoff_retry"]
-    )
+        )
 
-    return successful_recoveries / len(error_log) if error_log else 1.0
+        return successful_recoveries / len(error_log) if error_log else 1.0
 
 
-def _analyze_error_trends(error_log: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Analyze error patterns and trends for system health assessment."""
-    if not error_log:
+    def _analyze_error_trends(error_log: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Analyze error patterns and trends for system health assessment."""
+        if not error_log:
         return {"trend": "stable", "pattern": "none"}
 
     # Count error types
-    error_types = {}
-    recent_errors = error_log[-10:]  # Last 10 errors
+        error_types = {}
+        recent_errors = error_log[-10:]  # Last 10 errors
 
-    for error in recent_errors:
+        for error in recent_errors:
         error_type = error.get("error_type", "unknown")
         error_types[error_type] = error_types.get(error_type, 0) + 1
 
     # Determine trend
-    if len(recent_errors) >= 5:
+        if len(recent_errors) >= 5:
         if error_types.get("circuit_breaker_open", 0) >= 3:
             trend = "circuit_breaker_pattern"
         elif error_types.get("network_error", 0) >= 3:
@@ -711,15 +711,15 @@ def _analyze_error_trends(error_log: List[Dict[str, Any]]) -> Dict[str, Any]:
             trend = "recurring_issue"
         else:
             trend = "mixed_errors"
-    else:
+        else:
         trend = "stable"
 
-    return {
+        return {
         "trend": trend,
         "pattern": error_types,
         "recent_error_count": len(recent_errors),
         "dominant_error": max(error_types.items(), key=lambda x: x[1])[0] if error_types else "none"
-    }
+        }
 
 
 class AmbientSupervisor:
@@ -729,7 +729,7 @@ class AmbientSupervisor:
         self.config_data = extract_config(config)
         self.llm = init_chat_model(self.config_data["supervisor_model"])
 
-    async def __call__(self, state: CollectiveState) -> CollectiveState:
+        async def __call__(self, state: CollectiveState) -> CollectiveState:
         """Supervisor node using latest patterns."""
         messages = state.get("messages", [])
         evidence_log = state.get("evidence_log", [])
@@ -776,90 +776,90 @@ class AmbientSupervisor:
         }
 
 
-def supervisor_router(state: CollectiveState) -> str:
-    """
-    Route based on supervisor decision using latest patterns with error handling.
+    def supervisor_router(state: CollectiveState) -> str:
+        """
+        Route based on supervisor decision using latest patterns with error handling.
 
-    Phase 3B: Enhanced routing with validator integration for prospection.
-    """
+        Phase 3B: Enhanced routing with validator integration for prospection.
+        """
 
     # Check for errors first
-    if state.get("last_error"):
+        if state.get("last_error"):
         logger.warning("🚨 Error detected - routing to error handler")
         return "error_handler"
 
     # Check system health
-    system_health = state.get("system_health", {})
-    health_status = system_health.get("current_health_status", "healthy")
+        system_health = state.get("system_health", {})
+        health_status = system_health.get("current_health_status", "healthy")
 
-    if health_status in ["critical", "offline"]:
+        if health_status in ["critical", "offline"]:
         logger.error(f"🛑 System health critical: {health_status} - terminating")
         return END
 
     # Check for too many recovery attempts
-    recovery_attempts = state.get("error_recovery_attempts", 0)
-    if recovery_attempts >= 10:
+        recovery_attempts = state.get("error_recovery_attempts", 0)
+        if recovery_attempts >= 10:
         logger.error("🛑 Maximum recovery attempts exceeded - terminating")
         return END
 
-    messages = state.get("messages", [])
-    if not messages:
+        messages = state.get("messages", [])
+        if not messages:
         # Phase 3B: Route to validator instead of directly to tools
         return "validator"
 
-    last_message = messages[-1]
-    if isinstance(last_message, HumanMessage):
+        last_message = messages[-1]
+        if isinstance(last_message, HumanMessage):
         if "FINISH" in last_message.content.upper():
             return END
         elif last_message.content in ["observe_system_event", "analyze_risk_patterns", "execute_remediation"]:
             # Phase 3B: Route to validator for risk assessment before tool execution
             return "validator"
 
-    return END
+        return END
 
 
 async def memory_enrichment_node(state: CollectiveState) -> CollectiveState:
-    """Memory enrichment using ambient agent patterns."""
-    logger.info("🧠 Enriching with collective memory...")
+        """Memory enrichment using ambient agent patterns."""
+        logger.info("🧠 Enriching with collective memory...")
 
     # Mock memory enrichment - replace with LangMem in production
-    memory_context = {
+        memory_context = {
         "similar_incidents": 3,
         "success_rate": 0.85,
         "recommended_approach": "automated_resolution",
         "confidence": 0.7,
         "historical_patterns": ["database_issues", "connection_pool_exhaustion"],
         "avg_resolution_time": 180
-    }
+        }
 
-    memory_message = SystemMessage(content=f"""
-    Collective Memory Context:
-    - Similar incidents: {memory_context['similar_incidents']}
-    - Success rate: {memory_context['success_rate']:.1%}
-    - Recommended: {memory_context['recommended_approach']}
-    - Confidence: {memory_context['confidence']:.2f}
-    """)
+        memory_message = SystemMessage(content=f"""
+        Collective Memory Context:
+        - Similar incidents: {memory_context['similar_incidents']}
+        - Success rate: {memory_context['success_rate']:.1%}
+        - Recommended: {memory_context['recommended_approach']}
+        - Confidence: {memory_context['confidence']:.2f}
+        """)
 
-    updated_messages = list(state.get("messages", [])) + [memory_message]
+        updated_messages = list(state.get("messages", [])) + [memory_message]
 
-    return {
+        return {
         **state,
         "messages": updated_messages,
         "memory_context": memory_context,
         "current_step": "memory_enriched"
-    }
+        }
 
 
 async def validator_node(state: CollectiveState) -> CollectiveState:
-    """
-    🧠 Professional Predictive Validator Node - The "Prefrontal Cortex"
+        """
+        🧠 Professional Predictive Validator Node - The "Prefrontal Cortex"
 
-    Validates proposed actions before execution using hybrid rule-based/LLM approach.
-    This is the core of Phase 3B - integrating prospection into the workflow.
-    """
-    logger.info("🧠 Validating proposed action with predictive validator...")
+        Validates proposed actions before execution using hybrid rule-based/LLM approach.
+        This is the core of Phase 3B - integrating prospection into the workflow.
+        """
+        logger.info("🧠 Validating proposed action with predictive validator...")
 
-    try:
+        try:
         # Import validator (lazy import to avoid circular dependencies)
         from ..agents.validator import create_professional_validator
         from langchain_community.chat_models import init_chat_model
@@ -946,7 +946,7 @@ async def validator_node(state: CollectiveState) -> CollectiveState:
             "current_step": "action_validated"
         }
 
-    except Exception as e:
+        except Exception as e:
         logger.error(f"❌ Validation failed: {e}")
         logger.error(f"Traceback: {traceback.format_exc()}")
 
@@ -969,82 +969,82 @@ async def validator_node(state: CollectiveState) -> CollectiveState:
         }
 
 
-def route_after_validation(state: CollectiveState) -> str:
-    """
-    🎯 Conditional routing based on validation results.
+    def route_after_validation(state: CollectiveState) -> str:
+        """
+        🎯 Conditional routing based on validation results.
 
-    This implements the core decision logic from what.md:
-    - High confidence (>0.7) → Execute tools
-    - Medium confidence (0.4-0.7) → Return to supervisor for replanning
-    - Low confidence (<0.4) or human approval required → Error handler for escalation
-    """
-    risk_assessment = state.get("risk_assessment", {})
+        This implements the core decision logic from what.md:
+        - High confidence (>0.7) → Execute tools
+        - Medium confidence (0.4-0.7) → Return to supervisor for replanning
+        - Low confidence (<0.4) or human approval required → Error handler for escalation
+        """
+        risk_assessment = state.get("risk_assessment", {})
 
     # Check if validation failed
-    if risk_assessment.get("validation_status") == "error":
+        if risk_assessment.get("validation_status") == "error":
         logger.warning("⚠️ Routing to error handler due to validation failure")
         return "error_handler"
 
     # Check if human approval is explicitly required
-    if risk_assessment.get("requires_human_approval", False):
+        if risk_assessment.get("requires_human_approval", False):
         logger.info("👤 Routing to error handler for human approval")
         return "error_handler"
 
     # Calculate decision score: success_probability * confidence
-    success_prob = risk_assessment.get("predicted_success_probability", 0.0)
-    confidence = risk_assessment.get("prediction_confidence_score", 0.0)
-    decision_score = success_prob * confidence
+        success_prob = risk_assessment.get("predicted_success_probability", 0.0)
+        confidence = risk_assessment.get("prediction_confidence_score", 0.0)
+        decision_score = success_prob * confidence
 
-    logger.info(f"🎯 Decision score: {decision_score:.3f} (prob: {success_prob:.2f} × conf: {confidence:.2f})")
+        logger.info(f"🎯 Decision score: {decision_score:.3f} (prob: {success_prob:.2f} × conf: {confidence:.2f})")
 
     # Route based on decision score thresholds
-    if decision_score > 0.7:
+        if decision_score > 0.7:
         logger.info("✅ High confidence → Executing tools")
         return "tools"
-    elif decision_score >= 0.4:
+        elif decision_score >= 0.4:
         logger.info("🔄 Medium confidence → Returning to supervisor for replanning")
         return "supervisor"
-    else:
+        else:
         logger.info("⚠️ Low confidence → Escalating to error handler")
         return "error_handler"
 
 
 async def create_collective_graph(config: RunnableConfig):
-    """Create the collective intelligence graph using latest LangGraph patterns."""
+        """Create the collective intelligence graph using latest LangGraph patterns."""
 
     # Extract configuration
-    config_data = extract_config(config)
+        config_data = extract_config(config)
 
     # Define tools - Phase 3C: Use shadow-aware tool execution
-    tools = [observe_system_event, analyze_risk_patterns, execute_remediation]
+        tools = [observe_system_event, analyze_risk_patterns, execute_remediation]
     # Note: shadow_aware_tool_node handles tool execution with outcome recording
 
     # Create supervisor
-    supervisor = AmbientSupervisor(config)
+        supervisor = AmbientSupervisor(config)
 
     # Build graph using latest StateGraph patterns
-    workflow = StateGraph(CollectiveState)
+        workflow = StateGraph(CollectiveState)
 
     # Add nodes - Phase 3B: Include validator node for prospection
-    workflow.add_node("supervisor", supervisor)
-    workflow.add_node("memory_enrichment", memory_enrichment_node)
-    workflow.add_node("validator", validator_node)  # Phase 3B: Predictive validator node
-    workflow.add_node("tools", shadow_aware_tool_node)  # Phase 3C: Shadow mode tool execution
-    workflow.add_node("error_handler", error_handler)
+        workflow.add_node("supervisor", supervisor)
+        workflow.add_node("memory_enrichment", memory_enrichment_node)
+        workflow.add_node("validator", validator_node)  # Phase 3B: Predictive validator node
+        workflow.add_node("tools", shadow_aware_tool_node)  # Phase 3C: Shadow mode tool execution
+        workflow.add_node("error_handler", error_handler)
 
     # Add edges using latest patterns with validator integration
-    workflow.add_edge(START, "memory_enrichment")
-    workflow.add_edge("memory_enrichment", "supervisor")
+        workflow.add_edge(START, "memory_enrichment")
+        workflow.add_edge("memory_enrichment", "supervisor")
 
     # Phase 3B: Supervisor routes to validator instead of directly to tools
-    workflow.add_conditional_edges(
+        workflow.add_conditional_edges(
         "supervisor",
         supervisor_router,
         {"validator": "validator", "error_handler": "error_handler", END: END}
-    )
+        )
 
     # Phase 3B: Validator routes based on risk assessment and confidence
-    workflow.add_conditional_edges(
+        workflow.add_conditional_edges(
         "validator",
         route_after_validation,
         {
@@ -1052,35 +1052,35 @@ async def create_collective_graph(config: RunnableConfig):
             "supervisor": "supervisor", # Medium confidence → Replan
             "error_handler": "error_handler"  # Low confidence or human approval
         }
-    )
+        )
 
     # Tools can route to error handler or back to supervisor
-    workflow.add_conditional_edges(
+        workflow.add_conditional_edges(
         "tools",
         lambda state: "error_handler" if state.get("last_error") else "supervisor",
         {"error_handler": "error_handler", "supervisor": "supervisor"}
-    )
+        )
 
     # Error handler routes based on recovery strategy
-    workflow.add_conditional_edges(
+        workflow.add_conditional_edges(
         "error_handler",
         lambda state: state.get("current_step", "supervisor"),
         {"supervisor": "supervisor", "tools": "tools", END: END}
-    )
+        )
 
     # Setup checkpointing
-    if config_data["checkpoint_mode"] == "sqlite":
+        if config_data["checkpoint_mode"] == "sqlite":
         checkpointer = SqliteSaver.from_conn_string(":memory:")
-    else:
+        else:
         checkpointer = None
 
     # Compile with latest features
-    app = workflow.compile(
+        app = workflow.compile(
         checkpointer=checkpointer,
         interrupt_before=["tools"] if config_data["enable_human_loop"] else None
-    )
+        )
 
-    return app
+        return app
 
 
 class CollectiveWorkflow:
@@ -1100,7 +1100,7 @@ class CollectiveWorkflow:
 
         logger.info(f"🎼 CollectiveWorkflow created: {self.workflow_id}")
 
-    async def initialize(self, config: RunnableConfig) -> None:
+        async def initialize(self, config: RunnableConfig) -> None:
         """Initialize using configuration-driven patterns."""
         logger.info("🎼 Initializing collective intelligence workflow...")
 
@@ -1114,7 +1114,7 @@ class CollectiveWorkflow:
             logger.error(f"❌ Workflow initialization failed: {e}")
             raise
 
-    async def process_event(self, event_data: Dict[str, Any], config: RunnableConfig) -> Dict[str, Any]:
+        async def process_event(self, event_data: Dict[str, Any], config: RunnableConfig) -> Dict[str, Any]:
         """
         Process events using latest LangGraph streaming patterns.
 
@@ -1204,6 +1204,7 @@ class CollectiveWorkflow:
 
     def get_system_health(self) -> Dict[str, Any]:
         """Get system health using latest patterns."""
+        pass
         return {
             "workflow_id": self.workflow_id,
             "app_initialized": self.app is not None,

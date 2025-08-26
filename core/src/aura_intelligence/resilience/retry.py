@@ -123,7 +123,7 @@ class RetryBudget:
         self.consumed_count = 0
         self.rejected_count = 0
         
-    async def try_consume(self, tokens: int = 1) -> bool:
+        async def try_consume(self, tokens: int = 1) -> bool:
         """Try to consume tokens from the budget."""
         async with self.lock:
             # Refill tokens based on time elapsed
@@ -151,6 +151,7 @@ class RetryBudget:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get budget metrics."""
+        pass
         return {
             "capacity": self.capacity,
             "available_tokens": self.tokens,
@@ -176,7 +177,7 @@ class BackoffCalculator:
         attempt: int,
         strategy: Optional[RetryStrategy] = None,
         error_category: Optional[ErrorCategory] = None
-    ) -> float:
+        ) -> float:
         """Calculate delay in milliseconds for the given attempt."""
         strategy = strategy or self.config.strategy
         
@@ -219,7 +220,7 @@ class BackoffCalculator:
         self,
         attempt: int,
         error_category: Optional[ErrorCategory]
-    ) -> float:
+        ) -> float:
         """Calculate adaptive delay based on error type and system state."""
         # Base exponential backoff
         base_delay = self.config.initial_delay_ms * math.pow(
@@ -297,13 +298,13 @@ class HedgedRequestManager:
         self.config = config
         self.active_hedges: Dict[str, List[asyncio.Task]] = {}
         
-    async def execute_with_hedge(
+        async def execute_with_hedge(
         self,
         operation: Callable[..., T],
         *args,
         request_id: Optional[str] = None,
         **kwargs
-    ) -> T:
+        ) -> T:
         """Execute operation with hedged requests."""
         if not self.config.hedged_requests:
             return await operation(*args, **kwargs)
@@ -355,7 +356,7 @@ class HedgedRequestManager:
             # Cleanup
             self.active_hedges.pop(request_id, None)
     
-    async def _execute_with_tracking(self, operation: Callable, *args, **kwargs) -> T:
+        async def _execute_with_tracking(self, operation: Callable, *args, **kwargs) -> T:
         """Execute operation with performance tracking."""
         start_time = datetime.now(timezone.utc)
         try:
@@ -368,13 +369,13 @@ class HedgedRequestManager:
                 is_hedge=False
             )
     
-    async def _execute_hedge(
+        async def _execute_hedge(
         self,
         operation: Callable,
         *args,
         delay_ms: int,
         **kwargs
-    ) -> T:
+        ) -> T:
         """Execute hedge request after delay."""
         await asyncio.sleep(delay_ms / 1000.0)
         
@@ -407,13 +408,13 @@ class ContextAwareRetry:
         self.success_counts = defaultdict(int)
         self.last_errors = deque(maxlen=100)
         
-    async def execute(
+        async def execute(
         self,
         operation: Callable[..., T],
         *args,
         context: Optional[Dict[str, Any]] = None,
         **kwargs
-    ) -> T:
+        ) -> T:
         """Execute operation with context-aware retry."""
         context = context or {}
         operation_name = context.get("operation_name", operation.__name__)
@@ -519,7 +520,7 @@ class ContextAwareRetry:
         error: Exception,
         category: ErrorCategory,
         attempt: int
-    ) -> bool:
+        ) -> bool:
         """Determine if error should be retried."""
         # Circuit breaker open - check config
         if category == ErrorCategory.CIRCUIT_OPEN:
@@ -547,7 +548,7 @@ class ContextAwareRetry:
         attempt: int,
         category: ErrorCategory,
         context: Dict[str, Any]
-    ) -> float:
+        ) -> float:
         """Get delay for specific error category."""
         # Check error-specific config
         if category in self.config.error_strategies:
@@ -573,6 +574,7 @@ class ContextAwareRetry:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get retry metrics."""
+        pass
         metrics = {
             "retry_counts": dict(self.retry_counts),
             "success_counts": dict(self.success_counts),
@@ -594,28 +596,28 @@ class ContextAwareRetry:
 
 # Example configurations for common scenarios
 LATENCY_SENSITIVE_CONFIG = RetryConfig(
-    max_attempts=2,
-    strategy=RetryStrategy.IMMEDIATE,
-    hedged_requests=True,
-    hedge_delay_ms=50,
-    budget_per_minute=200
+        max_attempts=2,
+        strategy=RetryStrategy.IMMEDIATE,
+        hedged_requests=True,
+        hedge_delay_ms=50,
+        budget_per_minute=200
 )
 
 BACKGROUND_JOB_CONFIG = RetryConfig(
-    max_attempts=5,
-    strategy=RetryStrategy.EXPONENTIAL,
-    initial_delay_ms=1000,
-    max_delay_ms=60000,
-    budget_enabled=False
+        max_attempts=5,
+        strategy=RetryStrategy.EXPONENTIAL,
+        initial_delay_ms=1000,
+        max_delay_ms=60000,
+        budget_enabled=False
 )
 
 API_CALL_CONFIG = RetryConfig(
-    max_attempts=3,
-    strategy=RetryStrategy.EXPONENTIAL,
-    initial_delay_ms=100,
-    backoff_base=2.0,
-    jitter_factor=0.2,
-    error_strategies={
+        max_attempts=3,
+        strategy=RetryStrategy.EXPONENTIAL,
+        initial_delay_ms=100,
+        backoff_base=2.0,
+        jitter_factor=0.2,
+        error_strategies={
         ErrorCategory.RATE_LIMIT: {
             "strategy": RetryStrategy.EXPONENTIAL,
             "backoff_base": 3.0,
@@ -624,5 +626,5 @@ API_CALL_CONFIG = RetryConfig(
         ErrorCategory.CIRCUIT_OPEN: {
             "retry": False
         }
-    }
+        }
 )

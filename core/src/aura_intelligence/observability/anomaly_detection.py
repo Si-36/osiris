@@ -73,6 +73,7 @@ class AnomalyAlert:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         result = asdict(self)
         result['timestamp'] = self.timestamp.isoformat()
         result['anomaly_type'] = self.anomaly_type.value
@@ -145,7 +146,7 @@ class IntelligentAnomalyDetector:
         
         self.logger.info("🤖 Intelligent Anomaly Detector initialized")
     
-    async def detect_anomalies(self, metrics_data: Dict[str, pd.DataFrame]) -> List[AnomalyAlert]:
+        async def detect_anomalies(self, metrics_data: Dict[str, pd.DataFrame]) -> List[AnomalyAlert]:
         """
         Detect anomalies across multiple metrics using AI models.
         
@@ -185,7 +186,7 @@ class IntelligentAnomalyDetector:
         self.logger.info(f"🤖 Detected {len(final_alerts)} anomalies across {len(metrics_data)} metrics")
         return final_alerts
     
-    async def _detect_metric_anomalies(self, metric_name: str, data: pd.DataFrame) -> List[AnomalyAlert]:
+        async def _detect_metric_anomalies(self, metric_name: str, data: pd.DataFrame) -> List[AnomalyAlert]:
         """Detect anomalies for a specific metric using Prophet."""
         
         if not PROPHET_AVAILABLE:
@@ -236,7 +237,7 @@ class IntelligentAnomalyDetector:
         
         return prophet_data[['ds', 'y']].dropna()
     
-    async def _get_or_train_model(self, metric_name: str, data: pd.DataFrame) -> Prophet:
+        async def _get_or_train_model(self, metric_name: str, data: pd.DataFrame) -> Prophet:
         """Get existing model or train a new one."""
         
         # Check if model needs retraining (daily)
@@ -282,7 +283,7 @@ class IntelligentAnomalyDetector:
         
         return self.models[metric_name]
     
-    async def _evaluate_model(self, model: Prophet, data: pd.DataFrame) -> float:
+        async def _evaluate_model(self, model: Prophet, data: pd.DataFrame) -> float:
         """Evaluate model accuracy using cross-validation."""
         
         try:
@@ -310,13 +311,13 @@ class IntelligentAnomalyDetector:
             self.logger.warning(f"⚠️ Model evaluation failed: {e}")
             return 0.5  # Default accuracy
     
-    async def _identify_anomalies(
+        async def _identify_anomalies(
         self, 
         metric_name: str, 
         actual_data: pd.DataFrame, 
         forecast: pd.DataFrame,
         model: Prophet
-    ) -> List[AnomalyAlert]:
+        ) -> List[AnomalyAlert]:
         """Identify anomalies by comparing actual vs predicted values."""
         
         anomalies = []
@@ -481,7 +482,7 @@ class IntelligentAnomalyDetector:
         
         return recommendations
     
-    async def _fallback_anomaly_detection(self, metric_name: str, data: pd.DataFrame) -> List[AnomalyAlert]:
+        async def _fallback_anomaly_detection(self, metric_name: str, data: pd.DataFrame) -> List[AnomalyAlert]:
         """Fallback anomaly detection using statistical methods."""
         
         # Simple statistical anomaly detection using z-score
@@ -530,7 +531,7 @@ class IntelligentAnomalyDetector:
         
         return anomalies
     
-    async def _correlate_anomalies(self, alerts: List[AnomalyAlert]) -> List[AnomalyAlert]:
+        async def _correlate_anomalies(self, alerts: List[AnomalyAlert]) -> List[AnomalyAlert]:
         """Perform multi-signal correlation analysis."""
         
         # Group alerts by time window (5 minutes)
@@ -559,7 +560,7 @@ class IntelligentAnomalyDetector:
         
         return alerts
     
-    async def _prioritize_alerts(self, alerts: List[AnomalyAlert]) -> List[AnomalyAlert]:
+        async def _prioritize_alerts(self, alerts: List[AnomalyAlert]) -> List[AnomalyAlert]:
         """Filter and prioritize alerts to reduce noise."""
         
         # Sort by severity and deviation score
@@ -586,11 +587,11 @@ class IntelligentAnomalyDetector:
 _anomaly_detector: Optional[IntelligentAnomalyDetector] = None
 
 
-def get_anomaly_detector() -> IntelligentAnomalyDetector:
-    """Get global anomaly detector instance."""
-    global _anomaly_detector
+    def get_anomaly_detector() -> IntelligentAnomalyDetector:
+        """Get global anomaly detector instance."""
+        global _anomaly_detector
     
-    if _anomaly_detector is None:
+        if _anomaly_detector is None:
         _anomaly_detector = IntelligentAnomalyDetector()
     
-    return _anomaly_detector
+        return _anomaly_detector

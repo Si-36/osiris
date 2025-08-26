@@ -24,6 +24,7 @@ class FastRPConfig:
     
     def __post_init__(self):
         """Validate configuration."""
+        pass
         if self.embedding_dim <= 0:
             raise ValueError(f"Invalid embedding dimension: {self.embedding_dim}")
         if self.iterations <= 0:
@@ -49,6 +50,7 @@ class FastRP:
         
     def _initialize(self):
         """Initialize the random projection matrix."""
+        pass
         if self._initialized:
             return
             

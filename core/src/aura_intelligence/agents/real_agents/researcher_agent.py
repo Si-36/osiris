@@ -16,7 +16,7 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 import random
 
-from ...core.types import ConfidenceScore
+from aura_intelligence.core.types import ConfidenceScore
 
 
 @dataclass
@@ -67,19 +67,21 @@ class RealResearcherAgent:
             'research_accuracy': 0.85
         }
     
-    async def start(self) -> None:
+        async def start(self) -> None:
         """Start the researcher agent"""
+        pass
         print(f"🔬 {self.agent_id} started")
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
         """Stop the researcher agent"""
+        pass
         print(f"🛑 {self.agent_id} stopped")
     
-    async def research_evidence(
+        async def research_evidence(
         self,
         evidence_log: List[Dict[str, Any]],
         context: Dict[str, Any] = None
-    ) -> ResearchResult:
+        ) -> ResearchResult:
         """
         Conduct research analysis on evidence
         
@@ -132,7 +134,7 @@ class RealResearcherAgent:
         self,
         evidence_log: List[Dict[str, Any]],
         context: Dict[str, Any]
-    ) -> str:
+        ) -> str:
         """Select appropriate research method based on evidence"""
         evidence_count = len(evidence_log)
         task_type = context.get('task_type', 'general')
@@ -149,12 +151,12 @@ class RealResearcherAgent:
         else:
             return "exploratory_analysis"
     
-    async def _conduct_research(
+        async def _conduct_research(
         self,
         evidence_log: List[Dict[str, Any]],
         method: str,
         context: Dict[str, Any]
-    ) -> List[str]:
+        ) -> List[str]:
         """Conduct research using specified method"""
         # Simulate research processing time
         await asyncio.sleep(0.1 + len(evidence_log) * 0.02)
@@ -347,7 +349,7 @@ class RealResearcherAgent:
         self,
         insights: List[str],
         context: Dict[str, Any]
-    ) -> List[str]:
+        ) -> List[str]:
         """Generate research-based recommendations"""
         recommendations = []
         
@@ -379,7 +381,7 @@ class RealResearcherAgent:
         self,
         evidence_log: List[Dict[str, Any]],
         insights: List[str]
-    ) -> List[str]:
+        ) -> List[str]:
         """Identify gaps in knowledge that need further research"""
         gaps = []
         
@@ -412,7 +414,7 @@ class RealResearcherAgent:
         insights: List[str],
         evidence_quality: float,
         research_method: str
-    ) -> ConfidenceScore:
+        ) -> ConfidenceScore:
         """Calculate confidence in research results"""
         # Base confidence from evidence quality
         base_confidence = evidence_quality
@@ -440,7 +442,7 @@ class RealResearcherAgent:
         confidence: float,
         insights_count: int,
         gaps_count: int
-    ) -> None:
+        ) -> None:
         """Update agent performance metrics"""
         self.metrics['research_tasks_completed'] += 1
         self.metrics['insights_generated'] += insights_count
@@ -455,6 +457,7 @@ class RealResearcherAgent:
     
     def get_agent_status(self) -> Dict[str, Any]:
         """Get current agent status and metrics"""
+        pass
         return {
             'agent_id': self.agent_id,
             'agent_type': 'researcher',

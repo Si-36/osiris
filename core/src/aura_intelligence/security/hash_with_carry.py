@@ -64,11 +64,13 @@ class CarryRegister:
     
     def reset(self):
         """Reset carry register"""
+        pass
         self.value = 0
         self.overflow_count = 0
     
     def serialize(self) -> bytes:
         """Serialize carry state"""
+        pass
         return struct.pack('<QQ', self.value, self.overflow_count)
     
     @classmethod
@@ -91,12 +93,13 @@ class SecureEnclaveInterface:
         if self.available:
             logger.info("Secure enclave available for HwC seeds")
         elif self.fallback:
-            logger.warning("Secure enclave not available, using software fallback")
+        logger.warning("Secure enclave not available, using software fallback")
         else:
-            raise RuntimeError("Secure enclave required but not available")
+        raise RuntimeError("Secure enclave required but not available")
     
     def _check_enclave_availability(self) -> bool:
         """Check if secure enclave is available"""
+        pass
         # Check for SGX
         try:
             with open('/proc/cpuinfo', 'r') as f:
@@ -104,14 +107,14 @@ class SecureEnclaveInterface:
                 if 'sgx' in cpuinfo.lower():
                     return True
         except:
-            pass
+        pass
             
         # Check for SEV
         try:
             if os.path.exists('/dev/sev'):
                 return True
         except:
-            pass
+        pass
             
         return False
     
@@ -119,14 +122,14 @@ class SecureEnclaveInterface:
         """Seal data in secure enclave"""
         if self.available:
             # In real implementation, use SGX/SEV sealing
-            # For now, simulate with encryption
-            key = os.urandom(32)
-            return self._encrypt_fallback(data, key)
+        # For now, simulate with encryption
+        key = os.urandom(32)
+        return self._encrypt_fallback(data, key)
         elif self.fallback:
-            # Software fallback
-            return self._encrypt_fallback(data, self._get_machine_key())
+        # Software fallback
+        return self._encrypt_fallback(data, self._get_machine_key())
         else:
-            raise RuntimeError("Enclave sealing failed")
+        raise RuntimeError("Enclave sealing failed")
     
     def unseal_data(self, sealed_data: bytes) -> bytes:
         """Unseal data from secure enclave"""
@@ -141,22 +144,24 @@ class SecureEnclaveInterface:
     
     def _get_machine_key(self) -> bytes:
         """Get machine-specific key for fallback"""
+        pass
         # Derive from machine ID and other factors
         machine_id = self._get_machine_id()
         
         # Use HKDF to derive key
         hkdf = HKDF(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=b'aura-hwc-v1',
-            info=machine_id.encode(),
-            backend=default_backend()
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=b'aura-hwc-v1',
+        info=machine_id.encode(),
+        backend=default_backend()
         )
         
         return hkdf.derive(machine_id.encode())
     
     def _get_machine_id(self) -> str:
         """Get unique machine identifier"""
+        pass
         # Try various sources
         sources = []
         
@@ -165,7 +170,7 @@ class SecureEnclaveInterface:
             with open('/etc/machine-id', 'r') as f:
                 sources.append(f.read().strip())
         except:
-            pass
+        pass
             
         # CPU ID
         try:
@@ -175,14 +180,14 @@ class SecureEnclaveInterface:
                         sources.append(line.split(':')[1].strip())
                         break
         except:
-            pass
+        pass
             
         # MAC address
         try:
             import uuid
             sources.append(str(uuid.getnode()))
         except:
-            pass
+        pass
             
         # Combine sources
         return hashlib.sha256('|'.join(sources).encode()).hexdigest()
@@ -236,12 +241,12 @@ class HashWithCarry:
         
         # Statistics
         self.stats = {
-            "seeds_generated": 0,
-            "cache_hits": 0,
-            "cache_misses": 0,
-            "avg_lookup_ns": 0.0,
-            "collisions_detected": 0,
-            "enclave_operations": 0
+        "seeds_generated": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "avg_lookup_ns": 0.0,
+        "collisions_detected": 0,
+        "enclave_operations": 0
         }
         
         # Initialize persistence
@@ -250,7 +255,8 @@ class HashWithCarry:
         logger.info("HashWithCarry initialized with ≤1µs lookup target")
     
     def _get_hash_function(self):
-        """Get configured hash function"""
+            """Get configured hash function"""
+        pass
         hash_map = {
             "sha256": hashlib.sha256,
             "sha3_256": hashlib.sha3_256,
@@ -266,24 +272,25 @@ class HashWithCarry:
     
     def _init_persistence(self):
         """Initialize persistent storage"""
+        pass
         if self.config.persist_path:
             path = Path(self.config.persist_path)
-            path.parent.mkdir(parents=True, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
             
-            # Load existing state if available
-            state_file = path / "hwc_state.pkl"
-            if state_file.exists():
-                try:
-                    self._load_state(state_file)
-                except Exception as e:
-                    logger.error(f"Failed to load HwC state: {e}")
+        # Load existing state if available
+        state_file = path / "hwc_state.pkl"
+        if state_file.exists():
+            try:
+                self._load_state(state_file)
+        except Exception as e:
+        logger.error(f"Failed to load HwC state: {e}")
             
-            # Initialize memory-mapped cache
-            cache_file = path / "hwc_cache.bin"
-            self._init_mmap_cache(cache_file)
+        # Initialize memory-mapped cache
+        cache_file = path / "hwc_cache.bin"
+        self._init_mmap_cache(cache_file)
     
     def _init_mmap_cache(self, cache_file: Path):
-        """Initialize memory-mapped cache for fast lookups"""
+            """Initialize memory-mapped cache for fast lookups"""
         try:
             # Create or open cache file
             if not cache_file.exists():
@@ -310,7 +317,7 @@ class HashWithCarry:
         domain: str, 
         event_id: str,
         metadata: Optional[Dict[str, Any]] = None
-    ) -> bytes:
+        ) -> bytes:
         """
         Generate deterministic seed with carry propagation
         
@@ -362,7 +369,7 @@ class HashWithCarry:
         domain: str, 
         event_id: str,
         metadata: Optional[Dict[str, Any]] = None
-    ) -> bytes:
+        ) -> bytes:
         """Generate new seed with carry propagation"""
         # Get or create carry register for domain
         if domain not in self.carry_registers:
@@ -416,7 +423,7 @@ class HashWithCarry:
         seed: bytes, 
         domain: str, 
         event_id: str
-    ) -> bytes:
+        ) -> bytes:
         """Check for seed collisions and resolve"""
         seed_hex = seed.hex()
         
@@ -450,31 +457,31 @@ class HashWithCarry:
         
         # Evict if needed
         while self.cache_size > self.max_cache_size:
-            # Simple FIFO eviction
-            oldest_key = next(iter(self.seed_cache))
-            oldest_seed = self.seed_cache.pop(oldest_key)
-            self.cache_size -= len(oldest_seed) + len(oldest_key)
+        # Simple FIFO eviction
+        oldest_key = next(iter(self.seed_cache))
+        oldest_seed = self.seed_cache.pop(oldest_key)
+        self.cache_size -= len(oldest_seed) + len(oldest_key)
             
-            # Remove from mmap index
-            if oldest_key in self.mmap_index:
-                del self.mmap_index[oldest_key]
+        # Remove from mmap index
+        if oldest_key in self.mmap_index:
+            del self.mmap_index[oldest_key]
         
         # Write to mmap cache
         if self.mmap_cache:
             try:
                 # Find free space (simple linear allocation)
-                offset = len(self.mmap_index) * 64  # Assume 64 bytes per seed
+        offset = len(self.mmap_index) * 64  # Assume 64 bytes per seed
                 
-                if offset + len(seed) < self.max_cache_size:
-                    # Write seed
-                    self.mmap_cache[offset:offset + len(seed)] = seed
-                    self.mmap_index[key] = (offset, len(seed))
+        if offset + len(seed) < self.max_cache_size:
+            # Write seed
+        self.mmap_cache[offset:offset + len(seed)] = seed
+        self.mmap_index[key] = (offset, len(seed))
                     
-            except Exception as e:
-                logger.error(f"Failed to write to mmap cache: {e}")
+        except Exception as e:
+        logger.error(f"Failed to write to mmap cache: {e}")
     
     def _update_lookup_stats(self, lookup_ns: int):
-        """Update lookup time statistics"""
+            """Update lookup time statistics"""
         # Exponential moving average
         alpha = 0.1
         self.stats["avg_lookup_ns"] = (
@@ -486,18 +493,18 @@ class HashWithCarry:
         """Store sealed seed for recovery"""
         if self.config.persist_path:
             path = Path(self.config.persist_path) / "sealed"
-            path.mkdir(exist_ok=True)
+        path.mkdir(exist_ok=True)
             
-            filename = hashlib.sha256(f"{domain}:{event_id}".encode()).hexdigest()[:16]
-            with open(path / f"{filename}.seal", 'wb') as f:
-                f.write(sealed_seed)
+        filename = hashlib.sha256(f"{domain}:{event_id}".encode()).hexdigest()[:16]
+        with open(path / f"{filename}.seal", 'wb') as f:
+            f.write(sealed_seed)
     
-    def verify_seed(
+        def verify_seed(
         self, 
         domain: str, 
         event_id: str, 
         seed: bytes
-    ) -> bool:
+        ) -> bool:
         """Verify that a seed is valid for given domain/event"""
         expected_seed = self.generate_seed(domain, event_id)
         return hmac.compare_digest(expected_seed, seed)
@@ -506,10 +513,11 @@ class HashWithCarry:
         """Reset carry register for a domain"""
         if domain in self.carry_registers:
             self.carry_registers[domain].reset()
-            logger.info(f"Reset carry register for domain: {domain}")
+        logger.info(f"Reset carry register for domain: {domain}")
     
     def save_state(self):
-        """Save current state to disk"""
+            """Save current state to disk"""
+        pass
         if self.config.persist_path:
             path = Path(self.config.persist_path)
             state_file = path / "hwc_state.pkl"
@@ -535,7 +543,7 @@ class HashWithCarry:
             
         # Restore carry registers
         for domain, serialized in state.get('carry_registers', {}).items():
-            self.carry_registers[domain] = CarryRegister.deserialize(serialized)
+        self.carry_registers[domain] = CarryRegister.deserialize(serialized)
             
         # Restore stats
         self.stats.update(state.get('stats', {}))
@@ -547,6 +555,7 @@ class HashWithCarry:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get HwC statistics"""
+        pass
         stats = self.stats.copy()
         
         # Add current state
@@ -566,23 +575,24 @@ class HashWithCarry:
     
     def __del__(self):
         """Cleanup on deletion"""
+        pass
         # Save state
         try:
             self.save_state()
         except:
-            pass
+        pass
             
         # Close mmap
         if self.mmap_cache:
             self.mmap_cache.close()
 
 
-# Factory function
-def create_hash_with_carry(**kwargs) -> HashWithCarry:
-    """Create HashWithCarry with feature flag support"""
-    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+    # Factory function
+    def create_hash_with_carry(**kwargs) -> HashWithCarry:
+        """Create HashWithCarry with feature flag support"""
+        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-    if not is_feature_enabled(FeatureFlag.HASH_CARRY_SEEDS_ENABLED):
+        if not is_feature_enabled(FeatureFlag.HASH_CARRY_SEEDS_ENABLED):
         raise RuntimeError("Hash-with-Carry seeds are not enabled. Enable with feature flag.")
     
-    return HashWithCarry(**kwargs)
+        return HashWithCarry(**kwargs)

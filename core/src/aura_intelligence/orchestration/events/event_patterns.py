@@ -246,6 +246,7 @@ class PatternMatcher:
     
     def _cleanup_buffer(self) -> None:
         """Clean up old events from buffer"""
+        pass
         if len(self.event_buffer) > self.buffer_size:
             # Keep only recent events
             self.event_buffer = self.event_buffer[-self.buffer_size//2:]
@@ -259,6 +260,7 @@ class PatternMatcher:
     
     def get_pattern_stats(self) -> Dict[str, Any]:
         """Get pattern matching statistics"""
+        pass
         total_matches = len(self.match_history)
         pattern_counts = {}
         

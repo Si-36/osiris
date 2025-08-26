@@ -19,7 +19,7 @@ class BioEnhancedAURA:
         self.enhancement_active = True
         self.fallback_mode = False
         
-    async def process_enhanced(self, request: Any, component_id: Optional[str] = None) -> Dict[str, Any]:
+        async def process_enhanced(self, request: Any, component_id: Optional[str] = None) -> Dict[str, Any]:
         """Process request through complete bio-enhanced pipeline"""
         if not self.enhancement_active:
             return await self._fallback_process(request)
@@ -57,14 +57,14 @@ class BioEnhancedAURA:
             self.fallback_mode = True
             return await self._fallback_process(request, error=str(e))
     
-    async def _verify_with_swarm(self, request: Any):
+        async def _verify_with_swarm(self, request: Any):
         """Background swarm verification"""
         try:
             await self.swarm_intelligence.detect_errors(request)
         except Exception:
             pass  # Silent failure for background task
     
-    async def _fallback_process(self, request: Any, error: str = None) -> Dict[str, Any]:
+        async def _fallback_process(self, request: Any, error: str = None) -> Dict[str, Any]:
         """Fallback to original system processing"""
         return {
             "result": {"processed": True, "fallback": True},
@@ -74,6 +74,7 @@ class BioEnhancedAURA:
     
     def get_system_status(self) -> Dict[str, Any]:
         """Get complete bio-enhanced system status"""
+        pass
         return {
             "bio_enhancements": {
                 "homeostatic": self.homeostatic.get_system_status(),

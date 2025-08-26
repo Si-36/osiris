@@ -137,6 +137,7 @@ class SecuritySettings(BaseSettings):
     @property
     def requires_auth_setup(self) -> bool:
         """Check if authentication requires setup."""
+        pass
         if not self.enable_auth:
             return False
         if self.auth_provider == "jwt" and not self.jwt_secret_key:

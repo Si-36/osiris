@@ -7,7 +7,7 @@ class RealTestRunner:
     def __init__(self):
         self.test_results = []
     
-    async def run_component_test(self, component_id: str, test_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def run_component_test(self, component_id: str, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Run real component test"""
         try:
             from ..components.real_registry import get_real_registry
@@ -33,5 +33,5 @@ class RealTestRunner:
         """Run pytest suite"""
         return pytest.main([test_path, "-v"])
 
-def get_real_test_runner():
-    return RealTestRunner()
+    def get_real_test_runner():
+        return RealTestRunner()

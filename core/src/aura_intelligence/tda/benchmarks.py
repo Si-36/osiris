@@ -54,6 +54,7 @@ class TDABenchmarkSuite:
     
     def _generate_benchmark_datasets(self) -> Dict[str, Dict[str, Any]]:
         """Generate standard benchmark datasets."""
+        pass
         
         datasets = {}
         
@@ -176,12 +177,12 @@ class TDABenchmarkSuite:
         
         return np.column_stack([x, y, z]).tolist()
     
-    async def run_comprehensive_benchmark(
+        async def run_comprehensive_benchmark(
         self,
         algorithms: Optional[List[TDAAlgorithm]] = None,
         datasets: Optional[List[str]] = None,
         n_runs: int = 3
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Run comprehensive benchmark across algorithms and datasets.
         
@@ -236,12 +237,12 @@ class TDABenchmarkSuite:
         self.logger.info("✅ Comprehensive benchmark completed")
         return report
     
-    async def _benchmark_single_run(
+        async def _benchmark_single_run(
         self,
         algorithm: TDAAlgorithm,
         dataset: Dict[str, Any],
         run_number: int
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Run single benchmark iteration."""
         
         # Create TDA request
@@ -285,6 +286,7 @@ class TDABenchmarkSuite:
     
     def _get_memory_usage(self) -> float:
         """Get current memory usage in MB."""
+        pass
         try:
             import psutil
             process = psutil.Process()
@@ -321,7 +323,7 @@ class TDABenchmarkSuite:
         dataset_name: str,
         dataset: Dict[str, Any],
         run_results: List[Dict[str, Any]]
-    ) -> TDABenchmarkResult:
+        ) -> TDABenchmarkResult:
         """Aggregate results from multiple runs."""
         
         # Extract metrics
