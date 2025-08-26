@@ -5,13 +5,14 @@ Ultimate knowledge graph system with causal reasoning and consciousness integrat
 All your knowledge graph research with enterprise-grade implementation.
 """
 
-# Import our advanced implementation
-from ..graph.advanced_knowledge_graph_2025 import (
-    AdvancedKnowledgeGraph,
+# Import our AURA implementation
+from ..graph.aura_knowledge_graph_2025 import (
+    AURAKnowledgeGraph,
     NodeType,
     EdgeType,
-    KnowledgeNode,
-    KnowledgeEdge
+    FailureSignature,
+    CausalChain,
+    TopologicalAnomaly
 )
 
 
