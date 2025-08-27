@@ -358,10 +358,9 @@ class ProductionActorSystem:
 # Global instance
 _actor_system = None
 
-    def get_actor_system() -> ProductionActorSystem:
-        """Get global actor system instance"""
-        global _actor_system
-        if _actor_system is None:
-            pass
+def get_actor_system() -> ProductionActorSystem:
+    """Get global actor system instance"""
+    global _actor_system
+    if _actor_system is None:
         _actor_system = ProductionActorSystem()
-        return _actor_system
+    return _actor_system
