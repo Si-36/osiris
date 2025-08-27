@@ -551,22 +551,20 @@ async def simulate_multi_agent_scenario():
         gpu_manager.circuit_breaker.state = gpu_manager.circuit_breaker.state.__class__.OPEN
     
         try:
-            pass
-        await gpu_manager.allocate_gpu(
-            GPUAllocationRequest(
-                agent_id="test_agent_network",
-                agent_type="test",
-                gpu_count=1,
-                duration=timedelta(minutes=10),
-                priority=PriorityLevel.NORMAL,
-                workload_type="inference",
-                estimated_cost=5.0,
-                metadata={}
+            await gpu_manager.allocate_gpu(
+                GPUAllocationRequest(
+                    agent_id="test_agent_network",
+                    agent_type="test",
+                    gpu_count=1,
+                    duration=timedelta(minutes=10),
+                    priority=PriorityLevel.NORMAL,
+                    workload_type="inference",
+                    estimated_cost=5.0,
+                    metadata={}
+                )
             )
-        )
         except Exception as e:
-            pass
-        print(f"   Expected failure: {e}")
+            print(f"   Expected failure: {e}")
     
     # Wait for circuit breaker recovery
         await asyncio.sleep(2)
