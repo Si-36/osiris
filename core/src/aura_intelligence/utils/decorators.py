@@ -104,20 +104,20 @@ class CircuitBreaker:
     def __call__(self, func: F) -> F:
         """Decorator for circuit breaker."""
         @functools.wraps(func)
-    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-        if not self.can_attempt_call():
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+            if not self.can_attempt_call():
             raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
             
-        try:
-            result = func(*args, **kwargs)
-        self.call_succeeded()
-        return result
-        except self.config.expected_exception as e:
-        self.call_failed()
-        raise
+            try:
+                result = func(*args, **kwargs)
+                self.call_succeeded()
+                return result
+            except self.config.expected_exception as e:
+            self.call_failed()
+            raise
         
         @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
         if not self.can_attempt_call():
             raise Exception(f"Circuit breaker is OPEN for {func.__name__}")
             
@@ -189,10 +189,10 @@ def retry(
             def decorator(func: F) -> F:
             @functools.wraps(func)
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-        current_delay = delay
-            last_exception = None
+                current_delay = delay
+                last_exception = None
             
-            for attempt in range(max_attempts):
+                for attempt in range(max_attempts):
                 try:
                     return func(*args, **kwargs)
                 except exceptions as e:
@@ -209,10 +209,10 @@ def retry(
                             f"All {max_attempts} attempts failed for {func.__name__}"
                         )
             
-            raise last_exception  # type: ignore
+                raise last_exception  # type: ignore
         
         @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             current_delay = delay
             last_exception = None
             
@@ -260,26 +260,26 @@ def rate_limit(calls: int = 10, period: float = 60.0) -> Callable[[F], F]:
     def decorator(func: F) -> F:
     @functools.wraps(func)
     def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-    now = time.time()
-    func_name = func.__name__
+        now = time.time()
+        func_name = func.__name__
             
-    # Remove old calls outside the period
-    call_times[func_name] = [
-    t for t in call_times[func_name]
-    if now - t < period
+        # Remove old calls outside the period
+        call_times[func_name] = [
+        t for t in call_times[func_name]
+        if now - t < period
     ]
             
-    if len(call_times[func_name]) >= calls:
+        if len(call_times[func_name]) >= calls:
         raise Exception(
-    f"Rate limit exceeded for {func_name}: "
-    f"{calls} calls per {period} seconds"
+        f"Rate limit exceeded for {func_name}: "
+        f"{calls} calls per {period} seconds"
     )
             
-    call_times[func_name].append(now)
-    return func(*args, **kwargs)
+        call_times[func_name].append(now)
+        return func(*args, **kwargs)
         
     @functools.wraps(func)
-    async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
     now = time.time()
     func_name = func.__name__
             
@@ -353,20 +353,20 @@ def log_performance(threshold_ms: float = 1000.0) -> Callable[[F], F]:
     def decorator(func: F) -> F:
     @functools.wraps(func)
     def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-    start_time = time.time()
-    try:
+        start_time = time.time()
+        try:
         result = func(*args, **kwargs)
-    return result
-    finally:
-    duration_ms = (time.time() - start_time) * 1000
-    log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
-    logger.log(
-    log_level,
-    f"{func.__name__} took {duration_ms:.2f}ms"
+        return result
+        finally:
+        duration_ms = (time.time() - start_time) * 1000
+        log_level = logging.WARNING if duration_ms > threshold_ms else logging.DEBUG
+        logger.log(
+        log_level,
+        f"{func.__name__} took {duration_ms:.2f}ms"
     )
         
     @functools.wraps(func)
-    async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
     start_time = time.time()
     try:
         result = await func(*args, **kwargs)
@@ -407,9 +407,9 @@ def handle_errors(
             def decorator(func: F) -> F:
             @functools.wraps(func)
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-        try:
+                try:
                 return func(*args, **kwargs)
-            except Exception as e:
+                except Exception as e:
                 if log_errors:
                     logger.error(
                         f"Error in {func.__name__}: {type(e).__name__}: {str(e)}",
@@ -420,7 +420,7 @@ def handle_errors(
                 return default_return
         
         @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 return await func(*args, **kwargs)
             except Exception as e:

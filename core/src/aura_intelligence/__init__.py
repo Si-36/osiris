@@ -14,8 +14,12 @@ from .core.unified_interfaces import (
     OrchestrationComponent, ObservabilityComponent
 )
 
-# Infrastructure components
-from .infrastructure.gemini_client import GeminiClient, GeminiClientManager
+# Infrastructure components - conditional import to avoid dependency issues
+try:
+    from .infrastructure.gemini_client import GeminiClient, GeminiClientManager
+except ImportError:
+    GeminiClient = None
+    GeminiClientManager = None
 
 # Main orchestrator
 # Lazy import to avoid circular references
