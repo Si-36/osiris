@@ -1,63 +1,179 @@
 """
-Neo4j Adapter for AURA Intelligence.
+Neo4j Adapter for AURA Intelligence - 2025 Best Practices
 
-Provides async interface to Neo4j knowledge graph with:
-    - Connection pooling
-- Automatic retry logic
-- Query optimization
-- Observability
+Features:
+- Async/await with proper connection pooling
+- Circuit breaker pattern for resilience
+- Exponential backoff with jitter
+- Comprehensive observability
+- Type safety with dataclasses
+- Context managers for resource cleanup
 """
 
-from typing import Dict, Any, List, Optional, Union
-from dataclasses import dataclass
+from typing import Dict, Any, List, Optional, Union, AsyncIterator
+from dataclasses import dataclass, field
 from datetime import datetime
 import asyncio
 from contextlib import asynccontextmanager
+import random
+from enum import Enum
 
-from neo4j import AsyncGraphDatabase, AsyncDriver, AsyncSession
-from neo4j.exceptions import Neo4jError, ServiceUnavailable, SessionExpired
+try:
+    from neo4j import AsyncGraphDatabase, AsyncDriver, AsyncSession
+    from neo4j.exceptions import Neo4jError, ServiceUnavailable, SessionExpired
+    NEO4J_AVAILABLE = True
+except ImportError:
+    NEO4J_AVAILABLE = False
+    # Mock classes for development without Neo4j
+    class AsyncDriver:
+        pass
+    class AsyncSession:
+        pass
+    class Neo4jError(Exception):
+        pass
+    class ServiceUnavailable(Exception):
+        pass
+    class SessionExpired(Exception):
+        pass
+
 import structlog
 from opentelemetry import trace
+from opentelemetry.trace import Status, StatusCode
 
-from ..resilience import resilient, ResilienceLevel
-from aura_intelligence.observability import create_tracer
+logger = structlog.get_logger(__name__)
 
-logger = structlog.get_logger()
-tracer = create_tracer("neo4j_adapter")
+# Create tracer with fallback
+try:
+    from ..observability import create_tracer
+    tracer = create_tracer("neo4j_adapter")
+except ImportError:
+    tracer = trace.get_tracer(__name__)
+
+
+class RetryStrategy(Enum):
+    """Retry strategies for resilience"""
+    EXPONENTIAL = "exponential"
+    LINEAR = "linear"
+    FIXED = "fixed"
+
 
 @dataclass
 class Neo4jConfig:
-    """Configuration for Neo4j connection."""
+    """Configuration for Neo4j connection with 2025 best practices"""
+    # Connection settings
     uri: str = "bolt://localhost:7687"
     username: str = "neo4j"
-    password: str = "dev_password"  # Match Docker Compose password
-    database: str = "neo4j"  # Default database in Neo4j 5.x
+    password: str = "password"
+    database: str = "neo4j"
     
     # Connection pool settings
     max_connection_pool_size: int = 50
-    connection_acquisition_timeout: float = 30.0
+    connection_acquisition_timeout: float = 60.0
     connection_timeout: float = 30.0
+    keep_alive: bool = True
     
     # Retry settings
-    max_retry_time: float = 30.0
+    max_retries: int = 3
+    retry_strategy: RetryStrategy = RetryStrategy.EXPONENTIAL
     initial_retry_delay: float = 1.0
-    retry_delay_multiplier: float = 2.0
-    retry_delay_jitter_factor: float = 0.2
+    max_retry_delay: float = 30.0
+    retry_jitter: float = 0.2
+    
+    # Circuit breaker settings
+    circuit_breaker_threshold: int = 5
+    circuit_breaker_timeout: float = 60.0
     
     # Query settings
     query_timeout: float = 30.0
     fetch_size: int = 1000
+    
+    # Observability
+    enable_metrics: bool = True
+    enable_tracing: bool = True
+
+
+@dataclass
+class QueryResult:
+    """Result container for Neo4j queries"""
+    records: List[Dict[str, Any]]
+    summary: Dict[str, Any]
+    query_time_ms: float
+    record_count: int
+
+
+class CircuitBreakerState(Enum):
+    """Circuit breaker states"""
+    CLOSED = "closed"  # Normal operation
+    OPEN = "open"      # Failing, reject requests
+    HALF_OPEN = "half_open"  # Testing if service recovered
+
+
+class CircuitBreaker:
+    """Circuit breaker implementation"""
+    
+    def __init__(self, threshold: int, timeout: float):
+        self.threshold = threshold
+        self.timeout = timeout
+        self.failure_count = 0
+        self.last_failure_time: Optional[float] = None
+        self.state = CircuitBreakerState.CLOSED
+    
+    def record_success(self):
+        """Record successful operation"""
+        self.failure_count = 0
+        self.state = CircuitBreakerState.CLOSED
+    
+    def record_failure(self):
+        """Record failed operation"""
+        self.failure_count += 1
+        self.last_failure_time = asyncio.get_event_loop().time()
+        
+        if self.failure_count >= self.threshold:
+            self.state = CircuitBreakerState.OPEN
+    
+    def can_execute(self) -> bool:
+        """Check if operation can be executed"""
+        if self.state == CircuitBreakerState.CLOSED:
+            return True
+        
+        if self.state == CircuitBreakerState.OPEN:
+            # Check if timeout has passed
+            if self.last_failure_time:
+                elapsed = asyncio.get_event_loop().time() - self.last_failure_time
+                if elapsed > self.timeout:
+                    self.state = CircuitBreakerState.HALF_OPEN
+                    return True
+            return False
+        
+        # HALF_OPEN - allow one request to test
+        return True
+
 
 class Neo4jAdapter:
-    """Async adapter for Neo4j operations."""
-
-    def __init__(self, config: Neo4jConfig):
-    def __init__(self, config: Neo4jConfig):
+    """
+    Modern Neo4j adapter with 2025 best practices
+    
+    Features:
+    - Async/await throughout
+    - Connection pooling
+    - Circuit breaker pattern
+    - Exponential backoff with jitter
+    - Comprehensive error handling
+    - OpenTelemetry integration
+    - Type safety
+    """
+    
+    def __init__(self, config: Optional[Neo4jConfig] = None):
+        self.config = config or Neo4jConfig()
         self._driver: Optional[AsyncDriver] = None
         self._initialized = False
-
-    async def initialize(self):
-            """Initialize the Neo4j driver."""
+        self._circuit_breaker = CircuitBreaker(
+            self.config.circuit_breaker_threshold,
+            self.config.circuit_breaker_timeout
+        )
+        
+    async def initialize(self) -> None:
+        """Initialize the Neo4j driver with connection verification"""
         if self._initialized:
             return
             
@@ -66,263 +182,353 @@ class Neo4jAdapter:
             span.set_attribute("neo4j.database", self.config.database)
             
             try:
+                if not NEO4J_AVAILABLE:
+                    logger.warning("Neo4j driver not available, using mock")
+                    self._initialized = True
+                    return
+                
                 self._driver = AsyncGraphDatabase.driver(
                     self.config.uri,
                     auth=(self.config.username, self.config.password),
                     max_connection_pool_size=self.config.max_connection_pool_size,
                     connection_acquisition_timeout=self.config.connection_acquisition_timeout,
-                    connection_timeout=self.config.connection_timeout
-                    # Note: retry parameters handled by resilience decorator instead
+                    connection_timeout=self.config.connection_timeout,
+                    keep_alive=self.config.keep_alive
                 )
                 
                 # Verify connectivity
                 await self._driver.verify_connectivity()
                 self._initialized = True
-                logger.info("Neo4j adapter initialized", uri=self.config.uri)
+                
+                logger.info(
+                    "Neo4j adapter initialized",
+                    uri=self.config.uri,
+                    database=self.config.database
+                )
+                span.set_status(Status(StatusCode.OK))
                 
             except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
                 logger.error("Failed to initialize Neo4j", error=str(e))
                 raise
-
-    async def close(self):
-            """Close the Neo4j driver."""
+    
+    async def close(self) -> None:
+        """Close the Neo4j driver and cleanup resources"""
         if self._driver:
             await self._driver.close()
+            self._driver = None
             self._initialized = False
             logger.info("Neo4j adapter closed")
-            
+    
     @asynccontextmanager
-    async def session(self, database: Optional[str] = None):
-        """Create a Neo4j session."""
+    async def session(self, database: Optional[str] = None) -> AsyncIterator[AsyncSession]:
+        """
+        Create a Neo4j session with automatic cleanup
+        
+        Args:
+            database: Optional database name (defaults to config)
+            
+        Yields:
+            AsyncSession: Neo4j session for queries
+        """
         if not self._initialized:
             await self.initialize()
             
-        async with self._driver.session(
+        if not self._driver:
+            raise RuntimeError("Neo4j driver not initialized")
+            
+        session = self._driver.session(
             database=database or self.config.database,
             fetch_size=self.config.fetch_size
-        ) as session:
+        )
+        
+        try:
             yield session
-            
-    @resilient(criticality=ResilienceLevel.CRITICAL)
+        finally:
+            await session.close()
+    
     async def query(
         self,
         cypher: str,
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
-        ) -> List[Dict[str, Any]]:
-            """Execute a read query."""
-        with tracer.start_as_current_span("neo4j_query") as span:
-            span.set_attribute("neo4j.query", cypher[:100])  # First 100 chars
-            span.set_attribute("neo4j.database", database or self.config.database)
+    ) -> QueryResult:
+        """
+        Execute a read query with retry and circuit breaker
+        
+        Args:
+            cypher: Cypher query string
+            params: Query parameters
+            database: Optional database name
             
-            async with self.session(database) as session:
-                try:
-                    result = await session.run(
-                        cypher,
-                        params or {},
-                        timeout=self.config.query_timeout
-                    )
-                    records = await result.data()
-                    
-                    span.set_attribute("neo4j.record_count", len(records))
-                    return records
-                    
-                except Neo4jError as e:
-                    logger.error("Neo4j query failed", 
-                               query=cypher[:100], 
-                               error=str(e))
-                    raise
-                    
-    @resilient(criticality=ResilienceLevel.CRITICAL)
-    async def write(
+        Returns:
+            QueryResult: Query results with metadata
+        """
+        if not self._circuit_breaker.can_execute():
+            raise ServiceUnavailable("Circuit breaker is open")
+            
+        with tracer.start_as_current_span("neo4j_query") as span:
+            span.set_attribute("neo4j.query", cypher[:100])
+            
+            try:
+                result = await self._execute_with_retry(
+                    self._run_read_query,
+                    cypher,
+                    params or {},
+                    database
+                )
+                
+                self._circuit_breaker.record_success()
+                span.set_status(Status(StatusCode.OK))
+                return result
+                
+            except Exception as e:
+                self._circuit_breaker.record_failure()
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                logger.error(
+                    "Query failed",
+                    query=cypher[:100],
+                    error=str(e)
+                )
+                raise
+    
+    async def execute(
         self,
         cypher: str,
         params: Optional[Dict[str, Any]] = None,
         database: Optional[str] = None
-        ) -> Dict[str, Any]:
-            """Execute a write query."""
-        with tracer.start_as_current_span("neo4j_write") as span:
+    ) -> QueryResult:
+        """
+        Execute a write query with retry and circuit breaker
+        
+        Args:
+            cypher: Cypher query string
+            params: Query parameters
+            database: Optional database name
+            
+        Returns:
+            QueryResult: Query results with metadata
+        """
+        if not self._circuit_breaker.can_execute():
+            raise ServiceUnavailable("Circuit breaker is open")
+            
+        with tracer.start_as_current_span("neo4j_execute") as span:
             span.set_attribute("neo4j.query", cypher[:100])
-            span.set_attribute("neo4j.database", database or self.config.database)
             
-            async with self.session(database) as session:
-                try:
-                    result = await session.run(
-                        cypher,
-                        params or {},
-                        timeout=self.config.query_timeout
+            try:
+                result = await self._execute_with_retry(
+                    self._run_write_query,
+                    cypher,
+                    params or {},
+                    database
+                )
+                
+                self._circuit_breaker.record_success()
+                span.set_status(Status(StatusCode.OK))
+                return result
+                
+            except Exception as e:
+                self._circuit_breaker.record_failure()
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                logger.error(
+                    "Execute failed",
+                    query=cypher[:100],
+                    error=str(e)
+                )
+                raise
+    
+    async def _execute_with_retry(self, func, *args, **kwargs) -> Any:
+        """Execute function with retry logic"""
+        last_error = None
+        
+        for attempt in range(self.config.max_retries):
+            try:
+                return await func(*args, **kwargs)
+                
+            except (ServiceUnavailable, SessionExpired) as e:
+                last_error = e
+                
+                if attempt < self.config.max_retries - 1:
+                    delay = self._calculate_retry_delay(attempt)
+                    logger.warning(
+                        "Retrying after error",
+                        attempt=attempt + 1,
+                        delay=delay,
+                        error=str(e)
                     )
-                    summary = await result.consume()
+                    await asyncio.sleep(delay)
                     
-                    stats = {
-                        "nodes_created": summary.counters.nodes_created,
-                        "nodes_deleted": summary.counters.nodes_deleted,
-                        "relationships_created": summary.counters.relationships_created,
-                        "relationships_deleted": summary.counters.relationships_deleted,
-                        "properties_set": summary.counters.properties_set
-                    }
-                    
-                    span.set_attribute("neo4j.nodes_created", stats["nodes_created"])
-                    span.set_attribute("neo4j.relationships_created", stats["relationships_created"])
-                    
-                    return stats
-                    
-                except Neo4jError as e:
-                    logger.error("Neo4j write failed", 
-                               query=cypher[:100], 
-                               error=str(e))
-                    raise
-
-    async def transaction(
-        self,
-        queries: List[tuple[str, Dict[str, Any]]],
-        database: Optional[str] = None
-        ) -> List[Any]:
-            """Execute multiple queries in a transaction."""
-        with tracer.start_as_current_span("neo4j_transaction") as span:
-            span.set_attribute("neo4j.query_count", len(queries))
-            span.set_attribute("neo4j.database", database or self.config.database)
-            
-            async with self.session(database) as session:
-                async with session.begin_transaction() as tx:
-                    results = []
-                    try:
-                        for cypher, params in queries:
-                            result = await tx.run(cypher, params)
-                            data = await result.data()
-                            results.append(data)
-                            
-                        await tx.commit()
-                        return results
+                    # Reinitialize connection if needed
+                    if isinstance(e, SessionExpired):
+                        await self.initialize()
                         
-                    except Exception as e:
-                        await tx.rollback()
-                        logger.error("Neo4j transaction failed", error=str(e))
-                        raise
-                        
-    # Knowledge graph specific methods
-
-    async def find_similar_patterns(
-        self,
-        embedding: List[float],
-        limit: int = 10,
-        threshold: float = 0.5
-        ) -> List[Dict[str, Any]]:
-            """Find similar patterns using vector similarity."""
-        query = """
-        MATCH (p:Pattern)
-        WHERE gds.similarity.cosine(p.embedding, $embedding) > $threshold
-        RETURN p, gds.similarity.cosine(p.embedding, $embedding) as similarity
-        ORDER BY similarity DESC
-        LIMIT $limit
-        """
+            except Exception as e:
+                # Non-retryable error
+                raise
         
-        return await self.query(
-            query,
-            {
-                "embedding": embedding,
-                "threshold": threshold,
-                "limit": limit
-            }
-        )
-
-    async def get_entity_relationships(
-        self,
-        entity_id: str,
-        relationship_types: Optional[List[str]] = None,
-        depth: int = 1
-        ) -> Dict[str, List[str]]:
-            """Get relationships for an entity."""
-        if relationship_types:
-            rel_filter = f"[r:{' | '.join(relationship_types)}]"
-        else:
-            rel_filter = "[r]"
+        # All retries exhausted
+        raise last_error or Exception("Retry failed")
+    
+    def _calculate_retry_delay(self, attempt: int) -> float:
+        """Calculate retry delay with jitter"""
+        if self.config.retry_strategy == RetryStrategy.EXPONENTIAL:
+            base_delay = self.config.initial_retry_delay * (2 ** attempt)
+        elif self.config.retry_strategy == RetryStrategy.LINEAR:
+            base_delay = self.config.initial_retry_delay * (attempt + 1)
+        else:  # FIXED
+            base_delay = self.config.initial_retry_delay
             
-        query = f"""
-        MATCH (e:Entity {{id: $entity_id}})-{rel_filter}-(related)
-        RETURN type(r) as relationship, collect(distinct related.id) as related_ids
-        """
+        # Apply jitter
+        jitter = base_delay * self.config.retry_jitter * (2 * random.random() - 1)
+        delay = base_delay + jitter
         
-        results = await self.query(query, {"entity_id": entity_id})
+        # Cap at max delay
+        return min(delay, self.config.max_retry_delay)
+    
+    async def _run_read_query(
+        self,
+        cypher: str,
+        params: Dict[str, Any],
+        database: Optional[str]
+    ) -> QueryResult:
+        """Execute read query in a transaction"""
+        start_time = asyncio.get_event_loop().time()
         
-        relationships = {}
-        for record in results:
-            relationships[record["relationship"]] = record["related_ids"]
+        async with self.session(database) as session:
+            result = await session.execute_read(
+                self._execute_transaction,
+                cypher,
+                params
+            )
             
-        return relationships
-
-    async def add_decision_node(
-        self,
-        decision_id: str,
-        agent_id: str,
-        decision_type: str,
-        confidence: float,
-        context: Dict[str, Any],
-        embedding: Optional[List[float]] = None
-        ) -> str:
-            """Add a decision node to the graph."""
-        query = """
-        CREATE (d:Decision {
-            id: $decision_id,
-            agent_id: $agent_id,
-            type: $decision_type,
-            confidence: $confidence,
-            context: $context,
-            embedding: $embedding,
-            timestamp: datetime()
-        })
-        RETURN d.id as id
-        """
+        query_time_ms = (asyncio.get_event_loop().time() - start_time) * 1000
         
-        result = await self.query(
-            query,
-            {
-                "decision_id": decision_id,
-                "agent_id": agent_id,
-                "decision_type": decision_type,
-                "confidence": confidence,
-                "context": context,
-                "embedding": embedding
-            }
+        return QueryResult(
+            records=result['records'],
+            summary=result['summary'],
+            query_time_ms=query_time_ms,
+            record_count=len(result['records'])
         )
-        
-        return result[0]["id"] if result else decision_id
-
-    async def link_decision_to_context(
+    
+    async def _run_write_query(
         self,
-        decision_id: str,
-        context_ids: List[str],
-        relationship_type: str = "INFLUENCED_BY"
-        ):
-            """Link a decision to its context nodes."""
-        query = f"""
-        MATCH (d:Decision {{id: $decision_id}})
-        MATCH (c:Context) WHERE c.id IN $context_ids
-        CREATE (d)-[:{relationship_type}]->(c)
-        """
+        cypher: str,
+        params: Dict[str, Any],
+        database: Optional[str]
+    ) -> QueryResult:
+        """Execute write query in a transaction"""
+        start_time = asyncio.get_event_loop().time()
         
-        await self.write(
-            query,
-            {
-                "decision_id": decision_id,
-                "context_ids": context_ids
-            }
+        async with self.session(database) as session:
+            result = await session.execute_write(
+                self._execute_transaction,
+                cypher,
+                params
+            )
+            
+        query_time_ms = (asyncio.get_event_loop().time() - start_time) * 1000
+        
+        return QueryResult(
+            records=result['records'],
+            summary=result['summary'],
+            query_time_ms=query_time_ms,
+            record_count=len(result['records'])
         )
-
-    async def update_entity(
+    
+    @staticmethod
+    async def _execute_transaction(tx, cypher: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute query within a transaction"""
+        result = await tx.run(cypher, **params)
+        records = [dict(record) async for record in result]
+        summary = await result.consume()
+        
+        return {
+            'records': records,
+            'summary': {
+                'counters': summary.counters,
+                'database': summary.database,
+                'query_type': summary.query_type,
+                'result_available_after': summary.result_available_after,
+                'result_consumed_after': summary.result_consumed_after
+            }
+        }
+    
+    # Convenience methods for common operations
+    
+    async def create_node(
         self,
-        entity_id: str,
+        labels: Union[str, List[str]],
         properties: Dict[str, Any]
-        ):
-            """Update entity properties."""
-        set_clause = ", ".join([f"e.{k} = ${k}" for k in properties.keys()])
+    ) -> str:
+        """Create a node and return its ID"""
+        if isinstance(labels, str):
+            labels = [labels]
+            
+        label_str = ":".join(labels)
+        
         query = f"""
-        MATCH (e:Entity {{id: $entity_id}})
-        SET {set_clause}, e.updated_at = datetime()
-        RETURN e
+        CREATE (n:{label_str} $props)
+        RETURN elementId(n) as id
         """
         
-        params = {"entity_id": entity_id}
-        params.update(properties)
+        result = await self.execute(query, {"props": properties})
+        return result.records[0]["id"]
+    
+    async def create_relationship(
+        self,
+        from_id: str,
+        to_id: str,
+        rel_type: str,
+        properties: Optional[Dict[str, Any]] = None
+    ) -> str:
+        """Create a relationship between nodes"""
+        query = """
+        MATCH (a) WHERE elementId(a) = $from_id
+        MATCH (b) WHERE elementId(b) = $to_id
+        CREATE (a)-[r:""" + rel_type + """ $props]->(b)
+        RETURN elementId(r) as id
+        """
         
-        await self.write(query, params)
+        result = await self.execute(
+            query,
+            {
+                "from_id": from_id,
+                "to_id": to_id,
+                "props": properties or {}
+            }
+        )
+        return result.records[0]["id"]
+    
+    async def find_node(
+        self,
+        labels: Optional[Union[str, List[str]]] = None,
+        properties: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        """Find nodes matching criteria"""
+        conditions = []
+        
+        if labels:
+            if isinstance(labels, str):
+                labels = [labels]
+            label_str = ":".join(labels)
+            conditions.append(f"n:{label_str}")
+        else:
+            conditions.append("n")
+            
+        if properties:
+            prop_conditions = [f"n.{k} = ${k}" for k in properties.keys()]
+            conditions.extend(prop_conditions)
+            
+        query = f"""
+        MATCH ({conditions[0]})
+        {' WHERE ' + ' AND '.join(conditions[1:]) if len(conditions) > 1 else ''}
+        RETURN n
+        LIMIT 1000
+        """
+        
+        result = await self.query(query, properties or {})
+        return [record["n"] for record in result.records]
+
+
+# Export the adapter
+__all__ = ["Neo4jAdapter", "Neo4jConfig", "QueryResult", "CircuitBreakerState", "RetryStrategy"]

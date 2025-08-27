@@ -35,11 +35,14 @@ class SerializationType(str, Enum):
 class BatchOperation:
     """Represents a batched Redis operation."""
 
-    def __init__(self, operation: str, key: str, value: Any = None,
-        serialization: SerializationType = SerializationType.JSON,
+    def __init__(self,
+                 operation: str,
+                 key: str,
+                 value: Any = None,
+                 serialization: SerializationType = SerializationType.JSON,
                  ttl: Optional[int] = None,
                  future: Optional[asyncio.Future] = None):
-                             self.operation = operation
+        self.operation = operation
         self.key = key
         self.value = value
         self.serialization = serialization
