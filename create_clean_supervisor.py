@@ -1,4 +1,10 @@
+#!/usr/bin/env python3
 """
+Create a clean, working supervisor.py based on AURA's requirements
+Using the Memory-Aware Supervisor pattern from the original
+"""
+
+supervisor_code = '''"""
 🧠 Memory-Aware Supervisor Agent - AURA Intelligence System
 Transforms reactive decision-making into reflective, learning-based choices.
 """
@@ -202,11 +208,11 @@ class Supervisor:
             formatted.append(f"  - Outcome: {ctx.get('outcome', 'Unknown')}")
             formatted.append("")
         
-        return "\n".join(formatted)
+        return "\\n".join(formatted)
     
     def _parse_response(self, response: str) -> Dict[str, Any]:
         """Parse LLM response to extract reasoning and action."""
-        lines = response.strip().split('\n')
+        lines = response.strip().split('\\n')
         reasoning = ""
         action = "FINISH"
         
@@ -260,3 +266,17 @@ async def test_supervisor():
 if __name__ == "__main__":
     # Run test
     asyncio.run(test_supervisor())
+'''
+
+# Write the clean supervisor
+with open('supervisor_clean.py', 'w') as f:
+    f.write(supervisor_code)
+
+print("✅ Created supervisor_clean.py")
+print("\nFeatures:")
+print("- Memory-aware decision making")
+print("- Historical context integration")
+print("- Mock fallbacks for testing")
+print("- Proper async/await patterns")
+print("- Error handling")
+print("- Compatible with AURA's architecture")

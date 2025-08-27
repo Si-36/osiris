@@ -662,24 +662,12 @@ class WorkingAgent(AgentComponent):
 # WORKING AGENT FACTORY
 # ============================================================================
 
-    def create_working_agent(agent_id: str, agent_type: str, config: Dict[str, Any] = None) -> WorkingAgent:
-        """Create a working agent of the specified type."""
-        try:
-            pass
+def create_working_agent(agent_id: str, agent_type: str, config: Dict[str, Any] = None) -> WorkingAgent:
+    """Create a working agent of the specified type."""
+    try:
         agent_type_enum = WorkingAgentType(agent_type.lower())
-        except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
         return WorkingAgent(agent_id, agent_type_enum, config)
-        except ValueError:
-            pass
+    except ValueError:
         # Default to generic if type not recognized
         return WorkingAgent(agent_id, WorkingAgentType.COUNCIL, config)
 
@@ -737,6 +725,6 @@ class WorkingAgentRegistry:
 # Global registry
 _working_registry = WorkingAgentRegistry()
 
-    def get_working_registry() -> WorkingAgentRegistry:
-        """Get the global working agent registry."""
-        return _working_registry
+def get_working_registry() -> WorkingAgentRegistry:
+    """Get the global working agent registry."""
+    return _working_registry

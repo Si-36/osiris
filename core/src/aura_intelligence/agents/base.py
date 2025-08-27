@@ -287,10 +287,8 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         """Extract the output from the final state."""
         pass
     
-        async def health_check(self) -> Dict[str, Any]:
-            pass
+    async def health_check(self) -> Dict[str, Any]:
         """Check agent health."""
-        pass
         health = await super().health_check()
         
         # Add agent-specific metrics
@@ -305,5 +303,4 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
     
     def get_capabilities(self) -> List[str]:
         """Get list of agent capabilities."""
-        pass
         return ["base_agent", "observability", "state_management"]
