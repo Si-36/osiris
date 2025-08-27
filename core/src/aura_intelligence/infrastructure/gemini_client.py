@@ -1,76 +1,59 @@
-#!/usr/bin/env python3
 """
-🤖 AURA Intelligence: Gemini API Client
-Enterprise-grade Google Gemini integration with LangChain compatibility
-
-Features:
-    pass
-        - LangChain-compatible interface
-- Enterprise guardrails integration
-- Async/await support
-- Error handling and retries
-- Cost tracking
+Gemini Client for AURA Intelligence System
+Clean implementation with proper syntax and 2025 best practices
 """
 
-import asyncio
-import json
-import logging
-import time
-from typing import Dict, Any, List, Optional, Union
-from dataclasses import dataclass
+import os
 import httpx
+import time
+import asyncio
+import logging
+from typing import Union, List, Dict, Any, Optional
+from dataclasses import dataclass
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 @dataclass
 class GeminiConfig:
-    """Configuration for Gemini API client"""
-    api_key: str = "AIzaSyDiX165POC4I0uJI8VAL_9to8nhomSZ_og"
-    model: str = "gemini-2.0-flash"
-    base_url: str = "https://generativelanguage.googleapis.com/v1beta"
-    temperature: float = 0.1
-    max_tokens: int = 2000
-    timeout: float = 30.0
+    """Configuration for Gemini API client."""
+    api_key: str = os.getenv("GEMINI_API_KEY", "")
+    model: str = "gemini-1.5-pro"
+    temperature: float = 0.7
+    max_tokens: int = 2048
+    timeout: int = 30
     max_retries: int = 3
+    base_url: str = "https://generativelanguage.googleapis.com/v1beta"
 
-class GeminiMessage:
-    """LangChain-compatible message class"""
-    
-    def __init__(self, content: str, role: str = "user"):
-        self.content = content
-        self.role = role
-    
-    def __str__(self):
-        return self.content
-
+@dataclass 
 class GeminiResponse:
-    """LangChain-compatible response class"""
-    
-    def __init__(self, content: str, usage: Dict[str, Any] = None):
-        self.content = content
-        self.usage = usage or {}
-    
-    def __str__(self):
-        return self.content
+    """Response from Gemini API."""
+    content: str
+    model: str
+    usage: Dict[str, int]
+    finish_reason: str = "stop"
+    metadata: Dict[str, Any] = None
+
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
 
 class GeminiClient:
-    """🤖 Enterprise Gemini API Client with LangChain compatibility"""
+    """Async Gemini API client with retry logic and cost tracking."""
     
-    def __init__(self, config: GeminiConfig = None):
+    def __init__(self, config: Optional[GeminiConfig] = None):
         self.config = config or GeminiConfig()
         self.client = httpx.AsyncClient(timeout=self.config.timeout)
         
         # Cost tracking (approximate pricing)
         self.cost_per_1k_input_tokens = 0.00015  # $0.15 per 1M tokens
-        self.cost_per_1k_output_tokens = 0.0006  # $0.60 per 1M tokens
+        self.cost_per_1k_output_tokens = 0.0006   # $0.60 per 1M tokens
         
         logger.info(f"🤖 Gemini client initialized: {self.config.model}")
     
-    async
-    
-    def ainvoke(self, messages: Union[str, List, Dict], **kwargs) -> GeminiResponse:
+    async def ainvoke(self, messages: Union[str, List, Dict], **kwargs) -> GeminiResponse:
         """
-        🤖 Async invoke method compatible with LangChain interface
+        Async invoke method compatible with LangChain interface.
         
         Args:
             messages: Input messages (string, list, or dict)
@@ -79,7 +62,6 @@ class GeminiClient:
         Returns:
             GeminiResponse: Response object with content
         """
-        
         start_time = time.time()
         
         try:
@@ -104,49 +86,53 @@ class GeminiClient:
             content = self._extract_content(response_data)
             
             # Calculate usage and cost
-            usage = self._calculate_usage(messages, content, time.time() - start_time)
+            usage = self._calculate_usage(response_data)
             
-            logger.info(f"🤖 Gemini call completed: {len(content)} chars, ${usage.get('cost', 0):.4f}")
+            # Create response object
+            response = GeminiResponse(
+                content=content,
+                model=self.config.model,
+                usage=usage,
+                metadata={
+                    "duration": time.time() - start_time,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            )
             
-            return GeminiResponse(content=content, usage=usage)
+            logger.info(f"✅ Gemini response received in {response.metadata['duration']:.2f}s")
+            return response
             
         except Exception as e:
-            logger.error(f"❌ Gemini API call failed: {e}")
-            raise e
+            logger.error(f"❌ Gemini API error: {e}")
+            raise
     
-    def _convert_messages(self, messages: Union[str, List, Dict]) -> List[Dict[str, Any]]:
-        """Convert various message formats to Gemini format"""
-        
+    def _convert_messages(self, messages: Union[str, List, Dict]) -> List[Dict]:
+        """Convert various message formats to Gemini format."""
         if isinstance(messages, str):
-            # Simple string input
+            # Simple string message
             return [{
                 "parts": [{"text": messages}]
             }]
         
         elif isinstance(messages, list):
-            # List of messages (LangChain format)
+            # List of messages
             gemini_messages = []
-            
             for msg in messages:
-                if hasattr(msg, 'content'):
-                    # LangChain message object
-                    text = msg.content
+                if isinstance(msg, str):
+                    gemini_messages.append({
+                        "parts": [{"text": msg}]
+                    })
                 elif isinstance(msg, dict):
-                    # Dictionary message
-                    text = msg.get('content', str(msg))
-                else:
-                    # String message
-                    text = str(msg)
-                
-                gemini_messages.append({
-                    "parts": [{"text": text}]
-                })
-            
+                    # Handle role-based messages
+                    content = msg.get("content", "")
+                    gemini_messages.append({
+                        "parts": [{"text": content}]
+                    })
             return gemini_messages
         
         elif isinstance(messages, dict):
             # Single dictionary message
-            text = messages.get('content', str(messages))
+            text = messages.get("content", str(messages))
             return [{
                 "parts": [{"text": text}]
             }]
@@ -157,11 +143,8 @@ class GeminiClient:
                 "parts": [{"text": str(messages)}]
             }]
     
-    async
-    
-    def _make_request_with_retries(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Make API request with retry logic"""
-        
+    async def _make_request_with_retries(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Make API request with retry logic."""
         url = f"{self.config.base_url}/models/{self.config.model}:generateContent"
         headers = {
             "Content-Type": "application/json",
@@ -181,101 +164,83 @@ class GeminiClient:
                 if response.status_code == 200:
                     return response.json()
                 
-                elif response.status_code == 429:
-                    # Rate limit - wait and retry
-                    wait_time = (2 ** attempt) + 1
-                    logger.warning(f"⚠️ Rate limited, waiting {wait_time}s (attempt {attempt + 1})")
+                # Handle specific error codes
+                if response.status_code == 429:
+                    # Rate limit - exponential backoff
+                    wait_time = 2 ** attempt
+                    logger.warning(f"Rate limit hit, waiting {wait_time}s...")
                     await asyncio.sleep(wait_time)
                     continue
                 
-                else:
-                    # Other HTTP error
-                    error_text = response.text
-                    raise Exception(f"HTTP {response.status_code}: {error_text}")
+                # Other errors
+                response.raise_for_status()
                 
             except Exception as e:
                 last_exception = e
                 if attempt < self.config.max_retries - 1:
-                    wait_time = (2 ** attempt) + 1
-                    logger.warning(f"⚠️ Request failed, retrying in {wait_time}s: {e}")
-                    await asyncio.sleep(wait_time)
-                else:
-                    break
+                    logger.warning(f"Attempt {attempt + 1} failed: {e}")
+                    await asyncio.sleep(1)
+                    continue
         
         # All retries failed
-        raise last_exception or Exception("All retry attempts failed")
+        raise last_exception or Exception("Request failed after all retries")
     
     def _extract_content(self, response_data: Dict[str, Any]) -> str:
-        """Extract text content from Gemini response"""
-        
+        """Extract text content from Gemini response."""
         try:
             candidates = response_data.get("candidates", [])
-            if not candidates:
-                return "No response generated"
-            
-            candidate = candidates[0]
-            content = candidate.get("content", {})
-            parts = content.get("parts", [])
-            
-            if not parts:
-                return "No content in response"
-            
-            # Combine all text parts
-            text_parts = []
-            for part in parts:
-                if "text" in part:
-                    text_parts.append(part["text"])
-            
-            return "\n".join(text_parts) if text_parts else "Empty response"
-            
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                if parts:
+                    return parts[0].get("text", "")
+            return ""
         except Exception as e:
-            logger.error(f"❌ Failed to extract content: {e}")
-            return f"Error extracting content: {e}"
+            logger.error(f"Error extracting content: {e}")
+            return ""
     
-    def _calculate_usage(self, input_messages: Any, output_content: str, duration: float) -> Dict[str, Any]:
-        """Calculate usage statistics and cost"""
+    def _calculate_usage(self, response_data: Dict[str, Any]) -> Dict[str, int]:
+        """Calculate token usage from response."""
+        # Note: Gemini API doesn't always return exact token counts
+        # This is an approximation based on content length
+        content = self._extract_content(response_data)
         
-        # Estimate token counts (rough approximation)
-        input_text = str(input_messages)
-        input_tokens = len(input_text.split()) * 1.3  # Rough token estimate
-        output_tokens = len(output_content.split()) * 1.3
+        # Rough approximation: 1 token ≈ 4 characters
+        output_tokens = len(content) // 4
+        input_tokens = 100  # Rough estimate
         
-        # Calculate cost
-        input_cost = (input_tokens / 1000) * self.cost_per_1k_input_tokens
-        output_cost = (output_tokens / 1000) * self.cost_per_1k_output_tokens
+        return {
+            "prompt_tokens": input_tokens,
+            "completion_tokens": output_tokens,
+            "total_tokens": input_tokens + output_tokens
+        }
+    
+    def calculate_cost(self, usage: Dict[str, int]) -> Dict[str, float]:
+        """Calculate estimated cost based on usage."""
+        input_cost = (usage["prompt_tokens"] / 1000) * self.cost_per_1k_input_tokens
+        output_cost = (usage["completion_tokens"] / 1000) * self.cost_per_1k_output_tokens
         total_cost = input_cost + output_cost
         
         return {
-            "input_tokens": int(input_tokens),
-            "output_tokens": int(output_tokens),
-            "total_tokens": int(input_tokens + output_tokens),
             "input_cost": input_cost,
             "output_cost": output_cost,
-            "cost": total_cost,
-            "duration": duration,
-            "model": self.config.model
+            "total_cost": total_cost
         }
     
-    async
-    
-    def close(self):
-        """Close the HTTP client"""
+    async def close(self):
+        """Close the HTTP client."""
         await self.client.aclose()
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 🎯 LANGCHAIN-COMPATIBLE WRAPPER
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 class ChatGemini:
-    """🤖 LangChain-compatible Gemini chat model"""
+    """LangChain-compatible Gemini chat model wrapper."""
     
     def __init__(self, 
-                 model: str = "gemini-2.0-flash",
-                 temperature: float = 0.1,
-                 max_tokens: int = 2000,
-                 api_key: str = None):
+                 model: str = "gemini-1.5-pro",
+                 temperature: float = 0.7,
+                 max_tokens: int = 2048,
+                 api_key: Optional[str] = None):
         config = GeminiConfig(
-            api_key=api_key or "AIzaSyDiX165POC4I0uJI8VAL_9to8nhomSZ_og",
+            api_key=api_key or os.getenv("GEMINI_API_KEY", ""),
             model=model,
             temperature=temperature,
             max_tokens=max_tokens
@@ -286,57 +251,47 @@ class ChatGemini:
         self.temperature = temperature
         self.max_tokens = max_tokens
     
-    async
-    
-    def ainvoke(self, messages: Any, **kwargs) -> GeminiResponse:
-        """LangChain-compatible async invoke"""
+    async def ainvoke(self, messages: Any, **kwargs) -> GeminiResponse:
+        """LangChain-compatible async invoke."""
         return await self.client.ainvoke(messages, **kwargs)
     
     def invoke(self, messages: Any, **kwargs) -> GeminiResponse:
-        """LangChain-compatible sync invoke"""
+        """LangChain-compatible sync invoke."""
         import asyncio
-        return asyncio.run(self.client.ainvoke(messages, **kwargs))
+        return asyncio.run(self.ainvoke(messages, **kwargs))
     
-    async
-    
-    def aclose(self):
-        """Close the client"""
+    async def aclose(self):
+        """Close the client."""
         await self.client.close()
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 🎯 CONVENIENCE FUNCTIONS
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    
-    def create_gemini_client(model: str = "gemini-2.0-flash", **kwargs) -> ChatGemini:
-        """🤖 Create a Gemini client with LangChain compatibility"""
-        return ChatGemini(model=model, **kwargs)
 
-class GeminiClientManager:
-    """Manager for Gemini client lifecycle and connection management"""
+def create_gemini_client(api_key: Optional[str] = None) -> ChatGemini:
+    """Create a Gemini client instance."""
+    return ChatGemini(api_key=api_key)
+
+
+class SafeGeminiClient:
+    """Gemini client with built-in error handling."""
     
-    def __init__(self, api_key: str, model: str = "gemini-2.0-flash"):
-        self.api_key = api_key
-        self.model = model
+    def __init__(self, api_key: Optional[str] = None):
         self.client = None
         self.is_available = False
-    
-    async
-    
-    def initialize(self) -> bool:
-        """Initialize and validate the client"""
-        pass
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY", "")
+        
+    async def initialize(self) -> bool:
+        """Initialize and validate the client."""
         try:
-            config = GeminiConfig(api_key=self.api_key, model=self.model)
-            self.client = GeminiClient(config)
+            self.client = create_gemini_client(self.api_key)
             
-            # Test connection
-            response = await self.client.ainvoke("Hello! Please respond with 'OK' if you can hear me.")
+            # Test the connection
+            response = await self.client.ainvoke("Say 'OK' if you can hear me.")
+            
             self.is_available = "OK" in response.content.upper()
             
             if self.is_available:
-                logger.info("🧠 Gemini API connection validated successfully")
+                logger.info("✅ Gemini API connection validated successfully")
             else:
-                logger.warning("❌ Gemini API connection failed validation")
+                logger.warning("⚠️ Gemini API connection failed validation")
                 
             return self.is_available
             
@@ -345,34 +300,28 @@ class GeminiClientManager:
             self.is_available = False
             return False
     
-    async
-    
-    def generate_content(self, prompt: str, **kwargs) -> Optional[GeminiResponse]:
-        """Generate content if client is available"""
-        if not self.is_available or not self.client:
+    async def generate_content(self, prompt: str, **kwargs) -> Optional[GeminiResponse]:
+        """Generate content if client is available."""
+        if not self.is_available:
+            logger.warning("Gemini client not available")
             return None
             
         try:
             return await self.client.ainvoke(prompt, **kwargs)
         except Exception as e:
-            logger.error(f"❌ Gemini API call failed: {e}")
+            logger.error(f"Error generating content: {e}")
             return None
     
-    async
-    
-    def cleanup(self):
-        """Clean up resources"""
-        pass
+    async def cleanup(self):
+        """Clean up resources."""
         if self.client:
-            await self.client.close()
+            await self.client.aclose()
             self.client = None
         self.is_available = False
-    
-    async
-    
-    def test_gemini_connection() -> bool:
-        """🧪 Test Gemini API connection"""
-    
+
+
+async def test_gemini_connection() -> bool:
+    """Test Gemini API connection."""
     try:
         client = create_gemini_client()
         
@@ -392,3 +341,15 @@ class GeminiClientManager:
     except Exception as e:
         logger.error(f"❌ Gemini API connection test failed: {e}")
         return False
+
+
+# Export main classes and functions
+__all__ = [
+    "GeminiConfig",
+    "GeminiResponse", 
+    "GeminiClient",
+    "ChatGemini",
+    "SafeGeminiClient",
+    "create_gemini_client",
+    "test_gemini_connection"
+]
