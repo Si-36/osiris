@@ -109,13 +109,12 @@ class EventBus:
 _event_bus: Optional[EventBus] = None
 
 
-    def get_event_bus() -> EventBus:
-        """Get the global event bus instance"""
-        global _event_bus
-        if _event_bus is None:
-            pass
+def get_event_bus() -> EventBus:
+    """Get the global event bus instance"""
+    global _event_bus
+    if _event_bus is None:
         _event_bus = EventBus()
-        return _event_bus
+    return _event_bus
 
 
 __all__ = ["EventBus", "Event", "get_event_bus"]
