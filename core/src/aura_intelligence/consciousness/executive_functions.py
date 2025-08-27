@@ -155,8 +155,7 @@ class CognitiveFlexibility:
         self.adaptation_rate: float = 0.1
         
         async def switch_context(self, new_context: str) -> float:
-            pass
-        """Switch to new context and return switch cost"""
+                    """Switch to new context and return switch cost"""
         if self.current_context == new_context:
             return 0.0
         
@@ -175,8 +174,7 @@ class CognitiveFlexibility:
         return switch_cost
     
         async def adapt_plan(self, plan: Plan, new_context: Dict[str, Any]) -> Plan:
-            pass
-        """Adapt plan based on new context"""
+                    """Adapt plan based on new context"""
         # Simple adaptation: adjust step priorities based on context
         adapted_steps = []
         for step in plan.steps:
@@ -219,8 +217,7 @@ class InhibitoryControl:
         action: Dict[str, Any], 
         context: Dict[str, Any]
         ) -> Tuple[bool, str]:
-            pass
-        """Determine if action should be inhibited"""
+                    """Determine if action should be inhibited"""
         action_type = action.get('type', 'unknown')
         
         # Check explicit inhibition rules
@@ -275,8 +272,7 @@ class PlanningSystem:
         context: Dict[str, Any],
         strategy: Optional[str] = None
         ) -> Plan:
-            pass
-        """Create execution plan for goal"""
+                    """Create execution plan for goal"""
         strategy = strategy or self.default_strategy
         planning_func = self.planning_strategies.get(strategy, self._hierarchical_planning)
         
@@ -297,8 +293,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
-            pass
-        """Hierarchical task decomposition"""
+                    """Hierarchical task decomposition"""
         steps = []
         
         # Decompose goal into sub-goals
@@ -323,8 +318,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
-            pass
-        """Means-ends analysis planning"""
+                    """Means-ends analysis planning"""
         steps = []
         current_state = context.get('current_state', {})
         target_state = context.get('target_state', {})
@@ -347,8 +341,7 @@ class PlanningSystem:
         goal: Goal, 
         context: Dict[str, Any]
         ) -> List[Dict[str, Any]]:
-            pass
-        """Reactive planning based on current context"""
+                    """Reactive planning based on current context"""
         return [{
             'action': 'reactive_execute',
             'goal_id': goal.goal_id,
@@ -362,8 +355,7 @@ class PlanningSystem:
         current_state: Dict[str, Any], 
         target_state: Dict[str, Any]
         ) -> List[str]:
-            pass
-        """Find differences between current and target states"""
+                    """Find differences between current and target states"""
         differences = []
         
         for key, target_value in target_state.items():
@@ -378,8 +370,7 @@ class PlanningSystem:
         steps: List[Dict[str, Any]], 
         context: Dict[str, Any]
         ) -> float:
-            pass
-        """Estimate confidence in plan success"""
+                    """Estimate confidence in plan success"""
         if not steps:
             return 0.0
         
@@ -424,15 +415,13 @@ class ExecutiveFunction(SystemComponent):
         }
     
         async def start(self) -> None:
-            pass
-        """Start executive function system"""
+                    """Start executive function system"""
         pass
         self.current_state = ExecutiveState.IDLE
         print("🧠 Executive Function System started")
     
         async def stop(self) -> None:
-            pass
-        """Stop executive function system"""
+                    """Stop executive function system"""
         pass
         self.current_state = ExecutiveState.IDLE
         print("🛑 Executive Function System stopped")
@@ -442,8 +431,7 @@ class ExecutiveFunction(SystemComponent):
         goal: Goal, 
         context: Dict[str, Any] = None
         ) -> ConsciousDecision:
-            pass
-        """Process a goal through the executive function system"""
+                    """Process a goal through the executive function system"""
         context = context or {}
         
         # Add goal to working memory
@@ -498,8 +486,7 @@ class ExecutiveFunction(SystemComponent):
         plan: Plan, 
         context: Dict[str, Any]
         ) -> Dict[str, Any]:
-            pass
-        """Execute a plan step by step"""
+                    """Execute a plan step by step"""
         results = []
         
         for i, step in enumerate(plan.steps):
@@ -544,8 +531,7 @@ class ExecutiveFunction(SystemComponent):
         step: Dict[str, Any], 
         context: Dict[str, Any]
         ) -> Dict[str, Any]:
-            pass
-        """Execute a single plan step"""
+                    """Execute a single plan step"""
         # Simulate step execution
         execution_time = step.get('estimated_time', 1.0)
         await asyncio.sleep(execution_time * 0.01)  # Scaled down for demo
