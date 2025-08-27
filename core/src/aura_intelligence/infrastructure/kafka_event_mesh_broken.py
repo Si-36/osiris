@@ -47,7 +47,7 @@ try:
 except ImportError:
     import logging
     def get_logger(name):
-        return logging.getLogger(name)
+            return logging.getLogger(name)
 
 logger = get_logger(__name__)
 
@@ -99,31 +99,31 @@ class KafkaEventMesh:
             logger.warning("Kafka not available - using mock implementation")
             self._running = True
     
-    async def publish(self, topic: str, event: Event) -> None:
-        """Publish event"""
-        if not self._running:
+        async def publish(self, topic: str, event: Event) -> None:
+            """Publish event"""
+            if not self._running:
             raise RuntimeError("Event mesh not initialized")
         
-        if self.producer:
+            if self.producer:
             await self.producer.send_and_wait(topic, event)
         else:
             logger.debug(f"Mock publish to {topic}: {event.type}")
     
-    async def subscribe(self, topic: str, handler: Callable[[Event], None]) -> None:
-        """Subscribe to topic"""
-        if topic not in self.handlers:
+        async def subscribe(self, topic: str, handler: Callable[[Event], None]) -> None:
+            """Subscribe to topic"""
+            if topic not in self.handlers:
             self.handlers[topic] = []
             if KAFKA_AVAILABLE:
                 await self._create_consumer(topic)
         
         self.handlers[topic].append(handler)
     
-    async def _create_consumer(self, topic: str) -> None:
-        """Create consumer"""
-        if not KAFKA_AVAILABLE:
+        async def _create_consumer(self, topic: str) -> None:
+            """Create consumer"""
+            if not KAFKA_AVAILABLE:
             return
         
-        consumer = AIOKafkaConsumer(
+            consumer = AIOKafkaConsumer(
             topic,
             bootstrap_servers=self.config.bootstrap_servers,
             group_id=f"aura-{topic}",
@@ -133,33 +133,33 @@ class KafkaEventMesh:
         self.consumers[topic] = consumer
         asyncio.create_task(self._consume_loop(topic, consumer))
     
-    async def _consume_loop(self, topic: str, consumer: AIOKafkaConsumer) -> None:
-        """Consumer loop"""
-        try:
+        async def _consume_loop(self, topic: str, consumer: AIOKafkaConsumer) -> None:
+            """Consumer loop"""
+            try:
             async for msg in consumer:
                 for handler in self.handlers.get(topic, []):
                     try:
                         handler(msg.value)
                     except Exception as e:
                         logger.error(f"Handler error: {e}")
-        except Exception as e:
+            except Exception as e:
             logger.error(f"Consumer loop error: {e}")
     
     def _serialize_event(self, event: Event) -> bytes:
         """Serialize event"""
-        data = {
+            data = {
             'id': event.id,
             'type': event.type,
             'timestamp': event.timestamp.isoformat(),
             'data': event.data,
             'metadata': event.metadata
         }
-        return json.dumps(data).encode('utf-8')
+            return json.dumps(data).encode('utf-8')
     
     def _deserialize_event(self, data: bytes) -> Event:
         """Deserialize event"""
-        obj = json.loads(data.decode('utf-8'))
-        return Event(
+            obj = json.loads(data.decode('utf-8'))
+            return Event(
             id=obj['id'],
             type=obj['type'],
             timestamp=datetime.fromisoformat(obj['timestamp']),
@@ -167,14 +167,14 @@ class KafkaEventMesh:
             metadata=obj.get('metadata', {})
         )
     
-    async def close(self) -> None:
-        """Shutdown"""
+        async def close(self) -> None:
+            """Shutdown"""
         self._running = False
         
-        if self.producer:
+            if self.producer:
             await self.producer.stop()
         
-        for consumer in self.consumers.values():
+            for consumer in self.consumers.values():
             await consumer.stop()
         
-        logger.info("Kafka event mesh closed")
+            logger.info("Kafka event mesh closed")

@@ -20,7 +20,6 @@ from ..observability.tracing import trace_span
 
 logger = get_logger(__name__)
 
-
 @dataclass
 class TDAMemoryEntry:
     """Structured TDA memory entry for Mem0"""
@@ -33,29 +32,25 @@ class TDAMemoryEntry:
     context_tags: List[str]
     embedding_vector: Optional[List[float]] = None
 
-
 class TDAMem0Adapter:
     """
     Production adapter for storing TDA results in Mem0 episodic memory.
     
     Features:
-        pass
-    - Semantic search over topological features
+            - Semantic search over topological features
     - Temporal memory with decay
     - Context-aware retrieval
     - Agent-friendly format
     - Vector embeddings for similarity
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
-        self.config = config or {}
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.memory = Memory()
         self._initialized = False
-        
-        async def initialize(self):
-            pass
-        """Initialize Mem0 connection and collections"""
-        pass
+
+    async def initialize(self):
+            """Initialize Mem0 connection and collections"""
         try:
             # Initialize memory system
             await self.memory.initialize()
@@ -90,7 +85,6 @@ class TDAMem0Adapter:
         context: Optional[Dict[str, Any]] = None,
         ttl: Optional[int] = 86400  # 24 hours default
         ) -> str:
-            pass
             """
         Store TDA result as episodic memory.
         
@@ -104,7 +98,6 @@ class TDAMem0Adapter:
             memory_id of stored entry
         """
             if not self._initialized:
-                pass
             await self.initialize()
             
                 entry_id = f"tda_mem_{result.algorithm}_{datetime.now(timezone.utc).timestamp()}"
@@ -171,7 +164,7 @@ class TDAMem0Adapter:
             logger.error(f"Failed to store TDA memory: {e}")
             metrics_collector.increment("tda.memory.errors", tags={"error": type(e).__name__})
             raise
-            
+
     def _extract_persistence_features(self, result: TDAResult) -> Dict[str, float]:
         """Extract key persistence features for memory"""
         features = {
@@ -209,7 +202,7 @@ class TDAMem0Adapter:
             features["persistence_entropy"] = -np.sum(p * np.log(p + 1e-10))
             
         return features
-        
+
     def _find_anomalous_dimensions(self, result: TDAResult) -> List[int]:
         """Identify dimensions with anomalous topology"""
         anomalous_dims = []
@@ -221,7 +214,7 @@ class TDAMem0Adapter:
                 anomalous_dims.append(dim)
                 
         return anomalous_dims
-        
+
     def _find_persistence_outliers(self, result: TDAResult) -> List[Dict[str, Any]]:
         """Find outlier persistence features"""
         outliers = []
@@ -245,7 +238,7 @@ class TDAMem0Adapter:
                         })
                         
         return outliers
-        
+
     def _generate_context_tags(self, result: TDAResult, context: Optional[Dict[str, Any]]) -> List[str]:
         """Generate searchable context tags"""
         tags = [
@@ -267,10 +260,9 @@ class TDAMem0Adapter:
                     tags.append(f"{key}:{value}")
                     
         return tags
-        
-        async def _generate_embedding(self, entry: TDAMemoryEntry) -> List[float]:
-            pass
-        """Generate embedding vector for semantic search"""
+
+    async def _generate_embedding(self, entry: TDAMemoryEntry) -> List[float]:
+            """Generate embedding vector for semantic search"""
         # In production, use a proper embedding model
         # This is a placeholder that creates a feature vector
         features = []
@@ -282,7 +274,6 @@ class TDAMem0Adapter:
         # Add persistence features
         for key in ["total_persistence", "max_persistence", "avg_persistence", 
                    "persistence_entropy", "num_components", "num_loops", "num_voids"]:
-                       pass
             features.append(entry.persistence_features.get(key, 0.0))
             
         # Add anomaly score
@@ -296,7 +287,7 @@ class TDAMem0Adapter:
         return features.tolist()
         
     @trace_span("recall_tda_memories")
-        async def recall_tda_memories(
+    async def recall_tda_memories(
         self,
         agent_id: str,
         query: Optional[str] = None,
@@ -304,8 +295,7 @@ class TDAMem0Adapter:
         limit: int = 10,
         time_window: Optional[Tuple[datetime, datetime]] = None
         ) -> List[Dict[str, Any]]:
-            pass
-        """
+            """
         Recall TDA memories for an agent.
         
         Args:
@@ -375,14 +365,13 @@ class TDAMem0Adapter:
             raise
             
     @trace_span("get_tda_context_for_agent")
-        async def get_tda_context_for_agent(
+    async def get_tda_context_for_agent(
         self,
         agent_id: str,
         current_data_id: str,
         lookback_hours: int = 24
         ) -> Dict[str, Any]:
-            pass
-        """
+            """
         Get TDA context for agent decision making.
         
         Args:

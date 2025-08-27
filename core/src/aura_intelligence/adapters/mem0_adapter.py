@@ -2,8 +2,7 @@
 Mem0 Adapter for AURA Intelligence.
 
 Provides async interface to Mem0 memory management system with:
-    pass
-- Memory search and retrieval
+    - Memory search and retrieval
 - Batch operations for efficiency
 - Embedding support
 - Automatic memory pruning
@@ -27,7 +26,6 @@ from aura_intelligence.observability import create_tracer
 logger = structlog.get_logger()
 tracer = create_tracer("mem0_adapter")
 
-
 class MemoryType(str, Enum):
     """Types of memories in Mem0."""
     DECISION = "decision"
@@ -36,7 +34,6 @@ class MemoryType(str, Enum):
     CONTEXT = "context"
     PATTERN = "pattern"
     ADAPTATION = "adaptation"
-
 
 @dataclass
 class Mem0Config:
@@ -66,7 +63,6 @@ class Mem0Config:
     connection_pool_size: int = 10
     keepalive_expiry: float = 30.0
 
-
 @dataclass
 class Memory:
     """Represents a memory in Mem0."""
@@ -80,7 +76,6 @@ class Memory:
     ttl_seconds: Optional[int] = None
     relevance_score: float = 1.0
 
-
 @dataclass
 class SearchQuery:
     """Query for searching memories."""
@@ -93,19 +88,16 @@ class SearchQuery:
     limit: int = 10
     offset: int = 0
 
-
 class Mem0Adapter:
     """Async adapter for Mem0 operations."""
-    
+
     def __init__(self, config: Mem0Config):
-        self.config = config
+    def __init__(self, config: Mem0Config):
         self._client: Optional[httpx.AsyncClient] = None
         self._initialized = False
-        
-        async def initialize(self):
-            pass
-        """Initialize the Mem0 client."""
-        pass
+
+    async def initialize(self):
+            """Initialize the Mem0 client."""
         if self._initialized:
             return
             
@@ -137,11 +129,9 @@ class Mem0Adapter:
             except Exception as e:
                 logger.error("Failed to initialize Mem0", error=str(e))
                 raise
-                
-        async def close(self):
-            pass
-        """Close the Mem0 client."""
-        pass
+
+    async def close(self):
+            """Close the Mem0 client."""
         if self._client:
             await self._client.aclose()
             self._initialized = False
@@ -194,7 +184,6 @@ class Mem0Adapter:
         self,
         memories: List[Memory]
         ) -> List[str]:
-            pass
             """Add multiple memories in batch."""
         with tracer.start_as_current_span("mem0_add_memories_batch") as span:
             span.set_attribute("mem0.batch_size", len(memories))
@@ -234,12 +223,11 @@ class Mem0Adapter:
                 raise
                 
     @resilient(criticality=ResilienceLevel.CRITICAL)
-        async def search_memories(
+    async def search_memories(
         self,
         query: SearchQuery
         ) -> List[Memory]:
-            pass
-        """Search for memories."""
+            """Search for memories."""
         with tracer.start_as_current_span("mem0_search_memories") as span:
             span.set_attribute("mem0.query_text", query.query_text or "")
             span.set_attribute("mem0.limit", query.limit)
@@ -297,13 +285,12 @@ class Mem0Adapter:
                            query=query.query_text,
                            error=str(e))
                 raise
-                
-        async def get_memory(
+
+    async def get_memory(
         self,
         memory_id: str
         ) -> Optional[Memory]:
-            pass
-        """Get a specific memory by ID."""
+            """Get a specific memory by ID."""
         with tracer.start_as_current_span("mem0_get_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
             
@@ -334,14 +321,13 @@ class Mem0Adapter:
                            memory_id=memory_id,
                            error=str(e))
                 raise
-                
-        async def update_memory(
+
+    async def update_memory(
         self,
         memory_id: str,
         updates: Dict[str, Any]
         ) -> bool:
-            pass
-        """Update an existing memory."""
+            """Update an existing memory."""
         with tracer.start_as_current_span("mem0_update_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
             
@@ -361,13 +347,12 @@ class Mem0Adapter:
                            memory_id=memory_id,
                            error=str(e))
                 return False
-                
-        async def delete_memory(
+
+    async def delete_memory(
         self,
         memory_id: str
         ) -> bool:
-            pass
-        """Delete a memory."""
+            """Delete a memory."""
         with tracer.start_as_current_span("mem0_delete_memory") as span:
             span.set_attribute("mem0.memory_id", memory_id)
             
@@ -384,15 +369,14 @@ class Mem0Adapter:
                            memory_id=memory_id,
                            error=str(e))
                 return False
-                
-        async def prune_memories(
+
+    async def prune_memories(
         self,
         agent_id: Optional[str] = None,
         older_than: Optional[datetime] = None,
         memory_type: Optional[MemoryType] = None
         ) -> int:
-            pass
-        """Prune old memories based on criteria."""
+            """Prune old memories based on criteria."""
         with tracer.start_as_current_span("mem0_prune_memories") as span:
             span.set_attribute("mem0.agent_id", agent_id or "all")
             
@@ -425,15 +409,14 @@ class Mem0Adapter:
                 raise
                 
     # Context-specific methods for LNN integration
-    
-        async def get_context_window(
+
+    async def get_context_window(
         self,
         agent_id: str,
         window_size: int = 100,
         memory_types: Optional[List[MemoryType]] = None
         ) -> List[Memory]:
-            pass
-        """Get a context window of recent memories for an agent."""
+            """Get a context window of recent memories for an agent."""
         query = SearchQuery(
             agent_ids=[agent_id],
             memory_types=memory_types or [
@@ -450,15 +433,14 @@ class Mem0Adapter:
         memories.sort(key=lambda m: m.timestamp, reverse=True)
         
         return memories[:window_size]
-        
-        async def find_similar_decisions(
+
+    async def find_similar_decisions(
         self,
         embedding: List[float],
         limit: int = 10,
         threshold: float = None
         ) -> List[Memory]:
-            pass
-        """Find similar past decisions based on embedding."""
+            """Find similar past decisions based on embedding."""
         query = SearchQuery(
             query_embedding=embedding,
             memory_types=[MemoryType.DECISION],
@@ -472,15 +454,14 @@ class Mem0Adapter:
             memories = [m for m in memories if m.relevance_score >= threshold]
             
         return memories
-        
-        async def get_agent_history(
+
+    async def get_agent_history(
         self,
         agent_id: str,
         hours: int = 24,
         memory_types: Optional[List[MemoryType]] = None
         ) -> List[Memory]:
-            pass
-        """Get agent's recent history."""
+            """Get agent's recent history."""
         end_time = datetime.now(timezone.utc)
         start_time = end_time - timedelta(hours=hours)
         

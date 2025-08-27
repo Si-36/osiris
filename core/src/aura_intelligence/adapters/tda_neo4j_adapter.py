@@ -18,7 +18,6 @@ from ..config.base import get_config
 
 logger = structlog.get_logger(__name__)
 
-
 @dataclass
 class TDANode:
     """Standardized TDA result node for Neo4j storage."""
@@ -30,25 +29,21 @@ class TDANode:
     persistence_features: Dict[str, Any]
     metadata: Dict[str, Any]
 
-
 class TDANeo4jAdapter:
     """
     Production adapter for storing TDA results in Neo4j.
     
     Features:
-        pass
-    - Async operations for high throughput
+            - Async operations for high throughput
     - Automatic relationship creation
     - Query optimization with indexes
     - Transaction safety
     """
-    
-    def __init__(self, uri: Optional[str] = None, user: Optional[str] = None, 
+
+    def __init__(self, uri: Optional[str] = None, user: Optional[str] = None,
         password: Optional[str] = None, database: Optional[str] = None):
-            pass
-    """Initialize Neo4j connection with configuration."""
-        pass
-        config = get_config()
+            """Initialize Neo4j connection with configuration."""
+                config = get_config()
         
         self.uri = uri or config.database.neo4j_uri
         self.user = user or config.database.neo4j_user
@@ -57,10 +52,9 @@ class TDANeo4jAdapter:
         
         self.driver: Optional[AsyncDriver] = None
         self._initialized = False
-        
+
     async def initialize(self):
         """Initialize connection and create indexes."""
-        pass
         if self._initialized:
             return
             
@@ -82,10 +76,9 @@ class TDANeo4jAdapter:
         except Exception as e:
             logger.error("Failed to initialize Neo4j adapter", error=str(e))
             raise
-            
+
     async def _create_indexes(self):
         """Create indexes for optimal query performance."""
-        pass
         async with self.driver.session(database=self.database) as session:
             # Index on TDA node ID
             await session.run(
@@ -106,7 +99,7 @@ class TDANeo4jAdapter:
             await session.run(
                 "CREATE INDEX tda_algorithm IF NOT EXISTS FOR (t:TDAResult) ON (t.algorithm)"
             )
-            
+
     async def store_tda_result(
         self,
         result: Dict[str, Any],
@@ -188,7 +181,7 @@ class TDANeo4jAdapter:
             except Neo4jError as e:
                 logger.error("Failed to store TDA result", error=str(e))
                 raise
-                
+
     def _extract_persistence_features(self, result: Dict[str, Any]) -> Dict[str, Any]:
         """Extract key persistence features from TDA result."""
         features = {}
@@ -207,12 +200,11 @@ class TDANeo4jAdapter:
             )
             
         return features
-        
-        async def _create_data_relationship(
+
+    async def _create_data_relationship(
         self, session, tda_id: str, data_id: str
         ):
-            pass
-        """Create relationship between TDA result and source data."""
+            """Create relationship between TDA result and source data."""
         await session.run(
         """
             MATCH (t:TDAResult {id: $tda_id})
@@ -222,12 +214,11 @@ class TDANeo4jAdapter:
             tda_id=tda_id,
             data_id=data_id
         )
-        
-        async def _store_persistence_diagrams(
+
+    async def _store_persistence_diagrams(
         self, session, tda_id: str, diagrams: List[Any]
         ):
-            pass
-        """Store individual persistence diagrams."""
+            """Store individual persistence diagrams."""
         for i, diagram in enumerate(diagrams):
             await session.run(
         """
@@ -242,12 +233,11 @@ class TDANeo4jAdapter:
                 dimension=i,
                 intervals=json.dumps(diagram.intervals)
             )
-            
-        async def _create_anomaly_relationships(
+
+    async def _create_anomaly_relationships(
         self, session, tda_id: str, score: float
         ):
-            pass
-        """Create relationships to similar anomalies."""
+            """Create relationships to similar anomalies."""
         # Find similar anomalies
         result = await session.run(
         """
@@ -264,14 +254,13 @@ class TDANeo4jAdapter:
             tda_id=tda_id,
             score=score
         )
-        
-        async def query_tda_results(
+
+    async def query_tda_results(
         self,
         filters: Optional[Dict[str, Any]] = None,
         limit: int = 100
         ) -> List[Dict[str, Any]]:
-            pass
-        """
+            """
         Query TDA results with filters.
         
         Args:
@@ -331,12 +320,11 @@ class TDANeo4jAdapter:
                 })
                 
             return results
-            
-        async def get_topological_context(
+
+    async def get_topological_context(
         self, data_id: str, depth: int = 2
         ) -> Dict[str, Any]:
-            pass
-        """
+            """
         Get topological context for a data point.
         
         Args:
@@ -387,10 +375,9 @@ class TDANeo4jAdapter:
                     })
                     
             return context
-            
-        async def close(self):
-        """Close Neo4j connection."""
-        pass
+
+    async def close(self):
+            """Close Neo4j connection."""
         if self.driver:
             await self.driver.close()
             self._initialized = False
