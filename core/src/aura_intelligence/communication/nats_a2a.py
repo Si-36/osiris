@@ -3,7 +3,6 @@
 2025 State-of-the-Art Agent-to-Agent Communication
 
 Features:
-    pass
 - 10M+ messages/sec throughput
 - <1ms latency for local cluster
 - Built-in clustering and failover
