@@ -184,7 +184,31 @@ Fix ALL 585 files across 54 folders, understand the flow, implement 2025 best pr
 - Malformed try/except blocks with misplaced pass statements
 - Import chains blocked by other broken files
 
-### 5. infrastructure/ folder ⏳ PENDING
+### 5. agents/ folder 🔄 IN PROGRESS (59.9% working)
+**Purpose**: Agent orchestration and multi-agent systems
+**Files**: 142 total, 85 working, 57 broken
+**Subdirectories**: 15 (council has 69 files!)
+**Status**:
+- ✅ supervisor.py - Enhanced supervisor implementation
+- ✅ base.py - Base agent classes
+- ✅ working_agents.py - Working agent implementations
+- ❌ 57 files with syntax errors (mostly in council/)
+
+**Key Findings**:
+- MASSIVE folder with 142 files
+- Council subdirectory has 69 files (multi-agent council pattern)
+- LangGraph integration in 8 files
+- Async agents in 97 files
+- Agent types: Council (70), Executor (4), Orchestrator (1), Supervisor (2)
+- Temporal workflows support
+- Resilience patterns (circuit breaker, bulkhead, retry)
+
+**Common Issues**:
+- try/except blocks with misplaced pass
+- Unindent errors
+- Function definition indentation
+
+### 6. infrastructure/ folder ⏳ PENDING
 **Purpose**: External system connections
 **Key Files**:
 - gemini_client.py - Needs httpx
