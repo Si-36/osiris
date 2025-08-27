@@ -147,14 +147,11 @@ class Supervisor:
                 # Convert numpy arrays to lists for JSON serialization
             def convert_numpy(obj):
                 if hasattr(obj, 'tolist'):  # numpy array
-                pass
-                return obj.tolist()
+                    return obj.tolist()
                 elif isinstance(obj, dict):
-                    pass
-                return {k: convert_numpy(v) for k, v in obj.items()}
+                    return {k: convert_numpy(v) for k, v in obj.items()}
                 elif isinstance(obj, list):
-                    pass
-                return [convert_numpy(v) for v in obj]
+                    return [convert_numpy(v) for v in obj]
                 return obj
         
                 evidence_json = json.dumps(convert_numpy(current_evidence), indent=2)
