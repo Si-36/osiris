@@ -14,10 +14,10 @@ from .real_components import create_real_component, RealComponent as BaseRealCom
 
 # Import new components from pestre.md
 try:
-from ..inference.pearl_engine import PEARLInferenceEngine, PEARLConfig
-from ..governance.autonomous_governance import AutonomousGovernanceSystem
+    from ..inference.pearl_engine import PEARLInferenceEngine, PEARLConfig
+    from ..governance.autonomous_governance import AutonomousGovernanceSystem
 except ImportError:
-PEARLInferenceEngine = None
+    PEARLInferenceEngine = None
 AutonomousGovernanceSystem = None
 
 

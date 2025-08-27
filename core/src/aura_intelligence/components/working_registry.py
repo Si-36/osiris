@@ -362,9 +362,8 @@ class WorkingComponentRegistry:
 # Global instance
 _working_registry = None
 
-    def get_working_registry():
-        global _working_registry
-        if _working_registry is None:
-            pass
+def get_working_registry():
+    global _working_registry
+    if _working_registry is None:
         _working_registry = WorkingComponentRegistry()
-        return _working_registry
+    return _working_registry
