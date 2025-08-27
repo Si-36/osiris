@@ -330,8 +330,8 @@ class UltimateTDAEngine:
             return await self._run_python_analysis(points, algorithm, consciousness_state)
     
         async def _run_python_analysis(self, points: List[List[float]], algorithm: str, consciousness_state: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Run advanced TDA analysis with consciousness integration.
+            """
+            Run advanced TDA analysis with consciousness integration.
 
         Implements your research algorithms:
         - SpecSeq++ GPU for exact computation

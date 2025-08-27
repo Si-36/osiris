@@ -86,19 +86,19 @@ class ConnectionPoolMonitor:
     """Advanced connection pool monitoring."""
 
     def __init__(self, pool: redis.ConnectionPool):
-    def __init__(self, pool: redis.ConnectionPool):
+        self.pool = pool
         self.metrics = {
-        'active_connections': 0,
-        'total_requests': 0,
-        'failed_requests': 0,
-        'avg_response_time': 0.0,
-        'last_check': time.time(),
+            'active_connections': 0,
+            'total_requests': 0,
+            'failed_requests': 0,
+            'avg_response_time': 0.0,
+            'last_check': time.time(),
         'peak_connections': 0,
         'connection_errors': 0
         }
 
     async def get_pool_stats(self) -> Dict[str, Any]:
-            """Get comprehensive pool statistics."""
+        """Get comprehensive pool statistics."""
         try:
             created = getattr(self.pool, 'created_connections', 0)
             available = getattr(self.pool, 'available_connections', 0)

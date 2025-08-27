@@ -170,8 +170,8 @@ class UltimateAURASystem:
     
         async def initialize(self):
             """Initialize all ultimate system components."""
-        try:
-            self.logger.info("🔧 Initializing ultimate system components...")
+            try:
+                self.logger.info("🔧 Initializing ultimate system components...")
             
             # Initialize consciousness core first
             await self.consciousness.initialize()
@@ -245,7 +245,7 @@ class UltimateAURASystem:
                 if scheduler_started:
                     self.logger.info("⏰ Automated archival scheduler started")
                 else:
-                self.logger.warning("⚠️ Failed to start archival scheduler")
+                    self.logger.warning("⚠️ Failed to start archival scheduler")
                 self.logger.info("✅ Phase 2C Intelligence Flywheel initialized successfully")
 
                 # Initialize optional components
@@ -268,7 +268,7 @@ class UltimateAURASystem:
             
                 self.logger.info("✅ All ultimate components initialized successfully")
             
-                except Exception as e:
+            except Exception as e:
                 self.logger.error(f"❌ Ultimate system initialization failed: {e}")
                 raise
     
