@@ -443,11 +443,18 @@ def cached(ttl: int = 300):
     return decorator
 
 
+# Create a simple circuit_breaker function for backward compatibility
+def circuit_breaker(config: Optional[CircuitBreakerConfig] = None):
+    """Circuit breaker decorator (backward compatibility)."""
+    cb = CircuitBreaker(config)
+    return cb
+
 # Export all decorators
 __all__ = [
     "CircuitBreaker",
     "CircuitBreakerConfig",
     "CircuitState",
+    "circuit_breaker",  # Added for backward compatibility
     "retry",
     "RetryConfig",
     "RateLimiter",

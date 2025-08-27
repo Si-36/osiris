@@ -265,13 +265,12 @@ async def shape_stream_endpoint(websocket: WebSocket, client_id: str):
         await manager.connect(client_id, websocket)
     
         try:
-            pass
-        # Keep connection alive
-        while True:
-            data = await websocket.receive_text()
-            
-            if data == "ping":
-                await websocket.send_text(json.dumps({"type": "pong"}))
+            # Keep connection alive
+            while True:
+                data = await websocket.receive_text()
+                
+                if data == "ping":
+                    await websocket.send_text(json.dumps({"type": "pong"}))
             
         except WebSocketDisconnect:
             pass

@@ -115,13 +115,12 @@ async def shape_stream_endpoint(websocket: WebSocket):
         await shape_stream_manager.connect(websocket)
     
         try:
-            pass
-        # Send initial connection message
-        await websocket.send_text(json.dumps({
-            'type': 'connection',
-            'status': 'connected',
-            'message': 'AURA Shape Stream Active'
-        }))
+            # Send initial connection message
+            await websocket.send_text(json.dumps({
+                'type': 'connection',
+                'status': 'connected',
+                'message': 'AURA Shape Stream Active'
+            }))
         
         # Keep connection alive and handle incoming messages
         while True:

@@ -511,13 +511,13 @@ async def websocket_endpoint(websocket: WebSocket):
         """WebSocket endpoint for real-time updates"""
         await dashboard_manager.connect_websocket(websocket)
         try:
-            pass
-        while True:
-            # Keep connection alive
-            await websocket.receive_text()
+            while True:
+                # Keep connection alive
+                await websocket.receive_text()
         except WebSocketDisconnect:
             pass
-        await dashboard_manager.disconnect_websocket(websocket)
+        finally:
+            await dashboard_manager.disconnect_websocket(websocket)
 
 
 @app.get("/api/status")
