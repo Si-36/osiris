@@ -282,8 +282,7 @@ class PHFormerTiny(nn.Module):
         logger.info(f"PHFormer-Tiny initialized with {self.count_parameters()}M parameters")
     
     def _init_weights(self):
-            """Initialize weights with small values for stability"""
-        pass
+        """Initialize weights with small values for stability"""
         for module in self.modules():
             if isinstance(module, nn.Linear):
                 nn.init.normal_(module.weight, mean=0.0, std=0.02)
@@ -313,7 +312,6 @@ class PHFormerTiny(nn.Module):
         sequence_features: Optional[torch.Tensor] = None,
         return_embeddings: bool = False
         ) -> Dict[str, torch.Tensor]:
-            pass
         """
         Forward pass through PHFormer-Tiny
         
