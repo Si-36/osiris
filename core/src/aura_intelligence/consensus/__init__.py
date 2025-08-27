@@ -16,7 +16,7 @@ Key Features:
 - Self-healing and Byzantine fault detection
 """
 
-from .types import (
+from .consensus_types import (
     DecisionType,
     ConsensusRequest,
     ConsensusResult,

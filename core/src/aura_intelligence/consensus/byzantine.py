@@ -1,678 +1,768 @@
 """
-Byzantine Fault Tolerant Consensus for AURA Intelligence.
+Byzantine Fault Tolerant Consensus - 2025 Implementation
 
-HotStuff-inspired implementation for critical strategic decisions:
-    pass
-- Model updates affecting all agents
-- Safety-critical operations
-- Financial transactions
-- Compliance-required decisions
+Based on:
+- HotStuff consensus protocol (latest BFT)
+- Active Inference for decision confidence
+- Explainable AI with causal reasoning
+- Multi-agent consensus mechanisms
 
-Tolerates up to f Byzantine failures in 3f+1 nodes.
+Key innovations:
+- 3-phase HotStuff protocol (prepare, pre-commit, commit)
+- Active inference for confidence estimation
+- Cryptographic proofs with threshold signatures
+- Byzantine node detection and isolation
 """
 
-from typing import Dict, Any, Optional, List, Set, Protocol
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
 import asyncio
 import hashlib
+import time
+from typing import Dict, List, Set, Optional, Any, Tuple
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
 import structlog
+from collections import defaultdict, deque
+import json
+import uuid
 
-from opentelemetry import trace, metrics
-
-from .types import (
-    ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
-    Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
-)
-from aura_intelligence.events import EventProducer
-from ..agents.temporal import execute_workflow
-
-logger = structlog.get_logger()
-tracer = trace.get_tracer(__name__)
-meter = metrics.get_meter(__name__)
+logger = structlog.get_logger(__name__)
 
 
-class BFTMetrics:
-    """Centralized metrics for Byzantine consensus."""
-    
-    def __init__(self):
-        self.phases = meter.create_counter(
-            name="bft.phases",
-            description="Number of BFT phases completed"
-        )
-        self.view_changes = meter.create_counter(
-            name="bft.view_changes",
-            description="Number of BFT view changes"
-        )
-        self.byzantine_detected = meter.create_counter(
-            name="bft.byzantine.detected",
-            description="Number of Byzantine behaviors detected"
-        )
+class BFTPhase(Enum):
+    """HotStuff consensus phases"""
+    NEW_VIEW = "new_view"
+    PREPARE = "prepare"
+    PRE_COMMIT = "pre_commit"
+    COMMIT = "commit"
+    DECIDE = "decide"
 
 
-class BFTCrypto(Protocol):
-    """Protocol for BFT cryptographic operations."""
-    
-    def sign(self, data: bytes) -> bytes:
-        """Sign data."""
-        ...
-    
-    def verify(self, data: bytes, signature: bytes, public_key: bytes) -> bool:
-        """Verify signature."""
-        ...
-    
-    def hash(self, data: bytes) -> bytes:
-        """Hash data."""
-        ...
+class VoteType(Enum):
+    """Vote types in consensus"""
+    APPROVE = "approve"
+    REJECT = "reject"
+    ABSTAIN = "abstain"
 
 
-class SimpleBFTCrypto:
-    """Simple crypto implementation for testing."""
+@dataclass
+class BFTMessage:
+    """Byzantine fault tolerant message"""
+    message_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    phase: BFTPhase = BFTPhase.NEW_VIEW
+    view: int = 0
+    sequence: int = 0
+    proposal: Dict[str, Any] = field(default_factory=dict)
+    proposer_id: str = ""
+    message_hash: str = ""
+    timestamp: datetime = field(default_factory=datetime.now)
     
-    def __init__(self, node_id: str):
-        self.node_id = node_id
-    
-    def sign(self, data: bytes) -> bytes:
-        """Simple signature (NOT for production)."""
-        return hashlib.sha256(data + self.node_id.encode()).digest()
-    
-    def verify(self, data: bytes, signature: bytes, public_key: bytes) -> bool:
-        """Simple verification (NOT for production)."""
-        expected = hashlib.sha256(data + public_key).digest()
-        return signature == expected
-    
-    def hash(self, data: bytes) -> bytes:
-        """SHA256 hash."""
-        return hashlib.sha256(data).digest()
+    def __post_init__(self):
+        """Calculate message hash if not provided"""
+        if not self.message_hash:
+            content = f"{self.phase.value}:{self.view}:{self.sequence}:{json.dumps(self.proposal, sort_keys=True)}"
+            self.message_hash = hashlib.sha256(content.encode()).hexdigest()
 
 
-class BFTViewManager:
-    """Manages BFT view changes and leader selection."""
+@dataclass
+class BFTVote:
+    """Vote in BFT consensus"""
+    vote_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    voter_id: str = ""
+    message_hash: str = ""
+    phase: BFTPhase = BFTPhase.PREPARE
+    view: int = 0
+    sequence: int = 0
+    vote_type: VoteType = VoteType.APPROVE
+    signature: str = ""  # Cryptographic signature
+    timestamp: datetime = field(default_factory=datetime.now)
     
-    def __init__(self, validators: List[str], metrics: BFTMetrics):
-        self.validators = sorted(validators)
-        self.metrics = metrics
-        self.view = 0
-        self.phase = BFTPhase.PREPARE
-        
-    def get_leader(self, view: int) -> str:
-        """Get leader for view using round-robin."""
-        return self.validators[view % len(self.validators)]
-    
-    def advance_view(self):
-        """Move to next view."""
-        pass
-        self.view += 1
-        self.phase = BFTPhase.VIEW_CHANGE
-        self.metrics.view_changes.add(1)
-        return self.get_leader(self.view)
-    
-    def is_valid_leader(self, node_id: str, view: int) -> bool:
-        """Check if node is valid leader for view."""
-        return node_id == self.get_leader(view)
+    # Active inference components
+    confidence: float = 1.0  # Vote confidence
+    free_energy: float = 0.0  # Decision free energy
 
 
-class BFTVoteCollector:
-    """Collects and validates votes for BFT phases."""
+@dataclass
+class BFTProof:
+    """Cryptographic proof of consensus"""
+    phase: BFTPhase
+    view: int
+    sequence: int
+    message_hash: str
+    votes: List[BFTVote] = field(default_factory=list)
+    threshold_signature: str = ""  # Aggregate signature
     
-    def __init__(self, threshold: int, crypto: BFTCrypto):
-        self.threshold = threshold
-        self.crypto = crypto
-        self.phase_votes: Dict[BFTPhase, List[BFTVote]] = {
-            phase: [] for phase in BFTPhase
-        }
-        self.vote_history: Dict[str, List[BFTVote]] = {}
-    
-    def add_vote(self, vote: BFTVote) -> bool:
-        """Add vote if valid, return True if threshold reached."""
-        # Check for duplicates
-        if self._is_duplicate(vote):
-            return False
-        
-        # Add to phase votes
-        self.phase_votes[vote.phase].append(vote)
-        
-        # Track history for Byzantine detection
-        if vote.voter_id not in self.vote_history:
-            self.vote_history[vote.voter_id] = []
-        self.vote_history[vote.voter_id].append(vote)
-        
-        # Check threshold
-        return len(self.phase_votes[vote.phase]) >= self.threshold
-    
-    def _is_duplicate(self, vote: BFTVote) -> bool:
-        """Check for duplicate or conflicting votes."""
-        for prev_vote in self.vote_history.get(vote.voter_id, []):
-            if (prev_vote.phase == vote.phase and 
-                prev_vote.view == vote.view and
-                prev_vote.sequence == vote.sequence):
-                    pass
-                return prev_vote.message_hash != vote.message_hash
-        return False
-    
-    def get_byzantine_nodes(self) -> Set[str]:
-        """Detect nodes with conflicting votes."""
-        pass
-        byzantine = set()
-        for voter_id, votes in self.vote_history.items():
-            # Check for conflicting votes in same phase/view/sequence
-            seen = {}
-            for vote in votes:
-                key = (vote.phase, vote.view, vote.sequence)
-                if key in seen and seen[key] != vote.message_hash:
-                    byzantine.add(voter_id)
-                seen[key] = vote.message_hash
-        return byzantine
-    
-    def reset(self):
-        """Reset for new consensus round."""
-        pass
-        self.phase_votes = {phase: [] for phase in BFTPhase}
-
-
-class BFTMessageHandler:
-    """Handles BFT message creation and validation."""
-    
-    def __init__(self, node_id: str, crypto: BFTCrypto):
-        self.node_id = node_id
-        self.crypto = crypto
-        self.sequence = 0
-    
-    def create_message(
-        self,
-        phase: BFTPhase,
-        view: int,
-        proposal: Dict[str, Any],
-        request_id: str
-        ) -> BFTMessage:
-            pass
-        """Create and sign BFT message."""
-        self.sequence += 1
-        
-        msg = BFTMessage(
-            type=phase,
-            view=view,
-            sequence=self.sequence,
-            node_id=self.node_id,
-            proposal=proposal,
-            request_id=request_id
-        )
-        
-        # Sign message
-        msg_bytes = self._serialize_message(msg)
-        msg.signature = self.crypto.sign(msg_bytes)
-        
-        return msg
-    
-    def validate_message(self, msg: BFTMessage) -> bool:
-        """Validate message signature and content."""
-        if not msg.signature:
-            return False
-        
-        msg_bytes = self._serialize_message(msg)
-        public_key = f"public_key_{msg.node_id}".encode()
-        
-        return self.crypto.verify(msg_bytes, msg.signature, public_key)
-    
-    def hash_message(self, msg: BFTMessage) -> str:
-        """Create hash of message for voting."""
-        data = f"{msg.type}:{msg.view}:{msg.sequence}:{msg.proposal}"
-        return self.crypto.hash(data.encode()).hex()
-    
-    def _serialize_message(self, msg: BFTMessage) -> bytes:
-        """Serialize message for signing."""
-        # In production: use proper serialization
-        data = f"{msg.type}:{msg.view}:{msg.sequence}:{msg.node_id}:{msg.proposal}"
-        return data.encode()
-
-
-class BFTCore:
-    """Core BFT consensus logic."""
-    
-    def __init__(
-        self,
-        config: 'BFTConfig',
-        event_producer: EventProducer,
-        metrics: BFTMetrics
-    ):
-        self.config = config
-        self.node_id = config.node_id
-        self.event_producer = event_producer
-        self.metrics = metrics
-        
-        # Core components
-        self.crypto = SimpleBFTCrypto(config.node_id)
-        self.view_manager = BFTViewManager(config.validators, metrics)
-        self.vote_collector = BFTVoteCollector(
-            threshold=len(config.validators) * 2 // 3 + 1,
-            crypto=self.crypto
-        )
-        self.message_handler = BFTMessageHandler(config.node_id, self.crypto)
-        
-        # State
-        self.pending_proposals: Dict[str, ConsensusRequest] = {}
-        self.pending_futures: Dict[str, asyncio.Future] = {}
-        self.view_change_timer: Optional[asyncio.Task] = None
-    
-    async def start(self):
-        """Start BFT node."""
-        pass
-        await self.event_producer.start()
-        self.view_change_timer = asyncio.create_task(self._view_change_monitor())
-    
-    async def stop(self):
-        """Stop BFT node."""
-        pass
-        if self.view_change_timer:
-            self.view_change_timer.cancel()
-        await self.event_producer.stop()
-    
-    async def propose(self, request: ConsensusRequest) -> ConsensusResult:
-        """Propose value for Byzantine consensus."""
-        with tracer.start_as_current_span("bft.propose") as span:
-            span.set_attributes({
-                "node_id": self.node_id,
-                "view": self.view_manager.view,
-                "is_leader": self._is_leader(),
-                "request_id": request.request_id
-            })
-            
-            # Create future for result
-            future = asyncio.Future()
-            self.pending_futures[request.request_id] = future
-            self.pending_proposals[request.request_id] = request
-            
-            try:
-                if self._is_leader():
-                    await self._initiate_consensus(request)
-                else:
-                    await self._forward_to_leader(request)
-                
-                # Wait for consensus
-                result = await asyncio.wait_for(
-                    future,
-                    timeout=request.timeout.total_seconds()
-                )
-                return result
-                
-            except asyncio.TimeoutError:
-                return ConsensusResult(
-                    request_id=request.request_id,
-                    status=ConsensusState.TIMEOUT,
-                    reason="BFT consensus timeout"
-                )
-            finally:
-                self.pending_proposals.pop(request.request_id, None)
-                self.pending_futures.pop(request.request_id, None)
-    
-    def _is_leader(self) -> bool:
-        """Check if this node is current leader."""
-        pass
-        current_leader = self.view_manager.get_leader(self.view_manager.view)
-        return self.node_id == current_leader
-    
-        async def _initiate_consensus(self, request: ConsensusRequest):
-            pass
-        """Leader initiates three-phase consensus."""
-        # Reset vote collector
-        self.vote_collector.reset()
-        
-        # Phase 1: Prepare
-        prepare_msg = self.message_handler.create_message(
-            BFTPhase.PREPARE,
-            self.view_manager.view,
-            request.proposal,
-            request.request_id
-        )
-        
-        await self._broadcast_message(prepare_msg)
-        
-        # Start phase timeout
-        asyncio.create_task(
-            self._phase_timeout(BFTPhase.PREPARE, prepare_msg.sequence)
-        )
-    
-        async def _broadcast_message(self, msg: BFTMessage):
-            pass
-        """Broadcast message to all validators."""
-        await self.event_producer.send_event("bft.messages", {
-            "phase": msg.type.value,
-            "view": msg.view,
-            "sequence": msg.sequence,
-            "node_id": msg.node_id,
-            "message": msg.to_dict()
-        })
-        
-        self.metrics.phases.add(1, {
-            "phase": msg.type.value,
-            "node_id": self.node_id
-        })
-    
-        async def handle_message(self, msg: BFTMessage):
-            pass
-        """Handle incoming BFT message."""
-        # Validate message
-        if not self.message_handler.validate_message(msg):
-            await self._report_byzantine(msg.node_id, "Invalid signature")
-            return
-        
-        # Check view
-        if msg.view != self.view_manager.view:
-            return
-        
-        # Handle based on phase
-        if msg.type == BFTPhase.PREPARE:
-            await self._handle_prepare(msg)
-        elif msg.type == BFTPhase.PRE_COMMIT:
-            await self._handle_precommit(msg)
-        elif msg.type == BFTPhase.COMMIT:
-            await self._handle_commit(msg)
-    
-        async def _handle_prepare(self, msg: BFTMessage):
-            pass
-        """Handle prepare phase message."""
-        # Validate proposal
-        if not await self._validate_proposal(msg.proposal):
-            return
-        
-        # Create vote
-        vote = BFTVote(
-            phase=BFTPhase.PREPARE,
-            view=msg.view,
-            sequence=msg.sequence,
-            voter_id=self.node_id,
-            message_hash=self.message_handler.hash_message(msg),
-            signature=self.crypto.sign(
-                f"{self.node_id}:{msg.view}:{msg.sequence}".encode()
-            )
-        )
-        
-        # Send vote to leader
-        leader = self.view_manager.get_leader(msg.view)
-        await self._send_vote(leader, vote)
-        
-        # If we are leader, handle our own vote
-        if self._is_leader():
-            await self._handle_vote(vote)
-    
-        async def _handle_vote(self, vote: BFTVote):
-            pass
-        """Handle vote from validator."""
-        # Add vote and check threshold
-        if self.vote_collector.add_vote(vote):
-            # Threshold reached, advance phase
-            if vote.phase == BFTPhase.PREPARE:
-                await self._start_precommit()
-            elif vote.phase == BFTPhase.PRE_COMMIT:
-                await self._start_commit()
-            elif vote.phase == BFTPhase.COMMIT:
-                await self._finalize_consensus()
-    
-        async def _start_precommit(self):
-            pass
-        """Start pre-commit phase."""
-        pass
-        # Find the proposal
-        request = next(iter(self.pending_proposals.values()), None)
-        if not request:
-            return
-        
-        msg = self.message_handler.create_message(
-            BFTPhase.PRE_COMMIT,
-            self.view_manager.view,
-            request.proposal,
-            request.request_id
-        )
-        
-        await self._broadcast_message(msg)
-    
-        async def _start_commit(self):
-            pass
-        """Start commit phase."""
-        pass
-        request = next(iter(self.pending_proposals.values()), None)
-        if not request:
-            return
-        
-        msg = self.message_handler.create_message(
-            BFTPhase.COMMIT,
-            self.view_manager.view,
-            request.proposal,
-            request.request_id
-        )
-        
-        await self._broadcast_message(msg)
-    
-        async def _finalize_consensus(self):
-            pass
-        """Finalize consensus after commit phase."""
-        pass
-        # Find request
-        request_id = None
-        request = None
-        for rid, req in self.pending_proposals.items():
-            if rid in self.pending_futures:
-                request_id = rid
-                request = req
-                break
-        
-        if not request:
-            return
-        
-        # Check for Byzantine nodes
-        byzantine_nodes = self.vote_collector.get_byzantine_nodes()
-        if byzantine_nodes:
-            for node in byzantine_nodes:
-                await self._report_byzantine(node, "Conflicting votes")
-        
-        # Create result
-        result = ConsensusResult(
-            request_id=request_id,
-            status=ConsensusState.ACCEPTED,
-            decision=request.proposal,
-            consensus_type="bft",
-            consensus_proof=self._create_proof()
-        )
-        
-        # Complete future
-        if request_id in self.pending_futures:
-            future = self.pending_futures[request_id]
-            future.set_result(result)
-        
-        logger.info(
-            f"BFT consensus achieved",
-            request_id=request_id,
-            view=self.view_manager.view
-        )
-    
-    def _create_proof(self) -> ConsensusProof:
-        """Create consensus proof from votes."""
-        pass
-        return ConsensusProof(
-            request_id="",
-            consensus_type="bft",
-            votes=[
-                Vote(
-                    voter_id=v.voter_id,
-                    vote_type=VoteType.APPROVE,
-                    timestamp=v.timestamp,
-                    signature=v.signature
-                )
-                for v in self.vote_collector.phase_votes[BFTPhase.COMMIT]
-            ],
-            quorum_size=self.vote_collector.threshold,
-            view=self.view_manager.view
-        )
-    
-        async def _view_change_monitor(self):
-            pass
-        """Monitor for view timeouts."""
-        pass
-        while True:
-            try:
-                await asyncio.sleep(self.config.view_timeout_ms / 1000.0)
-                
-                if self.pending_proposals and not self._has_progress():
-                    new_leader = self.view_manager.advance_view()
-                    logger.info(
-                        f"View change",
-                        old_view=self.view_manager.view - 1,
-                        new_view=self.view_manager.view,
-                        new_leader=new_leader
-                    )
-                    
-                    # Notify pending requests
-                    for future in self.pending_futures.values():
-                        if not future.done():
-                            future.set_exception(
-                                Exception("View change")
-                            )
-                    
-            except asyncio.CancelledError:
-                break
-    
-    def _has_progress(self) -> bool:
-        """Check if consensus is making progress."""
-        pass
-        # Simple check: any votes in current phase
-        return any(
-            len(votes) > 0 
-            for votes in self.vote_collector.phase_votes.values()
-        )
-    
-        async def _report_byzantine(self, node_id: str, reason: str):
-            pass
-        """Report Byzantine behavior."""
-        logger.warning(
-            f"Byzantine behavior detected",
-            node_id=node_id,
-            reason=reason
-        )
-        
-        self.metrics.byzantine_detected.add(1, {
-            "node_id": node_id,
-            "reason": reason
-        })
-        
-        await self.event_producer.send_event("bft.byzantine.alerts", {
-            "detected_by": self.node_id,
-            "byzantine_node": node_id,
-            "reason": reason,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        })
-    
-        async def _validate_proposal(self, proposal: Dict[str, Any]) -> bool:
-            pass
-        """Validate proposal before voting."""
-        # Add custom validation logic
-        return True
-    
-        async def _forward_to_leader(self, request: ConsensusRequest):
-            pass
-        """Forward request to current leader."""
-        leader = self.view_manager.get_leader(self.view_manager.view)
-        await execute_workflow(
-            "BFTForwardWorkflow",
-            {
-                "from_node": self.node_id,
-                "to_node": leader,
-                "request": request
-            },
-            id=f"bft-forward-{request.request_id}"
-        )
-    
-        async def _send_vote(self, target: str, vote: BFTVote):
-            pass
-        """Send vote to target node."""
-        await self.event_producer.send_event(
-            f"bft.votes.{target}",
-            vote.to_dict()
-        )
-    
-        async def _phase_timeout(self, phase: BFTPhase, sequence: int):
-            pass
-        """Handle phase timeout."""
-        await asyncio.sleep(self.config.phase_timeout_ms / 1000.0)
-        
-        # Check if still in same phase
-        if self.view_manager.phase == phase:
-            logger.warning(
-                f"Phase timeout",
-                phase=phase.value,
-                sequence=sequence
-            )
-    
-        async def _handle_precommit(self, msg: BFTMessage):
-            pass
-        """Handle pre-commit message."""
-        # Similar to prepare
-        await self._handle_prepare(msg)
-    
-        async def _handle_commit(self, msg: BFTMessage):
-            pass
-        """Handle commit message."""
-        # Similar to prepare
-        await self._handle_prepare(msg)
-    
-        async def get_status(self) -> Dict[str, Any]:
-            pass
-        """Get BFT node status."""
-        pass
-        byzantine_nodes = self.vote_collector.get_byzantine_nodes()
-        return {
-            "node_id": self.node_id,
-            "view": self.view_manager.view,
-            "phase": self.view_manager.phase.value,
-            "is_leader": self._is_leader(),
-            "validators": self.config.validators,
-            "byzantine_nodes": list(byzantine_nodes),
-            "pending_proposals": len(self.pending_proposals)
-        }
+    def is_valid(self, threshold: int) -> bool:
+        """Check if proof meets threshold"""
+        approvals = [v for v in self.votes if v.vote_type == VoteType.APPROVE]
+        return len(approvals) >= threshold
 
 
 @dataclass
 class BFTConfig:
-    """Configuration for Byzantine consensus."""
+    """Configuration for Byzantine consensus"""
     node_id: str
-    validators: List[str]
-    view_timeout_ms: int = 5000
-    phase_timeout_ms: int = 1000
-    batch_size: int = 100
-    batch_timeout_ms: int = 50
-    signature_scheme: str = "ed25519"
-    threshold_signature: bool = True
-    kafka_bootstrap_servers: str = "localhost:9092"
-    use_temporal_for_rpc: bool = True
+    total_nodes: int = 4
+    fault_tolerance: int = 1  # f nodes can be faulty
+    timeout_ms: int = 5000
+    view_change_timeout_ms: int = 10000
+    enable_active_inference: bool = True
+    confidence_threshold: float = 0.7
 
 
 class ByzantineConsensus:
-    """High-level Byzantine consensus interface."""
+    """
+    Byzantine Fault Tolerant Consensus with HotStuff protocol
+    Supports f faulty nodes out of 3f+1 total nodes
+    """
     
     def __init__(self, config: BFTConfig):
         self.config = config
-        self.metrics = BFTMetrics()
-        self.event_producer = EventProducer(config.kafka_bootstrap_servers)
-        self.core = BFTCore(config, self.event_producer, self.metrics)
+        self.node_id = config.node_id
+        
+        # Calculate thresholds
+        self.total_nodes = config.total_nodes
+        self.fault_tolerance = config.fault_tolerance
+        self.threshold = 2 * self.fault_tolerance + 1  # 2f+1 for consensus
+        
+        # Consensus state
+        self.current_view = 0
+        self.current_sequence = 0
+        self.current_phase = BFTPhase.NEW_VIEW
+        self.is_leader = False
+        
+        # Message and vote tracking
+        self.messages: Dict[str, BFTMessage] = {}
+        self.phase_votes: Dict[BFTPhase, List[BFTVote]] = defaultdict(list)
+        self.vote_history: Dict[str, List[BFTVote]] = defaultdict(list)
+        self.proofs: Dict[Tuple[int, int], Dict[BFTPhase, BFTProof]] = defaultdict(dict)
+        
+        # Byzantine detection
+        self.byzantine_nodes: Set[str] = set()
+        self.node_reputation: Dict[str, float] = defaultdict(lambda: 1.0)
+        
+        # Active inference for confidence
+        self.decision_history = deque(maxlen=100)
+        self.confidence_model = ActiveInferenceConfidence() if config.enable_active_inference else None
+        
+        # Locks and events
+        self.vote_lock = asyncio.Lock()
+        self.phase_events: Dict[BFTPhase, asyncio.Event] = {
+            phase: asyncio.Event() for phase in BFTPhase
+        }
+        
+        self._running = False
+        self._tasks: List[asyncio.Task] = []
+        
+        logger.info(f"Byzantine consensus initialized for node {self.node_id}")
     
-        async def start(self):
-            pass
-        """Start Byzantine consensus."""
-        pass
-        await self.core.start()
+    async def start(self):
+        """Start consensus protocol"""
+        if self._running:
+            return
+        
+        self._running = True
+        
+        # Start background tasks
+        self._tasks.append(asyncio.create_task(self._view_change_timer()))
+        self._tasks.append(asyncio.create_task(self._byzantine_detector()))
+        
+        logger.info(f"Byzantine consensus started for node {self.node_id}")
     
-        async def stop(self):
-            pass
-        """Stop Byzantine consensus."""
-        pass
-        await self.core.stop()
+    async def stop(self):
+        """Stop consensus protocol"""
+        self._running = False
+        
+        for task in self._tasks:
+            task.cancel()
+        
+        await asyncio.gather(*self._tasks, return_exceptions=True)
+        self._tasks.clear()
+        
+        logger.info(f"Byzantine consensus stopped for node {self.node_id}")
     
-        async def propose(self, request: ConsensusRequest) -> ConsensusResult:
-            pass
-        """Propose value for Byzantine consensus."""
-        return await self.core.propose(request)
+    async def propose(self, proposal: Dict[str, Any]) -> BFTMessage:
+        """Propose a new message for consensus"""
+        if not self.is_leader:
+            raise Exception("Only leader can propose")
+        
+        # Create message
+        message = BFTMessage(
+            phase=BFTPhase.PREPARE,
+            view=self.current_view,
+            sequence=self.current_sequence + 1,
+            proposal=proposal,
+            proposer_id=self.node_id
+        )
+        
+        self.messages[message.message_hash] = message
+        
+        # Start HotStuff protocol
+        await self._execute_hotstuff_round(message)
+        
+        return message
     
-        async def get_status(self) -> Dict[str, Any]:
-            pass
-        """Get consensus status."""
-        pass
-        return await self.core.get_status()
+    async def handle_message(self, message: BFTMessage) -> Optional[BFTVote]:
+        """Handle incoming BFT message"""
+        # Validate message
+        if not self._validate_message(message):
+            logger.warning(f"Invalid message from {message.proposer_id}")
+            return None
+        
+        # Store message
+        self.messages[message.message_hash] = message
+        
+        # Create vote based on evaluation
+        vote = await self._create_vote(message)
+        
+        # Process vote
+        await self.handle_vote(vote)
+        
+        return vote
+    
+    async def handle_vote(self, vote: BFTVote) -> bool:
+        """Handle incoming vote"""
+        async with self.vote_lock:
+            # Check for Byzantine behavior
+            if self._is_duplicate_or_conflicting(vote):
+                logger.warning(f"Byzantine behavior detected from {vote.voter_id}")
+                self.byzantine_nodes.add(vote.voter_id)
+                self._update_reputation(vote.voter_id, -0.1)
+                return False
+            
+            # Record vote
+            self.phase_votes[vote.phase].append(vote)
+            self.vote_history[vote.voter_id].append(vote)
+            
+            # Check if we have threshold
+            if self._check_threshold(vote):
+                # Create proof
+                proof = self._create_proof(vote.phase, vote.view, vote.sequence)
+                self.proofs[(vote.view, vote.sequence)][vote.phase] = proof
+                
+                # Signal phase completion
+                self.phase_events[vote.phase].set()
+                
+                # Move to next phase
+                await self._advance_phase(vote.phase, proof)
+                
+                return True
+        
+        return False
+    
+    def _validate_message(self, message: BFTMessage) -> bool:
+        """Validate BFT message"""
+        # Check view
+        if message.view < self.current_view:
+            return False
+        
+        # Check sequence
+        if message.sequence <= self.current_sequence and message.phase != BFTPhase.NEW_VIEW:
+            return False
+        
+        # Check if proposer is Byzantine
+        if message.proposer_id in self.byzantine_nodes:
+            return False
+        
+        # Verify message hash
+        expected_hash = self._calculate_message_hash(message)
+        if message.message_hash != expected_hash:
+            return False
+        
+        return True
+    
+    def _calculate_message_hash(self, message: BFTMessage) -> str:
+        """Calculate message hash"""
+        content = f"{message.phase.value}:{message.view}:{message.sequence}:{json.dumps(message.proposal, sort_keys=True)}"
+        return hashlib.sha256(content.encode()).hexdigest()
+    
+    async def _create_vote(self, message: BFTMessage) -> BFTVote:
+        """Create vote for message"""
+        # Evaluate proposal
+        vote_type, confidence = await self._evaluate_proposal(message.proposal)
+        
+        # Calculate free energy if using active inference
+        free_energy = 0.0
+        if self.confidence_model:
+            free_energy = await self.confidence_model.calculate_free_energy(
+                message.proposal,
+                self.decision_history
+            )
+        
+        # Create vote
+        vote = BFTVote(
+            voter_id=self.node_id,
+            message_hash=message.message_hash,
+            phase=message.phase,
+            view=message.view,
+            sequence=message.sequence,
+            vote_type=vote_type,
+            confidence=confidence,
+            free_energy=free_energy
+        )
+        
+        # Sign vote
+        vote.signature = self._sign_vote(vote)
+        
+        return vote
+    
+    async def _evaluate_proposal(self, proposal: Dict[str, Any]) -> Tuple[VoteType, float]:
+        """Evaluate proposal and determine vote"""
+        # Use active inference if enabled
+        if self.confidence_model:
+            decision = await self.confidence_model.evaluate(proposal)
+            
+            if decision.confidence < self.config.confidence_threshold:
+                return VoteType.ABSTAIN, decision.confidence
+            
+            return VoteType.APPROVE if decision.approve else VoteType.REJECT, decision.confidence
+        
+        # Simple evaluation fallback
+        # Check proposal validity
+        if "action" not in proposal or "value" not in proposal:
+            return VoteType.REJECT, 0.9
+        
+        # Check value bounds
+        value = proposal.get("value", 0)
+        if isinstance(value, (int, float)) and 0 <= value <= 1:
+            return VoteType.APPROVE, 0.8
+        
+        return VoteType.REJECT, 0.7
+    
+    def _sign_vote(self, vote: BFTVote) -> str:
+        """Create cryptographic signature for vote"""
+        # Simplified signature (in production, use real crypto)
+        content = f"{vote.voter_id}:{vote.message_hash}:{vote.phase.value}:{vote.vote_type.value}"
+        return hashlib.sha256(content.encode()).hexdigest()[:16]
+    
+    def _is_duplicate_or_conflicting(self, vote: BFTVote) -> bool:
+        """Check for duplicate or conflicting votes"""
+        for prev_vote in self.vote_history.get(vote.voter_id, []):
+            if (prev_vote.phase == vote.phase and 
+                prev_vote.view == vote.view and
+                prev_vote.sequence == vote.sequence):
+                # Check if voting differently on same proposal
+                return prev_vote.message_hash != vote.message_hash
+        return False
+    
+    def _check_threshold(self, vote: BFTVote) -> bool:
+        """Check if we have threshold votes for phase"""
+        phase_votes = [v for v in self.phase_votes[vote.phase] 
+                      if v.view == vote.view and v.sequence == vote.sequence 
+                      and v.message_hash == vote.message_hash
+                      and v.vote_type == VoteType.APPROVE]
+        
+        return len(phase_votes) >= self.threshold
+    
+    def _create_proof(self, phase: BFTPhase, view: int, sequence: int) -> BFTProof:
+        """Create cryptographic proof of consensus"""
+        # Get relevant votes
+        votes = [v for v in self.phase_votes[phase]
+                if v.view == view and v.sequence == sequence]
+        
+        # Filter approvals
+        approvals = [v for v in votes if v.vote_type == VoteType.APPROVE]
+        
+        # Get message hash (should be same for all approvals)
+        message_hash = approvals[0].message_hash if approvals else ""
+        
+        # Create proof
+        proof = BFTProof(
+            phase=phase,
+            view=view,
+            sequence=sequence,
+            message_hash=message_hash,
+            votes=approvals
+        )
+        
+        # Create threshold signature (simplified)
+        signatures = [v.signature for v in approvals]
+        proof.threshold_signature = hashlib.sha256("".join(signatures).encode()).hexdigest()[:32]
+        
+        return proof
+    
+    async def _advance_phase(self, current_phase: BFTPhase, proof: BFTProof):
+        """Advance to next phase in HotStuff protocol"""
+        # Determine next phase
+        next_phase = None
+        
+        if current_phase == BFTPhase.PREPARE:
+            next_phase = BFTPhase.PRE_COMMIT
+        elif current_phase == BFTPhase.PRE_COMMIT:
+            next_phase = BFTPhase.COMMIT
+        elif current_phase == BFTPhase.COMMIT:
+            next_phase = BFTPhase.DECIDE
+            # Consensus reached!
+            await self._finalize_decision(proof)
+        
+        if next_phase and self.is_leader:
+            # Leader broadcasts next phase message
+            message = BFTMessage(
+                phase=next_phase,
+                view=proof.view,
+                sequence=proof.sequence,
+                proposal={"previous_proof": proof.threshold_signature},
+                proposer_id=self.node_id
+            )
+            
+            # This would be broadcast to all nodes
+            await self.handle_message(message)
+    
+    async def _finalize_decision(self, proof: BFTProof):
+        """Finalize consensus decision"""
+        # Update sequence number
+        self.current_sequence = proof.sequence
+        
+        # Record decision
+        if self.confidence_model:
+            await self.confidence_model.record_decision(
+                proof.message_hash,
+                True,  # Consensus reached
+                proof.votes[0].confidence if proof.votes else 0.5
+            )
+        
+        # Update reputation for voters
+        for vote in proof.votes:
+            self._update_reputation(vote.voter_id, 0.05)
+        
+        logger.info(f"Consensus reached for sequence {proof.sequence}")
+    
+    def _update_reputation(self, node_id: str, delta: float):
+        """Update node reputation"""
+        self.node_reputation[node_id] = max(0, min(1, 
+            self.node_reputation[node_id] + delta
+        ))
+    
+    async def _execute_hotstuff_round(self, message: BFTMessage):
+        """Execute a full HotStuff consensus round"""
+        try:
+            # Phase 1: Prepare
+            message.phase = BFTPhase.PREPARE
+            await self.handle_message(message)
+            
+            # Wait for prepare votes
+            await asyncio.wait_for(
+                self.phase_events[BFTPhase.PREPARE].wait(),
+                timeout=self.config.timeout_ms / 1000
+            )
+            
+            # Phase 2: Pre-commit
+            prepare_proof = self.proofs[(message.view, message.sequence)][BFTPhase.PREPARE]
+            if prepare_proof.is_valid(self.threshold):
+                await self._advance_phase(BFTPhase.PREPARE, prepare_proof)
+                
+                # Wait for pre-commit votes
+                await asyncio.wait_for(
+                    self.phase_events[BFTPhase.PRE_COMMIT].wait(),
+                    timeout=self.config.timeout_ms / 1000
+                )
+                
+                # Phase 3: Commit
+                precommit_proof = self.proofs[(message.view, message.sequence)][BFTPhase.PRE_COMMIT]
+                if precommit_proof.is_valid(self.threshold):
+                    await self._advance_phase(BFTPhase.PRE_COMMIT, precommit_proof)
+                    
+                    # Wait for commit votes
+                    await asyncio.wait_for(
+                        self.phase_events[BFTPhase.COMMIT].wait(),
+                        timeout=self.config.timeout_ms / 1000
+                    )
+            
+        except asyncio.TimeoutError:
+            logger.warning(f"Timeout in HotStuff round for sequence {message.sequence}")
+            # Trigger view change
+            await self._trigger_view_change()
+    
+    async def _trigger_view_change(self):
+        """Trigger view change when timeout occurs"""
+        self.current_view += 1
+        self.current_phase = BFTPhase.NEW_VIEW
+        
+        # Clear phase events
+        for event in self.phase_events.values():
+            event.clear()
+        
+        # Clear votes for new view
+        self.phase_votes.clear()
+        
+        # Determine new leader (simple round-robin)
+        leader_index = self.current_view % self.total_nodes
+        self.is_leader = (leader_index == int(self.node_id.split("_")[-1]))
+        
+        logger.info(f"View change to {self.current_view}, leader: {self.is_leader}")
+    
+    async def _view_change_timer(self):
+        """Monitor for view change timeouts"""
+        while self._running:
+            try:
+                # Check if we need view change
+                last_decision_time = max(
+                    (vote.timestamp for votes in self.vote_history.values() 
+                     for vote in votes),
+                    default=datetime.now()
+                )
+                
+                if (datetime.now() - last_decision_time).total_seconds() * 1000 > self.config.view_change_timeout_ms:
+                    await self._trigger_view_change()
+                
+                await asyncio.sleep(1)
+                
+            except Exception as e:
+                logger.error(f"View change timer error: {e}")
+    
+    async def _byzantine_detector(self):
+        """Detect Byzantine nodes based on behavior"""
+        while self._running:
+            try:
+                await asyncio.sleep(5)  # Check every 5 seconds
+                
+                # Analyze vote patterns
+                for node_id, votes in self.vote_history.items():
+                    if len(votes) < 10:
+                        continue
+                    
+                    # Check for inconsistent voting patterns
+                    recent_votes = list(votes)[-20:]
+                    
+                    # Count conflicting votes
+                    conflicts = 0
+                    for i, vote1 in enumerate(recent_votes):
+                        for vote2 in recent_votes[i+1:]:
+                            if (vote1.view == vote2.view and 
+                                vote1.sequence == vote2.sequence and
+                                vote1.phase == vote2.phase and
+                                vote1.message_hash != vote2.message_hash):
+                                conflicts += 1
+                    
+                    # Mark as Byzantine if too many conflicts
+                    if conflicts > 3:
+                        self.byzantine_nodes.add(node_id)
+                        self.node_reputation[node_id] = 0
+                        logger.warning(f"Node {node_id} marked as Byzantine")
+                
+            except Exception as e:
+                logger.error(f"Byzantine detector error: {e}")
+    
+    def get_byzantine_nodes(self) -> Set[str]:
+        """Get detected Byzantine nodes"""
+        return self.byzantine_nodes.copy()
+    
+    def get_consensus_state(self) -> Dict[str, Any]:
+        """Get current consensus state"""
+        return {
+            "node_id": self.node_id,
+            "view": self.current_view,
+            "sequence": self.current_sequence,
+            "phase": self.current_phase.value,
+            "is_leader": self.is_leader,
+            "byzantine_nodes": list(self.byzantine_nodes),
+            "reputation": dict(self.node_reputation),
+            "total_votes": sum(len(votes) for votes in self.vote_history.values()),
+            "threshold": self.threshold
+        }
+
+
+class ActiveInferenceConfidence:
+    """Active inference model for consensus confidence"""
+    
+    def __init__(self):
+        self.belief_buffer = deque(maxlen=50)
+        self.prediction_errors = deque(maxlen=50)
+        self.learning_rate = 0.05
+    
+    async def evaluate(self, proposal: Dict[str, Any]) -> Any:
+        """Evaluate proposal using active inference"""
+        # Calculate expected utility
+        expected_utility = self._calculate_expected_utility(proposal)
+        
+        # Calculate uncertainty
+        uncertainty = self._calculate_uncertainty(proposal)
+        
+        # Decision based on free energy minimization
+        confidence = 1.0 / (1.0 + uncertainty)
+        approve = expected_utility > 0.5
+        
+        @dataclass
+        class Decision:
+            approve: bool
+            confidence: float
+        
+        return Decision(approve=approve, confidence=confidence)
+    
+    async def calculate_free_energy(self, proposal: Dict[str, Any], history: deque) -> float:
+        """Calculate free energy for decision"""
+        # Surprisal based on proposal novelty
+        surprisal = self._calculate_surprisal(proposal, history)
+        
+        # Complexity based on proposal structure
+        complexity = len(str(proposal)) / 100.0  # Normalized
+        
+        return surprisal + complexity
+    
+    def _calculate_expected_utility(self, proposal: Dict[str, Any]) -> float:
+        """Calculate expected utility of proposal"""
+        # Simple utility based on proposal features
+        value = proposal.get("value", 0.5)
+        if isinstance(value, (int, float)):
+            return max(0, min(1, value))
+        return 0.5
+    
+    def _calculate_uncertainty(self, proposal: Dict[str, Any]) -> float:
+        """Calculate uncertainty about proposal"""
+        # Base uncertainty
+        uncertainty = 0.5
+        
+        # Reduce uncertainty if we've seen similar proposals
+        for belief in self.belief_buffer:
+            similarity = self._calculate_similarity(proposal, belief)
+            uncertainty *= (1 - similarity * 0.1)
+        
+        return uncertainty
+    
+    def _calculate_surprisal(self, proposal: Dict[str, Any], history: deque) -> float:
+        """Calculate surprisal (unexpectedness) of proposal"""
+        if not history:
+            return 1.0
+        
+        # Check how different from recent proposals
+        total_diff = 0
+        for past in list(history)[-10:]:
+            diff = 1 - self._calculate_similarity(proposal, past)
+            total_diff += diff
+        
+        return total_diff / min(10, len(history))
+    
+    def _calculate_similarity(self, prop1: Dict[str, Any], prop2: Dict[str, Any]) -> float:
+        """Calculate similarity between proposals"""
+        # Simple key overlap similarity
+        keys1 = set(prop1.keys())
+        keys2 = set(prop2.keys())
+        
+        if not keys1 or not keys2:
+            return 0.0
+        
+        intersection = keys1.intersection(keys2)
+        union = keys1.union(keys2)
+        
+        return len(intersection) / len(union)
+    
+    async def record_decision(self, decision_id: str, success: bool, confidence: float):
+        """Record decision outcome for learning"""
+        self.belief_buffer.append({
+            "decision_id": decision_id,
+            "success": success,
+            "confidence": confidence,
+            "timestamp": datetime.now()
+        })
+        
+        # Update prediction error
+        prediction_error = abs(confidence - (1.0 if success else 0.0))
+        self.prediction_errors.append(prediction_error)
+
+
+# HotStuff consensus variant
+class HotStuffConsensus(ByzantineConsensus):
+    """
+    HotStuff consensus implementation
+    Linear communication complexity in the optimistic case
+    """
+    
+    def __init__(self, config: BFTConfig):
+        super().__init__(config)
+        
+        # HotStuff specific state
+        self.generic_qc: Optional[BFTProof] = None  # Generic quorum certificate
+        self.locked_qc: Optional[BFTProof] = None   # Locked quorum certificate
+        self.prepare_qc: Optional[BFTProof] = None  # Prepare quorum certificate
+        
+        logger.info("HotStuff consensus initialized")
+    
+    async def handle_proposal(self, proposal: Dict[str, Any]) -> bool:
+        """Handle proposal in HotStuff protocol"""
+        # Create new-view message with highest QC
+        if self.is_leader:
+            message = BFTMessage(
+                phase=BFTPhase.NEW_VIEW,
+                view=self.current_view,
+                sequence=self.current_sequence + 1,
+                proposal=proposal,
+                proposer_id=self.node_id
+            )
+            
+            # Attach highest QC
+            if self.generic_qc:
+                message.proposal["qc"] = self.generic_qc.threshold_signature
+            
+            # Execute consensus round
+            await self._execute_hotstuff_round(message)
+            return True
+        
+        return False
+    
+    def _update_qc(self, phase: BFTPhase, proof: BFTProof):
+        """Update quorum certificates based on phase"""
+        if phase == BFTPhase.PREPARE:
+            self.prepare_qc = proof
+        elif phase == BFTPhase.PRE_COMMIT and proof.is_valid(self.threshold):
+            self.locked_qc = proof
+        elif phase == BFTPhase.COMMIT and proof.is_valid(self.threshold):
+            self.generic_qc = proof
+
+
+# Example usage
+async def example_byzantine_consensus():
+    """Example of Byzantine consensus in action"""
+    # Configure nodes
+    configs = []
+    for i in range(4):
+        config = BFTConfig(
+            node_id=f"node_{i}",
+            total_nodes=4,
+            fault_tolerance=1  # Tolerates 1 Byzantine node
+        )
+        configs.append(config)
+    
+    # Create consensus instances
+    nodes = [ByzantineConsensus(config) for config in configs]
+    
+    # Start all nodes
+    for node in nodes:
+        await node.start()
+    
+    # Set first node as leader
+    nodes[0].is_leader = True
+    
+    # Propose something
+    proposal = {
+        "action": "update_parameter",
+        "value": 0.75,
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    try:
+        # Leader proposes
+        message = await nodes[0].propose(proposal)
+        print(f"Proposed: {message.message_hash[:8]}...")
+        
+        # Simulate other nodes receiving and voting
+        for i in range(1, 4):
+            vote = await nodes[i].handle_message(message)
+            if vote:
+                # Broadcast vote to all nodes
+                for node in nodes:
+                    await node.handle_vote(vote)
+        
+        # Check consensus state
+        await asyncio.sleep(1)
+        for node in nodes:
+            state = node.get_consensus_state()
+            print(f"Node {node.node_id}: sequence={state['sequence']}, phase={state['phase']}")
+        
+    finally:
+        # Stop all nodes
+        for node in nodes:
+            await node.stop()
+
+
+if __name__ == "__main__":
+    asyncio.run(example_byzantine_consensus())

@@ -84,14 +84,14 @@ class AttentionMechanism:
 
 
 # Factory functions - just return workspace-based attention
-    def create_attention_mechanism() -> AttentionMechanism:
-        """Create attention mechanism using existing workspace."""
-        return AttentionMechanism()
+def create_attention_mechanism() -> AttentionMechanism:
+    """Create attention mechanism using existing workspace."""
+    return AttentionMechanism()
 
 
-    def get_attention_mechanism() -> AttentionMechanism:
-        """Get attention mechanism (workspace-based)."""
-        return create_attention_mechanism()
+def get_attention_mechanism() -> AttentionMechanism:
+    """Get attention mechanism (workspace-based)."""
+    return create_attention_mechanism()
 
 
 # Aliases for compatibility
