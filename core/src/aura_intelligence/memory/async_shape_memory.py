@@ -151,7 +151,7 @@ class AsyncShapeMemoryV2:
         )
     
     @instrument("store_async", "memory")
-        async def store(
+    async def store(
         self,
         content: Dict[str, Any],
         tda_result: TDAResult,
