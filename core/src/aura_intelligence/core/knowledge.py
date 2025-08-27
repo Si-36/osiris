@@ -1,137 +1,174 @@
 """
-🗄️ AURA Intelligence Enterprise Knowledge Graph
-
-Ultimate knowledge graph system with causal reasoning and consciousness integration.
-All your knowledge graph research with enterprise-grade implementation.
+Knowledge Management System for AURA Intelligence
+2025 Best Practices Implementation
 """
 
-# Import our AURA implementation
-from ..graph.aura_knowledge_graph_2025 import (
-    AURAKnowledgeGraph,
-    NodeType,
-    EdgeType,
-    FailureSignature,
-    CausalChain,
-    TopologicalAnomaly
-)
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Any, Set
+from datetime import datetime
+from enum import Enum
+import asyncio
+
+from ..utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
-class EnterpriseKnowledgeGraph:
+class KnowledgeType(Enum):
+    """Types of knowledge in the system"""
+    FACT = "fact"
+    RULE = "rule"
+    CONCEPT = "concept"
+    RELATIONSHIP = "relationship"
+    PROCEDURE = "procedure"
+
+
+@dataclass
+class KnowledgeNode:
+    """Individual knowledge node"""
+    id: str
+    content: Any
+    knowledge_type: KnowledgeType
+    confidence: float = 0.8
+    source: Optional[str] = None
+    created_at: datetime = None
+    connections: Set[str] = None
+    
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = datetime.utcnow()
+        if self.connections is None:
+            self.connections = set()
+
+
+class KnowledgeGraph:
     """
-    🗄️ Enterprise Knowledge Graph with Consciousness
+    Advanced Knowledge Graph System
     
-    Ultimate knowledge graph system integrating:
-    - Neo4j enterprise graph database
-    - Causal reasoning and discovery
-    - Temporal pattern analysis
-    - Consciousness-driven insights
+    Features:
+    - Multi-type knowledge representation
+    - Confidence scoring
+    - Relationship management
+    - Query and inference capabilities
     """
     
-    def __init__(self, config: KnowledgeConfig, consciousness_core):
-        self.config = config
-        self.consciousness = consciousness_core
-        self.logger = get_logger(__name__)
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.nodes: Dict[str, KnowledgeNode] = {}
+        self.edges: Dict[str, List[tuple[str, str, float]]] = {}  # node_id -> [(target_id, relation, weight)]
+        self._initialized = False
         
-        # Knowledge state
-        self.graph_data = {
-            "nodes": {},
-            "relationships": [],
-            "causal_chains": [],
-            "temporal_patterns": {}
-        }
+    async def initialize(self):
+        """Initialize knowledge graph"""
+        if self._initialized:
+            return
+            
+        self._initialized = True
+        logger.info("Knowledge graph initialized")
         
-        self.logger.info("🗄️ Enterprise Knowledge Graph initialized")
-    
-        async def initialize(self):
-            pass
-        """Initialize the enterprise knowledge graph."""
-        try:
-            self.logger.info("🔧 Initializing enterprise knowledge graph...")
-            
-            # Initialize graph schema
-            await self._initialize_graph_schema()
-            
-            self.logger.info("✅ Enterprise knowledge graph initialized")
-            
-        except Exception as e:
-            self.logger.error(f"❌ Enterprise knowledge graph initialization failed: {e}")
-            raise
-    
-        async def _initialize_graph_schema(self):
-            pass
-        """Initialize the graph schema."""
-        pass
-        # Create consciousness node
-        self.graph_data["nodes"]["consciousness_core"] = {
-            "type": "consciousness",
-            "level": 0.5,
-            "created_at": time.time()
-        }
+    async def add_knowledge(
+        self,
+        content: Any,
+        knowledge_type: KnowledgeType,
+        confidence: float = 0.8,
+        source: Optional[str] = None
+    ) -> str:
+        """Add knowledge to the graph"""
+        node_id = f"{knowledge_type.value}_{datetime.utcnow().timestamp()}"
         
-        # Create agent nodes
-        agent_types = ["coordinator", "worker", "analyzer", "monitor", 
-                      "researcher", "optimizer", "guardian"]
+        node = KnowledgeNode(
+            id=node_id,
+            content=content,
+            knowledge_type=knowledge_type,
+            confidence=confidence,
+            source=source
+        )
         
-        for agent_type in agent_types:
-            node_id = f"{agent_type}_0"
-            self.graph_data["nodes"][node_id] = {
-                "type": "agent",
-                "agent_type": agent_type,
-                "consciousness_connected": True,
-                "created_at": time.time()
-            }
-    
-        async def update_with_causal_reasoning(self, agent_results: Dict[str, Any], topology_results: Dict[str, Any], memory_insights: Dict[str, Any], consciousness_state: Dict[str, Any]) -> Dict[str, Any]:
-            pass
-        """Update knowledge graph with causal reasoning."""
-        try:
-            # Create topology node
-            topology_node_id = f"topology_{int(time.time())}"
-            self.graph_data["nodes"][topology_node_id] = {
-                "type": "topology",
-                "signature": topology_results.get("topology_signature", "unknown"),
-                "anomaly_score": topology_results.get("anomaly_score", 0.0),
-                "consciousness_level": consciousness_state.get("level", 0.5),
-                "created_at": time.time()
-            }
+        self.nodes[node_id] = node
+        self.edges[node_id] = []
+        
+        return node_id
+        
+    async def add_relationship(
+        self,
+        from_id: str,
+        to_id: str,
+        relation: str,
+        weight: float = 1.0
+    ):
+        """Add relationship between knowledge nodes"""
+        if from_id in self.nodes and to_id in self.nodes:
+            self.edges[from_id].append((to_id, relation, weight))
+            self.nodes[from_id].connections.add(to_id)
+            self.nodes[to_id].connections.add(from_id)
             
-            # Discover causal chains
-            causal_chain = {
-                "id": f"chain_{len(self.graph_data['causal_chains'])}",
-                "nodes": ["consciousness_core", topology_node_id],
-                "strength": consciousness_state.get("level", 0.5),
-                "discovered_at": time.time()
-            }
+    async def query(
+        self,
+        query: Dict[str, Any],
+        max_depth: int = 3
+    ) -> List[KnowledgeNode]:
+        """Query the knowledge graph"""
+        results = []
+        
+        # Simple query implementation
+        query_type = query.get("type")
+        content_match = query.get("content", "").lower()
+        
+        for node in self.nodes.values():
+            if query_type and node.knowledge_type != query_type:
+                continue
+                
+            if content_match and content_match not in str(node.content).lower():
+                continue
+                
+            results.append(node)
             
-            self.graph_data["causal_chains"].append(causal_chain)
+        return results
+        
+    async def infer(
+        self,
+        start_node_id: str,
+        inference_type: str = "related"
+    ) -> List[KnowledgeNode]:
+        """Perform inference from a starting node"""
+        if start_node_id not in self.nodes:
+            return []
             
-            return {
-                "discovered_chains": [causal_chain],
-                "total_chains": len(self.graph_data["causal_chains"]),
-                "causal_reasoning_active": True
-            }
+        visited = set()
+        results = []
+        
+        # Simple breadth-first traversal
+        queue = [(start_node_id, 0)]
+        
+        while queue:
+            node_id, depth = queue.pop(0)
             
-        except Exception as e:
-            self.logger.error(f"Causal reasoning update failed: {e}")
-            return {"error": str(e)}
-    
-    def get_health_status(self) -> Dict[str, Any]:
-        """Get enterprise knowledge graph health status."""
+            if node_id in visited or depth > 3:
+                continue
+                
+            visited.add(node_id)
+            results.append(self.nodes[node_id])
+            
+            # Add connected nodes
+            for target_id, _, _ in self.edges.get(node_id, []):
+                if target_id not in visited:
+                    queue.append((target_id, depth + 1))
+                    
+        return results[1:]  # Exclude start node
+        
+    def get_statistics(self) -> Dict[str, Any]:
+        """Get knowledge graph statistics"""
+        total_edges = sum(len(edges) for edges in self.edges.values())
+        
         return {
-            "status": "enterprise",
-            "total_nodes": len(self.graph_data["nodes"]),
-            "total_relationships": len(self.graph_data["relationships"]),
-            "causal_chains": len(self.graph_data["causal_chains"]),
-            "consciousness_integrated": True
+            "total_nodes": len(self.nodes),
+            "total_edges": total_edges,
+            "by_type": {
+                kt.value: sum(1 for n in self.nodes.values() if n.knowledge_type == kt)
+                for kt in KnowledgeType
+            }
         }
-    
-        async def cleanup(self):
-            pass
-        """Cleanup enterprise knowledge graph resources."""
-        self.logger.info("🧹 Cleaning up enterprise knowledge graph...")
-        
-        self.graph_data["nodes"].clear()
-        self.graph_data["relationships"].clear()
-        self.graph_data["causal_chains"].clear()
-        
-        self.logger.info("✅ Enterprise knowledge graph cleanup completed")
+
+
+# Export main classes
+__all__ = ["KnowledgeGraph", "KnowledgeNode", "KnowledgeType"]
