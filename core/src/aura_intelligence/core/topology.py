@@ -159,8 +159,7 @@ class UltimateTDAEngine:
         except:
             return False
     
-        async def initialize(self):
-            pass
+    async def initialize(self):
         """Initialize the ultimate TDA engine."""
         try:
             self.logger.info("🔧 Initializing ultimate TDA engine...")
@@ -296,8 +295,7 @@ class UltimateTDAEngine:
         }
         return descriptions.get(algorithm, "Unknown algorithm")
     
-        async def _run_mojo_analysis(self, points: List[List[float]], algorithm: str, consciousness_state: Dict[str, Any]) -> Dict[str, Any]:
-            pass
+    async def _run_mojo_analysis(self, points: List[List[float]], algorithm: str, consciousness_state: Dict[str, Any]) -> Dict[str, Any]:
         """Run REAL Mojo-accelerated TDA analysis with your aura-tda-engine."""
         try:
             consciousness_level = consciousness_state.get("level", 0.5)
@@ -776,7 +774,7 @@ class UltimateTDAEngine:
 
         return enhanced_result
 
-        async def cleanup(self):
+    async def cleanup(self):
         """Cleanup ultimate TDA engine resources."""
         self.logger.info("🧹 Cleaning up ultimate TDA engine...")
 
