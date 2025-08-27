@@ -1,4 +1,9 @@
+#!/usr/bin/env python3
 """
+Create a clean, working unified_config.py
+"""
+
+config_content = '''"""
 Unified Configuration for AURA Intelligence System
 """
 
@@ -91,3 +96,18 @@ def set_config(config: UnifiedConfig) -> None:
     """Set the global configuration instance."""
     global _config
     _config = config
+'''
+
+# Create backup
+import shutil
+shutil.copy(
+    'core/src/aura_intelligence/core/unified_config.py',
+    'core/src/aura_intelligence/core/unified_config.py.backup'
+)
+
+# Write new clean config
+with open('core/src/aura_intelligence/core/unified_config.py', 'w') as f:
+    f.write(config_content)
+
+print("✅ Created clean unified_config.py")
+print("✅ Backup saved as unified_config.py.backup")
