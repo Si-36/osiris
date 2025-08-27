@@ -622,6 +622,16 @@ async def test_pipeline_error_handling():
         try:
             pass
         invalid_request = MockGPURequest()
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
         invalid_request.gpu_count = -1  # Invalid
         
         decision, metrics = await pipeline.process_decision(invalid_request)

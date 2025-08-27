@@ -276,7 +276,7 @@ class TDAAnalyzerAgent:
         tda_results: TDAServiceResponse,
                          event_analysis: Dict[str, Any]) -> List[str]:
                              pass
-        """Generate actionable insights from combined analysis."""
+            """Generate actionable insights from combined analysis."""
         
         insights = []
         

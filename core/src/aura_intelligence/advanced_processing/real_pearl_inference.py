@@ -354,5 +354,6 @@ class RealPEARLInferenceEngine:
     def get_real_pearl_engine(config: Optional[PEARLConfig] = None):
         """Factory function to get real PEARL inference engine"""
         if config is None:
+            pass
         config = PEARLConfig()
         return RealPEARLInferenceEngine(config)

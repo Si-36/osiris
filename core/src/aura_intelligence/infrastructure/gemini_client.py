@@ -5,7 +5,7 @@ Enterprise-grade Google Gemini integration with LangChain compatibility
 
 Features:
     pass
-- LangChain-compatible interface
+        - LangChain-compatible interface
 - Enterprise guardrails integration
 - Async/await support
 - Error handling and retries
@@ -66,8 +66,9 @@ class GeminiClient:
         
         logger.info(f"🤖 Gemini client initialized: {self.config.model}")
     
-        async def ainvoke(self, messages: Union[str, List, Dict], **kwargs) -> GeminiResponse:
-            pass
+    async
+    
+    def ainvoke(self, messages: Union[str, List, Dict], **kwargs) -> GeminiResponse:
         """
         🤖 Async invoke method compatible with LangChain interface
         
@@ -156,8 +157,9 @@ class GeminiClient:
                 "parts": [{"text": str(messages)}]
             }]
     
-        async def _make_request_with_retries(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-            pass
+    async
+    
+    def _make_request_with_retries(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Make API request with retry logic"""
         
         url = f"{self.config.base_url}/models/{self.config.model}:generateContent"
@@ -254,10 +256,10 @@ class GeminiClient:
             "model": self.config.model
         }
     
-        async def close(self):
-            pass
+    async
+    
+    def close(self):
         """Close the HTTP client"""
-        pass
         await self.client.aclose()
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -268,12 +270,10 @@ class ChatGemini:
     """🤖 LangChain-compatible Gemini chat model"""
     
     def __init__(self, 
-        model: str = "gemini-2.0-flash",
+                 model: str = "gemini-2.0-flash",
                  temperature: float = 0.1,
                  max_tokens: int = 2000,
                  api_key: str = None):
-                     pass
-        
         config = GeminiConfig(
             api_key=api_key or "AIzaSyDiX165POC4I0uJI8VAL_9to8nhomSZ_og",
             model=model,
@@ -286,7 +286,9 @@ class ChatGemini:
         self.temperature = temperature
         self.max_tokens = max_tokens
     
-    async def ainvoke(self, messages: Any, **kwargs) -> GeminiResponse:
+    async
+    
+    def ainvoke(self, messages: Any, **kwargs) -> GeminiResponse:
         """LangChain-compatible async invoke"""
         return await self.client.ainvoke(messages, **kwargs)
     
@@ -295,16 +297,16 @@ class ChatGemini:
         import asyncio
         return asyncio.run(self.client.ainvoke(messages, **kwargs))
     
-        async def aclose(self):
-            pass
+    async
+    
+    def aclose(self):
         """Close the client"""
-        pass
         await self.client.close()
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 🎯 CONVENIENCE FUNCTIONS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+    
     def create_gemini_client(model: str = "gemini-2.0-flash", **kwargs) -> ChatGemini:
         """🤖 Create a Gemini client with LangChain compatibility"""
         return ChatGemini(model=model, **kwargs)
@@ -317,9 +319,10 @@ class GeminiClientManager:
         self.model = model
         self.client = None
         self.is_available = False
-        
-        async def initialize(self) -> bool:
-            pass
+    
+    async
+    
+    def initialize(self) -> bool:
         """Initialize and validate the client"""
         pass
         try:
@@ -342,8 +345,9 @@ class GeminiClientManager:
             self.is_available = False
             return False
     
-        async def generate_content(self, prompt: str, **kwargs) -> Optional[GeminiResponse]:
-            pass
+    async
+    
+    def generate_content(self, prompt: str, **kwargs) -> Optional[GeminiResponse]:
         """Generate content if client is available"""
         if not self.is_available or not self.client:
             return None
@@ -354,20 +358,22 @@ class GeminiClientManager:
             logger.error(f"❌ Gemini API call failed: {e}")
             return None
     
-        async def cleanup(self):
-            pass
+    async
+    
+    def cleanup(self):
         """Clean up resources"""
         pass
         if self.client:
             await self.client.close()
             self.client = None
         self.is_available = False
-
-async def test_gemini_connection() -> bool:
+    
+    async
+    
+    def test_gemini_connection() -> bool:
         """🧪 Test Gemini API connection"""
     
-        try:
-            pass
+    try:
         client = create_gemini_client()
         
         response = await client.ainvoke("Hello! Please respond with 'Connection successful'")
@@ -383,7 +389,6 @@ async def test_gemini_connection() -> bool:
         
         return success
         
-        except Exception as e:
-            pass
+    except Exception as e:
         logger.error(f"❌ Gemini API connection test failed: {e}")
         return False

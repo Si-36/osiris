@@ -191,7 +191,7 @@ class LiquidNeuralEngine(nn.Module, INeuralEngine):
         h: torch.Tensor
         ) -> torch.Tensor:
             pass
-        """Solve ODE using specified solver."""
+            """Solve ODE using specified solver."""
         if self.config.ode_solver == ODESolver.EULER:
             return self._euler_solver(layer, x, h)
         elif self.config.ode_solver == ODESolver.RK4:

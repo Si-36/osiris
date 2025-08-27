@@ -184,7 +184,7 @@ class RealOptimizerAgent:
     def _identify_bottlenecks(self, evidence_log: List[Dict[str, Any]], 
         current_performance: Dict[str, Any]) -> List[Dict[str, Any]]:
             pass
-        """Identify performance bottlenecks from evidence and current metrics."""
+                """Identify performance bottlenecks from evidence and current metrics."""
         
         bottlenecks = []
         system_metrics = current_performance.get('system_metrics', {})

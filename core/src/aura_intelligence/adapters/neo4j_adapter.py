@@ -99,9 +99,9 @@ class Neo4jAdapter:
             logger.info("Neo4j adapter closed")
             
     @asynccontextmanager
-        async def session(self, database: Optional[str] = None):
+    async def session(self, database: Optional[str] = None):
             pass
-        """Create a Neo4j session."""
+                """Create a Neo4j session."""
         if not self._initialized:
             await self.initialize()
             

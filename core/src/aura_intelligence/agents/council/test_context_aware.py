@@ -48,6 +48,16 @@ async def test_context_encoder():
             pass
         # Import here to avoid path issues
         import sys, os
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
         sys.path.insert(0, os.path.dirname(__file__))
         
         from context_encoder import ContextEncoder

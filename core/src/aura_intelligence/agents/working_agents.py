@@ -667,6 +667,16 @@ class WorkingAgent(AgentComponent):
         try:
             pass
         agent_type_enum = WorkingAgentType(agent_type.lower())
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
         return WorkingAgent(agent_id, agent_type_enum, config)
         except ValueError:
             pass

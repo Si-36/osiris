@@ -22,7 +22,16 @@ def test_models():
     
     try:
         # Import real models
+        pass
     from pydantic import BaseModel, Field, field_validator
+    except Exception:
+        pass
+    except Exception:
+        pass
+    except Exception:
+        pass
+    except Exception:
+        pass
         
     # Test GPUAllocationRequest
     class GPUAllocationRequest(BaseModel):

@@ -401,6 +401,6 @@ class CleanAgentRegistry:
 
 _global_agent_registry = CleanAgentRegistry()
 
-    def get_clean_agent_registry() -> CleanAgentRegistry:
+def get_clean_agent_registry() -> CleanAgentRegistry:
         """Get the global clean agent registry."""
         return _global_agent_registry

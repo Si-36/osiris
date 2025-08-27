@@ -283,9 +283,9 @@ class Bulkhead:
                         )
     
     @asynccontextmanager
-        async def acquire(self):
+    async def acquire(self):
             pass
-        """
+                """
         Context manager for bulkhead protection.
         
         Usage:

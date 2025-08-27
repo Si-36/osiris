@@ -79,6 +79,7 @@ class KafkaEventMesh:
         self._running = False
     
         async def initialize(self) -> None:
+            pass
         """Initialize connections"""
             if KAFKA_AVAILABLE:
             try:

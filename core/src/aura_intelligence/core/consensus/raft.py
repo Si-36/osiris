@@ -118,10 +118,10 @@ class RaftLog:
     
     def _create_snapshot(self):
             """Create snapshot and compact log."""
-        pass
+            pass
         # In production: persist snapshot to disk
-        self.snapshot_index = len(self.entries) // 2
-        self.entries = self.entries[self.snapshot_index:]
+            self.snapshot_index = len(self.entries) // 2
+            self.entries = self.entries[self.snapshot_index:]
 
 
 class RaftTimer:
@@ -163,7 +163,7 @@ class RaftTimer:
     
     def cancel_all(self):
             """Cancel all timers."""
-        pass
+            pass
         for task in self._tasks.values():
             task.cancel()
         self._tasks.clear()

@@ -138,6 +138,16 @@ class ExecutorAgent:
             evidence_entries = getattr(state, 'evidence_entries', [])
             
         for evidence in reversed(evidence_entries):
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
             pass
         evidence_type = getattr(evidence, 'evidence_type', None)
         if evidence_type and str(evidence_type) == "EvidenceType.PATTERN":

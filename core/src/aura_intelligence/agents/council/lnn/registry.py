@@ -41,7 +41,7 @@ class AgentRegistry:
                     self._capabilities[capability].add(agent_id)
                 except ValueError:
                     # Skip unknown capabilities
-        pass
+                    pass
             
             return True
     
@@ -62,6 +62,14 @@ class AgentRegistry:
         try:
             capability = AgentCapability(cap_str)
         self._capabilities[capability].discard(agent_id)
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
         except ValueError:
             pass
         pass

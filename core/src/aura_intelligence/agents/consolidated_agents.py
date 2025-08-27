@@ -247,6 +247,6 @@ class ConsolidatedAgentRegistry:
 
 _global_registry = ConsolidatedAgentRegistry()
 
-    def get_agent_registry() -> ConsolidatedAgentRegistry:
+def get_agent_registry() -> ConsolidatedAgentRegistry:
         """Get the global agent registry."""
         return _global_registry

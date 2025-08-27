@@ -413,7 +413,7 @@ class UnifiedAgent(AgentComponent):
     # ========================================================================
     
     @abstractmethod
-        async def _agent_specific_initialization(self) -> None:
+    async def _agent_specific_initialization(self) -> None:
             pass
         """Agent-specific initialization logic."""
         pass

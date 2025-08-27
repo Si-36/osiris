@@ -34,7 +34,6 @@ class MockNeo4jAdapter:
         async def initialize(self):
             pass
         """Mock initialization."""
-        pass
         self.initialized = True
     
         async def query(self, cypher: str, params=None, database=None):
@@ -64,7 +63,6 @@ class MockNeo4jAdapter:
         async def close(self):
             pass
         """Mock close."""
-        pass
 
 
 async def test_knowledge_provider_initialization():

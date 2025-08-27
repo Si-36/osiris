@@ -183,6 +183,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
         async def _process(self, input_data: TInput) -> TOutput:
+            pass
         """
         Process input through the agent workflow.
         
@@ -236,6 +237,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
                 raise
     
         async def _run_graph(self, state: TState) -> TState:
+            pass
         """Run the compiled graph with the given state."""
         # For now, manually execute steps (LangGraph integration pending)
         current_state = state
@@ -286,6 +288,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
         async def health_check(self) -> Dict[str, Any]:
+            pass
         """Check agent health."""
         pass
         health = await super().health_check()

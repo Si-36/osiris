@@ -24,7 +24,6 @@ class SimpleContextEncoder:
     
     def encode_request(self, request):
         """Encode request into features."""
-        pass
         features = []
         
         # GPU type embedding
@@ -62,7 +61,6 @@ class SimpleContextProvider:
         async def get_user_context(self, user_id):
             pass
         """Get mock user context."""
-        pass
         # Simulate user history
         features = [
             0.8,   # approval_rate
@@ -81,7 +79,6 @@ class SimpleContextProvider:
         async def get_system_context(self):
             pass
         """Get mock system context."""
-        pass
         features = [
             0.75,  # gpu_usage
             0.6,   # queue_length_norm
@@ -114,7 +111,6 @@ class SimpleContextAwareLNN:
         async def forward_with_context(self, request_features, user_context, system_context):
             pass
         """Forward pass with context integration."""
-        pass
         
         # Stack contexts for attention (fix dimensions)
         contexts = torch.stack([user_context.squeeze(0), system_context.squeeze(0)], dim=0)  # [2, features]
@@ -142,7 +138,6 @@ class SimpleContextAwareLNN:
     
     def _assess_quality(self, contexts):
         """Assess context quality."""
-        pass
         non_zero = (contexts != 0).float().mean().item()
         return non_zero
 

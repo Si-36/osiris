@@ -326,6 +326,7 @@ class SupervisorAgentFactory(BaseAgentFactory):
         # Ensure LLM is provided
         if not config.llm:
             # Create default LLM for testing
+            pass
         class DefaultLLM:
             pass
         async def ainvoke(self, messages):

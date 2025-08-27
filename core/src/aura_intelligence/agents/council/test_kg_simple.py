@@ -51,7 +51,6 @@ class MockNeo4jAdapter:
         async def initialize(self):
             pass
         """Mock initialization."""
-        pass
         self.initialized = True
         print("   Neo4j adapter initialized (mock)")
     
@@ -132,7 +131,6 @@ class MockNeo4jAdapter:
         async def close(self):
             pass
         """Mock close."""
-        pass
         self.initialized = False
 
 
@@ -162,7 +160,6 @@ class ProductionKnowledgeGraphProvider:
     
     def set_neo4j_adapter(self, adapter):
         """Inject Neo4j adapter (dependency injection pattern)."""
-        pass
         self.neo4j_adapter = adapter
         print("Neo4j adapter connected to Knowledge Graph Provider")
     
@@ -210,7 +207,6 @@ class ProductionKnowledgeGraphProvider:
         async def _get_entity_context(self, request) -> dict:
             pass
         """Get entity-centric context using Neo4j queries."""
-        pass
         
         # User entity query
         user_cypher = """
@@ -264,7 +260,6 @@ class ProductionKnowledgeGraphProvider:
         async def _get_relationship_context(self, request) -> dict:
             pass
         """Get relationship-aware context."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[r1]->(p:Project {id: $project_id})
@@ -293,7 +288,6 @@ class ProductionKnowledgeGraphProvider:
         async def _get_multihop_context(self, request) -> dict:
             pass
         """Get multi-hop reasoning context."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[:MEMBER_OF*1..2]->(related)
@@ -320,7 +314,6 @@ class ProductionKnowledgeGraphProvider:
         async def _get_temporal_context(self, request) -> dict:
             pass
         """Get temporal knowledge context."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[:SUBMITTED]->(req:Request)
@@ -352,7 +345,6 @@ class ProductionKnowledgeGraphProvider:
         async def _get_topology_context(self, request) -> dict:
             pass
         """Get graph topology context."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})
@@ -382,7 +374,6 @@ class ProductionKnowledgeGraphProvider:
     
     def get_stats(self):
         """Get provider statistics."""
-        pass
         return {
             "query_count": self.query_count,
             "cache_hits": self.cache_hits,

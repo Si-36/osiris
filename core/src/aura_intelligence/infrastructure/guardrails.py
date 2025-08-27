@@ -386,7 +386,7 @@ class EnterpriseGuardrails:
 # Global instance for easy access
 _global_guardrails: Optional[EnterpriseGuardrails] = None
 
-    def get_guardrails() -> EnterpriseGuardrails:
+def get_guardrails() -> EnterpriseGuardrails:
         """Get or create global guardrails instance"""
         global _global_guardrails
         if _global_guardrails is None:

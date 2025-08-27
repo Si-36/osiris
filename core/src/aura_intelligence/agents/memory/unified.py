@@ -289,6 +289,7 @@ class UnifiedMemory:
         threshold: float,
         context: Optional[Dict[str, Any]]
         ) -> FusedQueryResult:
+            pass
         """Perform fusion query across multiple tiers."""
         
         if not self.fusion_retriever:
@@ -341,6 +342,7 @@ class UnifiedMemory:
         threshold: float,
         context: Optional[Dict[str, Any]]
         ) -> FusedQueryResult:
+            pass
         """Perform direct query using existing search router."""
         
         start_time = time.time()
@@ -422,7 +424,7 @@ class UnifiedMemory:
         return MemoryTier.SEMANTIC
     
     @tracer.start_as_current_span("unified_memory_store")
-        async def store(
+    async def store(
         self,
         content: Any,
         tier: MemoryTier = MemoryTier.HOT,
@@ -477,6 +479,7 @@ class UnifiedMemory:
             raise
     
         async def get_memory_stats(self) -> Dict[str, Any]:
+            pass
         """Get statistics about memory usage across tiers."""
         pass
         stats = {
@@ -498,6 +501,7 @@ class UnifiedMemory:
         return stats
     
         async def cleanup(self) -> None:
+            pass
         """Cleanup resources."""
         pass
         # Cleanup any resources if needed

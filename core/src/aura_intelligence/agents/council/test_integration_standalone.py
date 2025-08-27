@@ -693,4 +693,5 @@ async def run_integration_tests():
 
 
         if __name__ == "__main__":
+            pass
         asyncio.run(run_integration_tests())

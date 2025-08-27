@@ -113,6 +113,7 @@ class RealLiquidTimeStep(nn.Module):
         pass
         if torch.max(self.usage_stats) > self.adaptation_threshold:
             # Increase time constants for highly used neurons
+            pass
         high_usage = self.usage_stats > torch.mean(self.usage_stats) + torch.std(self.usage_stats)
         self.tau.data[high_usage] *= 1.1
         self.usage_stats.zero_()
@@ -201,9 +202,9 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         
     def _setup_neural_network(self):
             """Set up the liquid neural network components."""
-        pass
+            pass
         # Create context-aware LNN
-        self.context_lnn = ContextAwareLNN(
+            self.context_lnn = ContextAwareLNN(
             lnn_config=self.lnn_config,
             memory_manager=self.memory_manager,
             knowledge_graph=self.neo4j_adapter,
@@ -212,7 +213,7 @@ class ProductionLNNCouncilAgent(LNNCouncilAgent):
         )
         
         # Create REAL liquid layers with adaptation
-        self.liquid_layer = RealLiquidTimeStep(
+            self.liquid_layer = RealLiquidTimeStep(
             input_size=self.lnn_config.input_size,
             hidden_size=self.lnn_config.hidden_size
         )

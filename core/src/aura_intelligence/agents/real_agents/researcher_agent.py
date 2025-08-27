@@ -140,9 +140,9 @@ class RealResearcherAgent:
         context: Dict[str, Any]
         ) -> str:
             pass
-        """Select appropriate research method based on evidence"""
-        evidence_count = len(evidence_log)
-        task_type = context.get('task_type', 'general')
+            """Select appropriate research method based on evidence"""
+            evidence_count = len(evidence_log)
+            task_type = context.get('task_type', 'general')
         
         # Select method based on evidence characteristics
         if evidence_count >= 10:

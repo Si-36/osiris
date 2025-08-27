@@ -200,6 +200,7 @@ class TemporalWorker:
         
             if self.worker and self._running:
                 # Add worker metrics
+                pass
             health.update({
             "workflows_registered": len(self.config.workflows),
             "activities_registered": len(self.config.activities),
@@ -359,13 +360,19 @@ class WorkerPool:
             pass
         # Example: Run a single worker
         async def main():
+            pass
         worker = await create_worker(
         task_queue="agent-workflows",
         identity="worker-1"
         )
         
         try:
+            pass
         await worker.start()
+        except Exception:
+            pass
+        except Exception:
+            pass
         except KeyboardInterrupt:
         logger.info("Worker interrupted")
         finally:

@@ -70,6 +70,16 @@ except ImportError as e:
         try:
             pass
         config = {
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
             "confidence_threshold": 0.7,
             "entropy_weight": 0.2,
             "context_weight": 0.3,

@@ -63,7 +63,6 @@ class TestFallbackEngine:
     
     def test_fallback_trigger_classification(self):
         """Test failure classification into appropriate triggers"""
-        pass
         if not fallback_available:
             return False
         
@@ -86,7 +85,6 @@ class TestFallbackEngine:
     
     def test_degradation_level_calculation(self):
         """Test degradation level calculation based on failed subsystems"""
-        pass
         if not fallback_available:
             return False
         
@@ -112,7 +110,6 @@ class TestFallbackEngine:
         async def test_emergency_mode_decision(self):
             pass
         """Test emergency mode decision making"""
-        pass
         if not fallback_available:
             return False
         
@@ -148,7 +145,6 @@ class TestFallbackEngine:
     
     def test_rule_based_decision(self):
         """Test comprehensive rule-based decision logic"""
-        pass
         if not fallback_available:
             return False
         
@@ -195,7 +191,6 @@ class TestFallbackEngine:
         async def test_reduced_ai_decision(self):
             pass
         """Test reduced AI mode with partial system availability"""
-        pass
         if not fallback_available:
             return False
         
@@ -221,7 +216,6 @@ class TestFallbackEngine:
         async def test_full_fallback_workflow(self):
             pass
         """Test complete fallback workflow from failure to recovery"""
-        pass
         if not fallback_available:
             return False
         
@@ -261,7 +255,6 @@ class TestFallbackEngine:
         async def test_recovery_mechanism(self):
             pass
         """Test subsystem recovery mechanism"""
-        pass
         if not fallback_available:
             return False
         
@@ -285,7 +278,6 @@ class TestFallbackEngine:
     
     def test_metrics_tracking(self):
         """Test comprehensive metrics tracking"""
-        pass
         if not fallback_available:
             return False
         
@@ -332,7 +324,6 @@ class TestFallbackEngine:
         async def test_performance_under_load(self):
             pass
         """Test fallback performance under multiple failures"""
-        pass
         if not fallback_available:
             return False
         

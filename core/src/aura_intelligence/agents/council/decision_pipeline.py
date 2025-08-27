@@ -574,9 +574,9 @@ class DecisionProcessingPipeline:
         attention_info: Optional[Dict[str, Any]]
         ) -> str:
             pass
-        """Generate human-readable reasoning from neural network output."""
+            """Generate human-readable reasoning from neural network output."""
         
-        reasoning_parts = [
+            reasoning_parts = [
             f"Neural network decision: {decision} (confidence: {confidence:.3f})"
         ]
         

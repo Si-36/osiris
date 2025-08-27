@@ -151,6 +151,16 @@ class LNNCouncilState(AgentState):
             try:
                 pass
             invalid_request = GPUAllocationRequest(
+            except Exception:
+                pass
+            except Exception:
+                pass
+            except Exception:
+                pass
+            except Exception:
+                pass
+            except Exception:
+                pass
             user_id="test_user",
             project_id="test_project",
             gpu_type="INVALID_GPU",  # Should fail

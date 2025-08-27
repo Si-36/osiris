@@ -251,6 +251,6 @@ class SimpleAgentRegistry:
 # Global registry
 _simple_registry = SimpleAgentRegistry()
 
-    def get_simple_registry() -> SimpleAgentRegistry:
+def get_simple_registry() -> SimpleAgentRegistry:
         """Get the global simple registry."""
         return _simple_registry

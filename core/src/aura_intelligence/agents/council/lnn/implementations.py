@@ -784,7 +784,7 @@ class AdaptiveMemorySystem(IMemorySystem):
                     memory.get('importance', 0.5) < 0.3 and
                     self.access_counts.get(mem_id, 0) < 2):
                         pass
-                    old_memories.append(mem_id)
+                        old_memories.append(mem_id)
         
         # Remove old memories
         for mem_id in old_memories:
@@ -1180,7 +1180,7 @@ _knowledge_graph = None
 _memory_system = None
 _orchestrator = None
 
-    def get_neural_engine() -> INeuralEngine:
+def get_neural_engine() -> INeuralEngine:
         """Get singleton neural engine"""
         global _neural_engine
         if _neural_engine is None:
@@ -1188,7 +1188,8 @@ _orchestrator = None
         _neural_engine = TransformerNeuralEngine()
         return _neural_engine
 
-    def get_knowledge_graph() -> IKnowledgeGraph:
+        def get_knowledge_graph() -> IKnowledgeGraph:
+            pass
         """Get singleton knowledge graph"""
         global _knowledge_graph
         if _knowledge_graph is None:
@@ -1196,7 +1197,7 @@ _orchestrator = None
         _knowledge_graph = GraphKnowledgeSystem()
         return _knowledge_graph
 
-    def get_memory_system() -> IMemorySystem:
+        def get_memory_system() -> IMemorySystem:
         """Get singleton memory system"""
         global _memory_system
         if _memory_system is None:

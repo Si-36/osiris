@@ -147,6 +147,7 @@ class Supervisor:
                 # Convert numpy arrays to lists for JSON serialization
             def convert_numpy(obj):
                 if hasattr(obj, 'tolist'):  # numpy array
+                pass
                 return obj.tolist()
                 elif isinstance(obj, dict):
                     pass

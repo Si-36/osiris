@@ -62,10 +62,10 @@ class WorkingGPUAllocationDecision:
     def __init__(self, request_id: str, decision: str, confidence_score: float, 
         fallback_used: bool = False, inference_time_ms: float = 0.0):
             pass
-        self.request_id = request_id
-        self.decision = decision
-        self.confidence_score = confidence_score
-        self.fallback_used = fallback_used
+            self.request_id = request_id
+            self.decision = decision
+            self.confidence_score = confidence_score
+                self.fallback_used = fallback_used
         self.inference_time_ms = inference_time_ms
         self.reasoning: List[Dict[str, str]] = []
     

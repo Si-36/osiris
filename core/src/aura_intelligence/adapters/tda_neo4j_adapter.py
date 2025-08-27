@@ -46,7 +46,7 @@ class TDANeo4jAdapter:
     def __init__(self, uri: Optional[str] = None, user: Optional[str] = None, 
         password: Optional[str] = None, database: Optional[str] = None):
             pass
-        """Initialize Neo4j connection with configuration."""
+    """Initialize Neo4j connection with configuration."""
         pass
         config = get_config()
         

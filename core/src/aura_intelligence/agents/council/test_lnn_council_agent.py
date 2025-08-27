@@ -338,7 +338,7 @@ class TestLNNCouncilAgent:
         assert len(result_state.messages) > 0
     
     @pytest.mark.asyncio
-        async def test_gather_context_step(self, config, sample_request):
+    async def test_gather_context_step(self, config, sample_request):
         """Test gather context step."""
         pass
         agent = LNNCouncilAgent(config)
@@ -351,7 +351,7 @@ class TestLNNCouncilAgent:
         assert result_state.next_step == "neural_inference"
     
     @pytest.mark.asyncio
-        async def test_neural_inference_step(self, config, sample_request):
+    async def test_neural_inference_step(self, config, sample_request):
         """Test neural inference step."""
         pass
         agent = LNNCouncilAgent(config)
@@ -368,7 +368,7 @@ class TestLNNCouncilAgent:
         assert result_state.context["neural_decision"] in ["approve", "deny", "defer"]
     
     @pytest.mark.asyncio
-        async def test_validate_decision_step(self, config, sample_request):
+    async def test_validate_decision_step(self, config, sample_request):
         """Test validate decision step."""
         pass
         agent = LNNCouncilAgent(config)
@@ -385,7 +385,7 @@ class TestLNNCouncilAgent:
         assert result_state.next_step == "finalize_output"
     
     @pytest.mark.asyncio
-        async def test_fallback_decision(self, config, sample_request):
+    async def test_fallback_decision(self, config, sample_request):
         """Test fallback decision mechanism."""
         pass
         agent = LNNCouncilAgent(config)
@@ -437,7 +437,7 @@ class TestLNNCouncilAgent:
         assert output.fallback_used is False
     
     @pytest.mark.asyncio
-        async def test_full_workflow_success(self, config, sample_request):
+    async def test_full_workflow_success(self, config, sample_request):
         """Test complete workflow execution."""
         pass
         agent = LNNCouncilAgent(config)

@@ -148,11 +148,10 @@ class Mem0Adapter:
             logger.info("Mem0 adapter closed")
             
     @resilient(criticality=ResilienceLevel.CRITICAL)
-        async def add_memory(
+    async def add_memory(
         self,
         memory: Memory
-        ) -> str:
-            pass
+    ) -> str:
         """Add a new memory."""
         with tracer.start_as_current_span("mem0_add_memory") as span:
             span.set_attribute("mem0.agent_id", memory.agent_id)
@@ -191,12 +190,12 @@ class Mem0Adapter:
                 raise
                 
     @resilient(criticality=ResilienceLevel.CRITICAL)
-        async def add_memories_batch(
+    async def add_memories_batch(
         self,
         memories: List[Memory]
         ) -> List[str]:
             pass
-        """Add multiple memories in batch."""
+            """Add multiple memories in batch."""
         with tracer.start_as_current_span("mem0_add_memories_batch") as span:
             span.set_attribute("mem0.batch_size", len(memories))
             

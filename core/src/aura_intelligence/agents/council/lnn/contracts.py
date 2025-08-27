@@ -122,6 +122,7 @@ class CouncilRequest(BaseModel):
     @validator('deadline')
     def deadline_must_be_future(cls, v):
             if v and v < datetime.now(timezone.utc):
+                pass
             raise ValueError('Deadline must be in the future')
             return v
 
@@ -147,7 +148,7 @@ class CouncilResponse(BaseModel):
         }
     
     @validator('confidence')
-        def validate_confidence(cls, v):
+    def validate_confidence(cls, v):
             return VoteConfidence(v)
 
 

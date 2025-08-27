@@ -60,12 +60,14 @@ unit="1"
 
 
 class ConsensusManager:
+    pass
 """
 Hierarchical consensus manager that routes decisions
 to appropriate consensus protocols.
 """
 
 def __init__(self, config: ConsensusConfig):
+    pass
 self.config = config
 
 # Initialize consensus protocols
@@ -91,6 +93,7 @@ self.active_requests: Dict[str, ConsensusRequest] = {}
 self._started = False
 
 def _init_raft(self, config: ConsensusConfig) -> RaftConsensus:
+    pass
 """Initialize Raft consensus."""
 raft_config = RaftConfig(
 node_id="consensus-manager",
@@ -101,6 +104,7 @@ heartbeat_interval_ms=50
 return RaftConsensus(raft_config)
 
 def _init_bft(self, config: ConsensusConfig) -> ByzantineConsensus:
+    pass
 """Initialize Byzantine consensus."""
 bft_config = BFTConfig(
 node_id="consensus-manager",
@@ -111,6 +115,7 @@ batch_size=100
 return ByzantineConsensus(bft_config)
 
 def _init_multi_raft(self, config: ConsensusConfig):
+    pass
 """Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
 
 raft_config = RaftConfig(

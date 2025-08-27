@@ -103,7 +103,6 @@ else:
                 
                 def add(self, n=1):
                     """Add to counter"""
-                    pass
     
                     return NoOpCounter()
                 def create_histogram(self, **kwargs):
@@ -149,7 +148,6 @@ else:
                 
                         def record(self, value):
                             """Record a value"""
-                            pass
             
                             return NoOpHistogram()
                         def create_gauge(self, **kwargs):
@@ -546,7 +544,6 @@ def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
     except Exception:
         pass
     # Don't fail the method if argument recording fails
-    pass
 
 
 def _record_method_result(span: Span, result: Any) -> None:
@@ -573,12 +570,10 @@ def _record_method_result(span: Span, result: Any) -> None:
         span.set_attribute("method.result_length", len(result))
     except:
         pass
-    pass
     
     except Exception:
         pass
     # Don't fail the method if result recording fails
-    pass
 
 
 def create_child_span(

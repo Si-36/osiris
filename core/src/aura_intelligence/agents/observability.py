@@ -20,6 +20,7 @@ import structlog
 
 # GenAI Semantic Conventions (2025 standards)
 class GenAIAttributes:
+    pass
 """OpenTelemetry GenAI semantic conventions for agents."""
 
 # Agent attributes
@@ -57,9 +58,11 @@ RESPONSE_SAFETY_SCORE = "gen_ai.response.safety_score"
 
 
 class AgentMetrics:
+    pass
 """Metrics collection for agents."""
 
 def __init__(self, meter: metrics.Meter, agent_name: str):
+    pass
 """Initialize metrics for an agent."""
 pass
 self.agent_name = agent_name
@@ -100,6 +103,7 @@ unit="USD"
 )
 
 def record_tokens(self, prompt_tokens: int, completion_tokens: int, model: str):
+    pass
 """Record token usage."""
 total = prompt_tokens + completion_tokens
 attributes = {
@@ -115,6 +119,7 @@ estimated_cost = (total / 1000) * cost_per_1k
 self.cost_counter.add(estimated_cost, attributes)
 
 def record_decision(self, decision: str, reason: str):
+    pass
 """Record a decision made by the agent."""
 self.decision_counter.add(1, {
 "agent.name": self.agent_name,

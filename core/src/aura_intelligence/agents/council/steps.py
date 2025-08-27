@@ -64,6 +64,7 @@ class GatherContextStep(WorkflowStep):
         self._knowledge_provider = None
     
         async def execute(self, state: LNNCouncilState) -> LNNCouncilState:
+            pass
         """Gather context for decision making using real providers."""
         from .memory_context import MemoryContextProvider
         from .knowledge_context import KnowledgeGraphContextProvider
@@ -114,6 +115,7 @@ class GatherContextStep(WorkflowStep):
         return state
     
         async def _gather_memory_context(self, state: LNNCouncilState):
+            pass
         """Gather memory context."""
         try:
             return await self._memory_provider.get_memory_context(state)
@@ -122,6 +124,7 @@ class GatherContextStep(WorkflowStep):
             return None
     
         async def _gather_knowledge_context(self, state: LNNCouncilState):
+            pass
         """Gather knowledge graph context."""
         try:
             return await self._knowledge_provider.get_knowledge_context(state)
@@ -130,6 +133,7 @@ class GatherContextStep(WorkflowStep):
             return None
     
         async def _gather_system_context(self, state: LNNCouncilState):
+            pass
         """Gather system context."""
         return {
             "current_utilization": {"gpu_usage": 0.75, "queue_length": 12},

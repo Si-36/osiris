@@ -146,7 +146,7 @@ class ContextAwareLNN(nn.Module):
         context_features: List[torch.Tensor]
         ) -> Dict[str, torch.Tensor]:
             pass
-        """Apply multi-head attention over context features."""
+            """Apply multi-head attention over context features."""
         
         if not context_features:
             return {"features": torch.zeros_like(request_features), "weights": None}

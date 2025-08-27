@@ -11,7 +11,16 @@ from typing import Dict, Any, List
 
 # Import the observability components
 try:
+    pass
 from aura_intelligence.observability import (
+except Exception:
+    pass
+except Exception:
+    pass
+except Exception:
+    pass
+except Exception:
+    pass
 ObservabilityEngine, MetricType, AlertLevel, PerformanceMetric,
 DecisionTrace, SystemAlert, ComponentMetrics
 )

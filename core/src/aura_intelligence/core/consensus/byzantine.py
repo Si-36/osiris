@@ -147,7 +147,7 @@ class BFTVoteCollector:
                 prev_vote.view == vote.view and
                 prev_vote.sequence == vote.sequence):
                     pass
-                return prev_vote.message_hash != vote.message_hash
+            return prev_vote.message_hash != vote.message_hash
         return False
     
     def get_byzantine_nodes(self) -> Set[str]:
@@ -186,10 +186,10 @@ class BFTMessageHandler:
         request_id: str
         ) -> BFTMessage:
             pass
-        """Create and sign BFT message."""
-        self.sequence += 1
+            """Create and sign BFT message."""
+            self.sequence += 1
         
-        msg = BFTMessage(
+            msg = BFTMessage(
             type=phase,
             view=view,
             sequence=self.sequence,
@@ -199,7 +199,7 @@ class BFTMessageHandler:
         )
         
         # Sign message
-        msg_bytes = self._serialize_message(msg)
+                msg_bytes = self._serialize_message(msg)
         msg.signature = self.crypto.sign(msg_bytes)
         
         return msg

@@ -52,6 +52,7 @@ class UltimateMemorySystem:
         if self.production_mode:
             self.logger.info("🧠 Ultimate Memory System initialized with production API keys")
         else:
+            pass
         self.logger.info("🧠 Ultimate Memory System initialized in demo mode")
     
         async def initialize(self):
@@ -73,10 +74,16 @@ class UltimateMemorySystem:
             raise
     
         async def _initialize_production_mem0(self):
+            pass
         """Initialize production mem0 with real API keys."""
         try:
             # Try to import and initialize mem0
+            pass
         from mem0 import Memory
+        except Exception:
+            pass
+        except Exception:
+            pass
             
         memory_config = {
         "llm": {

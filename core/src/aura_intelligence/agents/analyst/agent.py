@@ -116,7 +116,16 @@ class AnalystAgent:
         
         try:
             # Step 1: Extract and validate evidence
+            pass
         evidence_entries = getattr(state, 'evidence_entries', [])
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
             
         if not evidence_entries:
             logger.warning("No evidence to analyze")

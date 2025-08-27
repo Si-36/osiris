@@ -340,6 +340,16 @@ async def test_configuration():
         try:
             pass
         config = LNNCouncilConfig(
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
             name="test_agent",
             input_size=128,
             confidence_threshold=0.8

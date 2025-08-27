@@ -202,8 +202,8 @@ class LNNCouncilAgent(ICouncilAgent):
         start_time: float
         ) -> CouncilResponse:
             pass
-        """Create a delegation response when agent can't handle request."""
-        return CouncilResponse(
+            """Create a delegation response when agent can't handle request."""
+            return CouncilResponse(
             request_id=request.request_id,
             agent_id=self.agent_id,
             decision=VoteDecision.DELEGATE,
@@ -220,8 +220,8 @@ class LNNCouncilAgent(ICouncilAgent):
         start_time: float
         ) -> CouncilResponse:
             pass
-        """Create an error response."""
-        return CouncilResponse(
+            """Create an error response."""
+            return CouncilResponse(
             request_id=request.request_id,
             agent_id=self.agent_id,
             decision=VoteDecision.ABSTAIN,
@@ -232,7 +232,7 @@ class LNNCouncilAgent(ICouncilAgent):
             metadata={"error": error}
         )
     
-        async def _store_decision(self, response: CouncilResponse):
+            async def _store_decision(self, response: CouncilResponse):
             pass
         """Store decision using storage adapter."""
         try:

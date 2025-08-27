@@ -126,6 +126,7 @@ else:
     class NoOpTracer:
         def start_as_current_span(self, name):
             # Return a decorator function for @tracer.start_as_current_span usage
+            pass
         def decorator(func):
             return func  # Just return the original function
             return decorator
@@ -278,14 +279,12 @@ class AgentMetrics:
     
     def get_success_rate(self) -> float:
         """Calculate task success rate."""
-        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_successful / self.tasks_processed
     
     def get_failure_rate(self) -> float:
         """Calculate task failure rate."""
-        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_failed / self.tasks_processed
@@ -323,7 +322,6 @@ class BaseAgent(ABC):
             instance_id: Instance ID for scaled deployments
             config: Agent configuration
         """
-        pass
         self.agent_id = agent_id
         self.role = role
         self.capabilities = capabilities
@@ -359,7 +357,6 @@ class BaseAgent(ABC):
     
     def _setup_metrics(self) -> None:
         """Setup OpenTelemetry metrics."""
-        pass
         self.task_counter = meter.create_counter(
         name=f"agent_tasks_total",
         description="Total number of tasks processed by agent",
@@ -393,7 +390,6 @@ class BaseAgent(ABC):
         async def start(self) -> None:
             pass
         """Start the agent and initialize services."""
-        pass
         if self._running:
             return
         
@@ -426,7 +422,6 @@ class BaseAgent(ABC):
         async def stop(self) -> None:
             pass
         """Stop the agent and cleanup resources."""
-        pass
         self.status = AgentStatus.SHUTTING_DOWN
         self._update_health_metric()
         
@@ -450,13 +445,11 @@ class BaseAgent(ABC):
         async def initialize(self) -> None:
             pass
         """Agent-specific initialization logic."""
-        pass
     
     @abstractmethod
         async def cleanup(self) -> None:
             pass
         """Agent-specific cleanup logic."""
-        pass
     
         @abstractmethod
         async def process_task(self, state: AgentState) -> AgentState:
@@ -470,12 +463,10 @@ class BaseAgent(ABC):
         Returns:
             Updated agent state
         """
-        pass
     
         async def _register_message_handlers(self) -> None:
             pass
         """Register ACP message handlers."""
-        pass
         self.protocol.register_handler(
         MessageType.REQUEST,
         self._handle_request
@@ -555,13 +546,11 @@ class BaseAgent(ABC):
             pass
         """Handle incoming notification messages."""
         # Default implementation - can be overridden by subclasses
-        pass
     
         async def _handle_broadcast(self, envelope: ACPEnvelope) -> None:
             pass
         """Handle incoming broadcast messages."""
         # Default implementation - can be overridden by subclasses
-        pass
     
     @tracer.start_as_current_span("agent_query_memory")
         async def query_memory(
@@ -687,7 +676,6 @@ class BaseAgent(ABC):
         async def _health_monitor_loop(self) -> None:
             pass
         """Background task to monitor agent health."""
-        pass
         while self._running:
             pass
         try:
@@ -715,7 +703,6 @@ class BaseAgent(ABC):
         async def _metrics_update_loop(self) -> None:
             pass
         """Background task to update metrics."""
-        pass
         while self._running:
             try:
                 # Update uptime
@@ -733,7 +720,6 @@ class BaseAgent(ABC):
         async def _check_health(self) -> bool:
             pass
         """Check agent health status."""
-        pass
         try:
             # Basic health checks
         if not self._running:
@@ -756,7 +742,6 @@ class BaseAgent(ABC):
     
     def _update_health_metric(self) -> None:
         """Update the health metric."""
-        pass
         health_value = 1.0 if self.status == AgentStatus.HEALTHY else 0.0
         self.health_gauge.set(health_value, {
             "agent_id": self.agent_id,
@@ -766,7 +751,6 @@ class BaseAgent(ABC):
     
     def get_status(self) -> Dict[str, Any]:
         """Get agent status information."""
-        pass
         return {
         'agent_id': self.agent_id,
         'role': self.role.value,

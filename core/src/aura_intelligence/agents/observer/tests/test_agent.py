@@ -24,7 +24,6 @@ class TestObserverAgent:
     @pytest.fixture
     def crypto_keys(self):
         """Generate test cryptographic keys."""
-        pass
         provider = get_crypto_provider(SignatureAlgorithm.HMAC_SHA256)
         private_key = "test_private_key_12345"
         public_key = "test_public_key_12345"
@@ -33,7 +32,6 @@ class TestObserverAgent:
         @pytest.fixture
     def observer_agent(self, crypto_keys):
             """Create test ObserverAgent instance."""
-        pass
         private_key, public_key = crypto_keys
         
         agent = ObserverAgent(
@@ -48,7 +46,6 @@ class TestObserverAgent:
     @pytest.fixture
     def sample_event(self):
         """Create realistic test event."""
-        pass
         return {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "level": "error",
@@ -66,7 +63,6 @@ class TestObserverAgent:
         @pytest.mark.asyncio
         async def test_process_event_creates_valid_state(self, observer_agent, sample_event):
             """Test that process_event returns a valid AgentState."""
-        pass
         # Act
         result_state = await observer_agent.process_event(sample_event)
         
@@ -94,7 +90,6 @@ class TestObserverAgent:
     @pytest.mark.asyncio
         async def test_state_immutability(self, observer_agent, sample_event):
         """Test that state updates are truly immutable."""
-        pass
         # Act
         state1 = await observer_agent.process_event(sample_event)
         
@@ -115,7 +110,6 @@ class TestObserverAgent:
         @pytest.mark.asyncio
         async def test_evidence_signature_verification(self, observer_agent, sample_event):
             """Test that evidence signatures are valid and verifiable."""
-        pass
         # Act
         result_state = await observer_agent.process_event(sample_event)
         evidence = result_state.context_dossier[0]
@@ -134,7 +128,6 @@ class TestObserverAgent:
     @pytest.mark.asyncio
         async def test_state_signature_verification(self, observer_agent, sample_event):
         """Test that state signatures are valid and verifiable."""
-        pass
         # Act
         result_state = await observer_agent.process_event(sample_event)
         
@@ -150,7 +143,6 @@ class TestObserverAgent:
         @pytest.mark.asyncio
         async def test_decision_signature_verification(self, observer_agent, sample_event):
             """Test that decision signatures are valid and verifiable."""
-        pass
         # Act
         result_state = await observer_agent.process_event(sample_event)
         decision = result_state.decision_points[0]
@@ -169,7 +161,6 @@ class TestObserverAgent:
     @pytest.mark.asyncio
         async def test_task_type_determination(self, observer_agent):
         """Test intelligent task type determination."""
-        pass
         # Security event
         security_event = {
         "message": "Unauthorized access attempt detected",
@@ -209,7 +200,6 @@ class TestObserverAgent:
         @pytest.mark.asyncio
         async def test_retry_mechanism(self, observer_agent, sample_event):
             """Test retry mechanism with exponential backoff."""
-        pass
         # Mock the evidence creation to fail twice, then succeed
         original_method = observer_agent._create_evidence_from_event
         call_count = 0
@@ -234,7 +224,6 @@ class TestObserverAgent:
             @pytest.mark.asyncio
             async def test_metrics_tracking(self, observer_agent, sample_event):
                 """Test that performance metrics are tracked correctly."""
-            pass
             # Initial metrics
             initial_processed = observer_agent.metrics["events_processed"]
             initial_evidence = observer_agent.metrics["evidence_created"]
@@ -252,7 +241,6 @@ class TestObserverAgent:
             @pytest.mark.asyncio
             async def test_health_status(self, observer_agent):
                 """Test health status reporting."""
-            pass
             # Act
             health = await observer_agent.get_health_status()
         
@@ -275,7 +263,6 @@ class TestObserverAgent:
             @pytest.mark.asyncio
             async def test_trace_context_integration(self, observer_agent, sample_event):
                 """Test OpenTelemetry trace context integration."""
-            pass
             # Add trace context to event
             sample_event["traceparent"] = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
         
@@ -294,7 +281,6 @@ class TestObserverAgent:
     
     def test_agent_string_representation(self, observer_agent):
                 """Test agent string representation."""
-            pass
             agent_str = str(observer_agent)
             assert "ObserverAgent[test_observer_001]" in agent_str
             assert "Events:" in agent_str
@@ -308,7 +294,6 @@ class TestObserverAgentIntegration:
     @pytest.mark.asyncio
     async def test_end_to_end_workflow(self):
         """Test complete end-to-end workflow processing."""
-        pass
         # Setup
         provider = get_crypto_provider(SignatureAlgorithm.HMAC_SHA256)
         private_key = "integration_test_key"

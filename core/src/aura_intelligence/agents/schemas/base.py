@@ -252,6 +252,16 @@ class GloballyIdentifiable(VersionedSchema):
         try:
             pass
         uuid.UUID(v)
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
         return v
         except ValueError:
             pass

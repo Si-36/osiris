@@ -261,15 +261,15 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         return await self._fallback_partial_response(input_data)
     
     @abstractmethod
-        async def _fallback_partial_response(self, input_data: TInput) -> TOutput:
+    async def _fallback_partial_response(self, input_data: TInput) -> TOutput:
             pass
-        """
+            """
         Generate a partial response as last resort.
         
         This method must be implemented by subclasses to provide
         domain-specific partial responses.
         """
-        pass
+            pass
     
     def _get_cache_key(self, input_data: TInput) -> str:
         """Generate cache key from input."""

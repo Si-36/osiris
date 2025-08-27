@@ -167,7 +167,16 @@ async def example_distributed_lock():
     if acquired:
         try:
             # Do exclusive operation
+            pass
     print("Updating feature flag...")
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
     await asyncio.sleep(0.1)
             
     # Update complete

@@ -83,7 +83,7 @@ class TDAMem0Adapter:
             raise
             
     @trace_span("store_tda_memory")
-        async def store_tda_memory(
+    async def store_tda_memory(
         self,
         result: TDAResult,
         agent_id: str,
@@ -91,7 +91,7 @@ class TDAMem0Adapter:
         ttl: Optional[int] = 86400  # 24 hours default
         ) -> str:
             pass
-        """
+            """
         Store TDA result as episodic memory.
         
         Args:
@@ -103,10 +103,11 @@ class TDAMem0Adapter:
         Returns:
             memory_id of stored entry
         """
-        if not self._initialized:
+            if not self._initialized:
+                pass
             await self.initialize()
             
-        entry_id = f"tda_mem_{result.algorithm}_{datetime.now(timezone.utc).timestamp()}"
+                entry_id = f"tda_mem_{result.algorithm}_{datetime.now(timezone.utc).timestamp()}"
         
         # Extract persistence features
         persistence_features = self._extract_persistence_features(result)

@@ -160,7 +160,7 @@ class ObservabilityEngine:
         confidence_score: float, reasoning_path: List[str],
                               fallback_triggered: bool = False) -> None:
                                   pass
-        """Complete a decision trace (Requirement 6.2)"""
+                    """Complete a decision trace (Requirement 6.2)"""
         if request_id in self.decision_traces:
             trace = self.decision_traces[request_id]
             trace.end_time = time.time()

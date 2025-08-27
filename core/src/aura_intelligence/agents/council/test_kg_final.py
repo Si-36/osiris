@@ -191,7 +191,6 @@ class TDAEnhancedKnowledgeProvider:
     
     def set_neo4j_adapter(self, adapter):
         """Inject Neo4j adapter (Task 5 requirement)."""
-        pass
         self.neo4j_adapter = adapter
         print("Neo4j adapter connected with TDA enhancement")
     
@@ -237,7 +236,6 @@ class TDAEnhancedKnowledgeProvider:
         async def _get_entity_context(self, request) -> dict:
             pass
         """Get entity context using Neo4j adapter."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})
@@ -279,7 +277,6 @@ class TDAEnhancedKnowledgeProvider:
         async def _get_relationship_context(self, request) -> dict:
             pass
         """Get relationship context using Neo4j adapter."""
-        pass
         
         cypher = """
         MATCH (u:User {id: $user_id})-[r1]->(p:Project {id: $project_id})
@@ -309,7 +306,6 @@ class TDAEnhancedKnowledgeProvider:
         async def _get_topology_context(self, request) -> dict:
             pass
         """Get topology context with TDA features using Neo4j adapter."""
-        pass
         
         # Standard graph topology query
         topology_cypher = """
@@ -374,7 +370,6 @@ class TDAEnhancedKnowledgeProvider:
         
         Task 5 Implementation: Relevance scoring using TDA features
         """
-        pass
         
         scores = {}
         
@@ -401,7 +396,6 @@ class TDAEnhancedKnowledgeProvider:
     
     def _apply_relevance_weighting(self, contexts, relevance_scores) -> list:
         """Apply TDA-based relevance weighting to contexts."""
-        pass
         
         weights = [
             relevance_scores.get("entity_relevance", 0.5),
@@ -425,7 +419,6 @@ class TDAEnhancedKnowledgeProvider:
     
     def _aggregate_contexts(self, weighted_contexts) -> torch.Tensor:
         """Aggregate weighted contexts into final tensor."""
-        pass
         
         all_features = []
         for ctx in weighted_contexts:
@@ -440,7 +433,6 @@ class TDAEnhancedKnowledgeProvider:
     
     def _calculate_success_rate(self, history) -> float:
         """Calculate success rate from historical data."""
-        pass
         if not history:
             return 0.5
         
@@ -449,7 +441,6 @@ class TDAEnhancedKnowledgeProvider:
     
     def get_stats(self):
         """Get provider statistics."""
-        pass
         return {
             "query_count": self.query_count,
             "cache_hits": self.cache_hits,

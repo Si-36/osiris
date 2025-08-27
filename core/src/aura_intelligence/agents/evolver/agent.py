@@ -55,6 +55,16 @@ class EvolverAgent:
             async for event in self.bus.subscribe("topo:failures", "evolvers", self.agent_id):
                 pass
         if not self.running:
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
+        except Exception:
+            pass
             break
                     
         try:
