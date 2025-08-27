@@ -681,9 +681,9 @@ class UnifiedTDAEngine2025:
 _global_tda_engine: Optional[UnifiedTDAEngine2025] = None
 
 
-    def get_unified_tda_engine() -> UnifiedTDAEngine2025:
-        """Get the global unified TDA engine instance."""
-        global _global_tda_engine
-        if _global_tda_engine is None:
+def get_unified_tda_engine() -> UnifiedTDAEngine2025:
+    """Get the global unified TDA engine instance."""
+    global _global_tda_engine
+    if _global_tda_engine is None:
         _global_tda_engine = create_unified_tda_engine()
-        return _global_tda_engine
+    return _global_tda_engine
