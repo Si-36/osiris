@@ -101,20 +101,20 @@ neo4j_database: str = "neo4j"
 duckdb_path: str = ":memory:"
 duckdb_threads: int = 4
 
-@classmethod
-def from_env(cls) -> 'DatabaseConfig':
-"""Create from environment variables."""
-return cls(
-redis_url=os.getenv("REDIS_URL", "redis://localhost:6379"),
-redis_password=os.getenv("REDIS_PASSWORD"),
-redis_max_connections=int(os.getenv("REDIS_MAX_CONNECTIONS", "50")),
-redis_socket_timeout=int(os.getenv("REDIS_SOCKET_TIMEOUT", "5")),
-neo4j_uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
-neo4j_user=os.getenv("NEO4J_USER", "neo4j"),
-neo4j_password=os.getenv("NEO4J_PASSWORD", "password"),
-neo4j_database=os.getenv("NEO4J_DATABASE", "neo4j"),
-duckdb_path=os.getenv("DUCKDB_PATH", ":memory:"),
-duckdb_threads=int(os.getenv("DUCKDB_THREADS", "4"))
+    @classmethod
+    def from_env(cls) -> 'DatabaseConfig':
+        """Create from environment variables."""
+        return cls(
+            redis_url=os.getenv("REDIS_URL", "redis://localhost:6379"),
+            redis_password=os.getenv("REDIS_PASSWORD"),
+            redis_max_connections=int(os.getenv("REDIS_MAX_CONNECTIONS", "50")),
+            redis_socket_timeout=int(os.getenv("REDIS_SOCKET_TIMEOUT", "5")),
+            neo4j_uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
+            neo4j_user=os.getenv("NEO4J_USER", "neo4j"),
+            neo4j_password=os.getenv("NEO4J_PASSWORD", "password"),
+            neo4j_database=os.getenv("NEO4J_DATABASE", "neo4j"),
+            duckdb_path=os.getenv("DUCKDB_PATH", ":memory:"),
+            duckdb_threads=int(os.getenv("DUCKDB_THREADS", "4"))
 )
 
 @dataclass
