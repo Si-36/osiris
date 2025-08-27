@@ -449,6 +449,29 @@ def circuit_breaker(config: Optional[CircuitBreakerConfig] = None):
     cb = CircuitBreaker(config)
     return cb
 
+# Create simple aliases for backward compatibility
+def rate_limit(rate: float, capacity: Optional[float] = None):
+    """Rate limiting decorator (backward compatibility)."""
+    limiter = RateLimiter(rate, capacity)
+    return limiter
+
+def with_retry(max_attempts: int = 3, delay: float = 1.0, backoff_factor: float = 2.0):
+    """Retry decorator with custom config (backward compatibility)."""
+    config = RetryConfig(
+        max_attempts=max_attempts,
+        delay=delay,
+        backoff_factor=backoff_factor
+    )
+    return retry(config)
+
+def with_circuit_breaker(failure_threshold: int = 5, recovery_timeout: int = 60):
+    """Circuit breaker decorator with custom config (backward compatibility)."""
+    config = CircuitBreakerConfig(
+        failure_threshold=failure_threshold,
+        recovery_timeout=recovery_timeout
+    )
+    return circuit_breaker(config)
+
 # Export all decorators
 __all__ = [
     "CircuitBreaker",
@@ -460,4 +483,7 @@ __all__ = [
     "RateLimiter",
     "timed",
     "cached",
+    "rate_limit",  # Added for backward compatibility
+    "with_retry",  # Added for backward compatibility
+    "with_circuit_breaker",  # Added for backward compatibility
 ]
