@@ -98,7 +98,6 @@ class AutonomousGovernanceSystem:
         if (assessment["confidence"] > thresholds["confidence_threshold"] and 
             assessment["risk_level"] < thresholds["risk_threshold"] and
             assessment["complexity"] < thresholds["complexity_threshold"]):
-                pass
             return AgentAutonomyLevel.AUTONOMOUS
         elif assessment["complexity"] > 0.8:
             return AgentAutonomyLevel.COLLABORATIVE
