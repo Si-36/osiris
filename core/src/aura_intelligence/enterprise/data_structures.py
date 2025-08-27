@@ -272,13 +272,11 @@ class OutcomeAPI(BaseModel):
     
     # Calculate similarity
         if np.sum(betti1) + np.sum(betti2) == 0:
-            pass
-        betti_similarity = 1.0
+            betti_similarity = 1.0
         else:
-            pass
-        intersection = np.minimum(betti1, betti2)
-        union = np.maximum(betti1, betti2)
-        betti_similarity = np.sum(intersection) / np.sum(union)
+            intersection = np.minimum(betti1, betti2)
+            union = np.maximum(betti1, betti2)
+            betti_similarity = np.sum(intersection) / np.sum(union)
     
     # Consciousness similarity
         consciousness_similarity = 1.0 - abs(sig1.consciousness_level - sig2.consciousness_level)
