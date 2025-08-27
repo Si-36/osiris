@@ -162,9 +162,9 @@ class UltimateAURASystem:
         # Initialize LangGraph workflows if enabled (simplified for now)
         if self.config.langgraph.enable_langgraph:
             from aura_intelligence.integrations import UltimateLangGraphIntegration
-        self.langgraph = UltimateLangGraphIntegration(self.config.langgraph, self.consciousness)
+            self.langgraph = UltimateLangGraphIntegration(self.config.langgraph, self.consciousness)
         else:
-        self.langgraph = None
+            self.langgraph = None
         
         self.logger.info("✅ Ultimate AURA Intelligence System initialized successfully")
     

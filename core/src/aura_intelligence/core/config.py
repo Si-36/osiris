@@ -586,7 +586,7 @@ class ConfigurationManager:
         """Get the global configuration manager instance."""
         global _config_manager
         if _config_manager is None:
-        _config_manager = ConfigurationManager()
+            _config_manager = ConfigurationManager()
         return _config_manager
 
 
