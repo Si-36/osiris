@@ -48,8 +48,7 @@ class ConsolidatedAgent(AgentComponent):
         
         print(f"🤖 Consolidated Agent: {agent_id} ({agent_type.value})")
     
-        async def make_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
-            pass
+    async def make_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Make a decision based on agent type."""
         start_time = time.time()
         self.operation_count += 1

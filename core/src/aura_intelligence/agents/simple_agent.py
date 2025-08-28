@@ -40,16 +40,13 @@ class SimpleAgent(AgentComponent):
             print(f"❌ {self.component_id} initialization failed: {e}")
             return False
     
-        async def start(self) -> bool:
-            pass
+    async def start(self) -> bool:
         """Start the agent."""
-        pass
         if self.status != ComponentStatus.ACTIVE:
             return await self.initialize()
         return True
     
-        async def stop(self) -> bool:
-            pass
+    async def stop(self) -> bool:
         """Stop the agent."""
         pass
         self.status = ComponentStatus.INACTIVE
@@ -208,13 +205,14 @@ class SimpleAgent(AgentComponent):
             "success_rate": self.success_count / max(1, self.decision_count)
         }
 
+
 # ============================================================================
 # SIMPLE FACTORY
 # ============================================================================
 
-    def create_simple_agent(agent_id: str, agent_type: str = "simple", config: Dict[str, Any] = None) -> SimpleAgent:
-        """Create a simple agent."""
-        return SimpleAgent(agent_id, agent_type, config)
+def create_simple_agent(agent_id: str, agent_type: str = "simple", config: Dict[str, Any] = None) -> 'SimpleAgent':
+    """Create a simple agent."""
+    return SimpleAgent(agent_id, agent_type, config)
 
 # ============================================================================
 # SIMPLE REGISTRY

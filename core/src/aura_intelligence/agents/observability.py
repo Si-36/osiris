@@ -127,22 +127,22 @@ self.decision_counter.add(1, {
 "has_reason": bool(reason)
 })
 
-def record_tool_usage(self, tool_name: str, duration_ms: float, success: bool):
-"""Record tool usage."""
-self.tool_usage_counter.add(1, {
-"agent.name": self.agent_name,
-"tool": tool_name,
-"success": success
-})
-
-def record_quality(self, quality_score: float, relevance_score: float = None):
-"""Record response quality metrics."""
-self.quality_histogram.record(quality_score, {
-"agent.name": self.agent_name,
-"metric": "quality"
-})
-if relevance_score is not None:
-self.quality_histogram.record(relevance_score, {
+    def record_tool_usage(self, tool_name: str, duration_ms: float, success: bool):
+        """Record tool usage."""
+        self.tool_usage_counter.add(1, {
+            "agent.name": self.agent_name,
+            "tool": tool_name,
+            "success": success
+        })
+    
+    def record_quality(self, quality_score: float, relevance_score: float = None):
+        """Record response quality metrics."""
+        self.quality_histogram.record(quality_score, {
+            "agent.name": self.agent_name,
+            "metric": "quality"
+        })
+        if relevance_score is not None:
+            self.quality_histogram.record(relevance_score, {
 "agent.name": self.agent_name,
 "metric": "relevance"
 })
