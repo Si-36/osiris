@@ -56,14 +56,12 @@ class LIFNeuron(nn.Module):
     
     def neuronal_fire(self) -> torch.Tensor:
         """Neuronal firing with surrogate gradient"""
-        pass
         spike_function = SpikeFunction.apply
         self.spike = spike_function(self.v - self.v_threshold, self.surrogate_function)
         return self.spike
     
     def neuronal_reset(self) -> torch.Tensor:
         """Neuronal reset after spike"""
-        pass
         self.v = (1. - self.spike) * self.v + self.spike * self.v_reset
         return self.v
     
@@ -186,7 +184,6 @@ class SpikingGAT(nn.Module):
         
     def reset_parameters(self):
         """Initialize parameters"""
-        pass
         nn.init.xavier_uniform_(self.lin_src.weight)
         nn.init.xavier_uniform_(self.lin_dst.weight)
         nn.init.xavier_uniform_(self.att_src)
@@ -235,8 +232,7 @@ class AdvancedSpikingGNN(nn.Module):
     """Advanced Spiking GNN following latest neuromorphic computing patterns"""
     
     def __init__(self, num_nodes: int, input_dim: int = 64, hidden_dim: int = 128,
-        output_dim: int = 32, num_layers: int = 3, heads: int = 4):
-            pass
+                 output_dim: int = 32, num_layers: int = 3, heads: int = 4):
         super().__init__()
         self.num_nodes = num_nodes
         self.input_dim = input_dim
@@ -568,8 +564,8 @@ class NeuromorphicCoordinator:
 # Global coordinator
 _neuromorphic_coordinator = None
 
-    def get_neuromorphic_coordinator():
-        global _neuromorphic_coordinator
-        if _neuromorphic_coordinator is None:
+def get_neuromorphic_coordinator():
+    global _neuromorphic_coordinator
+    if _neuromorphic_coordinator is None:
         _neuromorphic_coordinator = NeuromorphicCoordinator()
         return _neuromorphic_coordinator
