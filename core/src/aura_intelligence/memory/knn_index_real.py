@@ -5,9 +5,10 @@ REAL k-NN Index with FAISS for Production Use
 High-performance vector similarity search with multiple backends.
 NO DUMMY IMPLEMENTATIONS - Everything computes real results.
 """
+from __future__ import annotations
 
 import numpy as np
-from typing import List, Tuple, Optional, Protocol, Union, Dict, Any
+from typing import List, Tuple, Optional, Protocol, Union, Dict, Any, TYPE_CHECKING
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import logging
@@ -16,11 +17,16 @@ import warnings
 logger = logging.getLogger(__name__)
 
 # Try to import optional dependencies
+if TYPE_CHECKING:
+    import faiss
+    from annoy import AnnoyIndex
+
 try:
     import faiss
     FAISS_AVAILABLE = True
 except ImportError:
     FAISS_AVAILABLE = False
+    faiss = None
     logger.warning("FAISS not available. Install with: pip install faiss-cpu")
 
 try:
@@ -28,6 +34,7 @@ try:
     ANNOY_AVAILABLE = True
 except ImportError:
     ANNOY_AVAILABLE = False
+    AnnoyIndex = None
     logger.warning("Annoy not available. Install with: pip install annoy")
 
 
@@ -138,7 +145,7 @@ class FaissKNNIndex(BaseKNNIndex):
         
         logger.info(f"Created FAISS index: type={config.faiss_index_type}, dim={embedding_dim}")
     
-    def _create_index(self) -> faiss.Index:
+    def _create_index(self) -> "faiss.Index":
         """Create appropriate FAISS index based on configuration."""
         pass
         d = self.embedding_dim

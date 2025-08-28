@@ -19,9 +19,66 @@ except ImportError:
             self.persistence_enabled = True
             self.cache_size = 10000
 
-            __all__ = [
-            'HybridKNNIndex',
-            'KNNConfig',
-            'create_knn_index',
-            'MemorySettings',
-            ]
+# Import unified memory interface
+from .unified_memory_interface import (
+    UnifiedMemoryInterface,
+    MemoryType,
+    ConsistencyLevel,
+    SearchType,
+    MemoryMetadata,
+    MemoryResult
+)
+
+# Import Mem0 pipeline
+from .mem0_pipeline import (
+    Mem0Pipeline,
+    ExtractedFact,
+    FactType,
+    ConfidenceLevel,
+    RetrievalContext
+)
+
+# Import H-MEM hierarchical routing
+from .hierarchical_routing import (
+    HMemSystem,
+    MemoryLevel,
+    HierarchicalRouter
+)
+
+# Import Qdrant configuration
+from .qdrant_config import (
+    QdrantMultitenantManager,
+    QdrantCollectionConfig,
+    QuantizationType,
+    QuantizationPreset
+)
+
+__all__ = [
+    # KNN Index
+    'HybridKNNIndex',
+    'KNNConfig',
+    'create_knn_index',
+    'MemorySettings',
+    # Unified Interface
+    'UnifiedMemoryInterface',
+    'MemoryType',
+    'ConsistencyLevel',
+    'SearchType',
+    'MemoryMetadata',
+    'MemoryResult',
+    # Mem0 Pipeline
+    'Mem0Pipeline',
+    'ExtractedFact',
+    'FactType',
+    'ConfidenceLevel',
+    'RetrievalContext',
+    # H-MEM
+    'HMemSystem',
+    'MemoryLevel',
+    'HierarchicalRouter',
+    # Qdrant
+    'QdrantMultitenantManager',
+    'QdrantCollectionConfig',
+    'QuantizationType',
+    'QuantizationPreset'
+]
