@@ -61,7 +61,6 @@ class InformationAgent:
         
     def _create_world_encoder(self) -> nn.Module:
         """Create world model encoder network"""
-        pass
         return nn.Sequential(
             nn.Linear(256, 512),  # Context encoding
             nn.ReLU(),
@@ -73,7 +72,6 @@ class InformationAgent:
     
     def _create_message_generator(self) -> nn.Module:
         """Create message generation network"""
-        pass
         return nn.Sequential(
             nn.Linear(128, 64),   # World model → message
             nn.ReLU(),
@@ -81,8 +79,7 @@ class InformationAgent:
             nn.Tanh()            # Bounded message space
         )
     
-        async def build_world_model(self, context: Dict[str, Any]) -> np.ndarray:
-            pass
+    async def build_world_model(self, context: Dict[str, Any]) -> np.ndarray:
         """Build world model from context"""
         # Extract features based on component specialization
         if self.component.type == ComponentType.NEURAL:
@@ -104,8 +101,7 @@ class InformationAgent:
         
         return world_model_np
     
-        async def generate_message(self, world_model: np.ndarray, context: Dict[str, Any]) -> CoRaLMessage:
-            pass
+    async def generate_message(self, world_model: np.ndarray, context: Dict[str, Any]) -> CoRaLMessage:
         """Generate message from world model"""
         # Generate message content
         with torch.no_grad():
@@ -377,9 +373,8 @@ class CausalInfluenceMeasurer:
         self.influence_history = []
         
     def measure_influence(self, baseline_policy: np.ndarray, 
-        influenced_policy: np.ndarray,
+                         influenced_policy: np.ndarray,
                          advantage: float = 1.0) -> CausalInfluence:
-                             pass
         """Measure causal influence using KL divergence"""
         
         # Add small epsilon to prevent log(0)
