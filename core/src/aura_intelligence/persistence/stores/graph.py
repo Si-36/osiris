@@ -8,7 +8,8 @@ distributed graph algorithms.
 
 import asyncio
 from typing import Dict, List, Any, Optional, Set, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 import json
 import logging

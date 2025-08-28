@@ -6,8 +6,9 @@ Provides immutable event log with CQRS support.
 """
 
 import asyncio
-from typing import Dict, List, Any, Optional, Callable, AsyncIterator
-from dataclasses import dataclass, field
+from typing import Dict, List, Any, Optional, Callable, AsyncIterator, Tuple
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 import json
 import logging

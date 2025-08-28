@@ -12,7 +12,8 @@ Supports:
 
 import asyncio
 from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 import numpy as np
 import json

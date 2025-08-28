@@ -6,7 +6,8 @@ Provides Git-like branching and tagging for data versioning.
 """
 
 from typing import Dict, List, Any, Optional, Protocol
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
 from datetime import datetime
 import logging

@@ -13,9 +13,17 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import json
 import logging
-import nats
-from nats.js import JetStreamContext
-from nats.js.kv import KeyValue
+
+try:
+    import nats
+    from nats.js import JetStreamContext
+    from nats.js.kv import KeyValue
+    NATS_AVAILABLE = True
+except ImportError:
+    NATS_AVAILABLE = False
+    nats = None
+    JetStreamContext = None
+    KeyValue = None
 
 from ..core import (
     AbstractStore,

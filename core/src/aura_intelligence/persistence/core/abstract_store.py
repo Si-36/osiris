@@ -7,7 +7,8 @@ Ensures consistent API across vector, graph, time-series, and document stores.
 
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, Protocol, TypeVar, Generic
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
 import asyncio
 from datetime import datetime

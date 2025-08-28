@@ -6,7 +6,8 @@ Each dataset has versioned schemas with evolution support.
 """
 
 from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from abc import ABC, abstractmethod
 import json

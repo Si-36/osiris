@@ -7,7 +7,8 @@ and the saga pattern with automatic compensations.
 
 import asyncio
 from typing import Dict, List, Any, Optional, Callable, TypeVar, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 import uuid
 from abc import ABC, abstractmethod

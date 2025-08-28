@@ -6,7 +6,8 @@ into the lakehouse with exactly-once semantics.
 """
 
 from typing import Dict, List, Any, Optional, Callable, AsyncIterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime, timedelta
 from enum import Enum
 import asyncio

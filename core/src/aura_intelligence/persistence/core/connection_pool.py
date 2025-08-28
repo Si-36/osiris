@@ -7,7 +7,8 @@ and automatic recovery for all persistence backends.
 
 import asyncio
 from typing import Dict, Any, Optional, Protocol, TypeVar, Generic, List
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
 import time

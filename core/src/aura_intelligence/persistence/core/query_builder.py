@@ -6,8 +6,7 @@ with automatic translation to backend-specific queries.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass
-from dataclasses import field as dataclass_field
+from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
 import json
@@ -105,15 +104,15 @@ class SortSpec:
 class AggregationSpec:
     """Aggregation specification"""
     function: AggregationFunction
-    field: Optional[str] = None
+    field_name: Optional[str] = None
     alias: Optional[str] = None
-    params: Dict[str, Any] = dataclass_field(default_factory=dict)
+    params: Dict[str, Any] = field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation"""
         return {
             'function': self.function.value,
-            'field': self.field,
+            'field': self.field_name,
             'alias': self.alias,
             'params': self.params
         }
@@ -233,7 +232,7 @@ class QueryBuilder:
                  alias: Optional[str] = None,
                  **params) -> 'QueryBuilder':
         """Add aggregation"""
-        self.aggregations.append(AggregationSpec(function, field, alias, params))
+        self.aggregations.append(AggregationSpec(function, field_name=field, alias=alias, params=params))
         return self
         
     def count(self, alias: str = "count") -> 'QueryBuilder':

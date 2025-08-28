@@ -17,7 +17,10 @@ from .abstract_store import (
     StoreType,
     QueryResult,
     WriteResult,
-    TransactionContext
+    TransactionContext,
+    VectorStore,
+    GraphStore,
+    TimeSeriesStore
 )
 from .connection_pool import (
     ConnectionPool,
@@ -31,7 +34,11 @@ from .circuit_breaker import (
 from .query_builder import (
     QueryBuilder,
     FilterOperator,
-    SortOrder
+    SortOrder,
+    query,
+    vector_query,
+    time_query,
+    graph_query
 )
 from .transaction_manager import (
     TransactionManager,
@@ -47,6 +54,11 @@ __all__ = [
     'WriteResult',
     'TransactionContext',
     
+    # Specialized Stores
+    'VectorStore',
+    'GraphStore',
+    'TimeSeriesStore',
+    
     # Connection Management
     'ConnectionPool',
     'PooledConnection',
@@ -60,6 +72,10 @@ __all__ = [
     'QueryBuilder',
     'FilterOperator',
     'SortOrder',
+    'query',
+    'vector_query',
+    'time_query',
+    'graph_query',
     
     # Transactions
     'TransactionManager',

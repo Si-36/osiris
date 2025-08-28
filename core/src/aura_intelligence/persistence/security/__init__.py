@@ -16,7 +16,8 @@ from .audit import (
     ImmutableAuditLog,
     AccessMonitor,
     ComplianceReporter,
-    AuditConfig
+    AuditConfig,
+    AuditEntry
 )
 
 from .multitenancy import (

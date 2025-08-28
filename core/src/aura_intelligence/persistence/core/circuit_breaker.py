@@ -7,7 +7,8 @@ adaptive thresholds and exponential backoff.
 
 import asyncio
 from typing import Dict, Any, Optional, Callable, TypeVar, Generic
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime, timedelta
 from enum import Enum
 import time
