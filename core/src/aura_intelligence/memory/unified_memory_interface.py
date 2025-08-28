@@ -27,14 +27,38 @@ from enum import Enum
 import numpy as np
 import structlog
 
-# Import existing components
-from ..persistence.stores.kv import NATSKVStore
-from ..persistence.stores.vector import QdrantStore
-from ..persistence.stores.graph import Neo4jStore
-from ..persistence.lakehouse.datasets import MemoryDataset
+# Import existing components with error handling
+try:
+    from ..persistence.stores.kv import NATSKVStore
+except ImportError:
+    NATSKVStore = None
+    
+try:
+    from ..persistence.stores.vector import QdrantVectorStore
+except ImportError:
+    QdrantVectorStore = None
+    
+try:
+    from ..persistence.stores.graph import Neo4jGraphStore
+except ImportError:
+    Neo4jGraphStore = None
+    
+try:
+    from ..persistence.lakehouse.datasets import MemoryDataset
+except ImportError:
+    MemoryDataset = None
+    
 from .mem0_integration import Mem0Manager, Memory
-from .shape_memory_v2_prod import ShapeMemoryV2
-from .redis_store import RedisVectorStore
+
+try:
+    from .shape_memory_v2_prod import ShapeMemoryV2
+except ImportError:
+    from .shape_memory_v2_clean import ShapeMemoryV2
+
+try:
+    from .redis_store import RedisVectorStore
+except ImportError:
+    RedisVectorStore = None
 
 logger = structlog.get_logger(__name__)
 
@@ -123,22 +147,25 @@ class UnifiedMemoryInterface:
     
     def __init__(self):
         # L1 Hot tier - Redis
-        self.redis_store = RedisVectorStore()
+        self.redis_store = RedisVectorStore() if RedisVectorStore else None
         
         # L2 Warm tier - Qdrant with quantization
-        self.qdrant_store = QdrantStore()
+        self.qdrant_store = QdrantVectorStore() if QdrantVectorStore else None
         
         # L3 Semantic tier - Neo4j GraphRAG
-        self.neo4j_store = Neo4jStore()
+        self.neo4j_store = Neo4jGraphStore() if Neo4jGraphStore else None
         
         # L4 Cold tier - Iceberg
-        self.iceberg_dataset = MemoryDataset()
+        self.iceberg_dataset = MemoryDataset() if MemoryDataset else None
         
         # Mem0 pipeline for extract->update->retrieve
         self.mem0_manager = Mem0Manager()
         
         # Shape Memory V2 for topological search
-        self.shape_memory = ShapeMemoryV2()
+        try:
+            self.shape_memory = ShapeMemoryV2()
+        except:
+            self.shape_memory = None
         
         # Hierarchical routing indices
         self.hierarchical_indices: Dict[str, HierarchicalIndex] = {}
@@ -152,18 +179,37 @@ class UnifiedMemoryInterface:
             "total_requests": 0
         }
         
-        logger.info("UnifiedMemoryInterface initialized with 4-tier architecture")
+        # Log available components
+        available = []
+        if self.redis_store: available.append("Redis")
+        if self.qdrant_store: available.append("Qdrant")
+        if self.neo4j_store: available.append("Neo4j")
+        if self.iceberg_dataset: available.append("Iceberg")
+        
+        logger.info(
+            "UnifiedMemoryInterface initialized",
+            available_stores=available
+        )
         
     async def initialize(self):
         """Initialize all memory tiers"""
-        await asyncio.gather(
-            self.redis_store.initialize(),
-            self.qdrant_store.initialize(),
-            self.neo4j_store.initialize(),
-            self.iceberg_dataset.initialize(),
-            self.mem0_manager.initialize()
-        )
-        logger.info("All memory tiers initialized")
+        tasks = []
+        
+        if self.redis_store:
+            tasks.append(self.redis_store.initialize())
+        if self.qdrant_store:
+            tasks.append(self.qdrant_store.initialize())
+        if self.neo4j_store:
+            tasks.append(self.neo4j_store.initialize())
+        if self.iceberg_dataset:
+            tasks.append(self.iceberg_dataset.initialize())
+            
+        tasks.append(self.mem0_manager.initialize())
+        
+        if tasks:
+            await asyncio.gather(*tasks)
+            
+        logger.info("Memory tiers initialized")
         
     async def store(
         self,

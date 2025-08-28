@@ -3,7 +3,11 @@ Memory module for AURA Intelligence
 """
 
 # Import only the essentials to avoid circular imports
-from .knn_index_real import HybridKNNIndex, KNNConfig, create_knn_index
+try:
+    from .knn_index_real import HybridKNNIndex, KNNConfig, create_knn_index
+except (ImportError, NameError):
+    # Fallback to simple implementation if dependencies are missing
+    from .knn_index_simple import HybridKNNIndex, KNNConfig, create_knn_index
 
 # Import MemorySettings if available
 try:
