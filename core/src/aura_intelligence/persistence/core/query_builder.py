@@ -6,7 +6,8 @@ with automatic translation to backend-specific queries.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from enum import Enum
 from datetime import datetime
 import json
@@ -106,7 +107,7 @@ class AggregationSpec:
     function: AggregationFunction
     field: Optional[str] = None
     alias: Optional[str] = None
-    params: Dict[str, Any] = field(default_factory=dict)
+    params: Dict[str, Any] = dataclass_field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation"""
