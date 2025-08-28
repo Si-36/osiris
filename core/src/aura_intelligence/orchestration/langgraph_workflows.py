@@ -19,11 +19,15 @@ class CollectiveState(TypedDict):
     decision: Optional[Dict[str, Any]]
     metadata: Dict[str, Any]
 
-from langgraph.graph import StateGraph, END
 try:
+    from langgraph.graph import StateGraph, END
     from langgraph.prebuilt import ToolNode as ToolExecutor
+    LANGGRAPH_AVAILABLE = True
 except ImportError:
-    # Fallback for older LangGraph versions
+    # Fallback when LangGraph not available
+    LANGGRAPH_AVAILABLE = False
+    StateGraph = None
+    END = None
     ToolExecutor = None
 
 # Import existing agents

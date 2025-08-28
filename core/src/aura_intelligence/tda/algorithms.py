@@ -128,8 +128,8 @@ class RipsComplex:
         # Born when loop closes, die when filled
         if triangles:
             for _, _, _, birth_time in triangles[:5]:  # Top 5 loops
-        # Loops die at infinity in this simplified version
-        pairs.append((birth_time, float('inf')))
+                # Loops die at infinity in this simplified version
+                pairs.append((birth_time, float('inf')))
         
         return pairs
 
@@ -216,12 +216,10 @@ class PersistentHomology:
         best_cost = cost_matrix[i, j]
         
         if best_j >= 0:
-            pass
-        used_j.add(best_j)
-        total_cost += best_cost**p
+            used_j.add(best_j)
+            total_cost += best_cost**p
         else:
-            pass
-        total_cost += diagonal_cost1[i]**p
+            total_cost += diagonal_cost1[i]**p
     
     # Add unmatched points from diag2
         for j in range(n2):

@@ -250,22 +250,10 @@ class GloballyIdentifiable(VersionedSchema):
     def validate_uuid_format(v: str) -> str:
         """Validate UUID format."""
         try:
-            pass
-        uuid.UUID(v)
+            uuid.UUID(v)
         except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
-        except Exception:
-            pass
+            raise ValueError(f"Invalid UUID format: {v}")
         return v
-        except ValueError:
-            pass
-        raise ValueError("Invalid UUID format")
 
 
 # ============================================================================
@@ -606,9 +594,9 @@ class MigrationProtocol(Protocol):
         ...
 
 
-    def create_migration_registry() -> Dict[str, MigrationProtocol]:
-        """Create a registry for schema migrations."""
-        return {}
+def create_migration_registry() -> Dict[str, MigrationProtocol]:
+    """Create a registry for schema migrations."""
+    return {}
 
 
 # Export commonly used items
