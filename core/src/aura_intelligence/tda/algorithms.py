@@ -44,7 +44,6 @@ class RipsComplex:
                         if (distances[i, j] <= max_edge_length and
                             distances[j, k] <= max_edge_length and
                             distances[i, k] <= max_edge_length):
-                                pass
                             # Triangle birth time is max of edge times
                             birth = max(distances[i, j], distances[j, k], distances[i, k])
                             triangles.append((i, j, k, birth))
@@ -94,8 +93,8 @@ class RipsComplex:
         
     def union(x, y):
         px, py = find(x), find(y)
-            if px != py:
-                parent[px] = py
+        if px != py:
+            parent[px] = py
         
         # Union vertices connected by edges
         for i, j, _ in edges:
