@@ -392,29 +392,27 @@ class PreferencePair:
                                                                                                         'confidence': abs(combined_score - 0.5) * 2  # Convert to confidence
                                                                                                         }
 
-                                                                                                        async def self_improve_system(self) -> Dict[str, Any]:
-                                                                                                            pass
-                                                                                                        """Self-improvement using Constitutional AI + DPO"""
-                                                                                                        pass
-                                                                                                    recent_actions = []
+    async def self_improve_system(self) -> Dict[str, Any]:
+        """Self-improvement using Constitutional AI + DPO"""
+        recent_actions = []
         
         # Collect recent actions from preference pairs
-                                                                                                    recent_pairs = self.preference_pairs[-50:] if len(self.preference_pairs) >= 50 else self.preference_pairs
+        recent_pairs = self.preference_pairs[-50:] if len(self.preference_pairs) >= 50 else self.preference_pairs
         
-                                                                                                    for pair in recent_pairs:
-                                                                                                        recent_actions.extend([pair.preferred_action, pair.rejected_action])
+        for pair in recent_pairs:
+            recent_actions.extend([pair.preferred_action, pair.rejected_action])
         
         # Constitutional self-improvement
-                                                                                                        improvement_result = await self.constitutional_ai.self_improve(recent_actions)
+        improvement_result = await self.constitutional_ai.self_improve(recent_actions)
         
         # Update reference network periodically (DPO stability)
-                                                                                                        if len(self.training_history) % 100 == 0 and len(self.training_history) > 0:
-                                                                                                            self.reference_net.load_state_dict(self.policy_net.state_dict())
-                                                                                                            improvement_result['reference_network_updated'] = True
+        if len(self.training_history) % 100 == 0 and len(self.training_history) > 0:
+            self.reference_net.load_state_dict(self.policy_net.state_dict())
+            improvement_result['reference_network_updated'] = True
         
-                                                                                                            return improvement_result
+        return improvement_result
 
-                                                                                                        def get_dpo_stats(self) -> Dict[str, Any]:
+    def get_dpo_stats(self) -> Dict[str, Any]:
                                                                                                             """Get comprehensive DPO statistics"""
                                                                                                             pass
                                                                                                         avg_loss = np.mean([step['loss'] for step in self.training_history]) if self.training_history else 0.0
