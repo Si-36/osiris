@@ -14,7 +14,10 @@ from collections import deque
 import torch
 
 # AURA imports
-from ...tda.persistence import TopologicalSignature
+try:
+    from ...tda.persistence import TopologicalSignature
+except ImportError:
+    from ...tda.persistence_simple import TopologicalSignature
 from ...components.registry import get_registry
 from ...memory.hierarchical_memory import HierarchicalMemoryManager
 from ...inference.free_energy_core import FreeEnergyMinimizer

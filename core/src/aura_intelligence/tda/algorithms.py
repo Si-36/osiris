@@ -174,46 +174,40 @@ class PersistentHomology:
         
         return entropy
 
-    def wasserstein_distance(diag1: List[Tuple], diag2: List[Tuple], p: int = 2) -> float:
-        """Compute REAL Wasserstein distance between persistence diagrams"""
-        if not diag1 or not diag2:
-            pass
+def wasserstein_distance(diag1: List[Tuple], diag2: List[Tuple], p: int = 2) -> float:
+    """Compute REAL Wasserstein distance between persistence diagrams"""
+    if not diag1 or not diag2:
         return 0.0
     
     # Convert to numpy arrays
-        d1 = np.array([(b, d if d != float('inf') else b + 10) for b, d in diag1])
-        d2 = np.array([(b, d if d != float('inf') else b + 10) for b, d in diag2])
+    d1 = np.array([(b, d if d != float('inf') else b + 10) for b, d in diag1])
+    d2 = np.array([(b, d if d != float('inf') else b + 10) for b, d in diag2])
     
     # Compute cost matrix
-        n1, n2 = len(d1), len(d2)
-        cost_matrix = np.zeros((n1, n2))
+    n1, n2 = len(d1), len(d2)
+    cost_matrix = np.zeros((n1, n2))
     
-        for i in range(n1):
-            pass
+    for i in range(n1):
         for j in range(n2):
-            pass
-    # L^p distance between persistence points
-        cost_matrix[i, j] = np.sum(np.abs(d1[i] - d2[j])**p)**(1/p)
+            # L^p distance between persistence points
+            cost_matrix[i, j] = np.sum(np.abs(d1[i] - d2[j])**p)**(1/p)
     
     # Add diagonal (death at birth)
-        diagonal_cost1 = np.array([np.sum(np.abs(d1[i] - np.array([d1[i,0], d1[i,0]]))**p)**(1/p) for i in range(n1)])
-        diagonal_cost2 = np.array([np.sum(np.abs(d2[j] - np.array([d2[j,0], d2[j,0]]))**p)**(1/p) for j in range(n2)])
+    diagonal_cost1 = np.array([np.sum(np.abs(d1[i] - np.array([d1[i,0], d1[i,0]]))**p)**(1/p) for i in range(n1)])
+    diagonal_cost2 = np.array([np.sum(np.abs(d2[j] - np.array([d2[j,0], d2[j,0]]))**p)**(1/p) for j in range(n2)])
     
     # Solve optimal transport (simplified - greedy matching)
-        total_cost = 0.0
-        used_j = set()
+    total_cost = 0.0
+    used_j = set()
     
-        for i in range(n1):
-            pass
+    for i in range(n1):
         best_j = -1
         best_cost = diagonal_cost1[i]
         
         for j in range(n2):
-            pass
-        if j not in used_j and cost_matrix[i, j] < best_cost:
-            pass
-        best_j = j
-        best_cost = cost_matrix[i, j]
+            if j not in used_j and cost_matrix[i, j] < best_cost:
+                best_j = j
+                best_cost = cost_matrix[i, j]
         
         if best_j >= 0:
             used_j.add(best_j)
@@ -222,20 +216,16 @@ class PersistentHomology:
             total_cost += diagonal_cost1[i]**p
     
     # Add unmatched points from diag2
-        for j in range(n2):
-            pass
+    for j in range(n2):
         if j not in used_j:
-            pass
-        total_cost += diagonal_cost2[j]**p
+            total_cost += diagonal_cost2[j]**p
     
-        return total_cost**(1/p)
+    return total_cost**(1/p)
 
-    def compute_persistence_landscape(diagram: List[Tuple[float, float]], k: int = 5, resolution: int = 100) -> np.ndarray:
-        """Compute persistence landscape"""
-        if not diagram:
-            pass
+def compute_persistence_landscape(diagram: List[Tuple[float, float]], k: int = 5, resolution: int = 100) -> np.ndarray:
+    """Compute persistence landscape"""
+    if not diagram:
         return np.zeros((k, resolution))
-    
     # Define grid
         finite_pairs = [(b, d) for b, d in diagram if d != float('inf')]
         if not finite_pairs:
@@ -255,13 +245,10 @@ class PersistentHomology:
         mid = (birth + death) / 2
         
         for i, t in enumerate(t_grid):
-            pass
-        if birth <= t <= mid:
-            pass
-        landscape[i] = t - birth
-        elif mid < t <= death:
-            pass
-        landscape[i] = death - t
+            if birth <= t <= mid:
+                landscape[i] = t - birth
+            elif mid < t <= death:
+                landscape[i] = death - t
         
         landscapes.append(landscape)
     
@@ -290,13 +277,13 @@ class PersistentHomology:
     def create_tda_algorithm(name: str, **kwargs):
         """Create TDA algorithm instance"""
         if name not in TDA_ALGORITHMS:
-        raise ValueError(f"Unknown algorithm: {name}")
+            raise ValueError(f"Unknown algorithm: {name}")
     
         algo_class = TDA_ALGORITHMS[name]
     
         if callable(algo_class) and not isinstance(algo_class, type):
-        # It's a function, return it directly
-        return algo_class
+            # It's a function, return it directly
+            return algo_class
         else:
-    # It's a class, instantiate it
-        return algo_class(**kwargs)
+            # It's a class, instantiate it
+            return algo_class(**kwargs)

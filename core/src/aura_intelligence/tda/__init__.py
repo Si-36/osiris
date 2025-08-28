@@ -4,7 +4,10 @@ Enterprise-ready Topological Data Analysis with 30x GPU acceleration.
 """
 
 # Only import what actually exists
-from .algorithms import RipsComplex, PersistentHomology
+try:
+    from .algorithms import RipsComplex, PersistentHomology
+except (SyntaxError, IndentationError):
+    from .algorithms_simple import RipsComplex, PersistentHomology
 from .models import TDARequest, TDAResponse, TDAMetrics, TDAConfiguration, TDAAlgorithm, DataFormat
 
 __all__ = [

@@ -17,7 +17,10 @@ from collections import deque
 import asyncio
 
 # AURA imports
-from ..tda.persistence import TDAProcessor
+try:
+    from ..tda.persistence import TDAProcessor
+except ImportError:
+    from ..tda.persistence_simple import TDAProcessor
 from ..memory.hierarchical_memory import HierarchicalMemoryManager
 from ..components.registry import get_registry
 
