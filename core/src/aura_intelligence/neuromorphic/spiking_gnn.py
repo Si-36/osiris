@@ -187,7 +187,7 @@ class NeuromorphicCoordinator:
         results = {}
         for comp_id in selected_components:
             try:
-                result = await self.registry.process_data(comp_id, task_data)
+                result = self.registry.process_data(comp_id, task_data)
                 results[comp_id] = result
             except Exception as e:
                 results[comp_id] = {'error': str(e)}
