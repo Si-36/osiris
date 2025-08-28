@@ -197,7 +197,7 @@ class SpikingLayer(nn.Module):
         
         # Synaptic weights
         self.weight = nn.Parameter(
-            torch.randn(out_features, in_features) * 0.1
+            torch.randn(out_features, in_features) * 0.5  # Increased for more activity
         )
         
         # Bias (constant input current)
@@ -220,8 +220,8 @@ class SpikingLayer(nn.Module):
         if config.learning_rule == LearningRule.STDP:
             self.tau_pre = 20.0  # ms
             self.tau_post = 20.0  # ms
-            self.A_plus = 0.01
-            self.A_minus = 0.01
+            self.A_plus = 0.1  # Increased for better learning
+            self.A_minus = 0.1
             self.pre_trace = None
             self.post_trace = None
     
@@ -364,12 +364,17 @@ class PopulationCoding:
         # Population vector decoding
         spike_counts = spikes.sum(dim=0)  # Sum over time
         
-        if spike_counts.sum() == 0:
-            return torch.zeros(spikes.shape[1])
+        # Handle case where no spikes
+        decoded = torch.zeros(spike_counts.shape[0])
         
-        # Weighted average of centers
-        weights = spike_counts / spike_counts.sum(dim=-1, keepdim=True)
-        decoded = (weights * self.centers).sum(dim=-1)
+        for i in range(spike_counts.shape[0]):
+            if spike_counts[i].sum() > 0:
+                # Weighted average of centers
+                weights = spike_counts[i] / spike_counts[i].sum()
+                decoded[i] = (weights * self.centers).sum()
+            else:
+                # Default to middle of range
+                decoded[i] = (self.value_range[0] + self.value_range[1]) / 2
         
         return decoded
 
@@ -516,7 +521,8 @@ class ReservoirComputing(nn.Module):
         
         # Make sparse
         mask = torch.rand_like(self.reservoir_weight) < config.connection_prob
-        self.register_buffer('reservoir_weight', self.reservoir_weight * mask)
+        self.reservoir_weight = self.reservoir_weight * mask
+        self.register_buffer('reservoir_weight_buffer', self.reservoir_weight)
         
         # Reservoir neurons
         self.neurons = LIFNeuron(config)
@@ -545,7 +551,7 @@ class ReservoirComputing(nn.Module):
             if len(self.neurons.spike_history) > 0:
                 recurrent_current = F.linear(
                     self.neurons.spike_history[-1],
-                    self.reservoir_weight
+                    self.reservoir_weight_buffer
                 )
                 total_current = input_current + recurrent_current
             else:
