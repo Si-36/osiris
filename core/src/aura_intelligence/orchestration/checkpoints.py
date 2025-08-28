@@ -313,16 +313,16 @@ class WorkflowCheckpointManager:
                 workflow_stats = cursor.fetchone()
                 
                 # Get node performance statistics
-        cursor.execute("""
-        SELECT
-        node_name,
-        COUNT(*) as executions,
-        AVG(execution_time_ms) as avg_execution_time,
-        AVG(memory_usage_mb) as avg_memory_usage,
-        SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_executions
-        FROM workflow_metrics
-        WHERE timestamp >= datetime('now', '-{} days')
-        GROUP BY node_name
+                cursor.execute("""
+                SELECT
+                    node_name,
+                    COUNT(*) as executions,
+                    AVG(execution_time_ms) as avg_execution_time,
+                    AVG(memory_usage_mb) as avg_memory_usage,
+                    SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_executions
+                FROM workflow_metrics
+                WHERE timestamp >= datetime('now', '-{} days')
+                GROUP BY node_name
         """.format(days))
                 
                 node_stats = cursor.fetchall()
@@ -364,15 +364,15 @@ class WorkflowCheckpointManager:
                 cursor = conn.cursor()
                 
                 # Delete old checkpoints
-        cursor.execute("""
+                cursor.execute("""
                     DELETE FROM workflow_checkpoints
                     WHERE created_at < datetime('now', '-{} days')
-        """.format(self.retention_days))
+                """.format(self.retention_days))
                 
                 deleted_checkpoints = cursor.rowcount
                 
                 # Delete old workflow summaries
-        cursor.execute("""
+                cursor.execute("""
                     DELETE FROM workflow_summary
                     WHERE created_at < datetime('now', '-{} days')
         """.format(self.retention_days))
@@ -380,7 +380,7 @@ class WorkflowCheckpointManager:
                 deleted_summaries = cursor.rowcount
                 
                 # Delete old metrics
-        cursor.execute("""
+                cursor.execute("""
                     DELETE FROM workflow_metrics
                     WHERE timestamp < datetime('now', '-{} days')
         """.format(self.retention_days))

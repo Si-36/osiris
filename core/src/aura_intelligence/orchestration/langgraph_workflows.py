@@ -77,7 +77,6 @@ class AURACollectiveIntelligence:
     
     def _create_workflow(self) -> StateGraph:
         """Create the LangGraph workflow orchestrating all agents."""
-        pass
         
         # Create the state graph
         workflow = StateGraph(AgentState)
@@ -143,8 +142,7 @@ class AURACollectiveIntelligence:
         
         return workflow.compile()
     
-        async def _observer_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _observer_node(self, state: AgentState) -> AgentState:
         """Observer agent node - detects and validates events."""
         logger.info("🔍 Observer Agent processing evidence")
         
@@ -161,8 +159,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _analyzer_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _analyzer_node(self, state: AgentState) -> AgentState:
         """Analyzer agent node - deep investigation with TDA integration."""
         logger.info("🔬 Analyzer Agent performing deep analysis")
         
@@ -186,8 +183,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _supervisor_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _supervisor_node(self, state: AgentState) -> AgentState:
         """Supervisor agent node - makes final decisions with memory."""
         logger.info("🎯 Supervisor Agent making decision")
         
@@ -216,8 +212,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _researcher_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _researcher_node(self, state: AgentState) -> AgentState:
         """Researcher agent node - knowledge discovery (placeholder)."""
         logger.info("📚 Researcher Agent discovering knowledge")
         
@@ -238,8 +233,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _optimizer_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _optimizer_node(self, state: AgentState) -> AgentState:
         """Optimizer agent node - performance optimization (placeholder)."""
         logger.info("⚡ Optimizer Agent optimizing performance")
         
@@ -260,8 +254,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _guardian_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _guardian_node(self, state: AgentState) -> AgentState:
         """Guardian agent node - security and compliance (placeholder)."""
         logger.info("🛡️ Guardian Agent enforcing security")
         
@@ -283,8 +276,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _monitor_node(self, state: AgentState) -> AgentState:
-            pass
+    async def _monitor_node(self, state: AgentState) -> AgentState:
         """Monitor agent node - system health monitoring."""
         logger.info("📊 Monitor Agent tracking system health")
         
@@ -309,8 +301,7 @@ class AURACollectiveIntelligence:
         
         return state
     
-        async def _route_based_on_tda(self, state: AgentState) -> str:
-            pass
+    async def _route_based_on_tda(self, state: AgentState) -> str:
         """Route workflow based on TDA insights and evidence analysis."""
         
         # Get TDA analysis of current evidence
@@ -372,8 +363,7 @@ class AURACollectiveIntelligence:
         else:
             return "continue_monitoring"
     
-        async def process_collective_intelligence(self, evidence_log: List[Dict[str, Any]]) -> Dict[str, Any]:
-            pass
+    async def process_collective_intelligence(self, evidence_log: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Process evidence through the complete collective intelligence workflow.
         
@@ -429,13 +419,11 @@ class LangGraphWorkflowOrchestrator:
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """Initialize the orchestrator."""
-        pass
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
         
     def create_workflow(self):
         """Create and return the configured workflow."""
-        pass
         # This is a simplified version - in production, this would
         # create the full graph with all agents
         graph = StateGraph(CollectiveState)
@@ -447,8 +435,7 @@ class LangGraphWorkflowOrchestrator:
         
         return graph.compile()
     
-        async def execute(self, initial_state: Dict[str, Any]) -> Dict[str, Any]:
-            pass
+    async def execute(self, initial_state: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the workflow with given initial state."""
         workflow = self.create_workflow()
         result = await workflow.ainvoke(initial_state)
@@ -460,11 +447,9 @@ class LangGraphWorkflowOrchestrator:
         Create a collective intelligence workflow.
     
         Args:
-            pass
         config: Optional configuration
         
         Returns:
-            pass
         Configured workflow
         """
         workflow_config = config or {}

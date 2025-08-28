@@ -264,8 +264,7 @@ class AdaptiveCheckpointCoalescer:
     def _coalesce_checkpoints(
         self, 
         checkpoints: List[Tuple[Any, CheckpointMetadata]]
-        ) -> List[Tuple[Any, CheckpointMetadata]]:
-            pass
+    ) -> List[Tuple[Any, CheckpointMetadata]]:
         """
         Coalesce multiple checkpoints into fewer writes
         
