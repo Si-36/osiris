@@ -121,8 +121,8 @@ class RipsComplex:
         # All vertices born at 0, die when connected
         if edges:
             edge_times = sorted([e[2] for e in edges])
-        for i, death_time in enumerate(edge_times[:10]):  # Top 10
-        pairs.append((0.0, death_time))
+            for i, death_time in enumerate(edge_times[:10]):  # Top 10
+                pairs.append((0.0, death_time))
         
         # 1-dimensional features (loops)
         # Born when loop closes, die when filled
