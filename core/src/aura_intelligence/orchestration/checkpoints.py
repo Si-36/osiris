@@ -47,7 +47,7 @@ class WorkflowCheckpointManager:
                 cursor = conn.cursor()
                 
                 # Create checkpoints table
-        cursor.execute("""
+                cursor.execute("""
                     CREATE TABLE IF NOT EXISTS workflow_checkpoints (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         workflow_id TEXT NOT NULL,
@@ -61,7 +61,7 @@ class WorkflowCheckpointManager:
         """)
                 
                 # Create workflow summary table
-        cursor.execute("""
+                cursor.execute("""
                     CREATE TABLE IF NOT EXISTS workflow_summary (
                         workflow_id TEXT PRIMARY KEY,
                         status TEXT NOT NULL,
@@ -79,7 +79,7 @@ class WorkflowCheckpointManager:
         """)
                 
                 # Create performance metrics table
-        cursor.execute("""
+                cursor.execute("""
                     CREATE TABLE IF NOT EXISTS workflow_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         workflow_id TEXT NOT NULL,
@@ -105,8 +105,8 @@ class WorkflowCheckpointManager:
             logger.error(f"❌ Database initialization failed: {e}")
             raise
     
-        async def save_checkpoint(self, workflow_id: str, checkpoint_id: str,
-        node_name: str, state_data: Any,
+    async def save_checkpoint(self, workflow_id: str, checkpoint_id: str,
+                            node_name: str, state_data: Any,
                             metadata: Optional[Dict[str, Any]] = None) -> None:
         """Save a workflow checkpoint."""
         
@@ -118,11 +118,11 @@ class WorkflowCheckpointManager:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
                     INSERT OR REPLACE INTO workflow_checkpoints 
                     (workflow_id, checkpoint_id, node_name, state_data, metadata)
                     VALUES (?, ?, ?, ?, ?)
-        """, (workflow_id, checkpoint_id, node_name, serialized_state, serialized_metadata))
+                        """, (workflow_id, checkpoint_id, node_name, serialized_state, serialized_metadata))
                 
                 conn.commit()
                 
@@ -132,52 +132,52 @@ class WorkflowCheckpointManager:
             logger.error(f"❌ Failed to save checkpoint: {e}")
             raise
     
-        async def load_checkpoint(self, workflow_id: str, checkpoint_id: str) -> Optional[Dict[str, Any]]:
+    async def load_checkpoint(self, workflow_id: str, checkpoint_id: str) -> Optional[Dict[str, Any]]:
         """Load a specific workflow checkpoint."""
         
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
         SELECT node_name, state_data, metadata, created_at
         FROM workflow_checkpoints
         WHERE workflow_id = ? AND checkpoint_id = ?
-        """, (workflow_id, checkpoint_id))
+                        """, (workflow_id, checkpoint_id))
                 
-        result = cursor.fetchone()
+                result = cursor.fetchone()
                 
-        if result:
-            node_name, state_data, metadata, created_at = result
+                if result:
+                    node_name, state_data, metadata, created_at = result
                     
-        return {
-        "workflow_id": workflow_id,
-        "checkpoint_id": checkpoint_id,
-        "node_name": node_name,
-        "state_data": json.loads(state_data),
-        "metadata": json.loads(metadata) if metadata else None,
-        "created_at": created_at
-        }
+                    return {
+                        "workflow_id": workflow_id,
+                        "checkpoint_id": checkpoint_id,
+                        "node_name": node_name,
+                        "state_data": json.loads(state_data),
+                        "metadata": json.loads(metadata) if metadata else None,
+                        "created_at": created_at
+                    }
                 
-        return None
+                return None
                 
         except Exception as e:
-        logger.error(f"❌ Failed to load checkpoint: {e}")
-        return None
+            logger.error(f"❌ Failed to load checkpoint: {e}")
+            return None
     
-        async def get_workflow_checkpoints(self, workflow_id: str) -> List[Dict[str, Any]]:
+    async def get_workflow_checkpoints(self, workflow_id: str) -> List[Dict[str, Any]]:
         """Get all checkpoints for a workflow."""
         
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
                     SELECT checkpoint_id, node_name, created_at
                     FROM workflow_checkpoints
                     WHERE workflow_id = ?
                     ORDER BY created_at ASC
-        """, (workflow_id,))
+                        """, (workflow_id,))
                 
                 results = cursor.fetchall()
                 
@@ -195,19 +195,19 @@ class WorkflowCheckpointManager:
             logger.error(f"❌ Failed to get workflow checkpoints: {e}")
             return []
     
-        async def save_workflow_summary(self, workflow_id: str, summary: Dict[str, Any]) -> None:
+    async def save_workflow_summary(self, workflow_id: str, summary: Dict[str, Any]) -> None:
         """Save workflow summary information."""
         
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
         INSERT OR REPLACE INTO workflow_summary
         (workflow_id, status, start_time, end_time, total_nodes,
         evidence_count, final_risk_score, success, error_message, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
+                """, (
         workflow_id,
         summary.get("status", "unknown"),
         summary.get("start_time"),
@@ -220,27 +220,27 @@ class WorkflowCheckpointManager:
         json.dumps(summary.get("metadata", {}))
         ))
                 
-        conn.commit()
+                conn.commit()
                 
-        logger.info(f"✅ Workflow summary saved: {workflow_id}")
+            logger.info(f"✅ Workflow summary saved: {workflow_id}")
             
         except Exception as e:
-        logger.error(f"❌ Failed to save workflow summary: {e}")
+            logger.error(f"❌ Failed to save workflow summary: {e}")
     
-        async def get_workflow_summary(self, workflow_id: str) -> Optional[Dict[str, Any]]:
+    async def get_workflow_summary(self, workflow_id: str) -> Optional[Dict[str, Any]]:
         """Get workflow summary."""
         
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
                     SELECT status, start_time, end_time, total_nodes, evidence_count,
                            final_risk_score, success, error_message, metadata, 
                            created_at, updated_at
                     FROM workflow_summary
                     WHERE workflow_id = ?
-        """, (workflow_id,))
+                        """, (workflow_id,))
                 
                 result = cursor.fetchone()
                 
@@ -270,7 +270,7 @@ class WorkflowCheckpointManager:
             logger.error(f"❌ Failed to get workflow summary: {e}")
             return None
     
-        async def record_node_metrics(self, workflow_id: str, node_name: str,
+    async def record_node_metrics(self, workflow_id: str, node_name: str,
         execution_time_ms: int, memory_usage_mb: float,
                                 success: bool, error_message: Optional[str] = None) -> None:
         """Record performance metrics for a node execution."""
@@ -279,12 +279,12 @@ class WorkflowCheckpointManager:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        cursor.execute("""
+                cursor.execute("""
                     INSERT INTO workflow_metrics
                     (workflow_id, node_name, execution_time_ms, memory_usage_mb, 
                      success, error_message)
                     VALUES (?, ?, ?, ?, ?, ?)
-        """, (workflow_id, node_name, execution_time_ms, memory_usage_mb,
+                """, (workflow_id, node_name, execution_time_ms, memory_usage_mb,
                       success, error_message))
                 
                 conn.commit()
@@ -292,15 +292,15 @@ class WorkflowCheckpointManager:
         except Exception as e:
             logger.error(f"❌ Failed to record node metrics: {e}")
     
-        async def get_performance_analytics(self, days: int = 7) -> Dict[str, Any]:
+    async def get_performance_analytics(self, days: int = 7) -> Dict[str, Any]:
         """Get performance analytics for recent workflows."""
         
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-        # Get workflow statistics
-        cursor.execute("""
+                # Get workflow statistics
+                cursor.execute("""
         SELECT
         COUNT(*) as total_workflows,
         SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_workflows,
@@ -310,9 +310,9 @@ class WorkflowCheckpointManager:
         WHERE created_at >= datetime('now', '-{} days')
         """.format(days))
                 
-        workflow_stats = cursor.fetchone()
+                workflow_stats = cursor.fetchone()
                 
-        # Get node performance statistics
+                # Get node performance statistics
         cursor.execute("""
         SELECT
         node_name,
@@ -325,37 +325,37 @@ class WorkflowCheckpointManager:
         GROUP BY node_name
         """.format(days))
                 
-        node_stats = cursor.fetchall()
+                node_stats = cursor.fetchall()
                 
-        # Format results
-        analytics = {
-        "period_days": days,
-        "workflow_statistics": {
-        "total_workflows": workflow_stats[0] or 0,
-        "successful_workflows": workflow_stats[1] or 0,
-        "success_rate": (workflow_stats[1] or 0) / max(workflow_stats[0] or 1, 1),
-        "avg_evidence_count": workflow_stats[2] or 0,
-        "avg_risk_score": workflow_stats[3] or 0
-        },
-        "node_performance": []
-        }
+                # Format results
+                analytics = {
+                    "period_days": days,
+                    "workflow_statistics": {
+                        "total_workflows": workflow_stats[0] or 0,
+                        "successful_workflows": workflow_stats[1] or 0,
+                        "success_rate": (workflow_stats[1] or 0) / max(workflow_stats[0] or 1, 1),
+                        "avg_evidence_count": workflow_stats[2] or 0,
+                        "avg_risk_score": workflow_stats[3] or 0
+                    },
+                    "node_performance": []
+                }
                 
-        for node_name, executions, avg_time, avg_memory, successful in node_stats:
-        analytics["node_performance"].append({
-        "node_name": node_name,
-        "executions": executions,
-        "avg_execution_time_ms": avg_time or 0,
-        "avg_memory_usage_mb": avg_memory or 0,
-        "success_rate": successful / max(executions, 1)
-        })
+                for node_name, executions, avg_time, avg_memory, successful in node_stats:
+                    analytics["node_performance"].append({
+                        "node_name": node_name,
+                        "executions": executions,
+                        "avg_execution_time_ms": avg_time or 0,
+                        "avg_memory_usage_mb": avg_memory or 0,
+                        "success_rate": successful / max(executions, 1)
+                    })
                 
-        return analytics
+                return analytics
                 
         except Exception as e:
-        logger.error(f"❌ Failed to get performance analytics: {e}")
-        return {"error": str(e)}
+            logger.error(f"❌ Failed to get performance analytics: {e}")
+            return {"error": str(e)}
     
-        async def cleanup_old_checkpoints(self) -> int:
+    async def cleanup_old_checkpoints(self) -> int:
         """Clean up old checkpoints based on retention policy."""
         pass
         
@@ -405,32 +405,32 @@ class WorkflowCheckpointManager:
         
         try:
             # Handle different state types
-        if hasattr(state_data, '__dict__'):
-            # Convert object to dictionary
-        serialized = {}
-        for key, value in state_data.__dict__.items():
-        if isinstance(value, (str, int, float, bool, type(None))):
-            serialized[key] = value
-        elif isinstance(value, datetime):
-        serialized[key] = value.isoformat()
-        elif isinstance(value, list):
-        serialized[key] = [self._serialize_item(item) for item in value]
-        elif isinstance(value, dict):
-        serialized[key] = value
-        else:
-        serialized[key] = str(value)
+            if hasattr(state_data, '__dict__'):
+                # Convert object to dictionary
+                serialized = {}
+                for key, value in state_data.__dict__.items():
+                    if isinstance(value, (str, int, float, bool, type(None))):
+                        serialized[key] = value
+                    elif isinstance(value, datetime):
+                        serialized[key] = value.isoformat()
+                    elif isinstance(value, list):
+                        serialized[key] = [self._serialize_item(item) for item in value]
+                    elif isinstance(value, dict):
+                        serialized[key] = value
+                    else:
+                        serialized[key] = str(value)
                 
-        return serialized
+                return serialized
             
-        elif isinstance(state_data, dict):
-        return state_data
+            elif isinstance(state_data, dict):
+                return state_data
             
-        else:
-        return {"serialized_state": str(state_data)}
+            else:
+                return {"serialized_state": str(state_data)}
                 
         except Exception as e:
-        logger.error(f"State serialization failed: {e}")
-        return {"error": str(e)}
+            logger.error(f"State serialization failed: {e}")
+            return {"error": str(e)}
     
     def _serialize_item(self, item: Any) -> Any:
         """Serialize individual items."""

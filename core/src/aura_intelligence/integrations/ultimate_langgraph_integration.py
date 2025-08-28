@@ -270,7 +270,60 @@ class UltimateLangGraphIntegration:
     async def _register_existing_agents(self):
         """Register all existing LangGraph agents"""
         
-        # 1. Register Council Agents
+        # 1. Register Production Agents (Latest 2025 Patterns)
+        try:
+            from ..agents.production_langgraph_agent import create_production_agent
+            
+            # General purpose agent
+            general_agent = create_production_agent(
+                name="aura-general-001",
+                role="general",
+                memory_manager=self.memory,
+                knowledge_graph=self.knowledge_graph,
+                event_producer=self.events
+            )
+            self.agent_registry.register_agent(
+                "aura-general-001",
+                general_agent,
+                ["general_tasks", "reasoning", "analysis"]
+            )
+            
+            # Analyst agent
+            analyst_agent = create_production_agent(
+                name="aura-analyst-001",
+                role="analyst",
+                enable_reasoning=True,
+                memory_manager=self.memory,
+                knowledge_graph=self.knowledge_graph,
+                event_producer=self.events
+            )
+            self.agent_registry.register_agent(
+                "aura-analyst-001",
+                analyst_agent,
+                ["data_analysis", "pattern_recognition", "insights"]
+            )
+            
+            # Executor agent
+            executor_agent = create_production_agent(
+                name="aura-executor-001", 
+                role="executor",
+                tool_choice="required",
+                memory_manager=self.memory,
+                knowledge_graph=self.knowledge_graph,
+                event_producer=self.events
+            )
+            self.agent_registry.register_agent(
+                "aura-executor-001",
+                executor_agent,
+                ["task_execution", "tool_usage", "implementation"]
+            )
+            
+            logger.info("✅ Registered production LangGraph agents")
+            
+        except Exception as e:
+            logger.warning(f"Could not register production agents", error=str(e))
+        
+        # 2. Register Council Agents
         try:
             # LNN Council Agent for GPU allocation
             lnn_council = LNNCouncilAgent(
