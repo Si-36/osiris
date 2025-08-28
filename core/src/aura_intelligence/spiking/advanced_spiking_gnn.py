@@ -15,8 +15,7 @@ class LIFNeuron(nn.Module):
     """Leaky Integrate-and-Fire neuron - SpikingJelly style implementation"""
     
     def __init__(self, tau: float = 2.0, v_threshold: float = 1.0, v_reset: float = 0.0,
-        surrogate_function: str = 'atan', alpha: float = 2.0):
-            pass
+                 surrogate_function: str = 'atan', alpha: float = 2.0):
         super().__init__()
         self.tau = tau
         self.v_threshold = v_threshold
@@ -91,8 +90,7 @@ class SpikingGraphConv(nn.Module):
     """Spiking Graph Convolutional Layer - following PyTorch Geometric patterns"""
     
     def __init__(self, in_channels: int, out_channels: int, bias: bool = True,
-        neuron_model: str = 'lif', **neuron_kwargs):
-            pass
+                 neuron_model: str = 'lif', **neuron_kwargs):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -163,8 +161,7 @@ class SpikingGAT(nn.Module):
     """Spiking Graph Attention Network - following GAT with spiking neurons"""
     
     def __init__(self, in_channels: int, out_channels: int, heads: int = 1,
-        concat: bool = True, dropout: float = 0.0, **neuron_kwargs):
-            pass
+                 concat: bool = True, dropout: float = 0.0, **neuron_kwargs):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
