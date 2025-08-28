@@ -229,10 +229,10 @@ class ContextAwareLNN:
         # Query relationships
         relationships = {}
         for entity in entities[:5]:  # Limit to prevent explosion
-        query = """
-            MATCH (e:Entity {id: $entity_id})-[r]-(related)
-            RETURN type(r) as relationship, collect(related.id) as related_ids
-            LIMIT 20
+            query = """
+                MATCH (e:Entity {id: $entity_id})-[r]-(related)
+                RETURN type(r) as relationship, collect(related.id) as related_ids
+                LIMIT 20
         """
             results = await self.graph.query(query, {"entity_id": entity})
             relationships[entity] = {
