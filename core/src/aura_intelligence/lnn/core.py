@@ -49,7 +49,7 @@ class TimeConstants:
             raise ValueError(f"Unknown initialization: {self.tau_init}")
 
 
-    @dataclass
+@dataclass
 class WiringConfig:
     """Configuration for sparse wiring in liquid networks."""
     sparsity: float = 0.8  # 80% sparse connections
