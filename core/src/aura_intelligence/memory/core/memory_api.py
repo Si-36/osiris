@@ -29,12 +29,12 @@ import structlog
 import hashlib
 import json
 
-# Import our components (will implement next)
-from .topology_engine import (
-    TopologyEngine, 
-    TopologicalSignature,
-    PersistenceDiagram,
-    WorkflowPattern
+# Import our adapter that connects to TDA module - NO DUPLICATION!
+from .topology_adapter import (
+    TopologyMemoryAdapter,
+    MemoryTopologySignature,
+    create_topology_adapter,
+    FASTRP_CONFIG
 )
 from ..routing.hierarchical_router import HierarchicalMemoryRouter
 from ..storage.tier_manager import TierManager, MemoryTier
@@ -94,9 +94,8 @@ class MemoryRecord:
     content: Any
     
     # Topological signature (our innovation!)
-    topology: Optional[TopologicalSignature] = None
-    persistence_diagram: Optional[PersistenceDiagram] = None
-    shape_embedding: Optional[np.ndarray] = None  # FastRP
+    topology: Optional[MemoryTopologySignature] = None
+    shape_embedding: Optional[np.ndarray] = None  # FastRP from topology
     
     # Traditional features
     semantic_embedding: Optional[np.ndarray] = None
@@ -165,8 +164,8 @@ class AURAMemorySystem:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         
-        # Core engines
-        self.topology_engine = TopologyEngine(config.get("topology", {}))
+        # Core engines - using adapter to connect to TDA module
+        self.topology_adapter = create_topology_adapter(config.get("topology", {}))
         self.hmem_router = HierarchicalMemoryRouter(config.get("routing", {}))
         self.tier_manager = TierManager(config.get("tiers", {}))
         self.causal_tracker = CausalPatternTracker(config.get("causal", {}))
@@ -215,12 +214,10 @@ class AURAMemorySystem:
         topology = None
         shape_embedding = None
         if workflow_data or memory_type in [MemoryType.TOPOLOGICAL, MemoryType.HYBRID]:
-            topology = await self.topology_engine.extract_topology(
-                workflow_data or content
+            topology = await self.topology_adapter.extract_topology(
+                workflow_data or {"nodes": [], "edges": [], "content": content}
             )
-            shape_embedding = await self.topology_engine.compute_fastrp_embedding(
-                topology
-            )
+            shape_embedding = topology.fastrp_embedding
             
         # Extract semantic embedding if needed
         semantic_embedding = None
