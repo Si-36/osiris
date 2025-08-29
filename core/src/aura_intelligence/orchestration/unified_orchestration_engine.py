@@ -40,6 +40,19 @@ from .hierarchical_orchestrator import HierarchicalOrchestrator, OrchestrationLa
 from ..tda import AgentTopologyAnalyzer
 from ..memory import AURAMemorySystem
 
+# Distributed enhancement
+try:
+    from .enhancements.distributed_orchestration import (
+        DistributedOrchestrationManager,
+        DistributionStrategy,
+        OrchestrationService
+    )
+    import ray
+    DISTRIBUTED_AVAILABLE = True
+except ImportError:
+    DISTRIBUTED_AVAILABLE = False
+    logger.warning("Distributed orchestration not available")
+
 logger = structlog.get_logger(__name__)
 
 T = TypeVar('T')
@@ -62,6 +75,10 @@ class OrchestrationConfig:
     enable_checkpoint_coalescing: bool = True
     checkpoint_batch_size: int = 50
     signal_batch_window_ms: int = 50
+    
+    # Distributed orchestration
+    enable_distributed: bool = True
+    distributed_workers: int = 4
     
     # TDA integration
     enable_topology_routing: bool = True
@@ -122,6 +139,14 @@ class UnifiedOrchestrationEngine:
         self.tda_analyzer: Optional[AgentTopologyAnalyzer] = None
         self.memory_system: Optional[AURAMemorySystem] = None
         
+        # Distributed orchestration
+        self.distributed_manager: Optional[DistributedOrchestrationManager] = None
+        if DISTRIBUTED_AVAILABLE and self.config.enable_distributed:
+            self.distributed_manager = DistributedOrchestrationManager(
+                num_workers=self.config.distributed_workers,
+                distribution_strategy=DistributionStrategy.LEAST_LOADED
+            )
+        
         # Workflow graphs
         self.workflow_graphs: Dict[str, StateGraph] = {}
         
@@ -163,7 +188,12 @@ class UnifiedOrchestrationEngine:
                 "burst_threshold": 10
             })
         
-        # 4. Setup saga orchestrator
+        # 4. Initialize distributed manager
+        if self.distributed_manager:
+            await self.distributed_manager.initialize()
+            logger.info(f"Distributed orchestration initialized with {self.config.distributed_workers} workers")
+        
+        # 5. Setup saga orchestrator
         if self.config.enable_distributed_transactions:
             self.saga_orchestrator = SagaOrchestrator()
         
@@ -468,18 +498,157 @@ class UnifiedOrchestrationEngine:
             return checkpoint.checkpoint if checkpoint else {}
         return {}
     
+    # ==================== Distributed Execution ====================
+    
+    async def execute_distributed(self,
+                                task_type: str,
+                                task_data: Dict[str, Any],
+                                priority: int = 0) -> Any:
+        """
+        Execute task in distributed manner using Ray.
+        
+        Args:
+            task_type: Type of task (transform, aggregate, etc)
+            task_data: Task parameters and data
+            priority: Execution priority
+            
+        Returns:
+            Task result
+        """
+        if not self.distributed_manager:
+            # Fallback to local execution
+            logger.warning("Distributed execution requested but not available")
+            return await self._execute_local(task_type, task_data)
+        
+        result = await self.distributed_manager.execute_distributed(
+            task_type=task_type,
+            task_data=task_data,
+            priority=priority
+        )
+        
+        if result.error:
+            raise Exception(f"Distributed execution failed: {result.error}")
+            
+        return result.result
+    
+    async def execute_parallel_workflows(self,
+                                       workflows: List[Dict[str, Any]]) -> List[Any]:
+        """
+        Execute multiple workflows in parallel using distributed computing.
+        
+        Args:
+            workflows: List of workflow definitions
+            
+        Returns:
+            List of workflow results
+        """
+        if not self.distributed_manager:
+            # Fallback to sequential execution
+            results = []
+            for workflow in workflows:
+                result = await self.execute_langgraph_workflow(
+                    workflow_id=workflow.get("id", "parallel_workflow"),
+                    initial_state=workflow.get("state", {}),
+                    config=workflow.get("config", {})
+                )
+                results.append(result)
+            return results
+        
+        # Convert workflows to distributed tasks
+        tasks = []
+        for workflow in workflows:
+            task = {
+                "task_type": "workflow",
+                "task_data": {
+                    "workflow_id": workflow.get("id"),
+                    "initial_state": workflow.get("state", {}),
+                    "config": workflow.get("config", {})
+                }
+            }
+            tasks.append(task)
+        
+        # Execute in parallel
+        results = await self.distributed_manager.execute_parallel(tasks)
+        
+        return [r.result for r in results if not r.error]
+    
+    async def map_reduce_orchestration(self,
+                                     data: List[Any],
+                                     map_fn: Callable,
+                                     reduce_fn: Callable,
+                                     chunk_size: int = 100) -> Any:
+        """
+        Distributed map-reduce for large-scale data processing.
+        
+        Args:
+            data: Input data
+            map_fn: Mapping function
+            reduce_fn: Reduce function
+            chunk_size: Size of data chunks
+            
+        Returns:
+            Reduced result
+        """
+        if not self.distributed_manager:
+            # Fallback to local map-reduce
+            mapped = list(map(map_fn, data))
+            from functools import reduce
+            return reduce(reduce_fn, mapped)
+        
+        return await self.distributed_manager.map_reduce(
+            data=data,
+            map_fn=map_fn,
+            reduce_fn=reduce_fn,
+            chunk_size=chunk_size
+        )
+    
+    async def scale_orchestration(self, target_workers: int):
+        """
+        Dynamically scale orchestration workers.
+        
+        Args:
+            target_workers: Target number of workers
+        """
+        if self.distributed_manager:
+            await self.distributed_manager.scale_workers(target_workers)
+            logger.info(f"Scaled orchestration to {target_workers} workers")
+    
+    async def _execute_local(self, task_type: str, task_data: Dict[str, Any]) -> Any:
+        """Local execution fallback"""
+        # Simple local execution
+        if task_type == "transform":
+            data = task_data.get("data", [])
+            transform_fn = task_data.get("transform_fn", lambda x: x)
+            return [transform_fn(item) for item in data]
+        elif task_type == "aggregate":
+            data = task_data.get("data", [])
+            agg_fn = task_data.get("agg_fn", sum)
+            return agg_fn(data)
+        else:
+            return task_data
+    
     def get_metrics(self) -> Dict[str, Any]:
         """Get orchestration metrics"""
-        return {
+        metrics = {
             **self.metrics,
             "circuit_breakers": self.circuit_breaker.get_all_states(),
             "signal_router": self.signal_router.get_stats() if self.signal_router else {},
             "pipeline_registry": self.pipeline_registry.get_stats()
         }
+        
+        # Add distributed metrics
+        if self.distributed_manager:
+            metrics["distributed"] = self.distributed_manager.get_worker_metrics()
+            
+        return metrics
     
     async def shutdown(self):
         """Graceful shutdown"""
         logger.info("Shutting down orchestration engine")
+        
+        # Shutdown distributed manager
+        if self.distributed_manager:
+            await self.distributed_manager.shutdown()
         
         # Close all connections
         if self.temporal_client:
