@@ -195,87 +195,86 @@ class AgentTopologyAnalyzer:
     # ==================== Workflow Analysis ====================
     
     async def analyze_workflow(self, 
-                             workflow_id: str,
-                             workflow_data: Dict[str, Any]) -> WorkflowFeatures:
+                         workflow_id: str,
+                         workflow_data: Dict[str, Any]) -> WorkflowFeatures:
         """
         Analyze a workflow DAG for bottlenecks and performance issues.
         
         Args:
-            workflow_id: Unique workflow identifier
-            workflow_data: Dict with 'agents' and 'dependencies' keys
-            
+        workflow_id: Unique workflow identifier
+        workflow_data: Dict with 'agents' and 'dependencies' keys
+        
         Returns:
-            WorkflowFeatures with comprehensive analysis
+        WorkflowFeatures with comprehensive analysis
         """
-        with logger.bind(workflow_id=workflow_id):
-            logger.info("Analyzing workflow topology")
+        logger.info("Analyzing workflow topology", workflow_id=workflow_id)
+        
+        # Build workflow graph
+        G = self._build_workflow_graph(workflow_data)
+        
+        # Extract basic metrics
+        num_agents = G.number_of_nodes()
+        num_edges = G.number_of_edges()
+        
+        # Detect cycles
+        has_cycles, cycles = self._detect_cycles(G)
+        
+        # Find critical path
+        critical_path, path_length = self._find_critical_path(G)
+        
+        # Compute centrality metrics
+        betweenness = nx.betweenness_centrality(G)
+        clustering = nx.clustering(G.to_undirected())
+        
+        # Identify bottlenecks
+        bottleneck_agents = self._identify_bottlenecks(G, betweenness)
+        
+        # Compute persistence features
+        persistence_features = await self._compute_persistence_features(G, workflow_id)
+        
+        # Calculate risk scores
+        bottleneck_score = self._calculate_bottleneck_score(
+            betweenness, bottleneck_agents, has_cycles
+        )
+        
+        failure_risk = self._calculate_failure_risk(
+            bottleneck_score,
+            persistence_features["diagram_distance"],
+            persistence_features["entropy_trend"]
+        )
+        
+        # Generate recommendations
+        recommendations = self._generate_workflow_recommendations(
+            bottleneck_agents, has_cycles, failure_risk
+        )
+        
+        # Build features
+        features = WorkflowFeatures(
+            workflow_id=workflow_id,
+            timestamp=time.time(),
+            num_agents=num_agents,
+            num_edges=num_edges,
+            has_cycles=has_cycles,
+            longest_path_length=path_length,
+            critical_path_agents=critical_path,
+            bottleneck_agents=bottleneck_agents,
+            betweenness_scores=betweenness,
+            clustering_coefficients=clustering,
+            persistence_entropy=persistence_features["entropy"],
+            diagram_distance_from_baseline=persistence_features["diagram_distance"],
+            stability_index=persistence_features["stability"],
+            bottleneck_score=bottleneck_score,
+            failure_risk=failure_risk,
+            recommendations=recommendations
+        )
+        
+        # Update history and check for anomalies
+        self.workflow_history[workflow_id].append(features)
+        anomalies = await self.anomaly_detector.check_workflow(features)
+        if anomalies:
+            logger.warning(f"Detected {len(anomalies)} anomalies", anomalies=anomalies)
             
-            # Build workflow graph
-            G = self._build_workflow_graph(workflow_data)
-            
-            # Extract basic metrics
-            num_agents = G.number_of_nodes()
-            num_edges = G.number_of_edges()
-            
-            # Detect cycles
-            has_cycles, cycles = self._detect_cycles(G)
-            
-            # Find critical path
-            critical_path, path_length = self._find_critical_path(G)
-            
-            # Compute centrality metrics
-            betweenness = nx.betweenness_centrality(G)
-            clustering = nx.clustering(G.to_undirected())
-            
-            # Identify bottlenecks
-            bottleneck_agents = self._identify_bottlenecks(G, betweenness)
-            
-            # Compute persistence features
-            persistence_features = await self._compute_persistence_features(G, workflow_id)
-            
-            # Calculate risk scores
-            bottleneck_score = self._calculate_bottleneck_score(
-                betweenness, bottleneck_agents, has_cycles
-            )
-            
-            failure_risk = self._calculate_failure_risk(
-                bottleneck_score,
-                persistence_features["diagram_distance"],
-                persistence_features["entropy_trend"]
-            )
-            
-            # Generate recommendations
-            recommendations = self._generate_workflow_recommendations(
-                bottleneck_agents, has_cycles, failure_risk
-            )
-            
-            # Build features
-            features = WorkflowFeatures(
-                workflow_id=workflow_id,
-                timestamp=time.time(),
-                num_agents=num_agents,
-                num_edges=num_edges,
-                has_cycles=has_cycles,
-                longest_path_length=path_length,
-                critical_path_agents=critical_path,
-                bottleneck_agents=bottleneck_agents,
-                betweenness_scores=betweenness,
-                clustering_coefficients=clustering,
-                persistence_entropy=persistence_features["entropy"],
-                diagram_distance_from_baseline=persistence_features["diagram_distance"],
-                stability_index=persistence_features["stability"],
-                bottleneck_score=bottleneck_score,
-                failure_risk=failure_risk,
-                recommendations=recommendations
-            )
-            
-            # Update history and check for anomalies
-            self.workflow_history[workflow_id].append(features)
-            anomalies = await self.anomaly_detector.check_workflow(features)
-            if anomalies:
-                logger.warning(f"Detected {len(anomalies)} anomalies", anomalies=anomalies)
-                
-            return features
+        return features
             
     def _build_workflow_graph(self, workflow_data: Dict[str, Any]) -> nx.DiGraph:
         """Build directed graph from workflow data."""
