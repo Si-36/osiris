@@ -21,7 +21,10 @@ import networkx as nx
 import structlog
 from collections import defaultdict, deque
 
-from .protocols import SemanticEnvelope
+try:
+    from .protocols import SemanticEnvelope
+except ImportError:
+    from protocols import SemanticEnvelope
 
 logger = structlog.get_logger(__name__)
 
