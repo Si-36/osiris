@@ -233,14 +233,16 @@ class UnifiedOrchestrationEngine:
             await self._setup_saga_workflow(definition)
         
         # 4. Store in memory for pattern learning
-        await self.memory_system.store(
-            content={
-                "workflow_id": definition.workflow_id,
-                "definition": definition.graph_definition,
-                "created_at": datetime.utcnow()
-            },
-            workflow_data=definition.graph_definition
-        )
+        if self.memory_system:
+            await self.memory_system.store(
+                content={
+                    "workflow_id": definition.workflow_id,
+                    "definition": definition.graph_definition,
+                    "created_at": datetime.utcnow().isoformat()
+                },
+                workflow_data=definition.graph_definition,
+                metadata={"component": "orchestration", "action": "create_workflow"}
+            )
         
         create_time = (time.time() - start_time) * 1000
         logger.info(
