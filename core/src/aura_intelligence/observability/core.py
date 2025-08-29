@@ -210,12 +210,11 @@ class NeuralObservabilityCore:
                 self._logging.logger.warning("health_monitor_init_failed", error=str(e))
     
     @asynccontextmanager
-        async def observe_workflow(
+    async def observe_workflow(
         self, 
         state: CollectiveState, 
         workflow_type: str = "collective_intelligence"
-        ):
-            pass
+    ):
         """
         Observe a complete workflow execution with full telemetry.
         
