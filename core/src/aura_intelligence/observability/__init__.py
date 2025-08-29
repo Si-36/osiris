@@ -1,113 +1,88 @@
 """
-🧠 Neural Observability System - Phase 1, Step 3
-Complete sensory awareness for the digital organism using latest 2025 patterns.
-
-Professional modular architecture with separation of concerns:
-- Core observability configuration and initialization
-- OpenTelemetry integration with AI semantic conventions  
-- LangSmith 2.0 streaming traces and evaluation
-- Prometheus metrics with AI/LLM specific patterns
-- Structured logging with cryptographic signatures
-- Knowledge graph event recording for memory consolidation
-- Real-time streaming and correlation context
-
-Latest 2025 Features:
-✅ OpenTelemetry AI Semantic Conventions (June 2025)
-✅ LangSmith 2.0 streaming traces and workflow visualization
-✅ Prometheus AI metrics with cost tracking and performance
-✅ Structured logging with trace correlation
-✅ Knowledge graph integration for learning loops
-✅ Bio-inspired organism health monitoring
+Observability Module - Simplified for now
 """
 
-# Avoid circular import - define local config classes
-class ObservabilityConfig:
-    """Local observability configuration to avoid circular imports"""
+import structlog
+from typing import Optional, Dict, Any
+from contextlib import asynccontextmanager
+
+logger = structlog.get_logger(__name__)
+
+# Simple implementations for now
+def create_tracer(name: str):
+    """Create a simple tracer."""
+    return SimpleTracer(name)
+
+def create_meter(name: str):
+    """Create a simple meter."""
+    return SimpleMeter(name)
+
+class SimpleTracer:
+    def __init__(self, name: str):
+        self.name = name
+    
+    def start_span(self, name: str, **kwargs):
+        return SimpleSpan(name)
+
+class SimpleSpan:
+    def __init__(self, name: str):
+        self.name = name
+        
+    def __enter__(self):
+        return self
+        
+    def __exit__(self, *args):
+        pass
+        
+    def set_attribute(self, key: str, value: Any):
+        pass
+
+class SimpleMeter:
+    def __init__(self, name: str):
+        self.name = name
+        
+    def create_counter(self, name: str, **kwargs):
+        return SimpleCounter(name)
+        
+    def create_histogram(self, name: str, **kwargs):
+        return SimpleHistogram(name)
+
+class SimpleCounter:
+    def __init__(self, name: str):
+        self.name = name
+        self.value = 0
+        
+    def add(self, value: int = 1, **kwargs):
+        self.value += value
+
+class SimpleHistogram:
+    def __init__(self, name: str):
+        self.name = name
+        
+    def record(self, value: float, **kwargs):
+        pass
+
+# Simple observability core
+class NeuralObservabilityCore:
     def __init__(self):
-        self.enable_metrics = True
-        self.enable_tracing = True
-        self.enable_profiling = False
-        self.langsmith_enabled = False
-        self.prometheus_enabled = True
-        self.opentelemetry_enabled = True
+        self.initialized = False
+        
+    async def initialize(self):
+        self.initialized = True
+        logger.info("Observability initialized (simplified mode)")
+        
+    @asynccontextmanager
+    async def observe_workflow(self, state: Any, workflow_type: str = "default"):
+        yield {"workflow_id": "test"}
+        
+    @asynccontextmanager  
+    async def observe_agent_call(self, agent_name: str, tool_name: str, inputs: Dict[str, Any] = None):
+        yield {"agent": agent_name, "tool": tool_name}
 
-    def create_development_config():
-        """Create development observability config"""
-        config = ObservabilityConfig()
-        config.enable_profiling = True
-        return config
-
-    def create_production_config():
-        """Create production observability config"""
-        config = ObservabilityConfig()
-        config.langsmith_enabled = True
-        return config
-from .core import NeuralObservabilityCore
-try:
-    from .opentelemetry_integration import OpenTelemetryManager
-    from .tracing import get_tracer
-    
-    # Create compatibility functions
-    def create_tracer(name: str):
-        """Create a tracer instance - compatibility function."""
-        from opentelemetry import trace
-        return trace.get_tracer(name)
-    
-    def create_meter(name: str):
-        """Create a meter instance - compatibility function.""" 
-        from opentelemetry import metrics
-        return metrics.get_meter(name)
-except ImportError:
-    # OpenTelemetry is optional
-    OpenTelemetryManager = None
-from .langsmith_integration import LangSmithManager
-from .prometheus_metrics import PrometheusMetricsManager
-from .structured_logging import StructuredLoggingManager
-from .knowledge_graph import KnowledgeGraphManager
-from .health_monitor import OrganismHealthMonitor, HealthMetrics
-from .context_managers import (
-    ObservabilityContext,
-    AgentContext,
-    LLMUsageContext,
-)
-from .metrics import metrics_collector as MetricsCollector
-from .tracing import TracingContext
-from .layer import ObservabilityLayer
-from .neural_metrics import NeuralMetrics
-
+# Export
 __all__ = [
-    # Configuration
-    "ObservabilityConfig",
-    "create_development_config",
-    "create_production_config",
-
-    # Core system
-    "NeuralObservabilityCore",
-
-    # Component managers
-    "OpenTelemetryManager",
-    "LangSmithManager",
-    "PrometheusMetricsManager",
-    "StructuredLoggingManager",
-    "KnowledgeGraphManager",
-    "OrganismHealthMonitor",
-    "HealthMetrics",
-
-    # Context utilities
-    "ObservabilityContext",
-    "AgentContext",
-    "LLMUsageContext",
-    
-    # Metrics and tracing
-    "MetricsCollector",
-    "TracingContext",
-    "ObservabilityLayer",
-    "NeuralMetrics",
+    'create_tracer',
+    'create_meter',
+    'NeuralObservabilityCore',
+    'logger',
 ]
-
-# Version info
-__version__ = "2025.7.27"
-__description__ = "Neural Observability System - Complete sensory awareness for digital organisms"
-__version__ = "2025.7.27"
-__author__ = "AURA Intelligence - Neural Observability Team"
-__description__ = "Complete sensory system for digital organisms"

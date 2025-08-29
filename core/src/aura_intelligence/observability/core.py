@@ -97,8 +97,7 @@ class NeuralObservabilityCore:
         # Current context tracking
         self._current_contexts: Dict[str, ObservabilityContext] = {}
     
-        async def initialize(self) -> None:
-            pass
+    async def initialize(self) -> None:
         """
         Initialize all observability components.
         
@@ -358,13 +357,12 @@ class NeuralObservabilityCore:
         return list(agents)
     
     @asynccontextmanager
-        async def observe_agent_call(
+    async def observe_agent_call(
         self, 
         agent_name: str, 
         tool_name: str, 
         inputs: Dict[str, Any] = None
-        ):
-            pass
+    ):
         """
         Observe individual agent/tool calls with comprehensive telemetry.
         
