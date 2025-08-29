@@ -17,6 +17,7 @@ import time
 import numpy as np
 from typing import Dict, Any, List, Optional, Tuple, AsyncIterator
 from dataclasses import dataclass, field
+from collections import deque
 import structlog
 
 # Import from our EXISTING TDA module - no duplication!

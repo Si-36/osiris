@@ -505,12 +505,13 @@ class AURAMemorySystem:
             topology = await self.topology_engine.extract_topology(workflow_data)
             bottlenecks = self.topology_engine.identify_bottlenecks(topology)
             
-            return [{
-                "nodes": b.nodes,
-                "severity": b.severity,
-                "persistence": b.persistence,
-                "suggested_fix": await self._suggest_bottleneck_fix(b)
-            } for b in bottlenecks]
+            for b in bottlenecks:
+                yield {
+                    "nodes": b.nodes,
+                    "severity": b.severity,
+                    "persistence": b.persistence,
+                    "suggested_fix": await self._suggest_bottleneck_fix(b)
+                }
             
     # ==================== Mem0 Pipeline Integration ====================
     

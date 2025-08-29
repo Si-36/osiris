@@ -10,7 +10,7 @@ Production monitoring for our revolutionary memory system with:
 """
 
 import time
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 from dataclasses import dataclass, field
 from contextlib import contextmanager
 import structlog
