@@ -25,6 +25,18 @@ from .provider_adapters import (
     ProviderType, ModelCapability, ModelConfig,
     ProviderRequest, ProviderResponse, ProviderFactory
 )
+
+# Import LNN council for multi-agent decision making
+try:
+    from ..agents.lnn_council import (
+        LNNCouncilOrchestrator, create_lnn_council,
+        enhance_neural_router_with_council, VoteDecision
+    )
+    LNN_COUNCIL_AVAILABLE = True
+except ImportError:
+    LNN_COUNCIL_AVAILABLE = False
+    LNNCouncilOrchestrator = None
+    
 try:
     from ..observability import create_tracer, create_meter
     tracer = create_tracer("model_router")
@@ -285,6 +297,25 @@ class AURAModelRouter:
         # TDA for topology analysis (optional)
         self.tda_analyzer = TopologicalAnalyzer() if TopologicalAnalyzer else None
         
+        # LNN Council for multi-agent decisions (optional)
+        self.lnn_council = None
+        if LNN_COUNCIL_AVAILABLE and config.get("enable_lnn_council", True):
+            try:
+                self.lnn_council = create_lnn_council(
+                    num_agents=config.get("council_agents", 5),
+                    agent_capabilities={
+                        "agent_0": ["model_selection", "cost_optimization"],
+                        "agent_1": ["model_selection", "latency_optimization"],
+                        "agent_2": ["model_selection", "quality_assessment"],
+                        "agent_3": ["model_selection", "risk_assessment"],
+                        "agent_4": ["model_selection", "fallback_planning"]
+                    }
+                )
+                logger.info("LNN Council initialized with Byzantine consensus")
+            except Exception as e:
+                logger.warning(f"Failed to initialize LNN Council: {e}")
+                self.lnn_council = None
+        
         # Provider health tracking
         self.provider_health: Dict[ProviderType, float] = {
             p: 1.0 for p in ProviderType
@@ -329,10 +360,33 @@ class AURAModelRouter:
             if not valid_providers:
                 raise ValueError("No valid providers available for request")
                 
-            # Select best provider
-            best_provider, best_model, reason = self._select_best_provider(
-                valid_providers, context, provider_scores
-            )
+            # Use LNN Council for critical decisions if available
+            if self.lnn_council and context.complexity_score > 0.7:
+                try:
+                    council_decision = await self._get_council_decision(
+                        request, context, valid_providers, provider_scores
+                    )
+                    if council_decision:
+                        best_provider = council_decision["provider"]
+                        best_model = council_decision["model"]
+                        reason = f"LNN Council: {council_decision['reason']}"
+                        span.set_attribute("routing.council_used", True)
+                        span.set_attribute("routing.council_confidence", council_decision["confidence"])
+                    else:
+                        # Fallback to standard selection
+                        best_provider, best_model, reason = self._select_best_provider(
+                            valid_providers, context, provider_scores
+                        )
+                except Exception as e:
+                    logger.warning(f"Council decision failed: {e}, using standard selection")
+                    best_provider, best_model, reason = self._select_best_provider(
+                        valid_providers, context, provider_scores
+                    )
+            else:
+                # Select best provider using standard method
+                best_provider, best_model, reason = self._select_best_provider(
+                    valid_providers, context, provider_scores
+                )
             
             # Build fallback chain
             fallback_chain = self._build_fallback_chain(
@@ -453,6 +507,78 @@ class AURAModelRouter:
             decision.provider,
             outcome
         )
+        
+    async def _get_council_decision(
+        self,
+        request: ProviderRequest,
+        context: RoutingContext,
+        valid_providers: List[Tuple[ProviderType, ModelConfig]],
+        provider_scores: Dict[ProviderType, float]
+    ) -> Optional[Dict[str, Any]]:
+        """Get multi-agent council decision on provider selection"""
+        if not self.lnn_council:
+            return None
+            
+        # Prepare council request
+        council_request = {
+            "type": "model_selection",
+            "priority": context.priority,
+            "complexity": context.complexity_score,
+            "estimated_tokens": context.estimated_tokens,
+            "available_models": [
+                {
+                    "provider": p.value,
+                    "model": m.model_id,
+                    "score": provider_scores.get(p, 0.0),
+                    "capabilities": [c.value for c in m.capabilities],
+                    "max_tokens": m.max_tokens,
+                    "cost_per_1k": m.cost_per_1k_tokens
+                }
+                for p, m in valid_providers
+            ],
+            "requirements": {
+                "max_latency_ms": context.latency_requirements,
+                "min_quality": 0.8,
+                "task_type": context.task_type,
+                "requires_capabilities": [c.value for c in context.required_capabilities]
+            }
+        }
+        
+        # Get council consensus
+        consensus = await self.lnn_council.make_council_decision(
+            request=council_request,
+            context={
+                "provider_health": self.provider_health,
+                "recent_failures": context.failure_context.recent_failures,
+                "user_preferences": context.user_preferences,
+                "tda_risk": context.tda_risk if self.tda_analyzer else None
+            },
+            required_capabilities=["model_selection"]
+        )
+        
+        # Parse consensus decision
+        if consensus.final_decision == VoteDecision.APPROVE and consensus.consensus_confidence > 0.6:
+            # Extract selected model from reasoning or votes
+            selected_idx = 0  # Default to first
+            for i, vote in enumerate(consensus.votes):
+                if "select_index:" in vote.reasoning:
+                    try:
+                        selected_idx = int(vote.reasoning.split("select_index:")[1].split()[0])
+                        break
+                    except:
+                        pass
+                        
+            if selected_idx < len(valid_providers):
+                provider, model = valid_providers[selected_idx]
+                return {
+                    "provider": provider,
+                    "model": model,
+                    "confidence": consensus.consensus_confidence,
+                    "reason": f"{consensus.consensus_type} consensus ({len(consensus.votes)} agents)",
+                    "consensus_type": consensus.consensus_type
+                }
+                
+        return None
         
     async def _build_context(self, request: ProviderRequest, policy: RoutingPolicy) -> RoutingContext:
         """Build routing context from request"""
