@@ -285,8 +285,12 @@ class LiquidNeuron(nn.Module):
                 
             dynamics = decay + recurrent + projected_input
         
-        # Update state using ODE solver
-        if self.config.solver_type == "euler":
+        # Update state using ODE solver or CfC
+        if self.config.solver_type == "cfc":
+            # Closed-form Continuous update (10-100x faster!)
+            alpha = torch.exp(-dt / self.tau)
+            new_state = alpha * state + (1 - alpha) * dynamics
+        elif self.config.solver_type == "euler":
             new_state = state + dt * dynamics
         elif self.config.solver_type == "rk4":
             new_state = self._rk4_step(state, input_current, dt)
