@@ -66,6 +66,22 @@ except ImportError:
     AURALakehouseManager = None
     LakehouseMemoryIntegration = None
 
+# Import collective intelligence enhancements
+try:
+    from ..enhancements.collective_consensus import (
+        CollectiveMemoryConsensus,
+        ConsensusType,
+        ConsensusResult
+    )
+    from ..enhancements.semantic_clustering import (
+        SemanticMemoryClustering,
+        ClusteringAlgorithm,
+        ClusteringResult
+    )
+    COLLECTIVE_FEATURES_AVAILABLE = True
+except ImportError:
+    COLLECTIVE_FEATURES_AVAILABLE = False
+
 logger = structlog.get_logger(__name__)
 
 
@@ -219,14 +235,23 @@ class AURAMemorySystem:
             self.lakehouse_integration = LakehouseMemoryIntegration(self.lakehouse)
             logger.info("Lakehouse enabled - Git-like versioning for memories!")
         
+        # Initialize collective intelligence features
+        self.consensus = None
+        self.clustering = None
+        if COLLECTIVE_FEATURES_AVAILABLE:
+            self.consensus = CollectiveMemoryConsensus()
+            self.clustering = SemanticMemoryClustering()
+            logger.info("Collective intelligence enabled - consensus & clustering active!")
+        
         logger.info(
             "AURA Memory System initialized",
             topology_enabled=True,
             mem0_enabled=MEM0_AVAILABLE and self.config.get("enable_mem0", True),
             graphrag_enabled=GRAPHRAG_AVAILABLE and self.config.get("enable_graphrag", True),
             lakehouse_enabled=LAKEHOUSE_AVAILABLE and self.config.get("enable_lakehouse", True),
+            collective_enabled=COLLECTIVE_FEATURES_AVAILABLE,
             tiers=self.tier_manager.available_tiers(),
-            innovations=["shape-aware", "causal-tracking", "h-mem-routing"]
+            innovations=["shape-aware", "causal-tracking", "h-mem-routing", "consensus", "clustering"]
         )
         
     # ==================== Store Operations ====================
