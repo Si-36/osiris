@@ -19,7 +19,7 @@ Based on 2025 best practices for event-driven architectures.
 import asyncio
 import json
 import time
-from typing import Dict, Any, List, Optional, Callable, Union
+from typing import Dict, Any, List, Optional, Callable, Union, AsyncIterator, Awaitable
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
