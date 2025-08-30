@@ -88,11 +88,11 @@ bootstrap_servers=config.kafka_bootstrap_servers
 self.active_requests: Dict[str, ConsensusRequest] = {}
 self._started = False
 
-def _init_raft(self, config: ConsensusConfig) -> RaftConsensus:
-"""Initialize Raft consensus."""
-raft_config = RaftConfig(
-node_id="consensus-manager",
-peers=["node-1", "node-2", "node-3"],  
+    def _init_raft(self, config: ConsensusConfig) -> RaftConsensus:
+        """Initialize Raft consensus."""
+        raft_config = RaftConfig(
+            node_id="consensus-manager",
+            peers=["node-1", "node-2", "node-3"],  
 election_timeout_ms=150,
 heartbeat_interval_ms=50
 )
