@@ -17,53 +17,9 @@ import asyncio
 import json
 from abc import ABC, abstractmethod
 
-try:
-    from aiokafka import AIOKafkaConsumer, ConsumerRebalanceListener, TopicPartition
-    from aiokafka.errors import KafkaError, CommitFailedError
-    from aiokafka.structs import ConsumerRecord
-except ImportError:
-    # Mock classes if aiokafka not available
-    class AIOKafkaConsumer:
-        def __init__(self, *args, **kwargs):
-            self.config = kwargs
-            
-        async def start(self):
-            pass
-            
-        async def stop(self):
-            pass
-            
-        async def commit(self):
-            pass
-            
-        def __aiter__(self):
-            return self
-            
-        async def __anext__(self):
-            raise StopAsyncIteration
-    
-    class ConsumerRebalanceListener:
-        pass
-    
-    class TopicPartition:
-        def __init__(self, topic, partition):
-            self.topic = topic
-            self.partition = partition
-    
-    class ConsumerRecord:
-        def __init__(self, topic, partition, offset, key, value, timestamp):
-            self.topic = topic
-            self.partition = partition
-            self.offset = offset
-            self.key = key
-            self.value = value
-            self.timestamp = timestamp
-    
-    class KafkaError(Exception):
-        pass
-    
-    class CommitFailedError(KafkaError):
-        pass
+from aiokafka import AIOKafkaConsumer, ConsumerRebalanceListener, TopicPartition
+from aiokafka.errors import KafkaError, CommitFailedError
+from aiokafka.structs import ConsumerRecord
 import structlog
 from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode

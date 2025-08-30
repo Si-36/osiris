@@ -16,53 +16,12 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 
-try:
-    from aiokafka import AIOKafkaProducer
-except ImportError:
-    # Mock AIOKafkaProducer if not available
-    class AIOKafkaProducer:
-        def __init__(self, **kwargs):
-            pass
-        async def start(self):
-            pass
-        async def stop(self):
-            pass
-        async def send(self, *args, **kwargs):
-            pass
-        async def send_batch(self, *args, **kwargs):
-            pass
-        async def init_transactions(self):
-            pass
-        async def begin_transaction(self):
-            pass
-        async def commit_transaction(self):
-            pass
-        async def abort_transaction(self):
-            pass
-try:
-    from aiokafka.errors import KafkaError, KafkaTimeoutError
-except ImportError:
-    # Mock Kafka errors if not available
-    class KafkaError(Exception):
-        pass
-    class KafkaTimeoutError(KafkaError):
-        pass
-try:
-    from confluent_kafka import SerializingProducer
-except ImportError:
-    SerializingProducer = None
-try:
-    from confluent_kafka.serialization import StringSerializer
-except ImportError:
-    StringSerializer = None
-try:
-    from confluent_kafka.schema_registry import SchemaRegistryClient
-except ImportError:
-    SchemaRegistryClient = None
-try:
-    from confluent_kafka.schema_registry.avro import AvroSerializer
-except ImportError:
-    AvroSerializer = None
+from aiokafka import AIOKafkaProducer
+from aiokafka.errors import KafkaError, KafkaTimeoutError
+from confluent_kafka import SerializingProducer
+from confluent_kafka.serialization import StringSerializer
+from confluent_kafka.schema_registry import SchemaRegistryClient
+from confluent_kafka.schema_registry.avro import AvroSerializer
 import structlog
 from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
