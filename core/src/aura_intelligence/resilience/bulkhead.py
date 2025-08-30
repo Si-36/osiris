@@ -23,8 +23,8 @@ import structlog
 
 from opentelemetry import trace, metrics
 
-from aura_intelligence.consensus import SimpleConsensus, Decision
-from aura_intelligence.events import EventProducer
+from ..consensus import SimpleConsensus, Decision
+from ..events import EventProducer
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
@@ -146,8 +146,7 @@ class ResourcePool:
         # Utilization tracking
         self.utilization_history = deque(maxlen=60)  # 1 minute window
         
-        async def acquire(self, amount: float = 1.0) -> bool:
-            pass
+    async def acquire(self, amount: float = 1.0) -> bool:
         """Try to acquire resources."""
         async with self.lock:
             if self.available >= amount:
@@ -156,15 +155,13 @@ class ResourcePool:
                 return True
             return False
     
-        async def release(self, amount: float = 1.0):
-            pass
+    async def release(self, amount: float = 1.0):
         """Release resources back to pool."""
         async with self.lock:
             self.available = min(self.available + amount, self.capacity)
             self._update_metrics()
     
-        async def scale(self, factor: float):
-            pass
+    async def scale(self, factor: float):
         """Scale the pool capacity."""
         async with self.lock:
             old_capacity = self.capacity
@@ -261,8 +258,7 @@ class PriorityQueue(Generic[T]):
         self.total_size = 0
         self.last_served: Dict[PriorityLevel, datetime] = {}
         
-        async def put(self, item: T, priority: PriorityLevel):
-            pass
+    async def put(self, item: T, priority: PriorityLevel):
         """Add item to queue with priority."""
         if self.total_size >= self.maxsize:
             raise asyncio.QueueFull("Priority queue is full")
@@ -270,10 +266,8 @@ class PriorityQueue(Generic[T]):
         await self.queues[priority].put(item)
         self.total_size += 1
         
-        async def get(self) -> T:
-            pass
+    async def get(self) -> T:
         """Get next item based on priority and fairness."""
-        pass
         # Try priorities in order, with fairness
         for priority in PriorityLevel:
             queue = self.queues[priority]
@@ -321,8 +315,7 @@ class GPUPartition:
         self.allocated: Dict[str, float] = defaultdict(float)
         self.lock = asyncio.Lock()
         
-        async def allocate(self, partition: str, amount: float) -> bool:
-            pass
+    async def allocate(self, partition: str, amount: float) -> bool:
         """Allocate GPU from partition."""
         async with self.lock:
             max_allowed = self.total_gpus * self.partitions.get(partition, 0)
@@ -345,8 +338,7 @@ class GPUPartition:
             
             return False
     
-        async def release(self, partition: str, amount: float):
-            pass
+    async def release(self, partition: str, amount: float):
         """Release GPU back to partition."""
         async with self.lock:
             self.allocated[partition] = max(0, self.allocated[partition] - amount)
@@ -411,10 +403,8 @@ class DynamicBulkhead:
         self._scaling_task: Optional[asyncio.Task] = None
         self._metrics_task: Optional[asyncio.Task] = None
     
-        async def start(self):
-            pass
+    async def start(self):
         """Start bulkhead background tasks."""
-        pass
         await self.event_producer.start()
         
         self._scaling_task = asyncio.create_task(self._auto_scaling_loop())
@@ -603,10 +593,8 @@ class DynamicBulkhead:
         else:
             return "inference"
     
-        async def _auto_scaling_loop(self):
-            pass
+    async def _auto_scaling_loop(self):
         """Background task for auto-scaling."""
-        pass
         while True:
             try:
                 await asyncio.sleep(10)  # Check every 10 seconds
@@ -709,8 +697,7 @@ class CostTracker:
         
         return projected_rate <= self.max_cost_per_minute
     
-        async def record_usage(self, request: ResourceRequest, duration: float):
-            pass
+    async def record_usage(self, request: ResourceRequest, duration: float):
         """Record actual usage cost."""
         async with self.lock:
             cost = request.cost_estimate * (duration / 60.0)  # Per minute

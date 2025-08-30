@@ -27,13 +27,31 @@ try:
 except ImportError:
     PYNVML_AVAILABLE = False
     pynvml = None
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 import structlog
-from prometheus_client import Histogram, Counter, Gauge, Info
 import numpy as np
+
+# Try to import prometheus_client (optional)
+try:
+    from prometheus_client import Histogram, Counter, Gauge, Info
+    PROMETHEUS_AVAILABLE = True
+except ImportError:
+    PROMETHEUS_AVAILABLE = False
+    # Create mock metrics for when prometheus is not available
+    class MockMetric:
+        def labels(self, **kwargs):
+            return self
+        def set(self, value):
+            pass
+        def inc(self, value=1):
+            pass
+        def observe(self, value):
+            pass
+    
+    Histogram = Counter = Gauge = Info = lambda *args, **kwargs: MockMetric()
 
 # Try to initialize NVIDIA Management Library
 NVML_AVAILABLE = False
