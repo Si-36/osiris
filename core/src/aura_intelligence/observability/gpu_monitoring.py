@@ -17,9 +17,16 @@ Features:
 
 import asyncio
 import torch
-import pynvml
 import psutil
 import time
+
+# Try to import pynvml (optional)
+try:
+    import pynvml
+    PYNVML_AVAILABLE = True
+except ImportError:
+    PYNVML_AVAILABLE = False
+    pynvml = None
 from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -28,12 +35,14 @@ import structlog
 from prometheus_client import Histogram, Counter, Gauge, Info
 import numpy as np
 
-# Try to import NVIDIA Management Library
-try:
-    pynvml.nvmlInit()
-    NVML_AVAILABLE = True
-except:
-    NVML_AVAILABLE = False
+# Try to initialize NVIDIA Management Library
+NVML_AVAILABLE = False
+if PYNVML_AVAILABLE:
+    try:
+        pynvml.nvmlInit()
+        NVML_AVAILABLE = True
+    except:
+        NVML_AVAILABLE = False
     
 logger = structlog.get_logger(__name__)
 

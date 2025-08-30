@@ -137,8 +137,7 @@ class ThresholdPredictor:
         self,
         metrics: CircuitBreakerMetrics,
         system_load: float
-        ) -> float:
-            pass
+    ) -> float:
         """Predict optimal threshold based on patterns."""
         pattern = self._detect_pattern(metrics)
         base_threshold = self.patterns.get(pattern, 0.5)
