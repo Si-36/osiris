@@ -299,38 +299,50 @@ ConsensusResult with decision and explanation
             else:  # EMERGENCY
                 request.quorum_size = self.config.operational_quorum
 
-# Set timeout based on decision type
-if request.decision_type == DecisionType.OPERATIONAL:
-request.timeout = self.config.operational_timeout
-elif request.decision_type == DecisionType.TACTICAL:
-request.timeout = self.config.tactical_timeout
-elif request.decision_type == DecisionType.STRATEGIC:
-request.timeout = self.config.strategic_timeout
+            # Set timeout based on decision type
+            if request.decision_type == DecisionType.OPERATIONAL:
+                request.timeout = self.config.operational_timeout
+            elif request.decision_type == DecisionType.TACTICAL:
+                request.timeout = self.config.tactical_timeout
+            elif request.decision_type == DecisionType.STRATEGIC:
+                request.timeout = self.config.strategic_timeout
 
-# Route to protocol
-if request.decision_type == DecisionType.OPERATIONAL:
-return await self.raft_consensus.propose(request)
-
-elif request.decision_type == DecisionType.TACTICAL:
-if self.config.use_multi_raft_for_tactical:
-return await self.multi_raft.propose(request)
-else:
-return await self.raft_consensus.propose(request)
-
-elif request.decision_type == DecisionType.STRATEGIC:
-if self.config.use_bft_for_strategic:
-return await self.bft_consensus.propose(request)
-else:
-# Use Raft with higher quorum
-request.quorum_size = self.config.strategic_quorum
-return await self.raft_consensus.propose(request)
-
-elif request.decision_type == DecisionType.EMERGENCY:
-# Fast path for emergency decisions
-return await self._emergency_consensus(request)
-
-else:
-raise ValueError(f"Unknown decision type: {request.decision_type}")
+            # Route to protocol
+            if request.decision_type == DecisionType.OPERATIONAL:
+                return await self.raft_consensus.propose(request)
+                
+            elif request.decision_type == DecisionType.TACTICAL:
+                if self.config.use_multi_raft_for_tactical:
+                    return await self.multi_raft.propose(request)
+                else:
+                    return await self.raft_consensus.propose(request)
+                    
+            elif request.decision_type == DecisionType.STRATEGIC:
+                if self.config.use_bft_for_strategic:
+                    return await self.bft_consensus.propose(request)
+                else:
+                    # Use Raft with higher quorum
+                    request.quorum_size = self.config.strategic_quorum
+                    return await self.raft_consensus.propose(request)
+                    
+            elif request.decision_type == DecisionType.EMERGENCY:
+                # Fast path for emergency decisions
+                return await self._emergency_consensus(request)
+                
+            else:
+                # Default to Raft
+                return await self.raft_consensus.propose(request)
+                
+        except Exception as e:
+            # Log error and fall back to basic consensus
+            logger.error(f"Consensus error: {e}")
+            return ConsensusResult(
+                decision_id=request.decision_id,
+                consensus_type="error",
+                decision=Decision(id=request.decision_id, outcome="error", confidence=0.0),
+                participants=[],
+                timestamp=datetime.utcnow()
+            )
 
     async def _emergency_consensus(self, request: ConsensusRequest) -> ConsensusResult:
 """
