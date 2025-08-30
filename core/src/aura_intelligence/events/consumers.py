@@ -219,20 +219,16 @@ class EventConsumer:
         
         try:
             async for msg in self.consumer:
-                pass
-        await self._process_message(msg)
+                await self._process_message(msg)
                 
         except asyncio.CancelledError:
-            pass
-        logger.info("Consumer cancelled")
-        raise
+            logger.info("Consumer cancelled")
+            raise
         except Exception as e:
-            pass
-        logger.error(f"Consumer error: {e}")
-        raise
+            logger.error(f"Consumer error: {e}")
+            raise
         finally:
-            pass
-        await self.stop()
+            await self.stop()
     
         async def _process_message(self, msg: ConsumerRecord) -> None:
             pass
@@ -324,7 +320,7 @@ class EventConsumer:
         
         await process_with_retry()
     
-        async def _process_event_transactionally(
+    async def _process_event_transactionally(
         self,
         event: EventSchema,
         msg: ConsumerRecord
