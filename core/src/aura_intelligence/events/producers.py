@@ -16,13 +16,45 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 
-from aiokafka import AIOKafkaProducer
-from aiokafka.errors import KafkaError, KafkaTimeoutError
+try:
+    from aiokafka import AIOKafkaProducer
+except ImportError:
+    # Mock AIOKafkaProducer if not available
+    class AIOKafkaProducer:
+        def __init__(self, **kwargs):
+            pass
+        async def start(self):
+            pass
+        async def stop(self):
+            pass
+        async def send(self, *args, **kwargs):
+            pass
+        async def send_batch(self, *args, **kwargs):
+            pass
+        async def init_transactions(self):
+            pass
+        async def begin_transaction(self):
+            pass
+        async def commit_transaction(self):
+            pass
+        async def abort_transaction(self):
+            pass
+try:
+    from aiokafka.errors import KafkaError, KafkaTimeoutError
+except ImportError:
+    # Mock Kafka errors if not available
+    class KafkaError(Exception):
+        pass
+    class KafkaTimeoutError(KafkaError):
+        pass
 try:
     from confluent_kafka import SerializingProducer
 except ImportError:
     SerializingProducer = None
-from confluent_kafka.serialization import StringSerializer
+try:
+    from confluent_kafka.serialization import StringSerializer
+except ImportError:
+    StringSerializer = None
 try:
     from confluent_kafka.schema_registry import SchemaRegistryClient
 except ImportError:
@@ -141,9 +173,8 @@ class EventProducer:
         self.producer: Optional[AIOKafkaProducer] = None
         self._started = False
         
-        async def start(self):
-            """Start the producer."""
-        pass
+    async def start(self):
+        """Start the producer."""
         if self._started:
             return
             
@@ -164,24 +195,21 @@ class EventProducer:
             logger.error(f"Failed to start producer: {e}")
             raise
     
-        async def stop(self):
-            pass
+    async def stop(self):
         """Stop the producer."""
-        pass
         if self.producer and self._started:
             await self.producer.stop()
         self._started = False
         logger.info("Event producer stopped")
     
-        async def send_event(
+    async def send_event(
         self,
         topic: str,
         event: EventSchema,
         key: Optional[str] = None,
         partition: Optional[int] = None,
         headers: Optional[List[tuple]] = None
-        ) -> None:
-            pass
+    ) -> None:
         """Send a single event to Kafka."""
         if not self._started:
             await self.start()
@@ -248,13 +276,12 @@ class EventProducer:
                 logger.error(f"Failed to send event: {e}", event_id=event.event_id)
                 raise
     
-        async def send_batch(
+    async def send_batch(
         self,
         topic: str,
         events: List[EventSchema],
         ordered: bool = False
-        ) -> None:
-            pass
+    ) -> None:
         """Send a batch of events."""
         if ordered:
             # Send sequentially to maintain order
@@ -287,9 +314,8 @@ class TransactionalProducer(EventProducer):
         super().__init__(config)
         self._in_transaction = False
     
-        async def start(self):
-            """Start the transactional producer."""
-        pass
+    async def start(self):
+        """Start the transactional producer."""
         await super().start()
         
         # Initialize transactions
@@ -297,53 +323,47 @@ class TransactionalProducer(EventProducer):
         logger.info(f"Transactional producer initialized: {self.config.transactional_id}")
     
     @asynccontextmanager
-        async def transaction(self):
-            pass
+    async def transaction(self):
         """Context manager for transactions."""
-        pass
         if not self._started:
             await self.start()
         
         with tracer.start_as_current_span("kafka.transaction") as span:
             try:
                 # Begin transaction
-        await self.producer.begin_transaction()
-        self._in_transaction = True
-        span.set_attribute("transaction.id", self.config.transactional_id)
+                await self.producer.begin_transaction()
+                self._in_transaction = True
+                span.set_attribute("transaction.id", self.config.transactional_id)
                 
-        yield self
+                yield self
                 
-        # Commit transaction
-        await self.producer.commit_transaction()
-        self._in_transaction = False
+                # Commit transaction
+                await self.producer.commit_transaction()
+                self._in_transaction = False
                 
-        span.set_status(Status(StatusCode.OK))
-        logger.debug("Transaction committed successfully")
+                span.set_status(Status(StatusCode.OK))
+                logger.debug("Transaction committed successfully")
                 
-        except Exception as e:
-            pass
-        # Abort transaction on error
-        if self._in_transaction:
-            try:
-                await self.producer.abort_transaction()
-        except Exception as abort_error:
-            pass
-        logger.error(f"Failed to abort transaction: {abort_error}")
-        finally:
-            pass
-        self._in_transaction = False
+            except Exception as e:
+                # Abort transaction on error
+                if self._in_transaction:
+                    try:
+                        await self.producer.abort_transaction()
+                    except Exception as abort_error:
+                        logger.error(f"Failed to abort transaction: {abort_error}")
+                    finally:
+                        self._in_transaction = False
                 
-        span.set_status(Status(StatusCode.ERROR, str(e)))
-        span.record_exception(e)
-        logger.error(f"Transaction failed: {e}")
-        raise
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                logger.error(f"Transaction failed: {e}")
+                raise
     
-        async def send_transactional_batch(
+    async def send_transactional_batch(
         self,
         events: List[tuple[str, EventSchema]],  # (topic, event) pairs
         consumer_offsets: Optional[Dict[str, Any]] = None
-        ) -> None:
-            pass
+    ) -> None:
         """Send a batch of events in a transaction."""
         async with self.transaction():
             # Send all events

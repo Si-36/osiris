@@ -428,28 +428,28 @@ SCHEMA_REGISTRY = {
 }
 
 
-    def get_event_schema(event_type: str) -> type[EventSchema]:
-        """Get event schema class by event type."""
+def get_event_schema(event_type: str) -> type[EventSchema]:
+    """Get event schema class by event type."""
     # Map event types to schema classes
-        if event_type.startswith("agent."):
+    if event_type.startswith("agent."):
         return AgentEvent
-        elif event_type.startswith("workflow."):
+    elif event_type.startswith("workflow."):
         return WorkflowEvent
-        elif event_type.startswith("system."):
+    elif event_type.startswith("system."):
         return SystemEvent
-        elif event_type.startswith("consensus."):
+    elif event_type.startswith("consensus."):
         return ConsensusDecisionEvent
-        else:
+    else:
         return EventSchema
 
 
-    def validate_event(event_data: Dict[str, Any]) -> EventSchema:
-        """Validate and parse event data."""
-        event_type = event_data.get("event_type", "")
-        schema_class = get_event_schema(event_type)
+def validate_event(event_data: Dict[str, Any]) -> EventSchema:
+    """Validate and parse event data."""
+    event_type = event_data.get("event_type", "")
+    schema_class = get_event_schema(event_type)
     
-        try:
+    try:
         return schema_class(**event_data)
-        except Exception as e:
+    except Exception as e:
         logger.error(f"Event validation failed: {e}", event_data=event_data)
         raise

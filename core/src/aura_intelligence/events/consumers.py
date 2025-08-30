@@ -188,15 +188,15 @@ class EventConsumer:
         
         try:
             self.consumer = AIOKafkaConsumer(
-        *self.config.topics,
-        **self.config.to_kafka_config(),
-        value_deserializer=lambda v: json.loads(v.decode()) if v else None
-        )
+                *self.config.topics,
+                **self.config.to_kafka_config(),
+                value_deserializer=lambda v: json.loads(v.decode()) if v else None
+            )
             
-        await self.consumer.start()
-        self._running = True
+            await self.consumer.start()
+            self._running = True
             
-        logger.info(f"Event consumer started for topics: {self.config.topics}")
+            logger.info(f"Event consumer started for topics: {self.config.topics}")
             
         except Exception as e:
             pass

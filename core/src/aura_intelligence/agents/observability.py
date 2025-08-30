@@ -58,76 +58,75 @@ RESPONSE_SAFETY_SCORE = "gen_ai.response.safety_score"
 
 
 class AgentMetrics:
-    pass
-"""Metrics collection for agents."""
+    """Metrics collection for agents."""
 
-def __init__(self, meter: metrics.Meter, agent_name: str):
-    pass
-"""Initialize metrics for an agent."""
-pass
-self.agent_name = agent_name
+    def __init__(self):
 
-# Token metrics
-self.token_counter = meter.create_counter(
-name="gen_ai.agent.tokens",
-description="Total tokens used by agent",
-unit="tokens"
-)
+        """Initialize metrics for an agent."""
+        self.agent_name = agent_name
 
-# Decision metrics
-self.decision_counter = meter.create_counter(
-name="gen_ai.agent.decisions",
-description="Number of decisions made by agent",
-unit="1"
-)
+        # Token metrics
+        self.token_counter = meter.create_counter(
+            name="gen_ai.agent.tokens",
+            description="Total tokens used by agent",
+            unit="tokens"
+        )
 
-# Tool usage metrics
-self.tool_usage_counter = meter.create_counter(
-name="gen_ai.agent.tool_invocations",
-description="Number of tool invocations",
-unit="1"
-)
+        # Decision metrics
+        self.decision_counter = meter.create_counter(
+            name="gen_ai.agent.decisions",
+            description="Number of decisions made by agent",
+            unit="1"
+        )
 
-# Quality metrics
-self.quality_histogram = meter.create_histogram(
-name="gen_ai.agent.response_quality",
-description="Response quality scores",
-unit="score"
-)
+        # Tool usage metrics
+        self.tool_usage_counter = meter.create_counter(
+            name="gen_ai.agent.tool_invocations",
+            description="Number of tool invocations",
+            unit="1"
+        )
 
-# Cost metrics
-self.cost_counter = meter.create_counter(
-name="gen_ai.agent.cost",
-description="Estimated cost of agent operations",
-unit="USD"
-)
+        # Quality metrics
+        self.quality_histogram = meter.create_histogram(
+            name="gen_ai.agent.response_quality",
+            description="Response quality scores",
+            unit="score"
+        )
 
-def record_tokens(self, prompt_tokens: int, completion_tokens: int, model: str):
-    pass
-"""Record token usage."""
-total = prompt_tokens + completion_tokens
-attributes = {
-"agent.name": self.agent_name,
-"model": model,
-"token.type": "total"
-}
-self.token_counter.add(total, attributes)
+        # Cost metrics
+        self.cost_counter = meter.create_counter(
+            name="gen_ai.agent.cost",
+            description="Estimated cost of agent operations",
+            unit="USD"
+        )
 
-# Estimate cost (example rates)
-cost_per_1k = {"gpt-4": 0.03, "gpt-3.5-turbo": 0.002}.get(model, 0.01)
-estimated_cost = (total / 1000) * cost_per_1k
-self.cost_counter.add(estimated_cost, attributes)
+    def record_tokens(self):
 
-def record_decision(self, decision: str, reason: str):
-    pass
-"""Record a decision made by the agent."""
-self.decision_counter.add(1, {
-"agent.name": self.agent_name,
-"decision": decision,
-"has_reason": bool(reason)
-})
+        """Record token usage."""
+        total = prompt_tokens + completion_tokens
+        attributes = {
+            "agent.name": self.agent_name,
+            "model": model,
+            "token.type": "total"
+        }
+        self.token_counter.add(total, attributes)
 
-    def record_tool_usage(self, tool_name: str, duration_ms: float, success: bool):
+        # Estimate cost (example rates)
+        cost_per_1k = {"gpt-4": 0.03, "gpt-3.5-turbo": 0.002}.get(model, 0.01)
+        estimated_cost = (total / 1000) * cost_per_1k
+        self.cost_counter.add(estimated_cost, attributes)
+
+    def record_decision(self):
+
+        """Record a decision made by the agent."""
+        self.decision_counter.add(1, {
+            "agent.name": self.agent_name,
+            "decision": decision,
+            "has_reason": bool(reason)
+        })
+
+    def record_tool_usage(self):
+
         """Record tool usage."""
         self.tool_usage_counter.add(1, {
             "agent.name": self.agent_name,
@@ -135,7 +134,8 @@ self.decision_counter.add(1, {
             "success": success
         })
     
-    def record_quality(self, quality_score: float, relevance_score: float = None):
+    def record_quality(self):
+    
         """Record response quality metrics."""
         self.quality_histogram.record(quality_score, {
             "agent.name": self.agent_name,
@@ -149,188 +149,188 @@ self.decision_counter.add(1, {
 
 
 class AgentInstrumentor:
-"""Instrumentor for adding observability to agents."""
+    """Instrumentor for adding observability to agents."""
 
-def __init__(self):
-"""Initialize the instrumentor."""
-pass
-self.tracer = trace.get_tracer(__name__)
-self.meter = metrics.get_meter(__name__)
-self.propagator = TraceContextTextMapPropagator()
-self.logger = structlog.get_logger()
+    def __init__(self):
 
-def instrument_agent(self, agent: Any) -> Any:
-"""Add instrumentation to an agent."""
-# Add metrics
-agent._metrics = AgentMetrics(self.meter, agent.name)
+        """Initialize the instrumentor."""
+        self.tracer = trace.get_tracer(__name__)
+        self.meter = metrics.get_meter(__name__)
+        self.propagator = TraceContextTextMapPropagator()
+        self.logger = structlog.get_logger()
 
-# Wrap key methods
-agent._original_process = agent._process
-agent._process = self._wrap_process(agent)
+    def instrument_agent(self, agent: Any) -> Any:
+        """Add instrumentation to an agent."""
+        # Add metrics
+        agent._metrics = AgentMetrics(self.meter, agent.name)
 
-if hasattr(agent, '_execute_step'):
-agent._original_execute_step = agent._execute_step
-agent._execute_step = self._wrap_execute_step(agent)
+        # Wrap key methods
+        agent._original_process = agent._process
+        agent._process = self._wrap_process(agent)
 
-return agent
+        if hasattr(agent, '_execute_step'):
+            agent._original_execute_step = agent._execute_step
+            agent._execute_step = self._wrap_execute_step(agent)
 
-def _wrap_process(self, agent):
-"""Wrap the main process method with instrumentation."""
-pass
-@wraps(agent._original_process)
-async def wrapped(input_data):
-with self.tracer.start_as_current_span(
-f"agent.{agent.name}.process",
-kind=trace.SpanKind.SERVER,
-attributes={
-GenAIAttributes.AGENT_NAME: agent.name,
-GenAIAttributes.AGENT_TYPE: type(agent).__name__,
-GenAIAttributes.LLM_MODEL_NAME: agent.config.model,
-GenAIAttributes.LLM_TEMPERATURE: agent.config.temperature
-}
-) as span:
-start_time = time.time()
+        return agent
 
-try:
-# Add input to span
-span.set_attribute(GenAIAttributes.AGENT_TASK, str(input_data)[:1000])
+    def _wrap_process(self):
 
-# Execute
-result = await agent._original_process(input_data)
+        """Wrap the main process method with instrumentation."""
+        @wraps(agent._original_process)
+        async def wrapped(input_data):
+            with self.tracer.start_as_current_span(
+                f"agent.{agent.name}.process",
+                kind=trace.SpanKind.SERVER,
+                attributes={
+                    GenAIAttributes.AGENT_NAME: agent.name,
+                    GenAIAttributes.AGENT_TYPE: type(agent).__name__,
+                    GenAIAttributes.LLM_MODEL_NAME: agent.config.model,
+                    GenAIAttributes.LLM_TEMPERATURE: agent.config.temperature
+                }
+            ) as span:
+                start_time = time.time()
 
-# Record success
-duration_ms = (time.time() - start_time) * 1000
-span.set_attribute("duration_ms", duration_ms)
-span.set_status(Status(StatusCode.OK))
+                try:
+                    # Add input to span
+                    span.set_attribute(GenAIAttributes.AGENT_TASK, str(input_data)[:1000])
 
-return result
+                    # Execute
+                    result = await agent._original_process(input_data)
 
-except Exception as e:
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
-raise
+                    # Record success
+                    duration_ms = (time.time() - start_time) * 1000
+                    span.set_attribute("duration_ms", duration_ms)
+                    span.set_status(Status(StatusCode.OK))
 
-return wrapped
+                    return result
 
-def _wrap_execute_step(self, agent):
-"""Wrap step execution with instrumentation."""
-pass
-@wraps(agent._original_execute_step)
-async def wrapped(state, step_name):
-with self.tracer.start_as_current_span(
-f"agent.{agent.name}.step.{step_name}",
-attributes={
-GenAIAttributes.AGENT_NAME: agent.name,
-GenAIAttributes.AGENT_STEP_NAME: step_name,
-GenAIAttributes.AGENT_STEP_NUMBER: len(state.messages)
-}
-) as span:
-try:
-# Execute step
-new_state = await agent._original_execute_step(state, step_name)
+                except Exception as e:
+                    span.set_status(Status(StatusCode.ERROR, str(e)))
+                    span.record_exception(e)
+                    raise
 
-# Record decision if present
-if hasattr(new_state, 'last_decision'):
-span.set_attribute(
-GenAIAttributes.AGENT_DECISION,
-new_state.last_decision
-)
-agent._metrics.record_decision(
-new_state.last_decision,
-getattr(new_state, 'decision_reason', '')
-)
+        return wrapped
 
-return new_state
+    def _wrap_execute_step(self):
 
-except Exception as e:
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
-raise
+        """Wrap step execution with instrumentation."""
+        @wraps(agent._original_execute_step)
+        async def wrapped(state, step_name):
+            with self.tracer.start_as_current_span(
+                f"agent.{agent.name}.step.{step_name}",
+                attributes={
+                    GenAIAttributes.AGENT_NAME: agent.name,
+                    GenAIAttributes.AGENT_STEP_NAME: step_name,
+                    GenAIAttributes.AGENT_STEP_NUMBER: len(state.messages)
+                }
+            ) as span:
+                try:
+                    # Execute step
+                    new_state = await agent._original_execute_step(state, step_name)
 
-return wrapped
+                    # Record decision if present
+                    if hasattr(new_state, 'last_decision'):
+                        span.set_attribute(
+                            GenAIAttributes.AGENT_DECISION,
+                            new_state.last_decision
+                        )
+                        agent._metrics.record_decision(
+                            new_state.last_decision,
+                            getattr(new_state, 'decision_reason', '')
+                        )
 
-@asynccontextmanager
-async def trace_llm_call(
-self,
-agent_name: str,
-model: str,
-prompt: str,
-temperature: float = 0.7,
-max_tokens: int = None
-):
-"""Context manager for tracing LLM calls."""
-with self.tracer.start_as_current_span(
-f"llm.{model}.completion",
-attributes={
-GenAIAttributes.AGENT_NAME: agent_name,
-GenAIAttributes.LLM_MODEL_NAME: model,
-GenAIAttributes.LLM_TEMPERATURE: temperature,
-GenAIAttributes.LLM_MAX_TOKENS: max_tokens or -1,
-GenAIAttributes.LLM_PROMPT: prompt[:500]  # Truncate for safety
-}
-) as span:
-start_time = time.time()
+                    return new_state
 
-try:
-yield span
+                except Exception as e:
+                    span.set_status(Status(StatusCode.ERROR, str(e)))
+                    span.record_exception(e)
+                    raise
 
-# Success - record latency
-latency_ms = (time.time() - start_time) * 1000
-span.set_attribute(GenAIAttributes.LLM_LATENCY_MS, latency_ms)
+        return wrapped
 
-except Exception as e:
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
-raise
+    @asynccontextmanager
+    async def trace_llm_call(
+        self,
+        agent_name: str,
+        model: str,
+        prompt: str,
+        temperature: float = 0.7,
+        max_tokens: int = None
+    ):
+        """Context manager for tracing LLM calls."""
+        with self.tracer.start_as_current_span(
+            f"llm.{model}.completion",
+            attributes={
+                GenAIAttributes.AGENT_NAME: agent_name,
+                GenAIAttributes.LLM_MODEL_NAME: model,
+                GenAIAttributes.LLM_TEMPERATURE: temperature,
+                GenAIAttributes.LLM_MAX_TOKENS: max_tokens or -1,
+                GenAIAttributes.LLM_PROMPT: prompt[:500]  # Truncate for safety
+            }
+        ) as span:
+            start_time = time.time()
 
-@asynccontextmanager
-async def trace_tool_call(self, agent_name: str, tool_name: str, tool_input: Any):
-"""Context manager for tracing tool calls."""
-with self.tracer.start_as_current_span(
-f"tool.{tool_name}",
-attributes={
-GenAIAttributes.AGENT_NAME: agent_name,
-GenAIAttributes.AGENT_TOOL_NAME: tool_name,
-GenAIAttributes.AGENT_TOOL_INPUT: str(tool_input)[:500]
-}
-) as span:
-start_time = time.time()
+            try:
+                yield span
 
-try:
-yield span
+                # Success - record latency
+                latency_ms = (time.time() - start_time) * 1000
+                span.set_attribute(GenAIAttributes.LLM_LATENCY_MS, latency_ms)
 
-# Success
-duration_ms = (time.time() - start_time) * 1000
-span.set_attribute(GenAIAttributes.AGENT_TOOL_DURATION_MS, duration_ms)
+            except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                raise
 
-# Record metrics
-if hasattr(self, '_metrics'):
-self._metrics.record_tool_usage(tool_name, duration_ms, True)
+    @asynccontextmanager
+    async def trace_tool_call(self, agent_name: str, tool_name: str, tool_input: Any):
+        """Context manager for tracing tool calls."""
+        with self.tracer.start_as_current_span(
+            f"tool.{tool_name}",
+            attributes={
+                GenAIAttributes.AGENT_NAME: agent_name,
+                GenAIAttributes.AGENT_TOOL_NAME: tool_name,
+                GenAIAttributes.AGENT_TOOL_INPUT: str(tool_input)[:500]
+            }
+        ) as span:
+            start_time = time.time()
 
-except Exception as e:
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
+            try:
+                yield span
 
-# Record failure
-if hasattr(self, '_metrics'):
-duration_ms = (time.time() - start_time) * 1000
-self._metrics.record_tool_usage(tool_name, duration_ms, False)
+                # Success
+                duration_ms = (time.time() - start_time) * 1000
+                span.set_attribute(GenAIAttributes.AGENT_TOOL_DURATION_MS, duration_ms)
 
-raise
+                # Record metrics
+                if hasattr(self, '_metrics'):
+                    self._metrics.record_tool_usage(tool_name, duration_ms, True)
 
-def extract_context(self, carrier: Dict[str, str]) -> context.Context:
-"""Extract trace context from carrier."""
-return self.propagator.extract(carrier)
+            except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
 
-def inject_context(self, carrier: Dict[str, str]) -> None:
-"""Inject current trace context into carrier."""
-self.propagator.inject(carrier)
+                # Record failure
+                if hasattr(self, '_metrics'):
+                    duration_ms = (time.time() - start_time) * 1000
+                    self._metrics.record_tool_usage(tool_name, duration_ms, False)
 
-def create_span_link(self, trace_id: str, span_id: str) -> Link:
-"""Create a link to another span."""
-return Link(
-context={
-"trace_id": trace_id,
-"span_id": span_id
-}
-)
+                raise
+
+    def extract_context(self, carrier: Dict[str, str]) -> context.Context:
+        """Extract trace context from carrier."""
+        return self.propagator.extract(carrier)
+
+    def inject_context(self, carrier: Dict[str, str]) -> None:
+        """Inject current trace context into carrier."""
+        self.propagator.inject(carrier)
+
+    def create_span_link(self, trace_id: str, span_id: str) -> Link:
+        """Create a link to another span."""
+        return Link(
+            context={
+                "trace_id": trace_id,
+                "span_id": span_id
+            }
+        )
