@@ -151,10 +151,8 @@ class CircuitBreaker(Generic[T]):
         time_since_change = datetime.now() - self.state_changed_at
         return time_since_change >= self.config.timeout
     
-        async def _record_success(self) -> None:
-            pass
+    async def _record_success(self) -> None:
         """Record a successful call."""
-        pass
         async with self._lock:
             self.stats.total_calls += 1
             self.stats.successful_calls += 1
@@ -195,7 +193,6 @@ class CircuitBreaker(Generic[T]):
                 # Check failure rate
                 if (self.stats.total_calls >= self.config.min_calls and
                     self.stats.failure_rate >= self.config.failure_rate_threshold):
-                        pass
                     should_open = True
                 
                 if should_open:

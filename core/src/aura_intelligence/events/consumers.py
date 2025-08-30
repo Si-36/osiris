@@ -17,9 +17,53 @@ import asyncio
 import json
 from abc import ABC, abstractmethod
 
-from aiokafka import AIOKafkaConsumer, ConsumerRebalanceListener, TopicPartition
-from aiokafka.errors import KafkaError, CommitFailedError
-from aiokafka.structs import ConsumerRecord
+try:
+    from aiokafka import AIOKafkaConsumer, ConsumerRebalanceListener, TopicPartition
+    from aiokafka.errors import KafkaError, CommitFailedError
+    from aiokafka.structs import ConsumerRecord
+except ImportError:
+    # Mock classes if aiokafka not available
+    class AIOKafkaConsumer:
+        def __init__(self, *args, **kwargs):
+            self.config = kwargs
+            
+        async def start(self):
+            pass
+            
+        async def stop(self):
+            pass
+            
+        async def commit(self):
+            pass
+            
+        def __aiter__(self):
+            return self
+            
+        async def __anext__(self):
+            raise StopAsyncIteration
+    
+    class ConsumerRebalanceListener:
+        pass
+    
+    class TopicPartition:
+        def __init__(self, topic, partition):
+            self.topic = topic
+            self.partition = partition
+    
+    class ConsumerRecord:
+        def __init__(self, topic, partition, offset, key, value, timestamp):
+            self.topic = topic
+            self.partition = partition
+            self.offset = offset
+            self.key = key
+            self.value = value
+            self.timestamp = timestamp
+    
+    class KafkaError(Exception):
+        pass
+    
+    class CommitFailedError(KafkaError):
+        pass
 import structlog
 from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
@@ -497,10 +541,8 @@ class StreamProcessor(EventProcessor):
             self.state[event_type] = 0
         self.state[event_type] += 1
     
-        async def _process_windows(self) -> None:
-            pass
+    async def _process_windows(self) -> None:
         """Background task to process completed windows."""
-        pass
         while True:
             try:
                 await asyncio.sleep(self.window_size.total_seconds())
@@ -536,35 +578,31 @@ class StreamProcessor(EventProcessor):
         "window.size": len(events)
         }
         ) as span:
-            pass
-        try:
-            # Example aggregation: Count by event type
-        aggregation = {}
-        for event in events:
-            pass
-        event_type = event.event_type.value
-        aggregation[event_type] = aggregation.get(event_type, 0) + 1
+            try:
+                # Example aggregation: Count by event type
+                aggregation = {}
+                for event in events:
+                    event_type = event.event_type.value
+                    aggregation[event_type] = aggregation.get(event_type, 0) + 1
                 
-        logger.info(
-        f"Window processed",
-        window_key=window_key,
-        event_count=len(events),
-        aggregation=aggregation
-        )
+                logger.info(
+                    f"Window processed",
+                    window_key=window_key,
+                    event_count=len(events),
+                    aggregation=aggregation
+                )
                 
-        # Here you would typically:
-            pass
-        # 1. Perform aggregations
-        # 2. Update state stores
-        # 3. Emit results to output topics
+                # Here you would typically:
+                # 1. Perform aggregations
+                # 2. Update state stores
+                # 3. Emit results to output topics
                 
-        span.set_status(Status(StatusCode.OK))
+                span.set_status(Status(StatusCode.OK))
                 
-        except Exception as e:
-            pass
-        span.set_status(Status(StatusCode.ERROR, str(e)))
-        span.record_exception(e)
-        raise
+            except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                raise
 
 
     # Example processor implementations
@@ -591,16 +629,14 @@ class RouterProcessor(EventProcessor):
         """Add a route for an event type."""
         self.routes[event_type] = processor
     
-        async def process(self, event: EventSchema) -> None:
-            pass
+    async def process(self, event: EventSchema) -> None:
         """Route event to appropriate processor."""
         processor = self.routes.get(event.event_type.value)
         
         if processor:
             await processor.process(event)
         else:
-            pass
-        logger.warning(f"No route for event type: {event.event_type.value}")
+            logger.warning(f"No route for event type: {event.event_type.value}")
 
 
     # Factory function for creating consumers
