@@ -98,16 +98,14 @@ class EventSchema(BaseModel):
     @validator('partition_key', always=True)
     def set_partition_key(cls, v, values):
             """Set partition key if not provided."""
-            pass
             if v is None:
-            # Use source_id as default partition key for ordering
-            return values.get('source_id', str(uuid.uuid4()))
+                # Use source_id as default partition key for ordering
+                return values.get('source_id', str(uuid.uuid4()))
             return v
     
-        def to_avro_schema(self) -> Dict[str, Any]:
-            """Convert to Avro schema definition."""
-            pass
-            return {
+    def to_avro_schema(self) -> Dict[str, Any]:
+        """Convert to Avro schema definition."""
+        return {
             "type": "record",
             "name": self.__class__.__name__,
             "namespace": "com.aura.intelligence.events",
