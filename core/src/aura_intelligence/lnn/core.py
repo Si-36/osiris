@@ -500,14 +500,13 @@ class LiquidNeuralNetwork(nn.Module):
     
     def _initialize_weights(self):
         """Initialize network weights."""
-        pass
         for module in self.modules():
-        if isinstance(module, nn.Linear):
-            nn.init.xavier_uniform_(module.weight)
-        if module.bias is not None:
-            nn.init.zeros_(module.bias)
+            if isinstance(module, nn.Linear):
+                nn.init.xavier_uniform_(module.weight)
+                if module.bias is not None:
+                    nn.init.zeros_(module.bias)
     
-        def forward(
+    def forward(
         self,
         inputs: torch.Tensor,
         return_dynamics: bool = False
