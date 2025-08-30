@@ -27,13 +27,13 @@ class ObservabilityConfig:
         self.enable_metrics = True
 
 
-        try:
+    try:
         from .context_managers import ObservabilityContext
-            except ImportError:
-    class ObservabilityContext:
-        def __init__(self, **kwargs):
-            self.workflow_id = kwargs.get('workflow_id', 'unknown')
-            self.agent_id = kwargs.get('agent_id', 'unknown')
+    except ImportError:
+        class ObservabilityContext:
+            def __init__(self, **kwargs):
+                self.workflow_id = kwargs.get('workflow_id', 'unknown')
+                self.agent_id = kwargs.get('agent_id', 'unknown')
 
 
 class LangSmithIntegration:
