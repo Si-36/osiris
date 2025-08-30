@@ -149,7 +149,7 @@ class OpenTelemetryManager:
             except Exception as e:
                 self.logger.error(f"Failed to record metric {name}: {e}")
     
-        async def shutdown(self):
+    async def shutdown(self):
         """Shutdown OpenTelemetry components."""
         if self.initialized:
             try:
