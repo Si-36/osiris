@@ -76,6 +76,7 @@ class EventRouter:
     
         async def route_event(self, event: Dict[str, Any],
         pattern_matches: List[PatternMatch] = None) -> bool:
+            pass
         """Route single event to appropriate handlers"""
         start_time = datetime.utcnow()
         self.metrics.total_events += 1
@@ -123,6 +124,7 @@ class EventRouter:
     
     def _select_handlers(self, event: Dict[str, Any], 
         pattern_matches: List[PatternMatch] = None) -> List[str]:
+            pass
         """Select handlers based on routing strategy"""
         event_type = event.get('type', '')
         
@@ -174,6 +176,7 @@ class EventRouter:
     def _tda_aware_selection(self, event: Dict[str, Any], 
         eligible_handlers: List[str],
                            pattern_matches: List[PatternMatch] = None) -> List[str]:
+                               pass
         """TDA-aware handler selection"""
         tda_score = event.get('tda_anomaly_score', 0.0)
         
@@ -219,6 +222,7 @@ class EventRouter:
     
         async def _execute_handler(self, handler: EventHandler, event: Dict[str, Any],
         pattern_matches: List[PatternMatch] = None) -> None:
+            pass
         """Execute event handler with timeout"""
         task = asyncio.current_task()
         

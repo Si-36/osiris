@@ -101,6 +101,7 @@ class LoadGenerator:
         self.tracer = get_tracer()
         
         async def generate_load(self) -> AsyncIterator[float]:
+            pass
         """Generate load according to pattern"""
         pass
         self.start_time = time.time()
@@ -194,6 +195,7 @@ class StreamingTDALoadTester:
         self.tracer = get_tracer()
         
         async def initialize(self):
+            pass
         """Initialize streaming windows"""
         pass
         for size in self.scenario.window_sizes:
@@ -204,6 +206,7 @@ class StreamingTDALoadTester:
             await self.windows[size].initialize()
             
         async def run_test(self) -> LoadTestResult:
+            pass
         """Run the load test"""
         pass
         await self.initialize()
@@ -245,6 +248,7 @@ class StreamingTDALoadTester:
         return self._calculate_results(request_count)
     
         async def _execute_request(self, request_id: int):
+            pass
         """Execute a single streaming TDA request"""
         async with self.tracer.trace_async_operation(
             "load_test_request",
@@ -299,6 +303,7 @@ class StreamingTDALoadTester:
                 self._active_tasks -= 1
     
         async def _monitor_throughput(self):
+            pass
         """Monitor and record throughput"""
         pass
         last_count = 0
@@ -357,6 +362,7 @@ class StreamingTDALoadTester:
         )
     
         async def save_results(self, result: LoadTestResult, filepath: str):
+            pass
         """Save test results to file"""
         result_dict = {
             "scenario_name": result.scenario_name,

@@ -39,10 +39,12 @@ class ContextWindow:
         
         # Encode historical patterns (take last 10)
         for pattern in self.historical_patterns[-10:]:
+            pass
         features.extend(pattern.get("features", [0.0] * 10))
             
         # Encode recent decisions (take last 5)
         for decision in self.recent_decisions[-5:]:
+            pass
         features.append(decision.get("confidence", 0.0))
         features.append(decision.get("value", 0.0))
             
@@ -51,6 +53,7 @@ class ContextWindow:
         if len(features) < target_size:
             features.extend([0.0] * (target_size - len(features)))
         else:
+            pass
         features = features[:target_size]
             
         return torch.tensor(features, dtype=torch.float32)
@@ -226,10 +229,10 @@ class ContextAwareLNN:
         # Query relationships
         relationships = {}
         for entity in entities[:5]:  # Limit to prevent explosion
-        query = """
-            MATCH (e:Entity {id: $entity_id})-[r]-(related)
-            RETURN type(r) as relationship, collect(related.id) as related_ids
-            LIMIT 20
+            query = """
+                MATCH (e:Entity {id: $entity_id})-[r]-(related)
+                RETURN type(r) as relationship, collect(related.id) as related_ids
+                LIMIT 20
         """
             results = await self.graph.query(query, {"entity_id": entity})
             relationships[entity] = {
@@ -323,9 +326,11 @@ class ContextAwareLNN:
         # Update graph
         if self.graph and "entity_updates" in result:
             for entity_id, updates in result["entity_updates"].items():
+                pass
         await self.graph.update_entity(entity_id, updates)
                     
         except Exception as e:
+            pass
         logger.error(f"Context update failed: {e}")
     
         async def _emit_decision_event(self, result: Dict[str, Any]):
@@ -372,6 +377,7 @@ class ContextAwareLNN:
         age_hours = (datetime.now(timezone.utc) - latest.get("timestamp", datetime.now(timezone.utc))).total_seconds() / 3600
         scores["recency"] = max(0.0, 1.0 - (age_hours / 24.0))
         else:
+            pass
         scores["recency"] = 0.0
             
         # Completeness score
@@ -388,6 +394,7 @@ class ContextAwareLNN:
         hidden_states: List[torch.Tensor],
         context: ContextWindow
         ) -> float:
+            pass
         """Calculate how much context influenced the decision."""
         if not hidden_states or not context.historical_patterns:
             return 0.0

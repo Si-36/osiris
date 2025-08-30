@@ -49,7 +49,7 @@ class TimeConstants:
             raise ValueError(f"Unknown initialization: {self.tau_init}")
 
 
-    @dataclass
+@dataclass
 class WiringConfig:
     """Configuration for sparse wiring in liquid networks."""
     sparsity: float = 0.8  # 80% sparse connections
@@ -285,8 +285,12 @@ class LiquidNeuron(nn.Module):
                 
             dynamics = decay + recurrent + projected_input
         
-        # Update state using ODE solver
-        if self.config.solver_type == "euler":
+        # Update state using ODE solver or CfC
+        if self.config.solver_type == "cfc":
+            # Closed-form Continuous update (10-100x faster!)
+            alpha = torch.exp(-dt / self.tau)
+            new_state = alpha * state + (1 - alpha) * dynamics
+        elif self.config.solver_type == "euler":
             new_state = state + dt * dynamics
         elif self.config.solver_type == "rk4":
             new_state = self._rk4_step(state, input_current, dt)
@@ -496,14 +500,13 @@ class LiquidNeuralNetwork(nn.Module):
     
     def _initialize_weights(self):
         """Initialize network weights."""
-        pass
         for module in self.modules():
-        if isinstance(module, nn.Linear):
-            nn.init.xavier_uniform_(module.weight)
-        if module.bias is not None:
-            nn.init.zeros_(module.bias)
+            if isinstance(module, nn.Linear):
+                nn.init.xavier_uniform_(module.weight)
+                if module.bias is not None:
+                    nn.init.zeros_(module.bias)
     
-        def forward(
+    def forward(
         self,
         inputs: torch.Tensor,
         return_dynamics: bool = False

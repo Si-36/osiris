@@ -80,6 +80,7 @@ class CrossModalFusion(nn.Module):
         
     def forward(self, vision_emb: torch.Tensor, text_emb: torch.Tensor, 
         neural_emb: torch.Tensor) -> torch.Tensor:
+            pass
         # Cross-modal attention
         vision_attended, _ = self.cross_attn(vision_emb.unsqueeze(1), 
                                            text_emb.unsqueeze(1), 
@@ -152,6 +153,7 @@ class RealMultiModalProcessor:
         return torch.tensor(tokens, dtype=torch.long)
     
         async def _extract_neural_state(self) -> torch.Tensor:
+            pass
         """Extract neural state from AURA components"""
         pass
         neural_components = self.registry.get_components_by_type(ComponentType.NEURAL)[:10]
@@ -172,6 +174,7 @@ class RealMultiModalProcessor:
         return torch.tensor([features[:128]], dtype=torch.float32)
     
         async def process_multimodal(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Process multi-modal inputs"""
         start_time = time.time()
         self.stats['total_requests'] += 1

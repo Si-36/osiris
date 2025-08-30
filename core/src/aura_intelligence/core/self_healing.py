@@ -71,7 +71,6 @@ class ChaosExperiment:
     
     def __post_init__(self):
         """Validate experiment parameters."""
-        pass
         if not 0.0 <= self.intensity <= 1.0:
             raise ValueError("Intensity must be between 0.0 and 1.0")
         if not 0.0 <= self.blast_radius <= 1.0:
@@ -94,13 +93,11 @@ class ChaosResult:
     @property
     def duration(self) -> float:
         """Get experiment duration."""
-        pass
         return self.end_time - self.start_time
     
     @property
     def resilience_score(self) -> float:
         """Calculate resilience score based on recovery time and blast radius."""
-        pass
         if self.recovery_time <= 0:
             return 1.0
         
@@ -125,7 +122,6 @@ class Stressor:
     
     def is_beneficial(self) -> bool:
         """Check if this stressor is at beneficial levels (hormesis)."""
-        pass
         return self.intensity <= self.beneficial_threshold
 
 
@@ -141,7 +137,6 @@ class AntifragileAdaptation:
     
     def is_successful(self) -> bool:
         """Check if adaptation was successful."""
-        pass
         return self.strength_gain > 0 and self.stressor_resistance > 0
 
 
@@ -152,13 +147,7 @@ class FailureInjector:
         self.active_injections: Dict[str, Dict[str, Any]] = {}
         self.injection_history: List[Dict[str, Any]] = []
     
-        async def inject_failure(
-        self, 
-        failure_type: FailureType, 
-        target_component: str,
-        intensity: float = 0.5,
-        duration: float = 10.0
-        ) -> str:
+    async def inject_failure(self, failure_type: FailureType, target_component: str, intensity: float = 0.5, duration: float = 10.0) -> str:
         """Inject a specific type of failure."""
         injection_id = f"{failure_type.value}_{target_component}_{int(time.time())}"
         
@@ -180,7 +169,7 @@ class FailureInjector:
         logger.info(f"Injected {failure_type.value} into {target_component} for {duration}s")
         return injection_id
     
-        async def _execute_injection(self, config: Dict[str, Any]) -> None:
+    async def _execute_injection(self, config: Dict[str, Any]) -> None:
         """Execute the actual failure injection."""
         failure_type = config['failure_type']
         target_component = config['target_component']
@@ -212,7 +201,7 @@ class FailureInjector:
             if config['injection_id'] in self.active_injections:
                 del self.active_injections[config['injection_id']]
     
-        async def _inject_latency(self, component: str, intensity: float, duration: float) -> None:
+    async def _inject_latency(self, component: str, intensity: float, duration: float) -> None:
         """Inject artificial latency."""
         end_time = time.time() + duration
         base_delay = intensity * 2.0  # Up to 2 seconds delay
@@ -223,7 +212,7 @@ class FailureInjector:
             await asyncio.sleep(delay)
             await asyncio.sleep(0.1)  # Check interval
     
-        async def _inject_errors(self, component: str, intensity: float, duration: float) -> None:
+    async def _inject_errors(self, component: str, intensity: float, duration: float) -> None:
         """Inject artificial errors."""
         end_time = time.time() + duration
         error_rate = intensity * 0.5  # Up to 50% error rate
@@ -243,7 +232,7 @@ class FailureInjector:
             
             await asyncio.sleep(1.0)  # Check every second
     
-        async def _inject_resource_exhaustion(self, component: str, intensity: float, duration: float) -> None:
+    async def _inject_resource_exhaustion(self, component: str, intensity: float, duration: float) -> None:
         """Inject resource exhaustion."""
         end_time = time.time() + duration
         
@@ -260,7 +249,7 @@ class FailureInjector:
             # Clean up memory
             del memory_hog
     
-        async def _inject_network_partition(self, component: str, intensity: float, duration: float) -> None:
+    async def _inject_network_partition(self, component: str, intensity: float, duration: float) -> None:
         """Inject network partition simulation."""
         end_time = time.time() + duration
         
@@ -279,7 +268,6 @@ class FailureInjector:
     
     def get_active_injections(self) -> List[Dict[str, Any]]:
         """Get list of currently active injections."""
-        pass
         return list(self.active_injections.values())
 
 
@@ -290,11 +278,7 @@ class BlastRadiusController:
         self.max_blast_radius = max_blast_radius
         self.component_criticality: Dict[str, float] = {}
     
-    def calculate_safe_blast_radius(
-        self, 
-        experiment: ChaosExperiment,
-        system_health: Dict[str, Any]
-        ) -> float:
+    def calculate_safe_blast_radius(self, experiment: ChaosExperiment, system_health: Dict[str, Any]) -> float:
         """Calculate safe blast radius for experiment."""
         base_radius = experiment.blast_radius
         
@@ -342,7 +326,7 @@ class ChaosEngineer:
         self.experiment_history: List[ChaosResult] = []
         self.steady_state_metrics: Dict[str, Any] = {}
     
-        async def conduct_chaos_experiment(self, experiment: ChaosExperiment) -> ChaosResult:
+    async def conduct_chaos_experiment(self, experiment: ChaosExperiment) -> ChaosResult:
         """Conduct a controlled chaos experiment."""
         logger.info(f"Starting chaos experiment: {experiment.name}")
         
@@ -446,7 +430,7 @@ class ChaosEngineer:
         
         return result
     
-        async def _capture_system_metrics(self) -> Dict[str, Any]:
+    async def _capture_system_metrics(self) -> Dict[str, Any]:
         """Capture current system metrics."""
         pass
         # Get error analysis manager
@@ -488,14 +472,13 @@ class ChaosEngineer:
         
         return True
     
-        async def _get_system_health(self) -> Dict[str, Any]:
+    async def _get_system_health(self) -> Dict[str, Any]:
         """Get current system health."""
-        pass
         from .exceptions import get_error_analysis_manager
         manager = get_error_analysis_manager()
         return manager.get_system_health_summary()
     
-        async def _monitor_experiment(self, experiment: ChaosExperiment, observations: List[str]) -> None:
+    async def _monitor_experiment(self, experiment: ChaosExperiment, observations: List[str]) -> None:
         """Monitor system during experiment."""
         try:
             while True:
@@ -520,12 +503,7 @@ class ChaosEngineer:
         except asyncio.CancelledError:
             observations.append("Monitoring stopped")
     
-    def _evaluate_success_criteria(
-        self, 
-        experiment: ChaosExperiment,
-        before_metrics: Dict[str, Any],
-        after_metrics: Dict[str, Any]
-        ) -> bool:
+    def _evaluate_success_criteria(self, experiment: ChaosExperiment, before_metrics: Dict[str, Any], after_metrics: Dict[str, Any]) -> bool:
         """Evaluate if experiment met success criteria."""
         # Basic success criteria: system recovered to steady state
         if not self._verify_steady_state(after_metrics):
@@ -543,11 +521,7 @@ class ChaosEngineer:
         
         return True
     
-    def _detect_system_learning(
-        self, 
-        before_metrics: Dict[str, Any],
-        after_metrics: Dict[str, Any]
-        ) -> bool:
+    def _detect_system_learning(self, before_metrics: Dict[str, Any], after_metrics: Dict[str, Any]) -> bool:
         """Detect if system learned from the experiment."""
         # System learned if it's more resilient after the experiment
         
@@ -586,7 +560,6 @@ class ChaosEngineer:
     
     def _get_memory_usage(self) -> float:
         """Get current memory usage (0.0 to 1.0)."""
-        pass
         try:
             import psutil
             return psutil.virtual_memory().percent / 100.0
@@ -596,7 +569,6 @@ class ChaosEngineer:
     
     def _get_cpu_usage(self) -> float:
         """Get current CPU usage (0.0 to 1.0)."""
-        pass
         try:
             import psutil
             return psutil.cpu_percent(interval=1) / 100.0
@@ -604,9 +576,8 @@ class ChaosEngineer:
             # Fallback: simulate CPU usage
             return random.uniform(0.2, 0.6)
     
-        async def _measure_response_time(self) -> float:
+    async def _measure_response_time(self) -> float:
         """Measure system response time."""
-        pass
         start_time = time.time()
         
         # Simulate a system operation
@@ -616,7 +587,6 @@ class ChaosEngineer:
     
     def get_experiment_summary(self) -> Dict[str, Any]:
         """Get summary of all experiments."""
-        pass
         if not self.experiment_history:
             return {
                 'total_experiments': 0,
@@ -653,11 +623,7 @@ class AntifragilityEngine:
         self.adaptation_history: List[AntifragileAdaptation] = []
         self.hormesis_thresholds: Dict[str, float] = {}
     
-        async def make_antifragile(
-        self, 
-        component: str, 
-        stressor: Stressor
-        ) -> AntifragileAdaptation:
+    async def make_antifragile(self, component: str, stressor: Stressor) -> AntifragileAdaptation:
         """Make a system component antifragile to a specific stressor."""
         logger.info(f"Applying antifragile adaptation to {component} with {stressor.name}")
         
@@ -688,7 +654,7 @@ class AntifragilityEngine:
         logger.info(f"Antifragile adaptation complete: {component} gained {strength_gain:.2f} strength")
         return adaptation_result
     
-        async def _detect_stress_level(self, component: str, stressor: Stressor) -> Dict[str, Any]:
+    async def _detect_stress_level(self, component: str, stressor: Stressor) -> Dict[str, Any]:
         """Detect the current stress level on a component."""
         # Get component metrics
         from .exceptions import get_error_analysis_manager
@@ -725,11 +691,7 @@ class AntifragilityEngine:
         self.stress_history.append(stress_level)
         return stress_level
     
-    def _calculate_hormetic_response(
-        self, 
-        stress_level: Dict[str, Any], 
-        stressor: Stressor
-        ) -> Dict[str, Any]:
+    def _calculate_hormetic_response(self, stress_level: Dict[str, Any], stressor: Stressor) -> Dict[str, Any]:
         """Calculate hormetic response to stress (beneficial adaptation)."""
         overall_stress = stress_level['overall_stress']
         
@@ -759,12 +721,7 @@ class AntifragilityEngine:
         
         return response
     
-        async def _apply_adaptation(
-        self, 
-        component: str, 
-        hormetic_response: Dict[str, Any],
-        stressor: Stressor
-        ) -> Dict[str, Any]:
+    async def _apply_adaptation(self, component: str, hormetic_response: Dict[str, Any], stressor: Stressor) -> Dict[str, Any]:
         """Apply the adaptation based on hormetic response."""
         if not hormetic_response['is_hormetic']:
             # No beneficial adaptation possible
@@ -808,11 +765,7 @@ class AntifragilityEngine:
             'total_improvement': sum(a['improvement'] for a in adaptations)
         }
     
-    def _amplify_strength_gains(
-        self, 
-        adaptation: Dict[str, Any], 
-        stressor: Stressor
-        ) -> float:
+    def _amplify_strength_gains(self, adaptation: Dict[str, Any], stressor: Stressor) -> float:
         """Amplify strength gains through overcompensation."""
         if not adaptation.get('adapted', False):
             return 0.0
@@ -830,7 +783,6 @@ class AntifragilityEngine:
     
     def get_antifragility_metrics(self) -> Dict[str, Any]:
         """Get metrics about system antifragility."""
-        pass
         if not self.adaptation_history:
             return {
                 'total_adaptations': 0,
@@ -870,11 +822,7 @@ class PredictiveFailureDetector:
         self.anomaly_threshold = 2.0  # Standard deviations for anomaly detection
         self.prediction_horizon = 300.0  # 5 minutes prediction horizon
     
-        async def predict_failure(
-        self, 
-        component: str,
-        time_horizon: float = 300.0
-        ) -> Dict[str, Any]:
+    async def predict_failure(self, component: str, time_horizon: float = 300.0) -> Dict[str, Any]:
         """Predict potential failures for a component."""
         # Collect current metrics
         current_metrics = await self._collect_component_metrics(component)
@@ -911,7 +859,7 @@ class PredictiveFailureDetector:
         
         return prediction
     
-        async def _collect_component_metrics(self, component: str) -> Dict[str, float]:
+    async def _collect_component_metrics(self, component: str) -> Dict[str, float]:
         """Collect metrics for a specific component."""
         # Get system-wide metrics
         from .exceptions import get_error_analysis_manager
@@ -1021,11 +969,7 @@ class PredictiveFailureDetector:
         trends['trends_available'] = True
         return trends
     
-    def _calculate_failure_probability(
-        self, 
-        anomalies: List[Dict[str, Any]], 
-        trends: Dict[str, Any]
-        ) -> float:
+    def _calculate_failure_probability(self, anomalies: List[Dict[str, Any]], trends: Dict[str, Any]) -> float:
         """Calculate probability of failure based on anomalies and trends."""
         if not trends.get('trends_available', False):
             return 0.1  # Low baseline probability
@@ -1154,7 +1098,6 @@ class SelfHealingErrorHandler:
     
     def _register_default_strategies(self):
         """Register default healing strategies."""
-        pass
         self.healing_strategies = {
             HealingStrategy.RESTART.value: self._strategy_restart,
             HealingStrategy.ROLLBACK.value: self._strategy_rollback,
@@ -1168,7 +1111,7 @@ class SelfHealingErrorHandler:
             HealingStrategy.EMERGENCY_SHUTDOWN.value: self._strategy_emergency_shutdown
         }
     
-        async def handle_error_with_healing(self, error: AuraError) -> Dict[str, Any]:
+    async def handle_error_with_healing(self, error: AuraError) -> Dict[str, Any]:
         """Handle error with comprehensive self-healing approach."""
         healing_start_time = time.time()
         
@@ -1240,11 +1183,7 @@ class SelfHealingErrorHandler:
         
         return healing_record
     
-        async def _determine_healing_strategy(
-        self, 
-        error: AuraError, 
-        failure_prediction: Dict[str, Any]
-        ) -> HealingStrategy:
+    async def _determine_healing_strategy(self, error: AuraError, failure_prediction: Dict[str, Any]) -> HealingStrategy:
         """Determine the optimal healing strategy."""
         failure_probability = failure_prediction['failure_probability']
         time_to_failure = failure_prediction.get('time_to_failure')
@@ -1279,12 +1218,7 @@ class SelfHealingErrorHandler:
         else:
             return HealingStrategy.RESTART
     
-        async def _execute_healing_strategy(
-        self, 
-        strategy: HealingStrategy, 
-        error: AuraError,
-        failure_prediction: Dict[str, Any]
-        ) -> Dict[str, Any]:
+    async def _execute_healing_strategy(self, strategy: HealingStrategy, error: AuraError, failure_prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the selected healing strategy."""
         strategy_func = self.healing_strategies.get(strategy.value)
         
@@ -1307,7 +1241,7 @@ class SelfHealingErrorHandler:
     
     # Healing Strategy Implementations
     
-        async def _strategy_restart(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_restart(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Restart the affected component."""
         logger.info(f"Restarting component: {error.component_id}")
         
@@ -1321,7 +1255,7 @@ class SelfHealingErrorHandler:
             'description': f'Restarted {error.component_id}'
         }
     
-        async def _strategy_rollback(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_rollback(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Rollback to previous stable state."""
         logger.info(f"Rolling back component: {error.component_id}")
         
@@ -1335,7 +1269,7 @@ class SelfHealingErrorHandler:
             'description': f'Rolled back {error.component_id} to stable state'
         }
     
-        async def _strategy_scale_out(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_scale_out(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Scale out the component to handle load."""
         logger.info(f"Scaling out component: {error.component_id}")
         
@@ -1349,7 +1283,7 @@ class SelfHealingErrorHandler:
             'description': f'Scaled out {error.component_id} with additional instances'
         }
     
-        async def _strategy_circuit_break(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_circuit_break(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Activate circuit breaker to prevent cascade failures."""
         logger.info(f"Activating circuit breaker for: {error.component_id}")
         
@@ -1363,7 +1297,7 @@ class SelfHealingErrorHandler:
             'description': f'Activated circuit breaker for {error.component_id}'
         }
     
-        async def _strategy_failover(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_failover(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Failover to backup component."""
         logger.info(f"Failing over component: {error.component_id}")
         
@@ -1377,7 +1311,7 @@ class SelfHealingErrorHandler:
             'description': f'Failed over {error.component_id} to backup'
         }
     
-        async def _strategy_degrade_gracefully(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_degrade_gracefully(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Gracefully degrade functionality."""
         logger.info(f"Gracefully degrading: {error.component_id}")
         
@@ -1391,7 +1325,7 @@ class SelfHealingErrorHandler:
             'description': f'Gracefully degraded {error.component_id} functionality'
         }
     
-        async def _strategy_isolate_and_heal(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_isolate_and_heal(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Isolate component and perform healing."""
         logger.info(f"Isolating and healing: {error.component_id}")
         
@@ -1405,7 +1339,7 @@ class SelfHealingErrorHandler:
             'description': f'Isolated and healed {error.component_id}'
         }
     
-        async def _strategy_adaptive_throttling(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_adaptive_throttling(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Apply adaptive throttling to reduce load."""
         logger.info(f"Applying adaptive throttling: {error.component_id}")
         
@@ -1419,7 +1353,7 @@ class SelfHealingErrorHandler:
             'description': f'Applied adaptive throttling to {error.component_id}'
         }
     
-        async def _strategy_resource_reallocation(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_resource_reallocation(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Reallocate resources to handle the issue."""
         logger.info(f"Reallocating resources for: {error.component_id}")
         
@@ -1433,7 +1367,7 @@ class SelfHealingErrorHandler:
             'description': f'Reallocated resources for {error.component_id}'
         }
     
-        async def _strategy_emergency_shutdown(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    async def _strategy_emergency_shutdown(self, error: AuraError, prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Emergency shutdown to prevent system damage."""
         logger.warning(f"Emergency shutdown initiated for: {error.component_id}")
         
@@ -1447,7 +1381,7 @@ class SelfHealingErrorHandler:
             'description': f'Emergency shutdown of {error.component_id}'
         }
     
-        async def _verify_healing_success(self, component_id: str) -> bool:
+    async def _verify_healing_success(self, component_id: str) -> bool:
         """Verify that healing was successful."""
         # Wait a moment for system to stabilize
         await asyncio.sleep(2.0)
@@ -1467,13 +1401,7 @@ class SelfHealingErrorHandler:
         
         return False
     
-        async def _learn_from_healing(
-        self, 
-        error: AuraError,
-        strategy: HealingStrategy,
-        healing_result: Dict[str, Any],
-        success: bool
-        ) -> Dict[str, Any]:
+    async def _learn_from_healing(self, error: AuraError, strategy: HealingStrategy, healing_result: Dict[str, Any], success: bool) -> Dict[str, Any]:
         """Learn from the healing process to improve future responses."""
         learning = {
             'strategy_effectiveness': 1.0 if success else 0.0,
@@ -1504,7 +1432,6 @@ class SelfHealingErrorHandler:
     
     def get_healing_metrics(self) -> Dict[str, Any]:
         """Get comprehensive healing metrics."""
-        pass
         if not self.healing_history:
             return {
                 'total_healings': 0,
@@ -1552,19 +1479,13 @@ class SelfHealingErrorHandler:
 
 # Factory functions and utilities
 
-    def create_self_healing_error_handler() -> SelfHealingErrorHandler:
+def create_self_healing_error_handler() -> SelfHealingErrorHandler:
         """Create a new self-healing error handler."""
         return SelfHealingErrorHandler()
 
 
 def create_chaos_experiment(
-    name: str,
-    failure_type: FailureType,
-    target_components: List[str],
-    duration: float = 30.0,
-    intensity: float = 0.5,
-    blast_radius: float = 0.1
-) -> ChaosExperiment:
+    name: str, failure_type: FailureType, target_components: List[str], duration: float = 30.0, intensity: float = 0.5, blast_radius: float = 0.1) -> ChaosExperiment:
     """Create a chaos experiment with sensible defaults."""
     return ChaosExperiment(
         experiment_id=f"chaos_{int(time.time())}",

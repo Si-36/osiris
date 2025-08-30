@@ -49,6 +49,7 @@ else:
     # Fallback tracer
     class NoOpTracer:
         def start_as_current_span(self, name, **kwargs):
+            pass
         def decorator(func):
             return func
             return decorator
@@ -56,8 +57,10 @@ else:
 
 # Initialize meter with fallback
             if metrics:
+                pass
             meter = metrics.get_meter(__name__)
             else:
+                pass
     # Fallback meter
     class NoOpMeter:
         def create_counter(self, **kwargs):
@@ -100,12 +103,13 @@ else:
                 
                 def add(self, n=1):
                     """Add to counter"""
-                    pass
     
                     return NoOpCounter()
                 def create_histogram(self, **kwargs):
                     class NoOpHistogram:
+                        pass
                     async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+                        pass
         """Process data for histogram"""
                     import time
                     import numpy as np
@@ -138,15 +142,16 @@ else:
                             return {'action': 'record', 'priority': 'normal'}
                 
                             async def _execute_action(self, decision):
+                                pass
                             """Execute the decided action"""
                             return {'executed': True, 'action': decision.get('action')}
                 
                         def record(self, value):
                             """Record a value"""
-                            pass
             
                             return NoOpHistogram()
                         def create_gauge(self, **kwargs):
+                            pass
             class NoOpGauge:
                 async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
                     import time
@@ -176,6 +181,7 @@ else:
 
 
 class AgentMetrics:
+    pass
     
     def __init__(self):
         # Counters
@@ -257,6 +263,7 @@ def instrument_agent(
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs):
+            pass
         # Extract agent info from self
         agent_self = args[0] if args else None
         agent_id = getattr(agent_self, 'agent_id', 'unknown')
@@ -295,6 +302,7 @@ def instrument_agent(
         if inspect.iscoroutinefunction(func):
             result = await func(*args, **kwargs)
         else:
+            pass
         result = func(*args, **kwargs)
                     
         # Calculate duration
@@ -331,6 +339,7 @@ def instrument_agent(
         return result
                     
         except Exception as e:
+            pass
         # Calculate duration
         duration_ms = (time.time() - start_time) * 1000
                     
@@ -364,6 +373,7 @@ def instrument_agent(
         
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs):
+            pass
         # Similar implementation for sync functions
         agent_self = args[0] if args else None
         agent_id = getattr(agent_self, 'agent_id', 'unknown')
@@ -423,6 +433,7 @@ def instrument_agent(
         return result
                     
         except Exception as e:
+            pass
         duration_ms = (time.time() - start_time) * 1000
                     
         agent_metrics.method_errors.add(1, {
@@ -448,6 +459,7 @@ def instrument_agent(
         if inspect.iscoroutinefunction(func):
             return async_wrapper
         else:
+            pass
         return sync_wrapper
     
         return decorator
@@ -487,11 +499,14 @@ def _extract_correlation_id(args: tuple, kwargs: dict) -> Optional[str]:
     
     # Check for AgentState in args
     for arg in args:
+        pass
     if isinstance(arg, AgentState):
         return arg.correlation_id
     elif isinstance(arg, ACPEnvelope):
+        pass
     return arg.correlation_id
     elif isinstance(arg, dict) and 'correlation_id' in arg:
+        pass
     return arg['correlation_id']
     
     return None
@@ -513,19 +528,22 @@ def _record_method_args(span: Span, args: tuple, kwargs: dict) -> None:
         if isinstance(arg, str) and len(arg) < 100:
             span.set_attribute(f"method.arg_{i}_value", arg)
     elif not isinstance(arg, str):
+        pass
     span.set_attribute(f"method.arg_{i}_value", str(arg))
         
     # Record safe kwargs
     for key, value in kwargs.items():
+        pass
     if isinstance(value, (str, int, float, bool)):
         if isinstance(value, str) and len(value) < 100:
             span.set_attribute(f"method.kwarg_{key}", value)
     elif not isinstance(value, str):
+        pass
     span.set_attribute(f"method.kwarg_{key}", str(value))
     
     except Exception:
+        pass
     # Don't fail the method if argument recording fails
-    pass
 
 
 def _record_method_result(span: Span, result: Any) -> None:
@@ -538,20 +556,24 @@ def _record_method_result(span: Span, result: Any) -> None:
         if isinstance(result, str) and len(result) < 100:
             span.set_attribute("method.result_value", result)
     elif not isinstance(result, str):
+        pass
     span.set_attribute("method.result_value", str(result))
     elif isinstance(result, (list, tuple)):
+        pass
     span.set_attribute("method.result_length", len(result))
     elif isinstance(result, dict):
+        pass
     span.set_attribute("method.result_keys_count", len(result))
     elif hasattr(result, '__len__'):
+        pass
     try:
         span.set_attribute("method.result_length", len(result))
     except:
-    pass
+        pass
     
     except Exception:
+        pass
     # Don't fail the method if result recording fails
-    pass
 
 
 def create_child_span(
@@ -588,6 +610,7 @@ def inject_trace_context() -> Dict[str, str]:
     Inject current trace context for propagation.
     
     Returns:
+        pass
     Trace context headers
     """
     headers = {}

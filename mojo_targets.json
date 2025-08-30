@@ -1,0 +1,62 @@
+{
+  "selective_scan": [
+    {
+      "seq_len": 128,
+      "python_ms": 219.56616899115033
+    },
+    {
+      "seq_len": 256,
+      "python_ms": 124.92980901151896
+    },
+    {
+      "seq_len": 512,
+      "python_ms": 304.1435769991949
+    },
+    {
+      "seq_len": 1024,
+      "python_ms": 508.57566099148244
+    }
+  ],
+  "tda_distance": [
+    {
+      "n_points": 100,
+      "python_ms": 8.671115996548906
+    },
+    {
+      "n_points": 500,
+      "python_ms": 213.41970498906448
+    },
+    {
+      "n_points": 1000,
+      "python_ms": 869.0139100071974
+    }
+  ],
+  "expert_routing": [
+    {
+      "batch_size": 16,
+      "pytorch_ms": 1.2773799826391041
+    },
+    {
+      "batch_size": 32,
+      "pytorch_ms": 0.6642889929935336
+    },
+    {
+      "batch_size": 64,
+      "pytorch_ms": 1.0722320002969354
+    }
+  ],
+  "cfc_dynamics": [
+    {
+      "hidden_size": 128,
+      "python_ms": 3.4031399991363287
+    },
+    {
+      "hidden_size": 256,
+      "python_ms": 3.9742199878674
+    },
+    {
+      "hidden_size": 512,
+      "python_ms": 6.4863989828154445
+    }
+  ]
+}

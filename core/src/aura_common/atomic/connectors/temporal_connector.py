@@ -44,10 +44,13 @@ class TemporalConfig:
     def validate(self) -> None:
         """Validate configuration."""
         if not self.host:
+            pass
         raise ValueError("host required")
         if not self.namespace:
+            pass
         raise ValueError("namespace required")
         if not self.task_queue:
+            pass
         raise ValueError("task_queue required")
 
 
@@ -83,6 +86,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
     Atomic component for starting Temporal workflows.
     
     Features:
+        pass
     - Workflow execution with options
     - Automatic ID generation
     - Execution tracking
@@ -95,6 +99,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         self._stub_mode = True  # Using stub for now
     
         def _validate_config(self) -> None:
+            pass
         """Validate Temporal configuration."""
         self.config.validate()
     
@@ -103,12 +108,15 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         Start a Temporal workflow.
         
         Args:
+            pass
         workflow_request: Dict containing:
+            pass
         - workflow_type: Name of workflow to start
         - args: Workflow arguments
         - options: Optional WorkflowOptions
                 
         Returns:
+            pass
         WorkflowExecution details
         """
         # Extract request components
@@ -117,6 +125,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         options = workflow_request.get("options", {})
         
         if not workflow_type:
+            pass
         raise ValueError("workflow_type required")
         
         # Generate workflow ID if not provided
@@ -124,10 +133,13 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         
         # Initialize client if needed
         if self._client is None:
+            pass
         await self._connect()
         
         try:
+            pass
         if self._stub_mode:
+            pass
         # Stub implementation
         self.logger.info(
         f"Starting workflow (stub mode)",
@@ -147,11 +159,13 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         )
             
         else:
+            pass
         # Real implementation would use temporal-sdk
         # handle = await self._client.start_workflow(...)
         pass
                 
         except Exception as e:
+            pass
         self.logger.error(f"Failed to start workflow: {e}")
         raise ProcessingError(
         f"Workflow start failed: {str(e)}",
@@ -159,6 +173,7 @@ class TemporalWorkflowStarter(AtomicComponent[Dict[str, Any], WorkflowExecution,
         )
     
         async def _connect(self) -> None:
+            pass
         """Connect to Temporal server."""
         self.logger.info(
             "Connecting to Temporal",
@@ -178,6 +193,7 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
     Atomic component for executing and monitoring workflows.
     
     Features:
+        pass
     - Workflow status checking
     - Result retrieval
     - Cancellation support
@@ -190,6 +206,7 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         self._stub_mode = True
     
         def _validate_config(self) -> None:
+            pass
         """Validate configuration."""
         self.config.validate()
     
@@ -198,20 +215,26 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         Get workflow execution status.
         
         Args:
+            pass
         workflow_id: Workflow ID to check
             
         Returns:
+            pass
         Current WorkflowExecution status
         """
         if not workflow_id:
+            pass
         raise ValueError("workflow_id required")
         
         # Initialize client if needed
         if self._client is None:
+            pass
         await self._connect()
         
         try:
+            pass
         if self._stub_mode:
+            pass
         # Stub implementation
         return WorkflowExecution(
         workflow_id=workflow_id,
@@ -222,10 +245,12 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         close_time="2025-07-31T12:01:00Z"
         )
         else:
+            pass
         # Real implementation would query workflow
         pass
                 
         except Exception as e:
+            pass
         self.logger.error(f"Failed to get workflow status: {e}")
         raise ProcessingError(
         f"Workflow query failed: {str(e)}",
@@ -233,6 +258,7 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
         )
     
         async def _connect(self) -> None:
+            pass
         """Connect to Temporal server."""
         self.logger.info("Connecting to Temporal")
         
@@ -245,13 +271,17 @@ class TemporalWorkflowExecutor(AtomicComponent[str, WorkflowExecution, TemporalC
     async def cancel_workflow(self, workflow_id: str) -> bool:
         """Cancel a running workflow."""
         try:
+            pass
         if self._stub_mode:
+            pass
         self.logger.info(f"Cancelling workflow: {workflow_id}")
         return True
         else:
+            pass
         # Real implementation
         pass
         except Exception as e:
+            pass
         self.logger.error(f"Failed to cancel workflow: {e}")
         return False
 
@@ -261,6 +291,7 @@ class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConf
     Atomic component for executing Temporal activities.
     
     Features:
+        pass
     - Activity registration
     - Heartbeat support
     - Cancellation handling
@@ -272,6 +303,7 @@ class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConf
         self._activities: Dict[str, Callable] = {}
     
         def _validate_config(self) -> None:
+            pass
         """Validate configuration."""
         self.config.validate()
     
@@ -281,6 +313,7 @@ class TemporalActivityExecutor(AtomicComponent[Dict[str, Any], Any, TemporalConf
         self.logger.info(f"Registered activity: {name}")
     
         async def _process(self, activity_request: Dict[str, Any]) -> Any:
+            pass
         """
         Execute a Temporal activity.
         

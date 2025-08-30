@@ -26,6 +26,7 @@ class GraphOfThoughts:
         self.node_counter = 0
         
         async def reason_with_got(self, problem: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         start_time = time.time()
         
         # Initialize root thought
@@ -73,6 +74,7 @@ class GraphOfThoughts:
         return node_id
     
         async def _expand_thoughts(self, node_id: str, max_depth: int):
+            pass
         node_data = self.thought_graph.nodes[node_id]['thought']
         
         if node_data.depth >= max_depth:

@@ -227,6 +227,7 @@ class ProductionDPOTrainer:
             
             # Check if actions are comparable (similar context)
             if self._actions_comparable(action_a, action_b):
+                pass
                 
                 # Determine preference based on outcomes
                 preference_strength = self._calculate_preference_strength(action_a, action_b)
@@ -363,6 +364,7 @@ class ProductionDPOTrainer:
         return torch.stack(losses).mean()
     
         async def train_batch(self, batch_size: int = 32) -> Dict[str, Any]:
+            pass
         """Train on batch of preferences"""
         if len(self.preference_buffer) < batch_size:
             return {
@@ -439,5 +441,6 @@ _dpo_trainer = None
         """Get global DPO trainer instance"""
         global _dpo_trainer
         if _dpo_trainer is None:
+            pass
         _dpo_trainer = ProductionDPOTrainer()
         return _dpo_trainer

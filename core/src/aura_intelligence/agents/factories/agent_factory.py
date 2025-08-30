@@ -60,7 +60,6 @@ class BaseAgentFactory(ABC):
         @abstractmethod
     def create(self, config: Dict[str, Any]) -> Any:
         """Create agent instance."""
-        pass
     
     def get_or_create_credentials(self, agent_type: str, agent_id: Optional[str] = None) -> AgentCredentials:
         """Get or create agent credentials."""
@@ -175,7 +174,6 @@ class AgentRegistry:
     
     def _register_default_factories(self):
             """Register default agent factories."""
-        pass
         self.register("observer", ObserverAgentFactory())
         self.register("analyst", AnalystAgentFactory())
         self.register("supervisor", SupervisorAgentFactory())
@@ -195,7 +193,6 @@ class AgentRegistry:
     
     def list_types(self) -> List[str]:
         """List available agent types."""
-        pass
         return list(self._factories.keys())
 
 

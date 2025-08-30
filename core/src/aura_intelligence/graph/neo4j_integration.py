@@ -107,17 +107,17 @@ class Neo4jIntegration:
         if NEO4J_AVAILABLE:
             try:
                 self.driver = GraphDatabase.driver(self.uri, auth=(self.username, self.password))
-        # Test connection
-        with self.driver.session() as session:
-            session.run("RETURN 1")
-        self.connected = True
-        logger.info(f"Real Neo4j connection established: {self.uri}")
-        except Exception as e:
-        logger.warning(f"Failed to connect to Neo4j, using mock: {e}")
-        self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
-        self.connected = True
+                # Test connection
+                with self.driver.session() as session:
+                    session.run("RETURN 1")
+                self.connected = True
+                logger.info(f"Real Neo4j connection established: {self.uri}")
+            except Exception as e:
+                logger.warning(f"Failed to connect to Neo4j, using mock: {e}")
+                self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
+                self.connected = True
         else:
-        logger.warning("neo4j driver not installed, using mock")
+            logger.warning("neo4j driver not installed, using mock")
         self.driver = MockNeo4jDriver(self.uri, (self.username, self.password))
         self.connected = True
     

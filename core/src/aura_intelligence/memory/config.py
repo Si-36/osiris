@@ -324,27 +324,27 @@ _settings: Optional[ShapeMemorySettings] = None
 _benchmark_settings: Optional[BenchmarkSettings] = None
 
 
-        def get_settings() -> ShapeMemorySettings:
-            """Get or create settings singleton."""
-            global _settings
-            if _settings is None:
-            _settings = ShapeMemorySettings()
-            return _settings
+def get_settings() -> ShapeMemorySettings:
+    """Get or create settings singleton."""
+    global _settings
+    if _settings is None:
+        _settings = ShapeMemorySettings()
+    return _settings
 
 
-        def get_benchmark_settings() -> BenchmarkSettings:
-            """Get or create benchmark settings singleton."""
-            global _benchmark_settings
-            if _benchmark_settings is None:
-            _benchmark_settings = BenchmarkSettings()
-            return _benchmark_settings
+def get_benchmark_settings() -> BenchmarkSettings:
+    """Get or create benchmark settings singleton."""
+    global _benchmark_settings
+    if _benchmark_settings is None:
+        _benchmark_settings = BenchmarkSettings()
+    return _benchmark_settings
 
 
-        def reload_settings():
-            """Reload settings from environment."""
-            global _settings, _benchmark_settings
-            _settings = None
-            _benchmark_settings = None
+def reload_settings():
+    """Reload settings from environment."""
+    global _settings, _benchmark_settings
+    _settings = None
+    _benchmark_settings = None
 
 
 # Export commonly used settings

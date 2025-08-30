@@ -187,7 +187,7 @@ class ObservabilityConfig:
 default_config = ObservabilityConfig()
 
 
-    def create_config(**overrides) -> ObservabilityConfig:
+def create_config(**overrides) -> ObservabilityConfig:
         """
         Create observability configuration with overrides.
     

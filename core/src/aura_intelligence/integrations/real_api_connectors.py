@@ -8,13 +8,16 @@ class RealAPIConnector:
         self.session = None
     
         async def start(self):
+            pass
         self.session = aiohttp.ClientSession()
     
         async def stop(self):
+            pass
         if self.session:
             await self.session.close()
     
         async def call_api(self, url: str, method: str = "GET", data: Dict[str, Any] = None) -> Dict[str, Any]:
+            pass
         """Make real API call"""
         if not self.session:
             await self.start()

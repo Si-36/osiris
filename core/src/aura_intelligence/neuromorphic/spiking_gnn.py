@@ -165,6 +165,7 @@ class NeuromorphicCoordinator:
         return adj
     
         async def neuromorphic_decision(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Make component selection using neuromorphic processing"""
         start_time = time.time()
         
@@ -186,7 +187,7 @@ class NeuromorphicCoordinator:
         results = {}
         for comp_id in selected_components:
             try:
-                result = await self.registry.process_data(comp_id, task_data)
+                result = self.registry.process_data(comp_id, task_data)
                 results[comp_id] = result
             except Exception as e:
                 results[comp_id] = {'error': str(e)}

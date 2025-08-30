@@ -181,7 +181,7 @@ class AURAPrometheusMetrics:
 # Global metrics instance
 _aura_metrics = None
 
-    def get_aura_metrics():
+def get_aura_metrics():
         global _aura_metrics
         if _aura_metrics is None:
         _aura_metrics = AURAPrometheusMetrics()

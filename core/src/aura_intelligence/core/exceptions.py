@@ -64,7 +64,6 @@ class RecoveryStrategy:
     
     def __post_init__(self):
         """Validate recovery strategy."""
-        pass
         if not 0.0 <= self.success_probability <= 1.0:
             raise ValueError("Success probability must be between 0.0 and 1.0")
 
@@ -77,13 +76,7 @@ class AuraError(Exception):
     determination for systematic error handling.
     """
     
-    def __init__(
-        self, 
-        message: str, 
-        error_topology: ErrorTopology = ErrorTopology.UNKNOWN,
-        component_id: str = "unknown",
-        context: Optional[Dict[str, Any]] = None
-    ):
+    def __init__( self, message: str, error_topology: ErrorTopology = ErrorTopology.UNKNOWN, component_id: str = "unknown", context: Optional[Dict[str, Any]] = None ):
         super().__init__(message)
         self.message = message
         self.error_topology = error_topology
@@ -100,7 +93,6 @@ class AuraError(Exception):
     
     def _compute_error_signature(self) -> ErrorSignature:
         """Compute topological signature of the error."""
-        pass
         return ErrorSignature(
             topology=self.error_topology,
             component_id=self.component_id,
@@ -113,7 +105,6 @@ class AuraError(Exception):
     
     def _calculate_severity(self) -> float:
         """Calculate error severity based on topology and context."""
-        pass
         base_severity = {
             ErrorTopology.ISOLATED: 0.2,
             ErrorTopology.CONNECTED: 0.4,
@@ -136,7 +127,6 @@ class AuraError(Exception):
     
     def _determine_recovery_strategy(self) -> RecoveryStrategy:
         """Determine optimal recovery strategy based on error characteristics."""
-        pass
         if self.error_topology == ErrorTopology.ISOLATED:
             return RecoveryStrategy(
                 strategy_type="component_restart",
@@ -164,7 +154,6 @@ class AuraError(Exception):
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert error to dictionary for serialization."""
-        pass
         return {
             'error_type': self.__class__.__name__,
             'message': self.message,
@@ -282,11 +271,7 @@ class SecurityError(AuraError):
 
 
 # Convenience functions for error creation
-def create_consciousness_error(
-    message: str, 
-    component_id: str = "consciousness",
-    consciousness_level: float = 0.0
-) -> ConsciousnessError:
+def create_consciousness_error( message: str, component_id: str = "consciousness", consciousness_level: float = 0.0 ) -> ConsciousnessError:
     """Create a consciousness error with appropriate context."""
     return ConsciousnessError(
         message=message,
@@ -296,11 +281,7 @@ def create_consciousness_error(
     )
 
 
-def create_topological_error(
-    message: str,
-    component_id: str = "topology",
-    computation_type: str = "persistent_homology"
-) -> TopologicalComputationError:
+def create_topological_error( message: str, component_id: str = "topology", computation_type: str = "persistent_homology" ) -> TopologicalComputationError:
     """Create a topological computation error with appropriate context."""
     return TopologicalComputationError(
         message=message,
@@ -310,12 +291,7 @@ def create_topological_error(
     )
 
 
-def create_swarm_error(
-    message: str,
-    component_id: str = "swarm",
-    swarm_size: int = 0,
-    affected_agents: List[str] = None
-) -> SwarmCoordinationError:
+def create_swarm_error( message: str, component_id: str = "swarm", swarm_size: int = 0, affected_agents: List[str] = None ) -> SwarmCoordinationError:
     """Create a swarm coordination error with appropriate context."""
     return SwarmCoordinationError(
         message=message,
@@ -328,11 +304,7 @@ def create_swarm_error(
     )
 
 
-def create_quantum_error(
-    message: str,
-    component_id: str = "quantum",
-    quantum_fidelity: float = 0.0
-) -> QuantumComputationError:
+def create_quantum_error( message: str, component_id: str = "quantum", quantum_fidelity: float = 0.0 ) -> QuantumComputationError:
     """Create a quantum computation error with appropriate context."""
     return QuantumComputationError(
         message=message,
@@ -358,7 +330,6 @@ class ErrorAnalysisManager:
     
     def _initialize_topology_analyzer(self):
         """Initialize the topology analyzer (lazy loading to avoid circular imports)."""
-        pass
         try:
             from .error_topology import ErrorTopologyAnalyzer
             self.topology_analyzer = ErrorTopologyAnalyzer()
@@ -432,7 +403,6 @@ class ErrorAnalysisManager:
     
     def get_system_health_summary(self) -> Dict[str, Any]:
         """Get comprehensive system health summary based on error analysis."""
-        pass
         if not self.error_history:
             return {
                 'status': 'healthy',
@@ -505,7 +475,6 @@ class ErrorAnalysisManager:
     
     def _get_most_affected_components(self) -> List[Tuple[str, int]]:
         """Get components with most errors."""
-        pass
         component_counts = {}
         for error in self.error_history:
             component_counts[error.component_id] = component_counts.get(error.component_id, 0) + 1
@@ -538,9 +507,8 @@ class ErrorAnalysisManager:
         
         return recommendations
     
-        async def analyze_error_patterns(self) -> Dict[str, Any]:
+    async def analyze_error_patterns(self) -> Dict[str, Any]:
         """Perform advanced pattern analysis on error history."""
-        pass
         if not self.error_history:
             return {'patterns': [], 'insights': []}
         
@@ -577,7 +545,6 @@ class ErrorAnalysisManager:
     
     def _analyze_temporal_patterns(self) -> List[Dict[str, Any]]:
         """Analyze temporal patterns in error occurrence."""
-        pass
         if len(self.error_history) < 3:
             return []
         
@@ -607,7 +574,6 @@ class ErrorAnalysisManager:
     
     def _analyze_component_patterns(self) -> List[Dict[str, Any]]:
         """Analyze patterns in component error distribution."""
-        pass
         patterns = []
         
         component_counts = {}
@@ -633,7 +599,6 @@ class ErrorAnalysisManager:
     
     def _analyze_severity_patterns(self) -> List[Dict[str, Any]]:
         """Analyze patterns in error severity."""
-        pass
         patterns = []
         
         if len(self.error_history) < 5:
@@ -662,15 +627,15 @@ class ErrorAnalysisManager:
 _global_error_manager: Optional[ErrorAnalysisManager] = None
 
 
-    def get_error_analysis_manager() -> ErrorAnalysisManager:
-        """Get the global error analysis manager instance."""
-        global _global_error_manager
-        if _global_error_manager is None:
+def get_error_analysis_manager() -> ErrorAnalysisManager:
+    """Get the global error analysis manager instance."""
+    global _global_error_manager
+    if _global_error_manager is None:
         _global_error_manager = ErrorAnalysisManager()
-        return _global_error_manager
+    return _global_error_manager
 
 
-    def register_system_error(error: AuraError) -> Dict[str, Any]:
-        """Register an error with the global error analysis system."""
-        manager = get_error_analysis_manager()
-        return manager.register_error(error)
+def register_system_error(error: AuraError) -> Dict[str, Any]:
+    """Register an error with the global error analysis system."""
+    manager = get_error_analysis_manager()
+    return manager.register_error(error)

@@ -81,6 +81,7 @@ class LiveTDASource:
         self.queue = analysis_queue
     
         async def stream(self) -> AsyncIterator[TopologySnapshot]:
+            pass
         """Stream from analysis queue."""
         pass
         while True:
@@ -192,17 +193,20 @@ class ConnectionManager:
         self._lock = asyncio.Lock()
     
         async def connect(self, client_id: str, websocket: WebSocket):
+            pass
         """Accept new connection."""
         await websocket.accept()
         async with self._lock:
             self.connections[client_id] = websocket
     
         async def disconnect(self, client_id: str):
+            pass
         """Remove connection."""
         async with self._lock:
             self.connections.pop(client_id, None)
     
         async def broadcast(self, snapshot: TopologySnapshot):
+            pass
         """Broadcast to all connections with backpressure handling."""
         message = json.dumps(snapshot.to_dict())
         
@@ -230,6 +234,7 @@ class StreamProcessor:
         self.max_history = 1000
     
         async def process(self, source: StreamSource, manager: ConnectionManager):
+            pass
         """Process stream and broadcast."""
         async for snapshot in source.stream():
             # Store history
@@ -260,16 +265,18 @@ async def shape_stream_endpoint(websocket: WebSocket, client_id: str):
         await manager.connect(client_id, websocket)
     
         try:
-        # Keep connection alive
-        while True:
-            data = await websocket.receive_text()
-            
-            if data == "ping":
-                await websocket.send_text(json.dumps({"type": "pong"}))
+            # Keep connection alive
+            while True:
+                data = await websocket.receive_text()
+                
+                if data == "ping":
+                    await websocket.send_text(json.dumps({"type": "pong"}))
             
         except WebSocketDisconnect:
+            pass
         await manager.disconnect(client_id)
         except Exception as e:
+            pass
         print(f"WebSocket error: {e}")
         await manager.disconnect(client_id)
 
@@ -277,6 +284,7 @@ async def shape_stream_endpoint(websocket: WebSocket, client_id: str):
 async def start_streaming(source: Optional[StreamSource] = None):
         """Start the streaming processor."""
         if source is None:
+            pass
         source = SimulatedSource()
     
         await processor.process(source, manager)

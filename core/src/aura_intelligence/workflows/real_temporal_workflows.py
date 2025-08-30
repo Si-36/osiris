@@ -15,6 +15,7 @@ class RealWorkflowEngine:
         self.workflows = {}
     
         async def start_workflow(self, workflow_id: str, workflow_type: str, data: Dict[str, Any]) -> str:
+            pass
         """Start real Temporal workflow"""
         if self.temporal_available:
             try:
@@ -27,6 +28,7 @@ class RealWorkflowEngine:
                 )
                 return handle.id
             except Exception:
+                pass
         pass
         
         # Fallback
@@ -38,6 +40,7 @@ class RealWorkflowEngine:
         return workflow_id
     
         async def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
+            pass
         """Get workflow status"""
         if workflow_id in self.workflows:
             return self.workflows[workflow_id]

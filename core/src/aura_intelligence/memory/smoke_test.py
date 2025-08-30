@@ -318,13 +318,16 @@ class SmokeTest:
         test = SmokeTest(use_redis=args.redis, seed=args.seed)
     
         try:
+            pass
         test.run_smoke_test(num_samples=args.samples, num_queries=args.queries)
         except Exception as e:
+            pass
         logger.error(f"Smoke test failed: {e}")
         sys.exit(1)
     
     # Check if we met requirements
         if test.results["retrieve_latencies"]:
+            pass
         p99 = np.percentile(test.results["retrieve_latencies"], 99)
         recall = np.mean(test.results["recalls"]) if test.results["recalls"] else 0
         
@@ -335,4 +338,5 @@ class SmokeTest:
 
 
         if __name__ == "__main__":
+            pass
         main()

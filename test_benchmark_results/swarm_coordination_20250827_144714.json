@@ -1,0 +1,18 @@
+{
+  "name": "swarm_coordination",
+  "runs": 10,
+  "mean_duration_ms": 5.143756100733299,
+  "std_duration_ms": 0.48369210454192635,
+  "min_duration_ms": 4.374240001197904,
+  "max_duration_ms": 5.528431000129785,
+  "mean_memory_mb": 179.796875,
+  "mean_throughput": 981.4934375131919,
+  "latency_distribution": {
+    "p50": 4.894710749431397,
+    "p95": 5.9824242493050415,
+    "p99": 6.5262809992418624
+  },
+  "success_rate": 1.0,
+  "metadata": {},
+  "timestamp": "2025-08-27T14:47:14.049096"
+}

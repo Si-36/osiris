@@ -1,0 +1,240 @@
+{
+  "total_files": 585,
+  "syntax_errors": 277,
+  "error_files": [
+    {
+      "file": "core/src/aura_intelligence/production_wiring.py",
+      "line": 307,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/enhanced_integration.py",
+      "line": 175,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/feature_flags.py",
+      "line": 251,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/production_system_2025.py",
+      "line": 25,
+      "error": "expected an indented block after class definition on line 24"
+    },
+    {
+      "file": "core/src/aura_intelligence/vector_search.py",
+      "line": 222,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/ultra_deep_2025.py",
+      "line": 289,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/distributed/ray_serve_deployment.py",
+      "line": 187,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/distributed/actor_system.py",
+      "line": 361,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/constitutional_ai_3.py",
+      "line": 233,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/constitutional_ai.py",
+      "line": 283,
+      "error": "unexpected indent"
+    }
+  ],
+  "test_files": 0,
+  "mock_implementations": 44,
+  "real_implementations": 212,
+  "api_keys_needed": [
+    "anthropic",
+    "openai",
+    "pinecone",
+    "kafka",
+    "huggingface",
+    "weaviate",
+    "cohere",
+    "neo4j",
+    "langchain",
+    "redis"
+  ],
+  "most_imported": [
+    [
+      "typing",
+      228
+    ],
+    [
+      "asyncio",
+      126
+    ],
+    [
+      "dataclasses",
+      125
+    ],
+    [
+      "datetime",
+      110
+    ],
+    [
+      "numpy",
+      77
+    ],
+    [
+      "time",
+      74
+    ],
+    [
+      "enum",
+      58
+    ],
+    [
+      "json",
+      50
+    ],
+    [
+      "structlog",
+      44
+    ],
+    [
+      "logging",
+      43
+    ],
+    [
+      "pydantic",
+      38
+    ],
+    [
+      "torch",
+      38
+    ],
+    [
+      "uuid",
+      32
+    ],
+    [
+      "torch.nn",
+      22
+    ],
+    [
+      "base",
+      22
+    ],
+    [
+      "opentelemetry",
+      19
+    ],
+    [
+      "hashlib",
+      19
+    ],
+    [
+      "aura_intelligence.config",
+      17
+    ],
+    [
+      "collections",
+      16
+    ],
+    [
+      "abc",
+      16
+    ]
+  ],
+  "critical_modules": [
+    [
+      "aura_intelligence.config",
+      17
+    ],
+    [
+      "aura_intelligence.observability",
+      8
+    ],
+    [
+      "aura_intelligence.utils.logger",
+      7
+    ],
+    [
+      "aura_intelligence.observability.tracing",
+      5
+    ],
+    [
+      "aura_intelligence.events",
+      4
+    ],
+    [
+      "aura_intelligence.enterprise.mem0_semantic.sync",
+      4
+    ],
+    [
+      "aura_intelligence.enterprise.mem0_hot.ingest",
+      3
+    ],
+    [
+      "aura_intelligence.enterprise.mem0_hot.vectorize",
+      3
+    ],
+    [
+      "aura_intelligence.lnn",
+      3
+    ],
+    [
+      "aura_intelligence.agents.council.config",
+      3
+    ],
+    [
+      "aura_intelligence.agents.council.models",
+      3
+    ],
+    [
+      "aura_intelligence.enterprise.mem0_semantic.rank",
+      2
+    ],
+    [
+      "aura_intelligence.enterprise.mem0_hot.schema",
+      2
+    ],
+    [
+      "aura_intelligence.consensus",
+      2
+    ],
+    [
+      "aura_intelligence.lnn.core",
+      2
+    ],
+    [
+      "aura_intelligence.agents.council.memory_context",
+      2
+    ],
+    [
+      "aura_intelligence.agents.council.workflow",
+      2
+    ],
+    [
+      "aura_intelligence.agents.council.knowledge_context",
+      2
+    ],
+    [
+      "aura_intelligence.adapters.mem0_adapter",
+      2
+    ],
+    [
+      "aura_intelligence.agents.base",
+      2
+    ]
+  ],
+  "research_files": [
+    "core/src/aura_intelligence/orchestration/workflows/ARCHITECTURE.md",
+    "core/src/aura_intelligence/memory/README.md",
+    "core/src/aura_intelligence/agents/council/TASK_6_SUMMARY.md"
+  ]
+}

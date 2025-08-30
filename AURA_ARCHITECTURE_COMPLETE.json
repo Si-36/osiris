@@ -1,0 +1,424 @@
+{
+  "architecture": {
+    "CORE_LOOP": {
+      "1_INPUT": [
+        "Agents",
+        "Workflows",
+        "Events",
+        "Metrics"
+      ],
+      "2_ANALYSIS": [
+        "TDA Engine",
+        "Pattern Recognition",
+        "Anomaly Detection"
+      ],
+      "3_PREDICTION": [
+        "Failure Prediction",
+        "Cascade Analysis",
+        "Risk Assessment"
+      ],
+      "4_DECISION": [
+        "Supervisor",
+        "Routing",
+        "Optimization"
+      ],
+      "5_EXECUTION": [
+        "Agent Execution",
+        "Interventions",
+        "Mitigations"
+      ],
+      "6_LEARNING": [
+        "Memory System",
+        "Knowledge Graph",
+        "Adaptation"
+      ]
+    },
+    "COMPONENTS": {
+      "TDA (Topological Data Analysis)": {
+        "purpose": "See the shape of failure before it happens",
+        "files": [
+          "tda/unified_engine_2025.py",
+          "tda/algorithms.py",
+          "tda/core.py"
+        ],
+        "algorithms": 112,
+        "key_features": [
+          "Persistent Homology",
+          "Vietoris-Rips",
+          "Alpha Complex",
+          "Witness Complex"
+        ]
+      },
+      "Supervisor": {
+        "purpose": "Orchestrate multi-agent workflows",
+        "files": [
+          "agents/supervisor.py",
+          "agents/base.py"
+        ],
+        "types": [
+          "Enhanced",
+          "Neuromorphic",
+          "LangGraph-compatible"
+        ],
+        "features": [
+          "Adaptive Routing",
+          "Self-organizing",
+          "Performance Learning"
+        ]
+      },
+      "LNN (Liquid Neural Networks)": {
+        "purpose": "Adaptive real-time decision making",
+        "files": [
+          "lnn/real_mit_lnn.py",
+          "lnn/council_agent.py"
+        ],
+        "source": "MIT CSAIL",
+        "features": [
+          "Continuous-time",
+          "Self-modifying",
+          "Energy efficient"
+        ]
+      },
+      "Memory System": {
+        "purpose": "Hierarchical memory with consolidation",
+        "files": [
+          "memory/hierarchical_memory.py",
+          "memory/shape_memory.py"
+        ],
+        "tiers": [
+          "Hot",
+          "Warm",
+          "Cold",
+          "Archive"
+        ],
+        "features": [
+          "Vector embeddings",
+          "Semantic search",
+          "Consolidation"
+        ]
+      },
+      "Swarm Intelligence": {
+        "purpose": "Collective behavior and emergence",
+        "files": [
+          "swarm_intelligence/digital_pheromones.py"
+        ],
+        "features": [
+          "Digital pheromones",
+          "Emergent behavior",
+          "Consensus"
+        ]
+      },
+      "Infrastructure": {
+        "purpose": "External system connections",
+        "files": [
+          "infrastructure/gemini_client.py",
+          "infrastructure/kafka_event_mesh.py"
+        ],
+        "systems": [
+          "Neo4j",
+          "Redis",
+          "Kafka",
+          "LLMs"
+        ]
+      },
+      "Observability": {
+        "purpose": "Monitoring and telemetry",
+        "files": [
+          "observability/knowledge_graph.py",
+          "observability/tracing.py"
+        ],
+        "features": [
+          "Metrics",
+          "Tracing",
+          "Logging",
+          "Dashboards"
+        ]
+      }
+    },
+    "DATA_FLOW": [
+      "1. Workflow enters system",
+      "2. TDA analyzes topology (shape of interactions)",
+      "3. Anomaly detection identifies risks",
+      "4. Supervisor routes to specialized agents",
+      "5. Agents execute with LNN adaptation",
+      "6. Results stored in hierarchical memory",
+      "7. Knowledge graph updated",
+      "8. System learns and adapts"
+    ],
+    "IMPORT_HIERARCHY": {
+      "Level 0 (No deps)": [
+        "config.py",
+        "models.py",
+        "utils/"
+      ],
+      "Level 1 (Basic deps)": [
+        "core/",
+        "base classes"
+      ],
+      "Level 2 (Core systems)": [
+        "tda/",
+        "lnn/",
+        "memory/"
+      ],
+      "Level 3 (Integration)": [
+        "agents/",
+        "adapters/",
+        "infrastructure/"
+      ],
+      "Level 4 (High-level)": [
+        "orchestration/",
+        "enterprise/",
+        "api/"
+      ]
+    }
+  },
+  "folders": {
+    "distributed": {
+      "files": 4,
+      "errors": 2
+    },
+    "governance": {
+      "files": 13,
+      "errors": 8
+    },
+    "orchestration": {
+      "files": 76,
+      "errors": 55
+    },
+    "research_2025": {
+      "files": 3,
+      "errors": 3
+    },
+    "monitoring": {
+      "files": 4,
+      "errors": 3
+    },
+    "chaos": {
+      "files": 1,
+      "errors": 1
+    },
+    "inference": {
+      "files": 2,
+      "errors": 1
+    },
+    "persistence": {
+      "files": 2,
+      "errors": 1
+    },
+    "components": {
+      "files": 7,
+      "errors": 6
+    },
+    "models": {
+      "files": 2,
+      "errors": 1
+    },
+    "moe": {
+      "files": 5,
+      "errors": 4
+    },
+    "infrastructure": {
+      "files": 5,
+      "errors": 2
+    },
+    "consensus": {
+      "files": 8,
+      "errors": 5
+    },
+    "graph": {
+      "files": 3,
+      "errors": 1
+    },
+    "benchmarks": {
+      "files": 1,
+      "errors": 1
+    },
+    "routing": {
+      "files": 3,
+      "errors": 1
+    },
+    "network": {
+      "files": 4,
+      "errors": 3
+    },
+    "api": {
+      "files": 12,
+      "errors": 3
+    },
+    "swarm_intelligence": {
+      "files": 3,
+      "errors": 1
+    },
+    "memory": {
+      "files": 35,
+      "errors": 19
+    },
+    "coral": {
+      "files": 4,
+      "errors": 4
+    },
+    "enterprise": {
+      "files": 24,
+      "errors": 14
+    },
+    "neural": {
+      "files": 10,
+      "errors": 7
+    },
+    "streaming": {
+      "files": 2,
+      "errors": 2
+    },
+    "integrations": {
+      "files": 7,
+      "errors": 7
+    },
+    "integration": {
+      "files": 7,
+      "errors": 7
+    },
+    "memory_tiers": {
+      "files": 2,
+      "errors": 2
+    },
+    "bio_homeostatic": {
+      "files": 4,
+      "errors": 3
+    },
+    "workflows": {
+      "files": 4,
+      "errors": 2
+    },
+    "tda": {
+      "files": 26,
+      "errors": 16
+    },
+    "agents": {
+      "files": 142,
+      "errors": 79
+    },
+    "examples": {
+      "files": 2,
+      "errors": 2
+    },
+    "innovations": {
+      "files": 2,
+      "errors": 2
+    },
+    "spiking_gnn": {
+      "files": 2,
+      "errors": 1
+    },
+    "adapters": {
+      "files": 8,
+      "errors": 1
+    },
+    "collective": {
+      "files": 6,
+      "errors": 5
+    },
+    "lnn": {
+      "files": 8,
+      "errors": 3
+    },
+    "communication": {
+      "files": 8,
+      "errors": 6
+    },
+    "dpo": {
+      "files": 3,
+      "errors": 2
+    },
+    "events": {
+      "files": 9,
+      "errors": 7
+    },
+    "core": {
+      "files": 26,
+      "errors": 10
+    },
+    "multimodal": {
+      "files": 1,
+      "errors": 1
+    },
+    "real_components": {
+      "files": 3,
+      "errors": 3
+    },
+    "neuromorphic": {
+      "files": 1,
+      "errors": 1
+    },
+    "security": {
+      "files": 2,
+      "errors": 2
+    },
+    "resilience": {
+      "files": 6,
+      "errors": 6
+    },
+    "config": {
+      "files": 11,
+      "errors": 0
+    },
+    "spiking": {
+      "files": 3,
+      "errors": 1
+    },
+    "observability": {
+      "files": 20,
+      "errors": 15
+    },
+    "consciousness": {
+      "files": 5,
+      "errors": 2
+    },
+    "utils": {
+      "files": 5,
+      "errors": 1
+    },
+    "advanced_processing": {
+      "files": 3,
+      "errors": 2
+    },
+    "testing": {
+      "files": 8,
+      "errors": 7
+    }
+  },
+  "statistics": {
+    "total_files": 585,
+    "total_errors": 356,
+    "error_rate": 60.85470085470085
+  },
+  "fix_strategy": [
+    [
+      "1. Core Config & Models",
+      "No dependencies, used everywhere"
+    ],
+    [
+      "2. Utils & Helpers",
+      "Basic functionality"
+    ],
+    [
+      "3. Infrastructure",
+      "External connections (mock if needed)"
+    ],
+    [
+      "4. TDA Engine",
+      "Core innovation - mock algorithms initially"
+    ],
+    [
+      "5. Memory System",
+      "Data persistence layer"
+    ],
+    [
+      "6. Agents & Supervisor",
+      "Orchestration layer"
+    ],
+    [
+      "7. High-level Systems",
+      "Enterprise, API, etc."
+    ]
+  ]
+}

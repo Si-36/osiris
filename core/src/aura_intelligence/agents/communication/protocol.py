@@ -175,7 +175,7 @@ class ACPProtocol:
         self.middleware.append(middleware_func)
     
     @tracer.start_as_current_span("acp_send_message")
-        async def send_message(
+    async def send_message(
         self,
         recipient: ACPEndpoint,
         message_type: MessageType,
@@ -263,7 +263,7 @@ class ACPProtocol:
             raise
     
     @tracer.start_as_current_span("acp_send_request")
-        async def send_request(
+    async def send_request(
         self,
         recipient: ACPEndpoint,
         payload: Dict[str, Any],
@@ -312,6 +312,7 @@ class ACPProtocol:
         original_message: ACPEnvelope,
         response: ACPResponse
         ) -> str:
+            pass
         """Send a response to a request."""
         return await self.send_message(
             recipient=original_message.sender,
@@ -326,6 +327,7 @@ class ACPProtocol:
         correlation_id: str,
         target_roles: Optional[List[str]] = None
         ) -> List[str]:
+            pass
         """
         Broadcast a message to multiple agents.
         
@@ -354,6 +356,7 @@ class ACPProtocol:
         return message_ids
     
         async def _process_incoming_messages(self) -> None:
+            pass
         """Background task to process incoming messages."""
         pass
         while self._running:
@@ -371,7 +374,7 @@ class ACPProtocol:
                 await asyncio.sleep(1.0)
     
     @tracer.start_as_current_span("acp_handle_message")
-        async def _handle_message(self, envelope: ACPEnvelope) -> None:
+    async def _handle_message(self, envelope: ACPEnvelope) -> None:
         """Handle an incoming message."""
         span = trace.get_current_span()
         span.set_attributes({

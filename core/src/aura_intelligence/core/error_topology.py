@@ -59,7 +59,6 @@ class ErrorEdge:
     
     def __post_init__(self):
         """Validate edge properties."""
-        pass
         if not 0.0 <= self.propagation_probability <= 1.0:
             raise ValueError("Propagation probability must be between 0.0 and 1.0")
         if not 0.0 <= self.causality_strength <= 1.0:
@@ -82,12 +81,10 @@ class TopologicalMetrics:
     
     def is_small_world(self) -> bool:
         """Check if the graph exhibits small-world properties."""
-        pass
         return self.small_world_coefficient > 1.0
     
     def is_scale_free(self) -> bool:
         """Check if the graph is scale-free."""
-        pass
         return self.scale_free_exponent is not None and 2.0 <= self.scale_free_exponent <= 3.0
 
 
@@ -152,7 +149,6 @@ class ErrorTopologyAnalyzer:
     
     def analyze_topology(self) -> TopologicalMetrics:
         """Analyze the topology of the error graph."""
-        pass
         if not self.error_graph.nodes():
             return self._empty_topology_metrics()
         
@@ -171,7 +167,6 @@ class ErrorTopologyAnalyzer:
     
     def _compute_topology_metrics(self) -> TopologicalMetrics:
         """Compute comprehensive topology metrics."""
-        pass
         G = self.error_graph
         
         # Basic metrics
@@ -379,11 +374,7 @@ class ErrorTopologyAnalyzer:
         except:
             return False
     
-    def predict_error_cascade(
-        self, 
-        initial_error: AuraError,
-        time_horizon: float = 60.0
-        ) -> List[Tuple[str, float, float]]:
+    def predict_error_cascade(self, initial_error: AuraError, time_horizon: float = 60.0) -> List[Tuple[str, float, float]]:
         """
         Predict error cascade propagation.
         
@@ -446,7 +437,6 @@ class ErrorTopologyAnalyzer:
         
         Returns list of (component_id, criticality_score) tuples.
         """
-        pass
         if not self.error_graph.nodes():
             return []
         
@@ -491,11 +481,7 @@ class ErrorTopologyAnalyzer:
         
         return criticality_scores
     
-    def optimize_recovery_strategy(
-        self, 
-        error: AuraError,
-        available_resources: Dict[str, float]
-        ) -> RecoveryStrategy:
+    def optimize_recovery_strategy( self, error: AuraError, available_resources: Dict[str, float] ) -> RecoveryStrategy:
         """
         Optimize recovery strategy based on topology analysis.
         
@@ -564,15 +550,13 @@ class ErrorTopologyAnalyzer:
     
     def _compute_graph_hash(self) -> str:
         """Compute hash of the current graph state."""
-        pass
-        # Simple hash based on nodes and edges
+                # Simple hash based on nodes and edges
         nodes_hash = hash(tuple(sorted(self.error_graph.nodes())))
         edges_hash = hash(tuple(sorted(self.error_graph.edges())))
         return f"{nodes_hash}_{edges_hash}"
     
     def _empty_topology_metrics(self) -> TopologicalMetrics:
         """Return empty topology metrics for empty graph."""
-        pass
         return TopologicalMetrics(
             clustering_coefficient=0.0,
             average_path_length=0.0,
@@ -588,7 +572,6 @@ class ErrorTopologyAnalyzer:
     
     def get_topology_summary(self) -> Dict[str, Any]:
         """Get a summary of the current topology."""
-        pass
         metrics = self.analyze_topology()
         
         return {
@@ -606,7 +589,6 @@ class ErrorTopologyAnalyzer:
     
     def _get_dominant_patterns(self) -> Dict[str, int]:
         """Get count of dominant propagation patterns."""
-        pass
         pattern_counts = defaultdict(int)
         
         for component_id in self.error_graph.nodes():
@@ -627,11 +609,7 @@ class PersistentHomologyComputer:
     def __init__(self):
         self.filtration_cache: Dict[str, List[Tuple[float, int]]] = {}
     
-    def compute_persistent_homology(
-        self, 
-        error_graph: nx.DiGraph,
-        max_dimension: int = 2
-        ) -> Dict[str, Any]:
+    def compute_persistent_homology( self, error_graph: nx.DiGraph, max_dimension: int = 2 ) -> Dict[str, Any]:
         """
         Compute persistent homology of the error graph.
         
@@ -722,11 +700,7 @@ class PersistentHomologyComputer:
         
         return filtration
     
-    def _compute_persistence_diagrams(
-        self, 
-        filtration: List[Tuple[float, List[Tuple]]], 
-        max_dimension: int
-        ) -> Dict[int, List[Tuple[float, float]]]:
+    def _compute_persistence_diagrams( self, filtration: List[Tuple[float, List[Tuple]]], max_dimension: int ) -> Dict[int, List[Tuple[float, float]]]:
         """Compute persistence diagrams (simplified implementation)."""
         persistence_diagrams = {dim: [] for dim in range(max_dimension + 1)}
         
@@ -801,7 +775,6 @@ class PersistentHomologyComputer:
     
     def _empty_homology_result(self) -> Dict[str, Any]:
         """Return empty homology result."""
-        pass
         return {
             'persistence_diagrams': {},
             'betti_numbers': [0],
@@ -811,27 +784,27 @@ class PersistentHomologyComputer:
 
 
 # Factory functions for creating error topology analyzers
-    def create_error_topology_analyzer() -> ErrorTopologyAnalyzer:
-        """Create a new error topology analyzer."""
-        return ErrorTopologyAnalyzer()
+def create_error_topology_analyzer() -> ErrorTopologyAnalyzer:
+    """Create a new error topology analyzer."""
+    return ErrorTopologyAnalyzer()
 
 
-    def analyze_error_topology(errors: List[AuraError]) -> Dict[str, Any]:
-        """Analyze topology of a collection of errors."""
-        analyzer = create_error_topology_analyzer()
+def analyze_error_topology(errors: List[AuraError]) -> Dict[str, Any]:
+    """Analyze topology of a collection of errors."""
+    analyzer = create_error_topology_analyzer()
     
     # Add all errors to the analyzer
-        for error in errors:
+    for error in errors:
         analyzer.add_error(error)
     
     # Perform comprehensive analysis
-        topology_summary = analyzer.get_topology_summary()
+    topology_summary = analyzer.get_topology_summary()
     
     # Add persistent homology analysis
-        homology_computer = PersistentHomologyComputer()
-        homology_result = homology_computer.compute_persistent_homology(analyzer.error_graph)
+    homology_computer = PersistentHomologyComputer()
+    homology_result = homology_computer.compute_persistent_homology(analyzer.error_graph)
     
-        return {
+    return {
         'topology_summary': topology_summary,
         'persistent_homology': homology_result,
         'critical_components': analyzer.compute_critical_components(),

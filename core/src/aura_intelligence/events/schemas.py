@@ -96,18 +96,16 @@ class EventSchema(BaseModel):
         }
     
     @validator('partition_key', always=True)
-        def set_partition_key(cls, v, values):
+    def set_partition_key(cls, v, values):
             """Set partition key if not provided."""
-            pass
             if v is None:
-            # Use source_id as default partition key for ordering
-            return values.get('source_id', str(uuid.uuid4()))
+                # Use source_id as default partition key for ordering
+                return values.get('source_id', str(uuid.uuid4()))
             return v
     
-        def to_avro_schema(self) -> Dict[str, Any]:
-            """Convert to Avro schema definition."""
-            pass
-            return {
+    def to_avro_schema(self) -> Dict[str, Any]:
+        """Convert to Avro schema definition."""
+        return {
             "type": "record",
             "name": self.__class__.__name__,
             "namespace": "com.aura.intelligence.events",
@@ -430,28 +428,28 @@ SCHEMA_REGISTRY = {
 }
 
 
-    def get_event_schema(event_type: str) -> type[EventSchema]:
-        """Get event schema class by event type."""
+def get_event_schema(event_type: str) -> type[EventSchema]:
+    """Get event schema class by event type."""
     # Map event types to schema classes
-        if event_type.startswith("agent."):
+    if event_type.startswith("agent."):
         return AgentEvent
-        elif event_type.startswith("workflow."):
+    elif event_type.startswith("workflow."):
         return WorkflowEvent
-        elif event_type.startswith("system."):
+    elif event_type.startswith("system."):
         return SystemEvent
-        elif event_type.startswith("consensus."):
+    elif event_type.startswith("consensus."):
         return ConsensusDecisionEvent
-        else:
+    else:
         return EventSchema
 
 
-    def validate_event(event_data: Dict[str, Any]) -> EventSchema:
-        """Validate and parse event data."""
-        event_type = event_data.get("event_type", "")
-        schema_class = get_event_schema(event_type)
+def validate_event(event_data: Dict[str, Any]) -> EventSchema:
+    """Validate and parse event data."""
+    event_type = event_data.get("event_type", "")
+    schema_class = get_event_schema(event_type)
     
-        try:
+    try:
         return schema_class(**event_data)
-        except Exception as e:
+    except Exception as e:
         logger.error(f"Event validation failed: {e}", event_data=event_data)
         raise

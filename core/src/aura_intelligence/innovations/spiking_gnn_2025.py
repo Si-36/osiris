@@ -133,6 +133,7 @@ class SpikingGNN(nn.Module):
         
     def forward(self, x: torch.Tensor, adjacency: Optional[torch.Tensor] = None, 
         time_steps: int = 10) -> torch.Tensor:
+            pass
         """
         Forward pass with temporal dynamics
         x: [batch_size, num_nodes, input_dim]
@@ -357,4 +358,5 @@ class SpikingGNNCouncil:
 
 
         if __name__ == "__main__":
+            pass
         test_spiking_gnn()

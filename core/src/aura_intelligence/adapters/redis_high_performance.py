@@ -1,7 +1,7 @@
 """
 🚀 HIGH-PERFORMANCE REDIS ADAPTER WITH ASYNC BATCH PROCESSING
 Production-grade Redis adapter with:
-- Automatic batching for 10-100x performance improvement
+    - Automatic batching for 10-100x performance improvement
 - Connection pool monitoring and auto-scaling
 - Real-time performance metrics
 - GPU-memory style batch processing
@@ -34,8 +34,12 @@ class SerializationType(str, Enum):
 
 class BatchOperation:
     """Represents a batched Redis operation."""
-    def __init__(self, operation: str, key: str, value: Any = None, 
-        serialization: SerializationType = SerializationType.JSON,
+
+    def __init__(self,
+                 operation: str,
+                 key: str,
+                 value: Any = None,
+                 serialization: SerializationType = SerializationType.JSON,
                  ttl: Optional[int] = None,
                  future: Optional[asyncio.Future] = None):
         self.operation = operation
@@ -80,22 +84,21 @@ class HighPerformanceRedisConfig:
 
 class ConnectionPoolMonitor:
     """Advanced connection pool monitoring."""
-    
+
     def __init__(self, pool: redis.ConnectionPool):
         self.pool = pool
         self.metrics = {
-        'active_connections': 0,
-        'total_requests': 0,
-        'failed_requests': 0,
-        'avg_response_time': 0.0,
-        'last_check': time.time(),
+            'active_connections': 0,
+            'total_requests': 0,
+            'failed_requests': 0,
+            'avg_response_time': 0.0,
+            'last_check': time.time(),
         'peak_connections': 0,
         'connection_errors': 0
         }
-        
-        async def get_pool_stats(self) -> Dict[str, Any]:
+
+    async def get_pool_stats(self) -> Dict[str, Any]:
         """Get comprehensive pool statistics."""
-        pass
         try:
             created = getattr(self.pool, 'created_connections', 0)
             available = getattr(self.pool, 'available_connections', 0)
@@ -120,9 +123,9 @@ class HighPerformanceRedisAdapter:
     
     _instances: Dict[str, 'HighPerformanceRedisAdapter'] = {}
     _instance_lock = asyncio.Lock()
-    
+
     def __init__(self, config: HighPerformanceRedisConfig):
-        self.config = config
+    def __init__(self, config: HighPerformanceRedisConfig):
         self._client: Optional[redis.Redis] = None
         self._initialized = False
         
@@ -149,8 +152,8 @@ class HighPerformanceRedisAdapter:
         self._last_ops_count = 0
         
         @classmethod
-        async def get_instance(cls, config: HighPerformanceRedisConfig) -> 'HighPerformanceRedisAdapter':
-        """Get or create singleton instance per config."""
+    async def get_instance(cls, config: HighPerformanceRedisConfig) -> 'HighPerformanceRedisAdapter':
+            """Get or create singleton instance per config."""
         instance_key = f"{config.host}:{config.port}:{config.db}"
         
         async with cls._instance_lock:
@@ -159,10 +162,9 @@ class HighPerformanceRedisAdapter:
                 await instance.initialize()
                 cls._instances[instance_key] = instance
             return cls._instances[instance_key]
-    
-        async def initialize(self):
-        """Initialize high-performance Redis client."""
-        pass
+
+    async def initialize(self):
+            """Initialize high-performance Redis client."""
         if self._initialized:
             return
             
@@ -224,10 +226,9 @@ class HighPerformanceRedisAdapter:
         except Exception as e:
         logger.error("Failed to initialize high-performance Redis", error=str(e))
         raise
-    
-        async def close(self):
+
+    async def close(self):
             """Close adapter and cleanup resources."""
-        pass
         try:
             # Cancel batch processing
             if self._batch_task and not self._batch_task.done():
@@ -254,10 +255,9 @@ class HighPerformanceRedisAdapter:
             logger.error("Error closing Redis adapter", error=str(e))
     
     # === BATCH PROCESSING ENGINE ===
-    
-        async def _batch_processor(self):
-        """GPU-style batch processor for maximum throughput."""
-        pass
+
+    async def _batch_processor(self):
+            """GPU-style batch processor for maximum throughput."""
         logger.info("High-performance batch processor started", 
         batch_size=self.config.batch_size,
         batch_timeout_ms=self.config.batch_timeout * 1000)
@@ -279,10 +279,9 @@ class HighPerformanceRedisAdapter:
         except Exception as e:
         logger.error("Error in batch processor", error=str(e))
         await asyncio.sleep(0.1)  # Brief backoff
-    
-        async def _process_batch(self):
+
+    async def _process_batch(self):
             """Process a batch with maximum efficiency."""
-        pass
         async with self._batch_lock:
             if not self._batch_queue:
                 return
@@ -341,9 +340,9 @@ class HighPerformanceRedisAdapter:
                     op.future.set_exception(e)
         finally:
             self._processing_batches -= 1
-    
-        async def _batch_get_operations(self, gets: List[BatchOperation]):
-        """Process GET operations with mget."""
+
+    async def _batch_get_operations(self, gets: List[BatchOperation]):
+            """Process GET operations with mget."""
         if not gets:
             return
             
@@ -353,7 +352,7 @@ class HighPerformanceRedisAdapter:
             values = await self._client.mget(keys)
             
         for op, value in zip(gets, values):
-        try:
+                    try:
             result = self._deserialize(value, op.serialization) if value else None
         op.future.set_result(result)
                     
@@ -370,8 +369,8 @@ class HighPerformanceRedisAdapter:
         for op in gets:
         if not op.future.done():
             op.future.set_exception(e)
-    
-        async def _batch_set_operations(self, sets: List[BatchOperation]):
+
+    async def _batch_set_operations(self, sets: List[BatchOperation]):
             """Process SET operations with pipeline."""
         if not sets:
             return
@@ -403,9 +402,9 @@ class HighPerformanceRedisAdapter:
             for op in sets:
                 if not op.future.done():
                     op.future.set_exception(e)
-    
-        async def _batch_delete_operations(self, deletes: List[BatchOperation]):
-        """Process DELETE operations efficiently."""
+
+    async def _batch_delete_operations(self, deletes: List[BatchOperation]):
+            """Process DELETE operations efficiently."""
         if not deletes:
             return
             
@@ -415,15 +414,15 @@ class HighPerformanceRedisAdapter:
             
         # All deletes get the same result
         for op in deletes:
-        op.future.set_result(deleted_count)
+                    op.future.set_result(deleted_count)
                 
         except Exception as e:
         for op in deletes:
         if not op.future.done():
             op.future.set_exception(e)
-    
-        async def _add_to_batch(self, operation: BatchOperation) -> Any:
-        """Add operation to high-performance batch queue."""
+
+    async def _add_to_batch(self, operation: BatchOperation) -> Any:
+            """Add operation to high-performance batch queue."""
         async with self._batch_lock:
             self._batch_queue.append(operation)
             
@@ -432,7 +431,7 @@ class HighPerformanceRedisAdapter:
                 asyncio.create_task(self._process_batch())
         
         return await operation.future
-    
+
     def _serialize(self, value: Any, serialization: SerializationType) -> bytes:
         """High-performance serialization."""
         if serialization == SerializationType.JSON:
@@ -443,7 +442,7 @@ class HighPerformanceRedisAdapter:
         return str(value).encode('utf-8')
         else:
         raise ValueError(f"Unknown serialization type: {serialization}")
-            
+
     def _deserialize(self, data: bytes, serialization: SerializationType) -> Any:
         """High-performance deserialization."""
         if data is None:
@@ -457,7 +456,7 @@ class HighPerformanceRedisAdapter:
             return data.decode('utf-8')
         else:
             raise ValueError(f"Unknown serialization type: {serialization}")
-    
+
     def _update_batch_metrics(self, batch_size: int, processing_time: float):
         """Update batch processing metrics."""
         self._metrics['total_batches_processed'] += 1
@@ -474,10 +473,9 @@ class HighPerformanceRedisAdapter:
         self._metrics['avg_response_time'] = (
         (self._metrics['avg_response_time'] * (total_ops - batch_size) + processing_time * batch_size) / total_ops
         )
-    
-        async def _metrics_updater(self):
+
+    async def _metrics_updater(self):
             """Update real-time metrics."""
-        pass
         while True:
             try:
                 await asyncio.sleep(1.0)  # Update every second
@@ -493,13 +491,13 @@ class HighPerformanceRedisAdapter:
                 logger.error("Error updating metrics", error=str(e))
     
     # === HIGH-PERFORMANCE PUBLIC API ===
-    
-        async def batch_get(
+
+    async def batch_get(
         self,
         key: str,
         serialization: SerializationType = SerializationType.JSON
         ) -> Optional[Any]:
-        """Ultra-fast batched GET operation."""
+            """Ultra-fast batched GET operation."""
         if not self.config.enable_async_batching or not self._initialized:
             # Fallback to direct operation
             await self.initialize()
@@ -515,15 +513,15 @@ class HighPerformanceRedisAdapter:
             
         operation = BatchOperation('get', key, serialization=serialization)
         return await self._add_to_batch(operation)
-    
-        async def batch_set(
+
+    async def batch_set(
         self,
         key: str,
         value: Any,
         ttl: Optional[int] = None,
         serialization: SerializationType = SerializationType.JSON
         ) -> bool:
-        """Ultra-fast batched SET operation."""
+            """Ultra-fast batched SET operation."""
         if not self.config.enable_async_batching or not self._initialized:
             # Fallback to direct operation
             await self.initialize()
@@ -534,9 +532,9 @@ class HighPerformanceRedisAdapter:
             
         operation = BatchOperation('set', key, value, serialization, ttl)
         return await self._add_to_batch(operation)
-    
-        async def batch_delete(self, key: str) -> int:
-        """Ultra-fast batched DELETE operation."""
+
+    async def batch_delete(self, key: str) -> int:
+            """Ultra-fast batched DELETE operation."""
         if not self.config.enable_async_batching or not self._initialized:
             # Fallback to direct operation
         await self.initialize()
@@ -546,26 +544,26 @@ class HighPerformanceRedisAdapter:
         return await self._add_to_batch(operation)
     
         # === PATTERN STORAGE OPTIMIZATIONS ===
-    
-        async def store_pattern(
+
+    async def store_pattern(
         self,
         pattern_key: str,
         pattern_data: Dict[str, Any],
         ttl: Optional[int] = None
         ) -> bool:
-        """Store patterns with optimal batching."""
+            """Store patterns with optimal batching."""
         return await self.batch_set(pattern_key, pattern_data, ttl)
-    
-        async def get_pattern(self, pattern_key: str) -> Optional[Dict[str, Any]]:
-        """Retrieve patterns with optimal batching."""
+
+    async def get_pattern(self, pattern_key: str) -> Optional[Dict[str, Any]]:
+            """Retrieve patterns with optimal batching."""
         return await self.batch_get(pattern_key)
-    
-        async def store_patterns_bulk(
+
+    async def store_patterns_bulk(
         self,
         patterns: Dict[str, Dict[str, Any]],
         ttl: Optional[int] = None
         ) -> List[bool]:
-        """Bulk pattern storage with concurrent batching."""
+            """Bulk pattern storage with concurrent batching."""
         if not patterns:
             return []
             
@@ -577,18 +575,16 @@ class HighPerformanceRedisAdapter:
         return await asyncio.gather(*tasks)
     
     # === PERFORMANCE AND MONITORING ===
-    
-        async def force_batch_flush(self):
-        """Force process all pending batched operations."""
-        pass
-        async with self._batch_lock:
+
+    async def force_batch_flush(self):
+            """Force process all pending batched operations."""
+                async with self._batch_lock:
         if self._batch_queue:
             await self._process_batch()
-    
-        async def get_performance_metrics(self) -> Dict[str, Any]:
-        """Get comprehensive performance metrics."""
-        pass
-        uptime = time.time() - self._last_metrics_reset
+
+    async def get_performance_metrics(self) -> Dict[str, Any]:
+            """Get comprehensive performance metrics."""
+                uptime = time.time() - self._last_metrics_reset
         
         metrics = {
             **self._metrics,
@@ -608,10 +604,9 @@ class HighPerformanceRedisAdapter:
             metrics['pool_stats'] = await self._pool_monitor.get_pool_stats()
             
         return metrics
-    
-        async def health_check(self) -> Dict[str, Any]:
-        """Comprehensive health check."""
-        pass
+
+    async def health_check(self) -> Dict[str, Any]:
+            """Comprehensive health check."""
         try:
             if not self._initialized:
                 await self.initialize()
@@ -669,7 +664,7 @@ def create_ultra_high_performance_config(
         health_check_interval=10
     )
 
-async def get_ultra_high_performance_adapter() -> HighPerformanceRedisAdapter:
+    async def get_ultra_high_performance_adapter() -> HighPerformanceRedisAdapter:
     """Get ultra-high-performance Redis adapter instance."""
     config = create_ultra_high_performance_config()
     return await HighPerformanceRedisAdapter.get_instance(config)

@@ -55,6 +55,7 @@ def main():
             print("💡 Trying simple fallback API...")
             
             try:
+                pass
             # Fallback to simple API
             import uvicorn
             from fastapi import FastAPI

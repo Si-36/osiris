@@ -401,7 +401,7 @@ CRYPTO_PROVIDERS: Dict[SignatureAlgorithm, CryptoProvider] = {
 }
 
 
-    def get_crypto_provider(algorithm: SignatureAlgorithm) -> CryptoProvider:
+def get_crypto_provider(algorithm: SignatureAlgorithm) -> CryptoProvider:
         """
         Get cryptographic provider for algorithm.
     
@@ -415,12 +415,14 @@ CRYPTO_PROVIDERS: Dict[SignatureAlgorithm, CryptoProvider] = {
         ValueError: If algorithm is not supported
         """
         if algorithm not in CRYPTO_PROVIDERS:
+            pass
         raise ValueError(f"Unsupported signature algorithm: {algorithm}")
     
         return CRYPTO_PROVIDERS[algorithm]
 
 
-    def register_crypto_provider(algorithm: SignatureAlgorithm, provider: CryptoProvider) -> None:
+        def register_crypto_provider(algorithm: SignatureAlgorithm, provider: CryptoProvider) -> None:
+            pass
         """
         Register a custom crypto provider.
     
@@ -431,7 +433,8 @@ CRYPTO_PROVIDERS: Dict[SignatureAlgorithm, CryptoProvider] = {
         CRYPTO_PROVIDERS[algorithm] = provider
 
 
-    def get_supported_algorithms() -> list[SignatureAlgorithm]:
+        def get_supported_algorithms() -> list[SignatureAlgorithm]:
+            pass
         """Get list of supported signature algorithms."""
         return list(CRYPTO_PROVIDERS.keys())
 

@@ -18,6 +18,7 @@ class ValidatorAgent:
         self.name = self.config.get('name', 'validator')
     
         async def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Validate data and return results."""
         return {
             "valid": True,
@@ -27,5 +28,6 @@ class ValidatorAgent:
         }
     
         async def verify(self, evidence: Dict[str, Any]) -> bool:
+            pass
         """Verify evidence."""
         return True

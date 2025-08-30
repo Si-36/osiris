@@ -225,6 +225,7 @@ class LiquidCouncilAgent2025(ProductionLNNCouncilAgent):
         self.adaptation_stats = {'total_adaptations': 0, 'growth_events': 0, 'pruning_events': 0}
     
         async def _lnn_inference_step(self, state) -> Any:
+            pass
         """Enhanced LNN inference with self-modification"""
         pass
         features = state.context.get("prepared_features")

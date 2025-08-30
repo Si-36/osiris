@@ -57,6 +57,7 @@ class WorkingOrchestrator:
         print(f"📝 Agent registered: {agent_id}")
     
         async def submit_task(self, task: Task) -> str:
+            pass
         """Submit a task for processing."""
         self.tasks.append(task)
         print(f"📋 Task submitted: {task.task_id} ({task.task_type})")
@@ -68,6 +69,7 @@ class WorkingOrchestrator:
         return task.task_id
     
         async def start(self):
+            pass
         """Start the orchestrator."""
         pass
         self.running = True
@@ -79,12 +81,14 @@ class WorkingOrchestrator:
             await self._process_task(task)
     
         async def stop(self):
+            pass
         """Stop the orchestrator."""
         pass
         self.running = False
         print(f"🛑 Orchestrator stopped: {self.orchestrator_id}")
     
         async def _process_task(self, task: Task):
+            pass
         """Process a single task."""
         start_time = time.time()
         task.status = TaskStatus.RUNNING

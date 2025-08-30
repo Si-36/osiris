@@ -1,0 +1,37 @@
+{
+  "mojo_kernels": {
+    "selective_scan": {
+      "simd_width": 16,
+      "chunk_size": 64,
+      "parallel_threshold": 256
+    },
+    "tda_distance": {
+      "simd_width": 16,
+      "block_size": 64,
+      "parallel_threshold": 100
+    },
+    "expert_routing": {
+      "simd_width": 16,
+      "batch_size": 256,
+      "parallel_threshold": 1000
+    }
+  },
+  "max_serve": {
+    "container": "modular/max-full:25.5",
+    "replicas": {
+      "min": 3,
+      "max": 20
+    },
+    "disaggregated": {
+      "prefill_gpu": "nvidia-a100",
+      "decode_gpu": "amd-mi300x"
+    }
+  },
+  "performance_targets": {
+    "selective_scan_speedup": 15,
+    "tda_distance_speedup": 20,
+    "expert_routing_speedup": 10,
+    "container_size_mb": 140,
+    "startup_time_ms": 800
+  }
+}

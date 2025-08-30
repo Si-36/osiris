@@ -23,6 +23,7 @@ class LangGraphAdapter:
     Adapter that connects Event Bus to LangGraph.
     
     Responsibilities:
+        pass
     - Subscribe to evolver:patches stream
     - Apply patches to running graphs
     - Trigger re-execution of affected nodes
@@ -140,9 +141,11 @@ class LangGraphAdapter:
         target: str, 
         patch_data: Dict[str, Any]
         ) -> Dict[str, Any]:
+            pass
         """Apply patch to the graph component."""
         try:
             # In production, this would:
+                pass
             # 1. Parse the patch code
             # 2. Identify the target node/component
             # 3. Apply the code changes
@@ -182,9 +185,11 @@ class LangGraphAdapter:
         target: str, 
         patch_data: Dict[str, Any]
         ) -> Dict[str, Any]:
+            pass
         """Trigger re-execution of affected graph nodes."""
         try:
             # In production, this would:
+                pass
             # 1. Identify affected nodes in the graph
             # 2. Create a new execution context
             # 3. Re-run from the patched node
@@ -214,6 +219,7 @@ class LangGraphAdapter:
         apply_result: Dict[str, Any],
         reexec_result: Dict[str, Any]
         ):
+            pass
         """Publish successful patch application."""
         event_data = {
             "type": "patch_applied",
@@ -232,6 +238,7 @@ class LangGraphAdapter:
         original_event: Event,
         apply_result: Dict[str, Any]
         ):
+            pass
         """Publish failed patch application."""
         event_data = {
             "type": "patch_failed",
@@ -245,6 +252,7 @@ class LangGraphAdapter:
         await self.bus.publish("langgraph:events", event_data)
         
         async def _publish_error(self, original_event: Event, error: str):
+            pass
         """Publish error event."""
         event_data = {
             "type": "adapter_error",
@@ -257,6 +265,7 @@ class LangGraphAdapter:
         await self.bus.publish("langgraph:events", event_data)
         
         async def shutdown(self):
+            pass
         """Gracefully shut down the adapter."""
         pass
         logger.info("Shutting down LangGraph adapter")
@@ -279,17 +288,21 @@ async def main():
         adapter = LangGraphAdapter()
     
         try:
+            pass
         await adapter.initialize()
         await adapter.listen_and_apply()
         except KeyboardInterrupt:
+            pass
         logger.info("Received interrupt signal")
         finally:
+            pass
         stats = adapter.get_stats()
         logger.info(f"Adapter stats: {stats}")
         await adapter.shutdown()
 
 
         if __name__ == "__main__":
+            pass
         logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s | %(name)s | %(levelname)s | %(message)s'

@@ -76,13 +76,16 @@ class ConfigValidator:
         errors = {}
         
         for key, value in config.items():
+            pass
         if key in self.validation_rules:
             key_errors = []
         for validator_func in self.validation_rules[key]:
+            pass
         try:
             if not validator_func(value):
                 key_errors.append(f"Validation failed for {key}")
         except Exception as e:
+            pass
         key_errors.append(f"Validation error for {key}: {str(e)}")
                 
         if key_errors:
@@ -99,8 +102,7 @@ class ConfigValidator:
         except Exception:
             return False
     
-    def validate_range(self, value: Union[int, float], min_val: Optional[Union[int, float]] = None, 
-        max_val: Optional[Union[int, float]] = None) -> bool:
+    def validate_range(self, value: Union[int, float], min_val: Optional[Union[int, float]] = None, max_val: Optional[Union[int, float]] = None) -> bool:
         """Validate that a numeric value is within a specified range."""
         if min_val is not None and value < min_val:
             return False
@@ -126,9 +128,9 @@ class ConfigLoader:
     
     def load_from_environment(self) -> Dict[str, Any]:
         """Load configuration from environment variables."""
-        pass
         config = {}
         for key, value in os.environ.items():
+            pass
         if key.startswith('AURA_'):
             config_key = key[5:].lower()  # Remove AURA_ prefix
         config[config_key] = self._parse_env_value(value)
@@ -207,23 +209,23 @@ class ConfigLoader:
         if value.lower() in ('true', '1', 'yes', 'on'):
             return True
         elif value.lower() in ('false', '0', 'no', 'off'):
-        return False
+            return False
         
         # Numeric values
         try:
             if '.' in value:
                 return float(value)
-        else:
-        return int(value)
+            else:
+                return int(value)
         except ValueError:
-        pass
+            pass
         
         # JSON values
         if value.startswith(('{', '[', '"')):
             try:
                 return json.loads(value)
-        except json.JSONDecodeError:
-        pass
+            except json.JSONDecodeError:
+                pass
         
         # Comma-separated lists
         if ',' in value:
@@ -233,7 +235,6 @@ class ConfigLoader:
     
     def _parse_env_file(self, file_handle) -> Dict[str, Any]:
         """Parse .env file format."""
-        pass
         config = {}
         for line in file_handle:
             line = line.strip()
@@ -253,7 +254,7 @@ class ConfigLoader:
         return any(pattern in key_lower for pattern in sensitive_patterns)
 
 
-    @dataclass
+@dataclass
 class DatabaseConfig:
     """Database configuration settings."""
     host: str = "localhost"
@@ -431,8 +432,8 @@ class AuraConfig(BaseSettings):
             return Environment(v.lower())
         return v
     
-        @field_validator('secret_key', 'jwt_secret_key')
-        @classmethod
+    @field_validator('secret_key', 'jwt_secret_key')
+    @classmethod
     def validate_secret_keys(cls, v):
         if len(v) < 32:
             raise ValueError('Secret keys must be at least 32 characters long')
@@ -515,7 +516,6 @@ class ConfigurationManager:
     
     def get_config(self) -> BaseSettings:
         """Get the current configuration, loading if necessary."""
-        pass
         if self._config is None:
             self.load_config()
         return self._config
@@ -535,7 +535,6 @@ class ConfigurationManager:
     
     def validate_current_config(self) -> Dict[str, List[str]]:
         """Validate the current configuration."""
-        pass
         if self._config is None:
             return {"general": ["No configuration loaded"]}
         
@@ -587,7 +586,7 @@ class ConfigurationManager:
         """Get the global configuration manager instance."""
         global _config_manager
         if _config_manager is None:
-        _config_manager = ConfigurationManager()
+            _config_manager = ConfigurationManager()
         return _config_manager
 
 

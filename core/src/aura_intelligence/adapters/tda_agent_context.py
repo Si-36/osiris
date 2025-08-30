@@ -80,7 +80,7 @@ class TDAAgentContextAdapter:
         self._subscriptions = {}
         
     @trace_span("enrich_agent_context")
-        async def enrich_agent_context(
+    async def enrich_agent_context(
         self,
         agent_id: str,
         base_context: AgentContext,
@@ -158,6 +158,7 @@ class TDAAgentContextAdapter:
         self,
         base_context: AgentContext
         ) -> Dict[str, Any]:
+            pass
         """Get general topological context based on agent's current state"""
         # Query recent TDA results relevant to context
         filters = {
@@ -323,7 +324,7 @@ class TDAAgentContextAdapter:
         return max(0.1, min(1.0, confidence))
         
     @trace_span("subscribe_to_tda_events")
-        async def subscribe_to_tda_events(
+    async def subscribe_to_tda_events(
         self,
         agent_id: str,
         event_types: List[TopologicalSignal],
@@ -379,6 +380,7 @@ class TDAAgentContextAdapter:
         return subscription_id
         
         async def unsubscribe(self, subscription_id: str):
+            pass
         """Unsubscribe from TDA events"""
         if subscription_id in self._subscriptions:
             await self.event_bus.unsubscribe(subscription_id)

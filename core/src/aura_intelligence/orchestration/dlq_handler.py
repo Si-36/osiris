@@ -23,6 +23,7 @@ class DLQHandler:
     Handles dead letter queue messages.
     
     Per loothis.md 4.6:
+        pass
     - Auto-retry up to 3 times
     - Persist to S3 after max retries
     - Expose metrics for monitoring
@@ -168,6 +169,7 @@ class DLQHandler:
     async def _simulate_s3_upload(self, key: str, data: Dict[str, Any]):
         """Simulate S3 upload for demo."""
         # In production, replace with:
+            pass
         # s3_client = boto3.client('s3')
         # s3_client.put_object(
         #     Bucket=self.s3_bucket,
@@ -248,17 +250,21 @@ async def main():
         handler = DLQHandler()
     
         try:
+            pass
         await handler.initialize()
         await handler.process_dlq()
         except KeyboardInterrupt:
+            pass
         logger.info("Received interrupt signal")
         finally:
+            pass
         stats = handler.get_stats()
         logger.info(f"DLQ handler stats: {stats}")
         await handler.shutdown()
 
 
         if __name__ == "__main__":
+            pass
         logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s | %(name)s | %(levelname)s | %(message)s'

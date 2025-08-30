@@ -48,7 +48,7 @@ class ConsolidatedAgent(AgentComponent):
         
         print(f"🤖 Consolidated Agent: {agent_id} ({agent_type.value})")
     
-        async def make_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    async def make_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Make a decision based on agent type."""
         start_time = time.time()
         self.operation_count += 1
@@ -91,6 +91,7 @@ class ConsolidatedAgent(AgentComponent):
             }
     
         async def _council_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Council agent decision logic."""
         # Simple neural-like processing
         input_strength = len(str(context)) / 1000.0
@@ -110,6 +111,7 @@ class ConsolidatedAgent(AgentComponent):
         }
     
         async def _bio_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Bio agent decision logic."""
         # Simple biological simulation
         energy = 0.8  # Simplified energy level
@@ -136,6 +138,7 @@ class ConsolidatedAgent(AgentComponent):
         }
     
         async def _generic_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Generic agent decision logic."""
         # Simple rule-based decision
         context_size = len(context)
@@ -243,6 +246,6 @@ class ConsolidatedAgentRegistry:
 
 _global_registry = ConsolidatedAgentRegistry()
 
-    def get_agent_registry() -> ConsolidatedAgentRegistry:
+def get_agent_registry() -> ConsolidatedAgentRegistry:
         """Get the global agent registry."""
         return _global_registry

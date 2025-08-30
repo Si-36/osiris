@@ -34,7 +34,6 @@ class RetryConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
-        pass
         if self.max_attempts <= 0:
             raise ValueError("max_attempts must be positive")
         if self.initial_delay.total_seconds() <= 0:
@@ -50,7 +49,6 @@ class RetryPolicy(ABC):
     
     def __init__(self, config: RetryConfig):
         """Initialize retry policy."""
-        pass
         config.validate()
         self.config = config
         self.logger = structlog.get_logger()
@@ -58,7 +56,6 @@ class RetryPolicy(ABC):
         @abstractmethod
     def calculate_delay(self, attempt: int) -> timedelta:
         """Calculate delay before next retry attempt."""
-        pass
     
     def should_retry(self, exception: Exception, attempt: int) -> bool:
         """Determine if we should retry after an exception."""
@@ -245,7 +242,6 @@ class RetryWithBackoff:
         @RetryWithBackoff(max_attempts=3)
         async def my_function():
             # Function that might fail
-            pass
             """
     
             def __init__(
@@ -258,7 +254,6 @@ class RetryWithBackoff:
             retryable_exceptions: Optional[List[Type[Exception]]] = None
             ):
             """Initialize retry decorator."""
-            pass
             self.config = RetryConfig(
             max_attempts=max_attempts,
             initial_delay=timedelta(seconds=initial_delay),

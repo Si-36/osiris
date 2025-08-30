@@ -28,6 +28,7 @@ class EventBus:
             self._subscribers[event_type].append(handler)
             
         async def publish(self, event_type: str, data: Any):
+            pass
         """Publish an event"""
         # Handle sync subscribers
         if event_type in self._subscribers:

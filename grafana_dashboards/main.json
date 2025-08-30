@@ -1,0 +1,50 @@
+{
+  "uid": "aura-main",
+  "title": "AURA Intelligence Overview",
+  "tags": [
+    "aura",
+    "overview"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "type": "dashlist",
+      "title": "AURA Dashboards",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "showSearch": true,
+        "showHeadings": true,
+        "showRecent": true,
+        "showStarred": true,
+        "query": "",
+        "tags": [
+          "aura"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "title": "AURA Intelligence System",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "\n# AURA Intelligence System\n\n## GPU-Accelerated AI Infrastructure\n\n### \ud83d\ude80 Key Features:\n- **8 GPU Adapters** with 10-10,000x speedups\n- **Real-time GPU Monitoring**\n- **Distributed Agent System**\n- **Advanced Observability**\n\n### \ud83d\udcca Available Dashboards:\n1. **GPU Monitoring** - Real-time GPU metrics\n2. **Adapter Performance** - Speedup tracking\n3. **System Health** - Overall health scores\n4. **Agent Activity** - Multi-agent monitoring\n\n### \ud83c\udfaf Performance Metrics:\n- Memory Search: **16.7x** speedup\n- TDA Analysis: **100x** speedup\n- Swarm Optimization: **990x** speedup\n- Agent Communication: **9082x** speedup\n"
+      }
+    }
+  ]
+}

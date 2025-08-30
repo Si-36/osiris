@@ -27,7 +27,7 @@ class TestCrewAIOrchestrator:
         assert 'test_agent' in orchestrator.router.agents
     
     @pytest.mark.asyncio
-        async def test_flow_creation(self, orchestrator):
+    async def test_flow_creation(self, orchestrator):
         """Test flow creation"""
         pass
         config = {

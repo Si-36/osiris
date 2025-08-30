@@ -21,6 +21,7 @@ class RealEventStore:
             self.producer = None
     
         async def store_event(self, event_type: str, data: Dict[str, Any]) -> str:
+            pass
         """Store event in Kafka"""
         event = {
             'type': event_type,

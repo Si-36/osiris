@@ -77,9 +77,8 @@ class MetabolicManager:
         else:
             self.in_mem[mapname][cid] = val
 
-        async def periodic_update(self):
+    async def periodic_update(self):
         """Update budgets based on utility/influence/efficiency/risk signals"""
-        pass
         while True:
             # Circadian reset every hour
             if time.time() - self.last_reset > 3600:
@@ -114,7 +113,7 @@ class MetabolicManager:
             
             await asyncio.sleep(self.tick)
 
-        async def process_with_metabolism(self, component_id: str, data: Any,
+    async def process_with_metabolism(self, component_id: str, data: Any,
         context: Optional[Dict[str,Any]]=None) -> Dict[str,Any]:
         """Main processing with metabolic constraints"""
         context = context or {}

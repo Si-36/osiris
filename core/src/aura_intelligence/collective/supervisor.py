@@ -33,6 +33,7 @@ class CollectiveSupervisor:
     Professional LangGraph Supervisor implementing central intelligence.
 
     The supervisor is the brain of the collective - it:
+        pass
     1. Receives enriched state from context engine
     2. Makes intelligent routing decisions
     3. Coordinates agent interactions
@@ -47,6 +48,7 @@ class CollectiveSupervisor:
         logger.info("🧠 Collective Supervisor initialized")
 
         async def supervisor_node(self, state: Any) -> Any:
+            pass
         """
         Main supervisor node for LangGraph.
 
@@ -90,9 +92,11 @@ class CollectiveSupervisor:
         This inspects the enriched state and decides which agent to route to next.
 
         Args:
+            pass
         state: Enriched workflow state
 
         Returns:
+            pass
         Next node name for LangGraph routing
         """
 
