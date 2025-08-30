@@ -58,21 +58,21 @@ unit="1"
 
 
 class ConsensusManager:
-"""
-Hierarchical consensus manager that routes decisions
-to appropriate consensus protocols.
-"""
+    """
+    Hierarchical consensus manager that routes decisions
+    to appropriate consensus protocols.
+    """
 
-def __init__(self, config: ConsensusConfig):
-self.config = config
-
-# Initialize consensus protocols
-self.raft_consensus = self._init_raft(config)
-self.bft_consensus = self._init_bft(config)
-self.multi_raft = self._init_multi_raft(config)
-
-# Initialize validator
-self.validator = self._init_validator(config)
+    def __init__(self, config: ConsensusConfig):
+        self.config = config
+        
+        # Initialize consensus protocols
+        self.raft_consensus = self._init_raft(config)
+        self.bft_consensus = self._init_bft(config)
+        self.multi_raft = self._init_multi_raft(config)
+        
+        # Initialize validator
+        self.validator = self._init_validator(config)
 
 # Integration clients
 self.temporal_client = TemporalClient(
