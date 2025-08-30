@@ -74,104 +74,102 @@ class ConsensusManager:
         # Initialize validator
         self.validator = self._init_validator(config)
 
-# Integration clients
-self.temporal_client = TemporalClient(
-namespace=config.temporal_namespace
-)
-self.event_producer = EventProducer(
-ProducerConfig(
-bootstrap_servers=config.kafka_bootstrap_servers
-)
-)
-
-# State tracking
-self.active_requests: Dict[str, ConsensusRequest] = {}
-self._started = False
+        # Integration clients
+        self.temporal_client = TemporalClient(
+            namespace=config.temporal_namespace
+        )
+        self.event_producer = EventProducer(
+            ProducerConfig(
+                bootstrap_servers=config.kafka_bootstrap_servers
+            )
+        )
+        
+        # State tracking
+        self.active_requests: Dict[str, ConsensusRequest] = {}
+        self._started = False
 
     def _init_raft(self, config: ConsensusConfig) -> RaftConsensus:
         """Initialize Raft consensus."""
         raft_config = RaftConfig(
             node_id="consensus-manager",
-            peers=["node-1", "node-2", "node-3"],  
-election_timeout_ms=150,
-heartbeat_interval_ms=50
-)
-return RaftConsensus(raft_config)
+            peers=["node-1", "node-2", "node-3"],
+            election_timeout_ms=150,
+            heartbeat_interval_ms=50
+        )
+        return RaftConsensus(raft_config)
 
-def _init_bft(self, config: ConsensusConfig) -> ByzantineConsensus:
-"""Initialize Byzantine consensus."""
-bft_config = BFTConfig(
-node_id="consensus-manager",
-validators=["validator-1", "validator-2", "validator-3", "validator-4"],
-view_timeout_ms=5000,
-batch_size=100
-)
-return ByzantineConsensus(bft_config)
+    def _init_bft(self, config: ConsensusConfig) -> ByzantineConsensus:
+        """Initialize Byzantine consensus."""
+        bft_config = BFTConfig(
+            node_id="consensus-manager",
+            validators=["validator-1", "validator-2", "validator-3", "validator-4"],
+            view_timeout_ms=5000,
+            batch_size=100
+        )
+        return ByzantineConsensus(bft_config)
 
-def _init_multi_raft(self, config: ConsensusConfig):
-"""Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
+    def _init_multi_raft(self, config: ConsensusConfig):
+        """Initialize Multi-Raft consensus - temporarily using RaftConsensus."""
+        
+        raft_config = RaftConfig(
+            node_id="multi-raft-leader",
+            peers=["agent-1", "agent-2", "agent-3"],
+            election_timeout_ms=5000,
+            heartbeat_interval_ms=1000
+        )
+        return RaftConsensus(raft_config)
 
-raft_config = RaftConfig(
-node_id="multi-raft-leader",
-peers=["agent-1", "agent-2", "agent-3"],
-election_timeout_ms=5000,
-heartbeat_interval_ms=1000
-)
-return RaftConsensus(raft_config)
+    def _init_validator(self, config: ConsensusConfig):
+        """Initialize neuro-symbolic validator - temporarily using stub."""
+        
+        class StubValidator:
+            def __init__(self, config):
+                self.config = config
+            async def validate(self, decision):
+                return True  # Always validate for now
+        return StubValidator(config)
 
-def _init_validator(self, config: ConsensusConfig):
-"""Initialize neuro-symbolic validator - temporarily using stub."""
+    async def start(self):
+        """Start the consensus manager."""
+        if self._started:
+            return
 
-class StubValidator:
-def __init__(self, config):
-self.config = config
-async def validate(self, decision):
-return True  # Always validate for now
-return StubValidator(config)
+        logger.info("Starting consensus manager")
+        
+        # Start components
+        await self.event_producer.start()
+        await self.temporal_client.connect()
+        
+        # Start consensus protocols
+        await self.raft_consensus.start()
+        if self.config.use_bft_for_strategic:
+            await self.bft_consensus.start()
+        if self.config.use_multi_raft_for_tactical:
+            await self.multi_raft.start()
+        
+        self._started = True
+        logger.info("Consensus manager started")
 
-async def start(self):
-"""Start the consensus manager."""
-pass
-if self._started:
-return
+    async def stop(self):
+        """Stop the consensus manager."""
+        if not self._started:
+            return
+        
+        logger.info("Stopping consensus manager")
+        
+        # Stop protocols
+        await self.raft_consensus.stop()
+        await self.bft_consensus.stop()
+        await self.multi_raft.stop()
+        
+        # Stop clients
+        await self.event_producer.stop()
+        
+        self._started = False
+        logger.info("Consensus manager stopped")
 
-logger.info("Starting consensus manager")
-
-# Start components
-await self.event_producer.start()
-await self.temporal_client.connect()
-
-# Start consensus protocols
-await self.raft_consensus.start()
-if self.config.use_bft_for_strategic:
-await self.bft_consensus.start()
-if self.config.use_multi_raft_for_tactical:
-await self.multi_raft.start()
-
-self._started = True
-logger.info("Consensus manager started")
-
-async def stop(self):
-"""Stop the consensus manager."""
-pass
-if not self._started:
-return
-
-logger.info("Stopping consensus manager")
-
-# Stop protocols
-await self.raft_consensus.stop()
-await self.bft_consensus.stop()
-await self.multi_raft.stop()
-
-# Stop clients
-await self.event_producer.stop()
-
-self._started = False
-logger.info("Consensus manager stopped")
-
-async def propose(self, request: ConsensusRequest) -> ConsensusResult:
-"""
+    async def propose(self, request: ConsensusRequest) -> ConsensusResult:
+        """
 Route consensus request to appropriate protocol.
 
 Args:
@@ -179,127 +177,127 @@ request: Consensus request with proposal and metadata
 
 Returns:
 ConsensusResult with decision and explanation
-"""
-if not self._started:
-await self.start()
+        """
+        if not self._started:
+            await self.start()
 
-# Start span for tracing
-with tracer.start_as_current_span(
-"consensus.propose",
-attributes={
-"request_id": request.request_id,
-"decision_type": request.decision_type.value,
-"proposer_id": request.proposer_id
-}
-) as span:
-start_time = datetime.now(timezone.utc)
+        # Start span for tracing
+        with tracer.start_as_current_span(
+            "consensus.propose",
+            attributes={
+                "request_id": request.request_id,
+                "decision_type": request.decision_type.value,
+                "proposer_id": request.proposer_id
+            }
+        ) as span:
+            start_time = datetime.now(timezone.utc)
+            
+            try:
+                # Track active request
+                self.active_requests[request.request_id] = request
+                
+                # Record metric
+                consensus_requests.add(
+                    1,
+                    {
+                        "decision_type": request.decision_type.value,
+                        "priority": str(request.priority)
+                    }
+                )
+                
+                # Pre-validation
+                validation = await self._pre_validate(request)
+                if not validation.is_valid:
+                    result = ConsensusResult(
+                        request_id=request.request_id,
+                        status=ConsensusState.REJECTED,
+                        reason=validation.reason,
+                        started_at=start_time,
+                        completed_at=datetime.now(timezone.utc)
+                    )
+                    span.set_status(Status(StatusCode.ERROR, validation.reason))
+                    return result
+                
+                # Route to appropriate consensus protocol
+                result = await self._route_request(request)
+                
+                # Post-validation and explanation
+                if result.is_successful() and self.config.require_explanation:
+                    explanation = await self.validator.explain_decision(request, result)
+                    result.explanation = explanation
+                
+                # Publish decision event
+                await self._publish_decision(request, result)
+                
+                # Record metrics
+                duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+                consensus_latency.record(
+                    duration_ms,
+                    {
+                        "decision_type": request.decision_type.value,
+                        "status": result.status.value
+                    }
+                )
+                
+                consensus_decisions.add(
+                    1,
+                    {
+                        "decision_type": request.decision_type.value,
+                        "status": result.status.value
+                    }
+                )
+                
+                span.set_status(Status(StatusCode.OK))
+                span.set_attribute("consensus.status", result.status.value)
+                
+                return result
+                
+            except Exception as e:
+                logger.error(
+                    "Consensus proposal failed",
+                    request_id=request.request_id,
+                    error=str(e)
+                )
+                
+                consensus_failures.add(
+                    1,
+                    {
+                        "decision_type": request.decision_type.value,
+                        "error": type(e).__name__
+                    }
+                )
+                
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                
+                return ConsensusResult(
+                    request_id=request.request_id,
+                    status=ConsensusState.FAILED,
+                    reason=str(e),
+                    started_at=start_time,
+                    completed_at=datetime.now(timezone.utc)
+                )
 
-try:
-# Track active request
-self.active_requests[request.request_id] = request
+            finally:
+                # Clean up
+                self.active_requests.pop(request.request_id, None)
 
-# Record metric
-consensus_requests.add(
-1,
-{
-"decision_type": request.decision_type.value,
-"priority": str(request.priority)
-}
-)
+    async def _pre_validate(self, request: ConsensusRequest):
+        """Pre-validate consensus request."""
+        return await self.validator.pre_validate(request)
 
-# Pre-validation
-validation = await self._pre_validate(request)
-if not validation.is_valid:
-result = ConsensusResult(
-request_id=request.request_id,
-status=ConsensusState.REJECTED,
-reason=validation.reason,
-started_at=start_time,
-completed_at=datetime.now(timezone.utc)
-)
-span.set_status(Status(StatusCode.ERROR, validation.reason))
-return result
-
-# Route to appropriate consensus protocol
-result = await self._route_request(request)
-
-# Post-validation and explanation
-if result.is_successful() and self.config.require_explanation:
-explanation = await self.validator.explain_decision(request, result)
-result.explanation = explanation
-
-# Publish decision event
-await self._publish_decision(request, result)
-
-# Record metrics
-duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-consensus_latency.record(
-duration_ms,
-{
-"decision_type": request.decision_type.value,
-"status": result.status.value
-}
-)
-
-consensus_decisions.add(
-1,
-{
-"decision_type": request.decision_type.value,
-"status": result.status.value
-}
-)
-
-span.set_status(Status(StatusCode.OK))
-span.set_attribute("consensus.status", result.status.value)
-
-return result
-
-except Exception as e:
-logger.error(
-"Consensus proposal failed",
-request_id=request.request_id,
-error=str(e)
-)
-
-consensus_failures.add(
-1,
-{
-"decision_type": request.decision_type.value,
-"error": type(e).__name__
-}
-)
-
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
-
-return ConsensusResult(
-request_id=request.request_id,
-status=ConsensusState.FAILED,
-reason=str(e),
-started_at=start_time,
-completed_at=datetime.now(timezone.utc)
-)
-
-finally:
-# Clean up
-self.active_requests.pop(request.request_id, None)
-
-async def _pre_validate(self, request: ConsensusRequest):
-"""Pre-validate consensus request."""
-return await self.validator.pre_validate(request)
-
-async def _route_request(self, request: ConsensusRequest) -> ConsensusResult:
-"""Route request to appropriate consensus protocol."""
-# Set default quorum sizes if not specified
-if request.quorum_size is None:
-if request.decision_type == DecisionType.OPERATIONAL:
-request.quorum_size = self.config.operational_quorum
-elif request.decision_type == DecisionType.TACTICAL:
-request.quorum_size = self.config.tactical_quorum
-elif request.decision_type == DecisionType.STRATEGIC:
-request.quorum_size = self.config.strategic_quorum
-else:  # EMERGENCY
-request.quorum_size = self.config.operational_quorum
+    async def _route_request(self, request: ConsensusRequest) -> ConsensusResult:
+        """Route request to appropriate consensus protocol."""
+        # Set default quorum sizes if not specified
+        if request.quorum_size is None:
+            if request.decision_type == DecisionType.OPERATIONAL:
+                request.quorum_size = self.config.operational_quorum
+            elif request.decision_type == DecisionType.TACTICAL:
+                request.quorum_size = self.config.tactical_quorum
+            elif request.decision_type == DecisionType.STRATEGIC:
+                request.quorum_size = self.config.strategic_quorum
+            else:  # EMERGENCY
+                request.quorum_size = self.config.operational_quorum
 
 # Set timeout based on decision type
 if request.decision_type == DecisionType.OPERATIONAL:
@@ -334,7 +332,7 @@ return await self._emergency_consensus(request)
 else:
 raise ValueError(f"Unknown decision type: {request.decision_type}")
 
-async def _emergency_consensus(self, request: ConsensusRequest) -> ConsensusResult:
+    async def _emergency_consensus(self, request: ConsensusRequest) -> ConsensusResult:
 """
 Fast consensus for emergency decisions.
 Uses first responder with validation.
@@ -391,7 +389,7 @@ consensus_type="emergency",
 reason="No emergency approval received"
 )
 
-async def _get_emergency_vote(
+    async def _get_emergency_vote(
 self,
 validator_id: str,
 request: ConsensusRequest
@@ -415,7 +413,7 @@ vote_type=VoteType.REJECT,
 reason="Not a valid emergency"
 )
 
-async def _publish_decision(
+    async def _publish_decision(
 self,
 request: ConsensusRequest,
 result: ConsensusResult
@@ -444,7 +442,7 @@ event
 except Exception as e:
 logger.error(f"Failed to publish decision: {e}")
 
-async def get_status(self) -> Dict[str, Any]:
+    async def get_status(self) -> Dict[str, Any]:
 """Get consensus manager status."""
 pass
 return {
@@ -464,31 +462,31 @@ Wrapper for hierarchical consensus with multiple managers.
 Useful for large-scale deployments.
 """
 
-def __init__(self, levels: List[ConsensusConfig]):
-self.managers = [ConsensusManager(config) for config in levels]
-self.levels = len(levels)
+    def __init__(self, levels: List[ConsensusConfig]):
+        self.managers = [ConsensusManager(config) for config in levels]
+        self.levels = len(levels)
 
-async def propose(
-self,
-request: ConsensusRequest,
-level: int = 0
-) -> ConsensusResult:
-"""Propose at specific hierarchy level."""
-if level >= self.levels:
-raise ValueError(f"Invalid level {level}, max is {self.levels - 1}")
+    async def propose(
+        self,
+        request: ConsensusRequest,
+        level: int = 0
+    ) -> ConsensusResult:
+        """Propose at specific hierarchy level."""
+        if level >= self.levels:
+            raise ValueError(f"Invalid level {level}, max is {self.levels - 1}")
+        
+        return await self.managers[level].propose(request)
 
-return await self.managers[level].propose(request)
-
-async def escalate(
-self,
-request: ConsensusRequest,
-from_level: int
-) -> ConsensusResult:
-"""Escalate decision to higher level."""
-next_level = from_level + 1
-
-if next_level >= self.levels:
-raise ValueError("Cannot escalate beyond top level")
+    async def escalate(
+        self,
+        request: ConsensusRequest,
+        from_level: int
+    ) -> ConsensusResult:
+        """Escalate decision to higher level."""
+        next_level = from_level + 1
+        
+        if next_level >= self.levels:
+            raise ValueError("Cannot escalate beyond top level")
 
 # Modify request for escalation
 request.decision_type = DecisionType.STRATEGIC

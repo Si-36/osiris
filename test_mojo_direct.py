@@ -70,8 +70,13 @@ def test_mojo_kernels_directly():
         print(f"   Speedup: {speedup:.1f}x")
         
         if scanner.available:
-            correctness = torch.allclose(output, python_output, rtol=1e-4, atol=1e-6)
-            print(f"   Correctness: {'✓ PASS' if correctness else '✗ FAIL'}")
+            # Check shapes match
+            if output.shape == python_output.shape:
+                correctness = torch.allclose(output, python_output, rtol=1e-4, atol=1e-6)
+                print(f"   Correctness: {'✓ PASS' if correctness else '✗ FAIL (values differ)'}")
+            else:
+                print(f"   Correctness: ✗ FAIL (shape mismatch: {output.shape} vs {python_output.shape})")
+                print("   Note: This is expected with stub kernels")
     
     # Test 2: TDA Distance
     print("\n3. Testing TDA Distance Kernel...")
