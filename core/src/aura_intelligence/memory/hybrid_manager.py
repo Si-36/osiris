@@ -383,9 +383,8 @@ class HybridMemoryManager:
 # Global hybrid memory manager
 _hybrid_memory = None
 
-    def get_hybrid_memory():
-        global _hybrid_memory
-        if _hybrid_memory is None:
-            pass
+def get_hybrid_memory():
+    global _hybrid_memory
+    if _hybrid_memory is None:
         _hybrid_memory = HybridMemoryManager()
-        return _hybrid_memory
+    return _hybrid_memory

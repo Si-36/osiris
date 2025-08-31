@@ -28,7 +28,7 @@ except ImportError:
     TDA_AVAILABLE = False
     
 try:
-    from ..memory.hierarchical_memory import HierarchicalMemoryManager
+    from ..memory.advanced_memory_system import HierarchicalMemorySystem as HierarchicalMemoryManager
     MEMORY_AVAILABLE = True
 except ImportError:
     MEMORY_AVAILABLE = False

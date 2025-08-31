@@ -19,7 +19,7 @@ try:
 except ImportError:
     from ...tda.persistence_simple import TopologicalSignature
 from ...components.registry import get_registry
-from ...memory.hierarchical_memory import HierarchicalMemoryManager
+from ...memory.advanced_memory_system import HierarchicalMemorySystem as HierarchicalMemoryManager
 from ...inference.free_energy_core import FreeEnergyMinimizer
 
 import logging
