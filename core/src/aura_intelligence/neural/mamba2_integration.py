@@ -87,7 +87,6 @@ class Mamba2Block(nn.Module):
     
     def selective_scan(self, u: torch.Tensor, delta: torch.Tensor, A: torch.Tensor, 
         B: torch.Tensor, C: torch.Tensor, D: torch.Tensor) -> torch.Tensor:
-            pass
         """Selective scan operation - the heart of Mamba"""
         batch, seqlen, d_inner = u.shape
         d_state = A.shape[1]
@@ -159,8 +158,7 @@ class Mamba2CoRaLSystem(BestCoRaLSystem):
         
         return embeddings
     
-        async def communicate_unlimited(self, contexts: list) -> Dict[str, Any]:
-            pass
+    async def communicate_unlimited(self, contexts: list) -> Dict[str, Any]:
         """Communication with unlimited context length"""
         start_time = asyncio.get_event_loop().time()
         
@@ -223,7 +221,6 @@ class Mamba2MemorySystem(ShapeMemoryV2):
         
     def store_with_sequence(self, content: Dict[str, Any], tda_result, 
         context_type: str = "general", sequence_id: Optional[str] = None) -> str:
-            pass
         """Store with sequence awareness"""
         # Regular storage
         memory_id = self.store(content, tda_result, context_type)
@@ -247,7 +244,6 @@ class Mamba2MemorySystem(ShapeMemoryV2):
     
     def retrieve_with_sequence(self, query_tda, sequence_id: Optional[str] = None, 
         k: int = 10) -> list:
-            pass
         """Retrieve with sequence pattern matching"""
         # Regular retrieval
         base_results = self.retrieve(query_tda, k=k*2)  # Get more candidates

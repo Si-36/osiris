@@ -72,7 +72,6 @@ class DeterministicTDAFallback:
         data: np.ndarray, 
         seed: int
         ) -> List[Dict[str, Any]]:
-            pass
         """Generate deterministic persistence diagram"""
         # Use statistics to derive persistence pairs
         stats = self._compute_statistics(data.flatten())
@@ -103,7 +102,6 @@ class DeterministicTDAFallback:
         self, 
         persistence_diagram: List[Dict[str, Any]]
         ) -> List[int]:
-            pass
         """Compute Betti numbers from persistence diagram"""
         betti = [0, 0, 0]  # β0, β1, β2
         
@@ -119,7 +117,6 @@ class DeterministicTDAFallback:
         stats: Dict[str, float],
         betti: List[int]
         ) -> float:
-            pass
         """Compute anomaly score based on statistics and topology"""
         # Normalize statistics
         normalized_range = min(stats["range"] / (stats["std"] + 1e-6), 10.0)
@@ -154,7 +151,6 @@ class DeterministicTDAFallback:
         data: Union[np.ndarray, List, Dict[str, Any]],
         trace_id: Optional[str] = None
         ) -> TDAResult:
-            pass
         """
         Compute TDA features using deterministic fallback.
         
@@ -226,8 +222,7 @@ class DeterministicTDAFallback:
             }
         )
     
-        async def analyze(self, data: Union[np.ndarray, List, Dict[str, Any]]) -> Dict[str, Any]:
-            pass
+    async def analyze(self, data: Union[np.ndarray, List, Dict[str, Any]]) -> Dict[str, Any]:
         """
         Async wrapper for compute method to match expected interface.
         
