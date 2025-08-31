@@ -8,7 +8,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 
-from .types import ConsensusRequest, DecisionType
+from .consensus_types import ConsensusRequest, DecisionType
 from .manager import ConsensusManager, ConsensusConfig
 from .raft import RaftConfig
 from .byzantine import BFTConfig

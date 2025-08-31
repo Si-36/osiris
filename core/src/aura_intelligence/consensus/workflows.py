@@ -14,7 +14,7 @@ import structlog
 from temporalio import workflow
 from temporalio.common import RetryPolicy
 
-from .types import (
+from .consensus_types import (
     ConsensusRequest,
     ConsensusResult,
     DecisionType,

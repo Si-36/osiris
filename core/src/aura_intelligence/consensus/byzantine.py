@@ -20,7 +20,7 @@ import structlog
 
 from opentelemetry import trace, metrics
 
-from .types import (
+from .consensus_types import (
     ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
     Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
 )
