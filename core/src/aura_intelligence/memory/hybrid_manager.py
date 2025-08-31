@@ -53,13 +53,11 @@ class HybridMemoryManager:
     
     def _get_memory_components(self):
         """Get all 40 memory components from registry"""
-        pass
         return [comp for comp in self.registry.components.values() 
                 if comp.type.value == 'memory']
     
-        async def store(self, key: str, data: Any, component_id: str,
-        tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
-            pass
+    async def store(self, key: str, data: Any, component_id: str,
+                    tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
         """Store data with automatic tier placement"""
         start_time = time.time()
         
