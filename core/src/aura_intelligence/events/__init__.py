@@ -25,19 +25,36 @@ from .schemas import (
     EventPriority
 )
 
-from .producers import (
-    EventProducer,
-    TransactionalProducer,
-    BatchProducer,
-    ProducerConfig
-)
+# Optional imports - these require aiokafka
+try:
+    from .producers import (
+        EventProducer,
+        TransactionalProducer,
+        BatchProducer,
+        ProducerConfig
+    )
+    PRODUCERS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    TransactionalProducer = None
+    BatchProducer = None
+    ProducerConfig = None
+    PRODUCERS_AVAILABLE = False
 
-from .consumers import (
-    EventConsumer,
-    ConsumerGroup,
-    StreamProcessor,
-    ConsumerConfig
-)
+try:
+    from .consumers import (
+        EventConsumer,
+        ConsumerGroup,
+        StreamProcessor,
+        ConsumerConfig
+    )
+    CONSUMERS_AVAILABLE = True
+except ImportError:
+    EventConsumer = None
+    ConsumerGroup = None
+    StreamProcessor = None
+    ConsumerConfig = None
+    CONSUMERS_AVAILABLE = False
 
 from .streams import (
     AgentEventStream,
