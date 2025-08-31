@@ -27,10 +27,22 @@ ByzantineConsensus = SimpleConsensus
 BFTConfig = ConsensusConfig  # Use base config
 # from .multi_raft import MultiRaftConsensus, MultiRaftConfig  # Temporarily commented out - module not available
 # from .validation import NeuroSymbolicValidator, ValidatorConfig  # Temporarily commented out - module not available
-from ..events import EventProducer, ProducerConfig
+# Optional event producer
+try:
+    from ..events import EventProducer, ProducerConfig
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    ProducerConfig = None
+    EVENTS_AVAILABLE = False
 # Define ConsensusDecisionEvent as a simple dict for now
 ConsensusDecisionEvent = dict
-from ..agents.temporal.client import TemporalClient
+try:
+    from ..agents.temporal.client import TemporalClient
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    TemporalClient = None
+    TEMPORAL_AVAILABLE = False
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

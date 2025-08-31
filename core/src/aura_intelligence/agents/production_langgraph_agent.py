@@ -38,7 +38,7 @@ except ImportError:
     
 # AURA imports
 from ..agents.base import AgentBase, AgentConfig, AgentState as BaseAgentState
-from ..memory.advanced_memory_system import HierarchicalMemorySystem as HierarchicalMemoryManager
+from ..memory import HierarchicalMemoryManager
 from ..graph.knowledge_graph import EnhancedKnowledgeGraph
 from ..events.producers import EventProducer
 from ..observability import create_tracer

@@ -85,12 +85,21 @@ from .communication import (
 )
 
 # 9. Agents - Core Agent System
-from .agents import (
-    AURAAgent,
-    AgentConfig,
-    LNNCouncilOrchestrator,
-    agent_templates,
-)
+try:
+    from .agents import (
+        AURAAgent,
+        AgentConfig,
+        LNNCouncilOrchestrator,
+        agent_templates,
+    )
+    AGENTS_AVAILABLE = True
+except ImportError:
+    # Agents require external dependencies (langgraph)
+    AGENTS_AVAILABLE = False
+    AURAAgent = None
+    AgentConfig = None
+    LNNCouncilOrchestrator = None
+    agent_templates = None
 
 # ===================== MAIN SYSTEM =====================
 
@@ -176,12 +185,16 @@ __all__ = [
     "Performative",
     "SemanticEnvelope",
     
-    # Agents
-    "AURAAgent",
-    "AgentConfig",
-    "LNNCouncilOrchestrator",
-    "agent_templates",
 ]
+
+# Add agent exports only if available
+if AGENTS_AVAILABLE:
+    __all__.extend([
+        "AURAAgent",
+        "AgentConfig",
+        "LNNCouncilOrchestrator",
+        "agent_templates",
+    ])
 
 # ===================== QUICK START =====================
 

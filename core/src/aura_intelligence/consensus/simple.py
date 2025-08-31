@@ -8,7 +8,13 @@ from datetime import datetime, timezone
 import asyncio
 import hashlib
 
-from aura_intelligence.events import EventProducer
+# Optional event producer for notifications
+try:
+    from aura_intelligence.events import EventProducer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    EVENTS_AVAILABLE = False
 
 
 @dataclass
@@ -35,10 +41,10 @@ class SimpleConsensus:
         "security_policy",
     }
 
-    def __init__(self, node_id: str, peers: list[str], kafka_servers: str):
+    def __init__(self, node_id: str, peers: list[str], kafka_servers: str = None):
         self.node_id = node_id
         self.peers = peers
-        self.events = EventProducer(kafka_servers)
+        self.events = EventProducer(kafka_servers) if EVENTS_AVAILABLE and kafka_servers else None
         self.is_leader = False
         self.term = 0
 
@@ -48,14 +54,15 @@ class SimpleConsensus:
             return await self._consensus_decide(decision)
         else:
             # Just publish event - fast path for 95% of decisions
-            await self.events.send_event(
-                f"decisions.{decision.type}",
-                {
-                    "id": decision.id,
-                    "data": decision.data,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                },
-            )
+            if self.events:
+                await self.events.send_event(
+                    f"decisions.{decision.type}",
+                    {
+                        "id": decision.id,
+                        "data": decision.data,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    },
+                )
             return {"status": "published", "mode": "event"}
 
     async def _consensus_decide(self, decision: Decision) -> Dict[str, Any]:
@@ -96,7 +103,8 @@ class SimpleConsensus:
 
         if votes > len(self.peers) // 2:
             self.is_leader = True
-            await self.events.send_event(
+            if self.events:
+                await self.events.send_event(
                 "leader.elected", {"node_id": self.node_id, "term": self.term}
             )
 
@@ -107,12 +115,14 @@ class SimpleConsensus:
 
     async def _forward_to_leader(self, leader: str, decision: Decision):
         """Forward decision to leader."""
-        await self.events.send_event(f"forward.{leader}", decision.__dict__)
+        if self.events:
+            await self.events.send_event(f"forward.{leader}", decision.__dict__)
         return {"status": "forwarded", "to": leader}
 
     async def _commit_decision(self, decision: Decision):
         """Commit accepted decision."""
-        await self.events.send_event(
+        if self.events:
+            await self.events.send_event(
             "decisions.committed",
             {
                 "id": decision.id,

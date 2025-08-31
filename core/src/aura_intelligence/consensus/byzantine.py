@@ -24,8 +24,19 @@ from .consensus_types import (
     ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
     Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
 )
-from aura_intelligence.events import EventProducer
-from ..agents.temporal import execute_workflow
+# Optional event producer
+try:
+    from aura_intelligence.events import EventProducer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    EVENTS_AVAILABLE = False
+try:
+    from ..agents.temporal import execute_workflow
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    execute_workflow = None
+    TEMPORAL_AVAILABLE = False
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

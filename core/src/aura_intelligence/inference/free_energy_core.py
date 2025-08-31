@@ -21,7 +21,7 @@ try:
     from ..tda.persistence import TDAProcessor
 except ImportError:
     from ..tda.persistence_simple import TDAProcessor
-from ..memory.advanced_memory_system import HierarchicalMemorySystem as HierarchicalMemoryManager
+from ..memory import HierarchicalMemoryManager
 from ..components.registry import get_registry
 
 import logging

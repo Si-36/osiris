@@ -52,8 +52,21 @@ class AppendEntriesResponse:
     term: int
     success: bool
     match_index: int
-from ..events import EventProducer
-from ..agents.temporal import execute_workflow
+
+# Optional imports for event handling
+try:
+    from ..events import EventProducer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    EVENTS_AVAILABLE = False
+
+try:
+    from ..agents.temporal import execute_workflow
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    execute_workflow = None
+    TEMPORAL_AVAILABLE = False
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

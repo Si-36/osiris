@@ -9,8 +9,6 @@ from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel, Field, validator
 import uuid
 
-from ..agents.base import AgentState
-
 
 class DecisionType(str, Enum):
     """Types of decisions requiring consensus."""

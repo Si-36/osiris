@@ -61,6 +61,10 @@ from .qdrant_config import (
 from .hybrid_manager import HybridMemoryManager
 MemoryManager = HybridMemoryManager
 
+# Import HierarchicalMemorySystem and alias for backward compatibility
+from .advanced_memory_system import HierarchicalMemorySystem
+HierarchicalMemoryManager = HierarchicalMemorySystem
+
 __all__ = [
     # KNN Index
     'HybridKNNIndex',
@@ -70,6 +74,8 @@ __all__ = [
     # Memory Manager
     'HybridMemoryManager',
     'MemoryManager',  # Alias for backward compatibility
+    'HierarchicalMemorySystem',
+    'HierarchicalMemoryManager',  # Alias for backward compatibility
     # Unified Interface
     'UnifiedMemoryInterface',
     'MemoryType',
