@@ -101,8 +101,7 @@ class HybridMemoryManager:
             'component_id': component_id
         }
     
-        async def retrieve(self, key: str) -> Dict[str, Any]:
-            pass
+    async def retrieve(self, key: str) -> Dict[str, Any]:
         """Retrieve data with automatic tier promotion"""
         start_time = time.time()
         
@@ -171,8 +170,7 @@ class HybridMemoryManager:
         # Cold tier for large data or when other tiers full
         return MemoryTier.COLD
     
-        async def _store_in_tier(self, segment: MemorySegment, tier: MemoryTier) -> bool:
-            pass
+    async def _store_in_tier(self, segment: MemorySegment, tier: MemoryTier) -> bool:
         """Store segment in specific tier"""
         try:
             if tier == MemoryTier.HOT:
@@ -210,8 +208,7 @@ class HybridMemoryManager:
             print(f"Storage error: {e}")
             return False
     
-        async def _consider_promotion(self, segment: MemorySegment, current_tier: MemoryTier) -> bool:
-            pass
+    async def _consider_promotion(self, segment: MemorySegment, current_tier: MemoryTier) -> bool:
         """Consider promoting segment to higher tier"""
         if segment.access_count < self.promotion_threshold:
             return False
@@ -225,8 +222,7 @@ class HybridMemoryManager:
         
         return False
     
-        async def _promote_segment(self, segment: MemorySegment, target_tier: MemoryTier) -> bool:
-            pass
+    async def _promote_segment(self, segment: MemorySegment, target_tier: MemoryTier) -> bool:
         """Promote segment to higher tier"""
         try:
             # Remove from current tier
@@ -255,10 +251,8 @@ class HybridMemoryManager:
             print(f"Promotion error: {e}")
             return False
     
-        async def _evict_from_hot(self):
-            pass
+    async def _evict_from_hot(self):
         """Evict least recently used items from hot tier"""
-        pass
         if not self.hot_storage:
             return
         
@@ -279,10 +273,8 @@ class HybridMemoryManager:
             segment.tier = MemoryTier.WARM
             await self._store_in_tier(segment, MemoryTier.WARM)
     
-        async def _evict_from_warm(self):
-            pass
+    async def _evict_from_warm(self):
         """Evict least recently used items from warm tier"""
-        pass
         if not self.warm_storage:
             return
         
@@ -303,10 +295,8 @@ class HybridMemoryManager:
             segment.tier = MemoryTier.COLD
             await self._store_in_tier(segment, MemoryTier.COLD)
     
-        async def _maintenance_loop(self):
-            pass
+    async def _maintenance_loop(self):
         """Background maintenance for tier management"""
-        pass
         while True:
             try:
                 await self._age_based_demotion()
@@ -315,10 +305,8 @@ class HybridMemoryManager:
                 print(f"Maintenance error: {e}")
                 await asyncio.sleep(600)  # Wait longer on error
     
-        async def _age_based_demotion(self):
-            pass
+    async def _age_based_demotion(self):
         """Demote old data to lower tiers"""
-        pass
         current_time = time.time()
         demotion_threshold = current_time - (self.demotion_age_hours * 3600)
         
