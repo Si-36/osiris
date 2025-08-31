@@ -9,6 +9,9 @@ from .advanced_hybrid_memory_2025 import (
     MemorySegment,
     AccessStatistics
 )
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class MemorySegment:
