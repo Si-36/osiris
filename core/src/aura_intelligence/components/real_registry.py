@@ -224,8 +224,7 @@ class RealComponentRegistry:
         }
 
 
-# Temporary: Skip all the orphaned code
-'''
+# Continue with the valuable AI processing code that needs proper indentation
         # Use real BERT attention
         model = AutoModel.from_pretrained('bert-base-uncased')
         tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
@@ -529,9 +528,6 @@ class RealComponentRegistry:
         """Get top performing components by data processed"""
         return sorted(self.components.values(), key=lambda c: c.data_processed, reverse=True)[:limit]
 
-
-'''
-# End of orphaned code - will be properly integrated later
 
 # Global registry instance
 _global_registry: Optional[RealComponentRegistry] = None
