@@ -36,7 +36,7 @@ import numpy as np
 
 # Try to import prometheus_client (optional)
 try:
-    from prometheus_client import Histogram, Counter, Gauge, Info
+    from prometheus_client import Histogram, Counter, Gauge, Info, REGISTRY
     PROMETHEUS_AVAILABLE = True
 except ImportError:
     PROMETHEUS_AVAILABLE = False
@@ -65,58 +65,92 @@ if PYNVML_AVAILABLE:
 logger = structlog.get_logger(__name__)
 
 
-# Prometheus Metrics for GPU
-GPU_UTILIZATION = Gauge(
+# Prometheus Metrics for GPU - Robust 2025 implementation
+def get_or_create_metric(metric_name, metric_type, description, labels, **kwargs):
+    """Get existing metric or create new one - prevents duplicate registration"""
+    if not PROMETHEUS_AVAILABLE:
+        return MockMetric()
+    
+    try:
+        # Check if metric already exists
+        if metric_name in REGISTRY._names_to_collectors:
+            return REGISTRY._names_to_collectors[metric_name]
+        
+        # Create new metric
+        if metric_type == 'gauge':
+            return Gauge(metric_name, description, labels)
+        elif metric_type == 'counter':
+            return Counter(metric_name, description, labels)
+        elif metric_type == 'histogram':
+            buckets = kwargs.get('buckets', Histogram.DEFAULT_BUCKETS)
+            return Histogram(metric_name, description, labels, buckets=buckets)
+        else:
+            raise ValueError(f"Unknown metric type: {metric_type}")
+    except Exception as e:
+        logger.warning(f"Failed to create metric {metric_name}: {e}")
+        return MockMetric()
+
+# Initialize metrics using the robust factory
+GPU_UTILIZATION = get_or_create_metric(
     'gpu_utilization_percent',
+    'gauge',
     'GPU utilization percentage',
     ['device_id', 'device_name']
 )
 
-GPU_MEMORY_USED = Gauge(
+GPU_MEMORY_USED = get_or_create_metric(
     'gpu_memory_used_bytes',
+    'gauge',
     'GPU memory used in bytes',
     ['device_id', 'device_name']
 )
 
-GPU_MEMORY_TOTAL = Gauge(
+GPU_MEMORY_TOTAL = get_or_create_metric(
     'gpu_memory_total_bytes',
+    'gauge',
     'Total GPU memory in bytes',
     ['device_id', 'device_name']
 )
 
-GPU_TEMPERATURE = Gauge(
+GPU_TEMPERATURE = get_or_create_metric(
     'gpu_temperature_celsius',
+    'gauge',
     'GPU temperature in Celsius',
     ['device_id', 'device_name']
 )
 
-GPU_POWER_DRAW = Gauge(
+GPU_POWER_DRAW = get_or_create_metric(
     'gpu_power_draw_watts',
+    'gauge',
     'GPU power draw in watts',
     ['device_id', 'device_name']
 )
 
-GPU_CLOCK_SPEED = Gauge(
+GPU_CLOCK_SPEED = get_or_create_metric(
     'gpu_clock_speed_mhz',
+    'gauge',
     'GPU clock speed in MHz',
     ['device_id', 'device_name', 'clock_type']
 )
 
-CUDA_KERNEL_LAUNCHES = Counter(
+CUDA_KERNEL_LAUNCHES = get_or_create_metric(
     'cuda_kernel_launches_total',
+    'counter',
     'Total CUDA kernel launches',
     ['kernel_name', 'device_id']
 )
 
-CUDA_KERNEL_DURATION = Histogram(
+CUDA_KERNEL_DURATION = get_or_create_metric(
     'cuda_kernel_duration_seconds',
+    'histogram',
     'CUDA kernel execution duration',
     ['kernel_name', 'device_id'],
     buckets=[.0001, .0005, .001, .005, .01, .05, .1, .5, 1.0]
 )
 
-TENSOR_CORE_UTILIZATION = Gauge(
+TENSOR_CORE_UTILIZATION = get_or_create_metric(
     'tensor_core_utilization_percent',
+    'gauge',
     'Tensor Core utilization percentage',
     ['device_id', 'device_name']
 )

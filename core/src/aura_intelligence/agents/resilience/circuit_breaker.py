@@ -306,25 +306,19 @@ class CircuitBreaker(Generic[T]):
     
     def get_state(self) -> CircuitState:
         """Get current circuit state."""
-        pass
         return self.state
     
     def get_stats(self) -> CircuitBreakerStats:
         """Get circuit statistics."""
-        pass
         return self.stats
     
-        async def reset(self) -> None:
-            pass
+    async def reset(self) -> None:
         """Manually reset the circuit breaker."""
-        pass
         async with self._lock:
             await self._transition_to(CircuitState.CLOSED)
     
-        async def trip(self) -> None:
-            pass
+    async def trip(self) -> None:
         """Manually trip the circuit breaker."""
-        pass
         async with self._lock:
             await self._transition_to(CircuitState.OPEN)
             circuit_trips_counter.add(
