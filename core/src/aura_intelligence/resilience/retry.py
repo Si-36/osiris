@@ -179,8 +179,7 @@ class BackoffCalculator:
         attempt: int,
         strategy: Optional[RetryStrategy] = None,
         error_category: Optional[ErrorCategory] = None
-        ) -> float:
-            pass
+    ) -> float:
         """Calculate delay in milliseconds for the given attempt."""
         strategy = strategy or self.config.strategy
         
