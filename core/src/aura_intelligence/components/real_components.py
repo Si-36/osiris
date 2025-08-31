@@ -48,33 +48,31 @@ class RedisConnectionPool:
         pass
         try:
             import redis.asyncio as redis
-        self.pool = redis.ConnectionPool.from_url(
+            self.pool = redis.ConnectionPool.from_url(
         "redis://localhost:6379",
         max_connections=self.max_connections,
         socket_connect_timeout=self.connection_timeout,
         socket_timeout=self.connection_timeout,
         retry_on_timeout=True,
         health_check_interval=self.health_check_interval
-        )
+            )
             
-        # Test connection
-        redis_client = redis.Redis(connection_pool=self.pool)
-        await redis_client.ping()
-        await redis_client.close()
+            # Test connection
+            redis_client = redis.Redis(connection_pool=self.pool)
+            await redis_client.ping()
+            await redis_client.close()
             
-        self.logger.info(f"Redis pool initialized: {self.max_connections} max connections")
-        return True
+            self.logger.info(f"Redis pool initialized: {self.max_connections} max connections")
+            return True
             
         except ImportError:
-            pass
-        self.logger.warning("Redis not available - using in-memory fallback")
-        self.pool = None
-        return False
+            self.logger.warning("Redis not available - using in-memory fallback")
+            self.pool = None
+            return False
         except Exception as e:
-            pass
-        self.logger.error(f"Redis pool initialization failed: {e}")
-        self.pool = None
-        return False
+            self.logger.error(f"Redis pool initialization failed: {e}")
+            self.pool = None
+            return False
     
         async def get_connection(self):
             """Get Redis connection with automatic retry"""
@@ -104,14 +102,12 @@ class RedisConnectionPool:
         
         try:
             await client.set(key, json.dumps(data), ex=3600)  # 1 hour expiry
-        return True
+            return True
         except Exception as e:
-            pass
-        self.logger.error(f"Redis store failed: {e}")
-        return False
+            self.logger.error(f"Redis store failed: {e}")
+            return False
         finally:
-            pass
-        await client.close()
+            await client.close()
     
         async def get_pattern(self, key: str) -> Optional[Dict[str, Any]]:
             pass
@@ -242,7 +238,6 @@ class AsyncBatchProcessor:
             # Process batch if size limit reached or timeout exceeded
             if (len(current_batch) >= self.batch_size or 
                 (current_time - last_batch_time) * 1000 >= batch_timeout):
-                    pass
                 
                 if current_batch:
                     batch_results = await self.process_batch_request(
@@ -336,11 +331,11 @@ class GlobalModelManager:
             from transformers import AutoModel, AutoTokenizer
             
             # Load model and tokenizer in background thread to avoid blocking
-    def load_model():
+            def load_model():
                 return AutoModel.from_pretrained(model_key)
             
-    def load_tokenizer():
-        return AutoTokenizer.from_pretrained(model_key)
+            def load_tokenizer():
+                return AutoTokenizer.from_pretrained(model_key)
             
             # Load concurrently
             model_task = asyncio.get_event_loop().run_in_executor(None, load_model)
@@ -375,24 +370,23 @@ class GlobalModelManager:
         """Warmup BERT model with dummy inference"""
         try:
             model = self.models[model_key]
-        tokenizer = self.tokenizers[model_key]
-        device = next(model.parameters()).device
+            tokenizer = self.tokenizers[model_key]
+            device = next(model.parameters()).device
             
-        # Dummy inference for warmup
-        dummy_text = "warmup inference to optimize GPU context"
-        inputs = tokenizer(dummy_text, return_tensors='pt', truncation=True, max_length=512)
-        inputs = {k: v.to(device) for k, v in inputs.items()}
+            # Dummy inference for warmup
+            dummy_text = "warmup inference to optimize GPU context"
+            inputs = tokenizer(dummy_text, return_tensors='pt', truncation=True, max_length=512)
+            inputs = {k: v.to(device) for k, v in inputs.items()}
             
-        # Perform warmup inferences
-        with torch.no_grad():
-            for _ in range(3):  # Multiple warmups for GPU optimization
-        _ = model(**inputs)
+            # Perform warmup inferences
+            with torch.no_grad():
+                for _ in range(3):  # Multiple warmups for GPU optimization
+                    _ = model(**inputs)
             
-        self.logger.info(f"Model warmup completed: {model_key}")
+            self.logger.info(f"Model warmup completed: {model_key}")
             
         except Exception as e:
-            pass
-        self.logger.warning(f"Model warmup failed: {e}")
+            self.logger.warning(f"Model warmup failed: {e}")
     
         async def get_bert_model(self, model_key: str = "distilbert-base-uncased"):
             """Get pre-loaded BERT model with lock protection"""
