@@ -133,10 +133,10 @@ class RealComponentRegistry:
         type=ComponentType.ORCHESTRATION
         )
 
-        async def process_data(self, component_id: str, data: Any) -> Any:
-"""Process data through specific component - REAL processing"""
+    async def process_data(self, component_id: str, data: Any) -> Any:
+        """Process data through specific component - REAL processing"""
         if component_id not in self.components:
-        raise ValueError(f"Component {component_id} not found")
+            raise ValueError(f"Component {component_id} not found")
 
         component = self.components[component_id]
         start_time = time.time()
@@ -280,7 +280,7 @@ class RealComponentRegistry:
         'real_implementation': True
         }
 
-        async def _process_memory(self, component: RealComponent, data: Any) -> Dict[str, Any]:
+    async def _process_memory(self, component: RealComponent, data: Any) -> Dict[str, Any]:
 """Real memory processing"""
         if "redis" in component.id:
         # Redis-like storage
