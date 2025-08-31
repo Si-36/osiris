@@ -612,7 +612,7 @@ class RealComponent(ABC):
         return f"{self.component_id}:{hash_obj.hexdigest()[:16]}"
     
     def _update_processing_metrics(self, processing_time_ms: float):
-            """Update component processing metrics"""
+        """Update component processing metrics"""
         total_requests = self.metrics["cache_misses"] + self.metrics["cache_hits"]
         if total_requests > 0:
             self.metrics["avg_processing_time_ms"] = (
@@ -674,30 +674,32 @@ class RealLNNComponent(RealComponent):
         super().__init__(component_id, ComponentType.NEURAL)
         try:
             import ncps
-        from ncps.torch import CfC
-        from ncps.wirings import AutoNCP
+            from ncps.torch import CfC
+            from ncps.wirings import AutoNCP
             
-        wiring = AutoNCP(64, 10)
-        self.lnn = CfC(10, wiring)
-        self.real_implementation = True
+            wiring = AutoNCP(64, 10)
+            self.lnn = CfC(10, wiring)
+            self.real_implementation = True
         except ImportError:
             pass
         # Fallback to torchdiffeq
         try:
             from torchdiffeq import odeint
+            import torch
+            import torch.nn as nn
                 
-        class ODEFunc(nn.Module):
-            def __init__(self):
-                super().__init__()
-                self.net = nn.Sequential(nn.Linear(10, 64), nn.Tanh(), nn.Linear(64, 10))
+            class ODEFunc(nn.Module):
+                def __init__(self):
+                    super().__init__()
+                    self.net = nn.Sequential(nn.Linear(10, 64), nn.Tanh(), nn.Linear(64, 10))
                     
-            def forward(self, t, y):
-                return self.net(y)
+                def forward(self, t, y):
+                    return self.net(y)
                 
-                self.ode_func = ODEFunc()
-                self.integration_time = torch.tensor([0, 1]).float()
-                self.real_implementation = True
-                except ImportError:
+            self.ode_func = ODEFunc()
+            self.integration_time = torch.tensor([0, 1]).float()
+            self.real_implementation = True
+        except ImportError:
                     pass
                 self.real_implementation = False
     
