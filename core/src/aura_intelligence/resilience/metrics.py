@@ -408,7 +408,7 @@ class MetricsCollector:
     resilience components.
     """
     
-    async def __init__(
+    def __init__(
         self,
         metrics: ResilienceMetrics,
         collection_interval: timedelta = timedelta(seconds=10)
