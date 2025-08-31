@@ -38,6 +38,14 @@ logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
 meter = metrics.get_meter(__name__)
 
+
+# If EventProcessor is not available, create a dummy base class
+if EventProcessor is None:
+    class EventProcessor:
+        """Dummy EventProcessor when aiokafka not available"""
+        pass
+
+
 # Metrics
 stream_events_processed = meter.create_counter(
     name="stream.events.processed",
