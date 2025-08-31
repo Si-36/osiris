@@ -284,16 +284,13 @@ class Bulkhead:
     
     @asynccontextmanager
     async def acquire(self):
-            pass
-                """
+        """
         Context manager for bulkhead protection.
         
         Usage:
             async with bulkhead.acquire():
                 # Protected code here
-        pass
         """
-        pass
         if self._semaphore.locked() and self._queue.full():
             self.stats.record_rejection()
             raise BulkheadFullError(
@@ -327,17 +324,14 @@ class Bulkhead:
     
     def get_stats(self) -> BulkheadStats:
         """Get bulkhead statistics."""
-        pass
         return self.stats
     
     def is_full(self) -> bool:
         """Check if bulkhead is at capacity."""
-        pass
         return self._semaphore.locked()
     
     def available_slots(self) -> int:
         """Get number of available execution slots."""
-        pass
         return self.config.max_concurrent - self.stats.current_active
     
         async def health_check(self) -> Dict[str, Any]:

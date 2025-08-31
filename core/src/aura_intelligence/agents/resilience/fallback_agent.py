@@ -117,11 +117,9 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
     
     def build_graph(self):
         """Use primary agent's graph."""
-        pass
         return self.primary_agent.build_graph()
     
-        async def _execute_step(self, state: TState, step_name: str) -> TState:
-            pass
+    async def _execute_step(self, state: TState, step_name: str) -> TState:
         """Execute step with fallback."""
         try:
             # Try primary agent through circuit breaker
@@ -134,8 +132,7 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
             # Primary failed, use fallback
             return await self._execute_fallback(state, step_name, e)
     
-        async def _process(self, input_data: TInput) -> TOutput:
-            pass
+    async def _process(self, input_data: TInput) -> TOutput:
         """Process with fallback handling."""
         with tracer.start_as_current_span(
             f"fallback_agent.{self.name}",
@@ -262,14 +259,13 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
     
     @abstractmethod
     async def _fallback_partial_response(self, input_data: TInput) -> TOutput:
-            pass
-            """
+        """
         Generate a partial response as last resort.
         
         This method must be implemented by subclasses to provide
         domain-specific partial responses.
         """
-            pass
+        pass
     
     def _get_cache_key(self, input_data: TInput) -> str:
         """Generate cache key from input."""

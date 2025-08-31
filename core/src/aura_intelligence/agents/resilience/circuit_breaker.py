@@ -288,16 +288,12 @@ class CircuitBreaker(Generic[T]):
                 span.record_exception(e)
                 raise
     
-        async def __aenter__(self):
-            pass
+    async def __aenter__(self):
         """Context manager entry."""
-        pass
         return self
     
-        async def __aexit__(self, exc_type, exc_val, exc_tb):
-            pass
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit."""
-        pass
         if exc_type is None:
             await self._record_success()
         else:
