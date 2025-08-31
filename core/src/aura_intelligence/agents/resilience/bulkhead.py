@@ -135,7 +135,6 @@ class Bulkhead:
     
     def __init__(self, config: BulkheadConfig):
         """Initialize bulkhead."""
-        pass
         config.validate()
         self.config = config
         self.stats = BulkheadStats()
@@ -148,13 +147,12 @@ class Bulkhead:
         self._queue: asyncio.Queue = asyncio.Queue(maxsize=config.max_queue_size)
         self._lock = asyncio.Lock()
     
-        async def execute(
+    async def execute(
         self,
         func: Callable[..., T],
         *args,
         **kwargs
-        ) -> T:
-            pass
+    ) -> T:
         """
         Execute function with bulkhead protection.
         
@@ -237,13 +235,12 @@ class Bulkhead:
                         {"bulkhead.name": self.config.name}
                     )
     
-        async def _execute_with_bulkhead(
+    async def _execute_with_bulkhead(
         self,
         func: Callable[..., T],
         *args,
         **kwargs
-        ) -> T:
-            pass
+    ) -> T:
         """Execute function with bulkhead semaphore."""
         async with self._semaphore:
             # Update stats
@@ -334,10 +331,8 @@ class Bulkhead:
         """Get number of available execution slots."""
         return self.config.max_concurrent - self.stats.current_active
     
-        async def health_check(self) -> Dict[str, Any]:
-            pass
+    async def health_check(self) -> Dict[str, Any]:
         """Check bulkhead health."""
-        pass
         utilization = self.stats.current_active / self.config.max_concurrent
         
         health_status = "healthy"
