@@ -20,8 +20,19 @@ import structlog
 from opentelemetry import trace, metrics
 
 from .schemas import EventSchema, AgentEvent, WorkflowEvent, EventType
-from .producers import EventProducer, ProducerConfig
-from .consumers import EventProcessor, EventConsumer, ConsumerConfig
+# Optional import - producers need aiokafka
+try:
+    from .producers import EventProducer, ProducerConfig
+except ImportError:
+    EventProducer = None
+    ProducerConfig = None
+# Optional import - consumers need aiokafka
+try:
+    from .consumers import EventProcessor, EventConsumer, ConsumerConfig
+except ImportError:
+    EventProcessor = None
+    EventConsumer = None
+    ConsumerConfig = None
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)

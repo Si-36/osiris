@@ -25,7 +25,9 @@ import structlog
 from .provider_adapters import ProviderRequest, ProviderResponse, ProviderType
 from ..persistence.stores.vector import QdrantVectorStore
 from ..persistence.stores.kv import NATSKVStore
-from ..memory.embeddings import EmbeddingGenerator
+# EmbeddingGenerator not found - using placeholder
+# TODO: Find correct embedding class or create one
+EmbeddingGenerator = None
 from ..observability import create_tracer, create_meter
 
 logger = structlog.get_logger(__name__)
@@ -229,7 +231,8 @@ class SemanticCache:
     def __init__(self, config: CacheConfig, vector_store: Optional[QdrantVectorStore] = None):
         self.config = config
         self.vector_store = vector_store
-        self.embedding_generator = EmbeddingGenerator(model=config.embedding_model)
+        # EmbeddingGenerator not available - skip for now
+        self.embedding_generator = None  # EmbeddingGenerator(model=config.embedding_model)
         
         # Local index for faster access
         self.entries: Dict[str, CacheEntry] = {}

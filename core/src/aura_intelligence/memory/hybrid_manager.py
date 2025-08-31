@@ -12,6 +12,14 @@ from .advanced_hybrid_memory_2025 import (
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+# Import the registry
+try:
+    from ..components.real_registry import get_real_registry
+except ImportError:
+    # Fallback if not available
+    def get_real_registry():
+        return None
+
 
 @dataclass
 class MemorySegment:

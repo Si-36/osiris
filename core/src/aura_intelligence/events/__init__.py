@@ -56,18 +56,34 @@ except ImportError:
     ConsumerConfig = None
     CONSUMERS_AVAILABLE = False
 
-from .streams import (
-    AgentEventStream,
-    WorkflowEventStream,
-    EventAggregator,
-    StreamTopology
-)
+# Optional imports - these may need aiokafka
+try:
+    from .streams import (
+        AgentEventStream,
+        WorkflowEventStream,
+        EventAggregator,
+        StreamTopology
+    )
+    STREAMS_AVAILABLE = True
+except ImportError:
+    AgentEventStream = None
+    WorkflowEventStream = None
+    EventAggregator = None
+    StreamTopology = None
+    STREAMS_AVAILABLE = False
 
-from .connectors import (
-    TemporalKafkaConnector,
-    StateStoreConnector,
-    CDCConnector
-)
+try:
+    from .connectors import (
+        TemporalKafkaConnector,
+        StateStoreConnector,
+        CDCConnector
+    )
+    CONNECTORS_AVAILABLE = True
+except ImportError:
+    TemporalKafkaConnector = None
+    StateStoreConnector = None
+    CDCConnector = None
+    CONNECTORS_AVAILABLE = False
 
 # from .registry import (
 #     SchemaRegistry,
