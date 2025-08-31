@@ -2,7 +2,6 @@
 Context-Aware Retry implementation for AURA Intelligence.
 
 Features:
-    pass
 - Error-type specific retry strategies
 - Retry budgets (token bucket algorithm)
 - Hedged requests for latency-sensitive operations
@@ -124,8 +123,7 @@ class RetryBudget:
         self.consumed_count = 0
         self.rejected_count = 0
         
-        async def try_consume(self, tokens: int = 1) -> bool:
-            pass
+    async def try_consume(self, tokens: int = 1) -> bool:
         """Try to consume tokens from the budget."""
         async with self.lock:
             # Refill tokens based on time elapsed
@@ -153,7 +151,6 @@ class RetryBudget:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get budget metrics."""
-        pass
         return {
             "capacity": self.capacity,
             "available_tokens": self.tokens,
@@ -222,8 +219,7 @@ class BackoffCalculator:
         self,
         attempt: int,
         error_category: Optional[ErrorCategory]
-        ) -> float:
-            pass
+    ) -> float:
         """Calculate adaptive delay based on error type and system state."""
         # Base exponential backoff
         base_delay = self.config.initial_delay_ms * math.pow(
@@ -301,14 +297,13 @@ class HedgedRequestManager:
         self.config = config
         self.active_hedges: Dict[str, List[asyncio.Task]] = {}
         
-        async def execute_with_hedge(
+    async def execute_with_hedge(
         self,
         operation: Callable[..., T],
         *args,
         request_id: Optional[str] = None,
         **kwargs
-        ) -> T:
-            pass
+    ) -> T:
         """Execute operation with hedged requests."""
         if not self.config.hedged_requests:
             return await operation(*args, **kwargs)
@@ -360,8 +355,7 @@ class HedgedRequestManager:
             # Cleanup
             self.active_hedges.pop(request_id, None)
     
-        async def _execute_with_tracking(self, operation: Callable, *args, **kwargs) -> T:
-            pass
+    async def _execute_with_tracking(self, operation: Callable, *args, **kwargs) -> T:
         """Execute operation with performance tracking."""
         start_time = datetime.now(timezone.utc)
         try:
@@ -374,14 +368,13 @@ class HedgedRequestManager:
                 is_hedge=False
             )
     
-        async def _execute_hedge(
+    async def _execute_hedge(
         self,
         operation: Callable,
         *args,
         delay_ms: int,
         **kwargs
-        ) -> T:
-            pass
+    ) -> T:
         """Execute hedge request after delay."""
         await asyncio.sleep(delay_ms / 1000.0)
         
@@ -394,7 +387,6 @@ class ContextAwareRetry:
     Context-aware retry with advanced features.
     
     Features:
-        pass
     - Error-specific retry strategies
     - Retry budgets to prevent storms
     - Hedged requests for latency optimization
@@ -415,14 +407,13 @@ class ContextAwareRetry:
         self.success_counts = defaultdict(int)
         self.last_errors = deque(maxlen=100)
         
-        async def execute(
+    async def execute(
         self,
         operation: Callable[..., T],
         *args,
         context: Optional[Dict[str, Any]] = None,
         **kwargs
-        ) -> T:
-            pass
+    ) -> T:
         """Execute operation with context-aware retry."""
         context = context or {}
         operation_name = context.get("operation_name", operation.__name__)
@@ -528,8 +519,7 @@ class ContextAwareRetry:
         error: Exception,
         category: ErrorCategory,
         attempt: int
-        ) -> bool:
-            pass
+    ) -> bool:
         """Determine if error should be retried."""
         # Circuit breaker open - check config
         if category == ErrorCategory.CIRCUIT_OPEN:
@@ -557,8 +547,7 @@ class ContextAwareRetry:
         attempt: int,
         category: ErrorCategory,
         context: Dict[str, Any]
-        ) -> float:
-            pass
+    ) -> float:
         """Get delay for specific error category."""
         # Check error-specific config
         if category in self.config.error_strategies:
@@ -584,7 +573,6 @@ class ContextAwareRetry:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get retry metrics."""
-        pass
         metrics = {
             "retry_counts": dict(self.retry_counts),
             "success_counts": dict(self.success_counts),
