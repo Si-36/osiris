@@ -57,12 +57,19 @@ from .qdrant_config import (
     QuantizationPreset
 )
 
+# Import HybridMemoryManager and alias for backward compatibility
+from .hybrid_manager import HybridMemoryManager
+MemoryManager = HybridMemoryManager
+
 __all__ = [
     # KNN Index
     'HybridKNNIndex',
     'KNNConfig',
     'create_knn_index',
     'MemorySettings',
+    # Memory Manager
+    'HybridMemoryManager',
+    'MemoryManager',  # Alias for backward compatibility
     # Unified Interface
     'UnifiedMemoryInterface',
     'MemoryType',
