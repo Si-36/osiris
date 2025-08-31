@@ -110,28 +110,19 @@ from .security import (
 )
 
 # Backup and recovery
-# Temporarily commented out to debug import issue
-# from .backup import (
-#     # Backup management
-#     BackupManager,
-#     BackupSchedule,
-#     
-#     # Recovery
-#     RestoreEngine,
-#     PointInTimeRecovery,
-#     
-#     # Replication
-#     ReplicationManager,
-#     CrossRegionSync
-# )
-
-# Placeholder classes to avoid breaking other imports
-class BackupManager: pass
-class BackupSchedule: pass
-class RestoreEngine: pass
-class PointInTimeRecovery: pass
-class ReplicationManager: pass
-class CrossRegionSync: pass
+from .backup import (
+    # Backup management
+    BackupManager,
+    BackupSchedule,
+    
+    # Recovery
+    RestoreEngine,
+    PointInTimeRecovery,
+    
+    # Replication
+    ReplicationManager,
+    CrossRegionSync
+)
 
 # Version and metadata
 __version__ = "2.0.0"
