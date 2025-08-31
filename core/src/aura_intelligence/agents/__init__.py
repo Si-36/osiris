@@ -71,6 +71,14 @@ except ImportError:
 __version__ = "2.0.0"
 __author__ = "AURA Intelligence Team"
 
+# Aliases for backward compatibility
+AURAAgent = AURAProductionAgent
+AgentConfig = ProductionAgentConfig
+
+# Placeholders for expected imports
+LNNCouncilOrchestrator = None  # Not implemented yet
+agent_templates = {}  # Not implemented yet
+
 # Export main classes for easy import
 __all__ = [
     # Working agent implementations
@@ -87,6 +95,12 @@ __all__ = [
     "ProductionAgentState",
     "create_production_agent",
     "PRODUCTION_AGENTS_AVAILABLE",
+    
+    # Aliases for backward compatibility
+    "AURAAgent",
+    "AgentConfig",
+    "LNNCouncilOrchestrator",
+    "agent_templates",
     
     # Phase 2 New Base (commented out due to dependencies)
     # "AgentBase",

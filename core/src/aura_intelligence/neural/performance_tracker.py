@@ -23,7 +23,12 @@ import structlog
 
 from .provider_adapters import ProviderType, ProviderRequest, ProviderResponse
 from .model_router import RoutingDecision, RoutingContext
-from ..persistence import PersistenceManager
+# Use the causal persistence manager
+try:
+    from ..persistence.causal_state_manager import CausalPersistenceManager as PersistenceManager
+except ImportError:
+    # Fallback if persistence not available
+    PersistenceManager = None
 from ..observability import create_tracer, create_meter
 
 logger = structlog.get_logger(__name__)

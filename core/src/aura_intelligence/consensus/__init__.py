@@ -42,12 +42,14 @@ from .raft import (
 )
 # LogEntry is imported from types above
 
-# Temporarily commented out - byzantine.py is broken
-# from .byzantine import (
-#     ByzantineConsensus,
-#     BFTConfig
-#     # BFTMessage, HotStuffConsensus, BFTProof - not implemented yet
-# )
+from .byzantine import (
+    ByzantineConsensus,
+    BFTConfig,
+    BFTMessage,
+    BFTProof
+)
+# HotStuffConsensus not implemented yet - using ByzantineConsensus
+HotStuffConsensus = ByzantineConsensus
 
 # from .multi_raft import (
 #     MultiRaftConsensus,
@@ -64,12 +66,21 @@ from .raft import (
 #     SymbolicReasoner
 # ) - module not implemented yet
 
-from .workflows import (
-    ConsensusWorkflow,
-    ConsensusWorkflowInput,
-    ConsensusVotingWorkflow,
-    BFTConsensusWorkflow
-)
+# Workflows require temporalio
+try:
+    from .workflows import (
+        ConsensusWorkflow,
+        ConsensusWorkflowInput,
+        ConsensusVotingWorkflow,
+        BFTConsensusWorkflow
+    )
+    WORKFLOWS_AVAILABLE = True
+except ImportError:
+    ConsensusWorkflow = None
+    ConsensusWorkflowInput = None
+    ConsensusVotingWorkflow = None
+    BFTConsensusWorkflow = None
+    WORKFLOWS_AVAILABLE = False
 
 # from aura_intelligence.events import (
 #     ConsensusProposalEvent,
@@ -138,12 +149,12 @@ __all__ = [
         "RaftElectionWorkflow",
         "RaftReplicationWorkflow",
     
-    # Byzantine - temporarily commented out
-    #     "ByzantineConsensus",
-    #     "BFTConfig",
-    #     "BFTMessage",
-    #     "HotStuffConsensus",
-    #     "BFTProof",
+    # Byzantine
+        "ByzantineConsensus",
+        "BFTConfig",
+        "BFTMessage",
+        "HotStuffConsensus",
+        "BFTProof",
     
     # Multi-Raft
         "MultiRaftConsensus",
