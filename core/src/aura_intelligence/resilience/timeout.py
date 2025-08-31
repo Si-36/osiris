@@ -278,88 +278,88 @@ class TimeoutCalculator:
             self.config.percentile,
             operation
         )
-
-if percentile_value == 0:
-# No data, use default
-return self.config.default_timeout_ms
-
-# Apply multiplier
-timeout = percentile_value * self.config.percentile_multiplier
-
-# Clamp to bounds
-return max(
-self.config.min_timeout_ms,
-min(self.config.max_timeout_ms, timeout)
-)
+        
+        if percentile_value == 0:
+            # No data, use default
+            return self.config.default_timeout_ms
+        
+        # Apply multiplier
+        timeout = percentile_value * self.config.percentile_multiplier
+        
+        # Clamp to bounds
+        return max(
+            self.config.min_timeout_ms,
+            min(self.config.max_timeout_ms, timeout)
+        )
 
     async def _calculate_adaptive_timeout(self, operation: str) -> float:
-    """Calculate adaptive timeout with automatic adjustment."""
-# Get current timeout
-current_timeout = self.adaptive_timeouts.get(
-operation,
-await self._calculate_percentile_timeout(operation)
-)
-
-# Check if adjustment needed
-if await self._should_adjust_timeout(operation):
-new_timeout = await self._adjust_timeout(operation, current_timeout)
-self.adaptive_timeouts[operation] = new_timeout
-self.last_adjustment[operation] = datetime.now(timezone.utc)
-
-adaptive_adjustments.add(1, {
-"operation": operation,
-"direction": "increase" if new_timeout > current_timeout else "decrease"
-})
-
-logger.info(
-f"Adjusted timeout for {operation}",
-old_timeout=current_timeout,
-new_timeout=new_timeout
-)
-
-return new_timeout
-
-return current_timeout
+        """Calculate adaptive timeout with automatic adjustment."""
+        # Get current timeout
+        current_timeout = self.adaptive_timeouts.get(
+            operation,
+            await self._calculate_percentile_timeout(operation)
+        )
+        
+        # Check if adjustment needed
+        if await self._should_adjust_timeout(operation):
+            new_timeout = await self._adjust_timeout(operation, current_timeout)
+            self.adaptive_timeouts[operation] = new_timeout
+            self.last_adjustment[operation] = datetime.now(timezone.utc)
+            
+            adaptive_adjustments.add(1, {
+                "operation": operation,
+                "direction": "increase" if new_timeout > current_timeout else "decrease"
+            })
+            
+            logger.info(
+                f"Adjusted timeout for {operation}",
+                old_timeout=current_timeout,
+                new_timeout=new_timeout
+            )
+            
+            return new_timeout
+        
+        return current_timeout
 
     async def _should_adjust_timeout(self, operation: str) -> bool:
-    """Check if timeout should be adjusted."""
-# Don't adjust too frequently
-if operation in self.last_adjustment:
-time_since = datetime.now(timezone.utc) - self.last_adjustment[operation]
-if time_since < timedelta(minutes=1):
-return False
-
-# Check timeout effectiveness
-effectiveness = self.latency_tracker.get_timeout_effectiveness()
-
-# Adjust if too many timeouts or too conservative
-return effectiveness < 0.95 or effectiveness > 0.99
+        """Check if timeout should be adjusted."""
+        # Don't adjust too frequently
+        if operation in self.last_adjustment:
+            time_since = datetime.now(timezone.utc) - self.last_adjustment[operation]
+            if time_since < timedelta(minutes=1):
+                return False
+        
+        # Check timeout effectiveness
+        effectiveness = self.latency_tracker.get_timeout_effectiveness()
+        
+        # Adjust if too many timeouts or too conservative
+        return effectiveness < 0.95 or effectiveness > 0.99
 
     async def _adjust_timeout(self, operation: str, current: float) -> float:
-    """Adjust timeout based on observed behavior."""
+        """Adjust timeout based on observed behavior."""
         stats = await self.latency_tracker.get_stats(operation)
         effectiveness = self.latency_tracker.get_timeout_effectiveness()
-
-    if effectiveness < 0.95:  # Too many timeouts
-# Increase timeout
-# Use P99.9 if available, otherwise increase by 20%
-if stats["count"] > 100:
-new_timeout = stats["p99"] * 1.5
-    else:
-        new_timeout = current * 1.2
-    else:  # Too conservative
-# Decrease timeout
-# Use P95 as new target
-if stats["count"] > 100:
-new_timeout = stats["p95"] * 1.2
-    else:
-        new_timeout = current * 0.9
-
-# Clamp to bounds
-return max(
-self.config.min_timeout_ms,
-min(self.config.max_timeout_ms, new_timeout)
-)
+        
+        if effectiveness < 0.95:  # Too many timeouts
+            # Increase timeout
+            # Use P99.9 if available, otherwise increase by 20%
+            if stats["count"] > 100:
+                new_timeout = stats["p99"] * 1.5
+            else:
+                new_timeout = current * 1.2
+        else:  # Too conservative
+            # Decrease timeout
+            # Use P95 as new target
+            if stats["count"] > 100:
+                new_timeout = stats["p95"] * 1.2
+            else:
+                new_timeout = current * 0.9
+        
+        # Clamp to bounds
+        return max(
+            self.config.min_timeout_ms,
+            min(self.config.max_timeout_ms, new_timeout)
+        )
 
 
 class TimeoutBudget:
@@ -376,31 +376,29 @@ class TimeoutBudget:
         self.start_time = datetime.now(timezone.utc)
 
     def get_allocation(self, phase: str) -> float:
-    """Get timeout allocation for a phase."""
+        """Get timeout allocation for a phase."""
         if phase not in self.allocation:
-    raise ValueError(f"Unknown phase: {phase}")
-
+            raise ValueError(f"Unknown phase: {phase}")
+        
         return self.total_timeout_ms * self.allocation[phase]
 
     def consume(self, phase: str, duration_ms: float):
-    """Consume time from a phase's budget."""
+        """Consume time from a phase's budget."""
         self.consumed[phase] += duration_ms
 
     def remaining_for_phase(self, phase: str) -> float:
-    """Get remaining time for a phase."""
+        """Get remaining time for a phase."""
         allocated = self.get_allocation(phase)
         consumed = self.consumed.get(phase, 0)
         return max(0, allocated - consumed)
 
     def total_remaining(self) -> float:
-    """Get total remaining time."""
-    pass
+        """Get total remaining time."""
         elapsed = (datetime.now(timezone.utc) - self.start_time).total_seconds() * 1000
         return max(0, self.total_timeout_ms - elapsed)
 
     def is_exhausted(self) -> bool:
-    """Check if budget is exhausted."""
-    pass
+        """Check if budget is exhausted."""
         return self.total_remaining() <= 0
 
 
@@ -421,183 +419,182 @@ class AdaptiveTimeout:
         self.timeout_calculator = TimeoutCalculator(config, self.latency_tracker)
 
     async def execute(
-    self,
-    operation: Callable[..., T],
-*args,
-    timeout: Optional[timedelta] = None,
-    operation_name: Optional[str] = None,
-**kwargs
-) -> T:
-    """Execute operation with adaptive timeout."""
+        self,
+        operation: Callable[..., T],
+        *args,
+        timeout: Optional[timedelta] = None,
+        operation_name: Optional[str] = None,
+        **kwargs
+    ) -> T:
+        """Execute operation with adaptive timeout."""
         operation_name = operation_name or operation.__name__
 
-    with tracer.start_as_current_span("timeout.execute") as span:
-    span.set_attributes({
-"operation": operation_name,
-"strategy": self.config.strategy.value
-})
+        with tracer.start_as_current_span("timeout.execute") as span:
+            span.set_attributes({
+                "operation": operation_name,
+                "strategy": self.config.strategy.value
+            })
+            
+            # Get or create deadline context
+            context = deadline_context.get()
+            if context:
+                context.push_operation(operation_name)
+            
+            # Calculate timeout
+            if timeout:
+                timeout_ms = timeout.total_seconds() * 1000
+            else:
+                timeout_ms = await self.timeout_calculator.calculate_timeout(
+                    operation_name,
+                    context
+                )
+            
+            span.set_attribute("timeout_ms", timeout_ms)
+            
+            # Execute with timeout
+            start_time = datetime.now(timezone.utc)
+            
+            try:
+                result = await asyncio.wait_for(
+                    operation(*args, **kwargs),
+                    timeout=timeout_ms / 1000.0
+                )
+                
+                # Record successful execution
+                duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+                await self.latency_tracker.record_latency(
+                    operation_name,
+                    duration_ms,
+                    timed_out=False
+                )
+                
+                # Update deadline context
+                if context:
+                    context.consume(duration_ms)
+                    context.pop_operation()
+                
+                return result
+                
+            except asyncio.TimeoutError:
+                # Record timeout
+                duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+                await self.latency_tracker.record_latency(
+                    operation_name,
+                    duration_ms,
+                    timed_out=True
+                )
+                
+                timeout_triggered.add(1, {
+                    "operation": operation_name,
+                    "timeout_ms": timeout_ms
+                })
+                
+                timeout_duration.record(duration_ms, {
+                    "operation": operation_name
+                })
+                
+                # Check if deadline violated
+                if context and context.remaining_ms <= 0:
+                    deadline_violations.add(1, {
+                        "operation": operation_name
+                    })
+                
+                logger.warning(
+                    f"Operation timed out",
+                    operation=operation_name,
+                    timeout_ms=timeout_ms,
+                    duration_ms=duration_ms
+                )
+                
+                raise TimeoutException(
+                    f"Operation {operation_name} timed out after {timeout_ms}ms"
+                )
+                
+            except Exception:
+                # Update context on error
+                if context:
+                    duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+                    context.consume(duration_ms)
+                    context.pop_operation()
+                
+                raise
 
-# Get or create deadline context
-context = deadline_context.get()
-if context:
-context.push_operation(operation_name)
+    async def with_deadline(
+        self,
+        deadline: datetime,
+        operation: Callable[..., T],
+        *args,
+        **kwargs
+    ) -> T:
+        """Execute operation with absolute deadline."""
+        # Create deadline context
+        context = DeadlineContext(absolute_deadline=deadline)
+        
+        # Set context
+        token = deadline_context.set(context)
+        
+        try:
+            return await self.execute(operation, *args, **kwargs)
+        finally:
+            # Reset context
+            deadline_context.reset(token)
 
-# Calculate timeout
-if timeout:
-timeout_ms = timeout.total_seconds() * 1000
-    else:
-        timeout_ms = await self.timeout_calculator.calculate_timeout(
-    operation_name,
-    context
-)
-
-span.set_attribute("timeout_ms", timeout_ms)
-
-# Execute with timeout
-start_time = datetime.now(timezone.utc)
-
-    try:
-        result = await asyncio.wait_for(
-    operation(*args, **kwargs),
-        timeout=timeout_ms / 1000.0
-)
-
-# Record successful execution
-duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-await self.latency_tracker.record_latency(
-operation_name,
-duration_ms,
-timed_out=False
-)
-
-# Update deadline context
-if context:
-context.consume(duration_ms)
-context.pop_operation()
-
-return result
-
-except asyncio.TimeoutError:
-# Record timeout
-duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-await self.latency_tracker.record_latency(
-operation_name,
-duration_ms,
-timed_out=True
-)
-
-timeout_triggered.add(1, {
-"operation": operation_name,
-"timeout_ms": timeout_ms
-})
-
-timeout_duration.record(duration_ms, {
-"operation": operation_name
-})
-
-# Check if deadline violated
-if context and context.remaining_ms <= 0:
-deadline_violations.add(1, {
-"operation": operation_name
-})
-
-logger.warning(
-f"Operation timed out",
-operation=operation_name,
-timeout_ms=timeout_ms,
-duration_ms=duration_ms
-)
-
-raise TimeoutException(
-f"Operation {operation_name} timed out after {timeout_ms}ms"
-)
-
-except Exception:
-# Update context on error
-if context:
-duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-context.consume(duration_ms)
-context.pop_operation()
-
-raise
-
-async def with_deadline(
-    self,
-    deadline: datetime,
-    operation: Callable[..., T],
-*args,
-**kwargs
-) -> T:
-    """Execute operation with absolute deadline."""
-# Create deadline context
-context = DeadlineContext(absolute_deadline=deadline)
-
-# Set context
-token = deadline_context.set(context)
-
-    try:
-        return await self.execute(operation, *args, **kwargs)
-    finally:
-# Reset context
-deadline_context.reset(token)
-
-async def with_budget(
-    self,
-    total_timeout: timedelta,
-    operations: List[tuple[str, Callable, tuple, dict]],
-    allocation: Optional[Dict[str, float]] = None
-) -> List[Any]:
-    """Execute multiple operations with timeout budget."""
-    if not allocation:
-# Equal allocation by default
-allocation = {
-op[0]: 1.0 / len(operations)
-for op in operations
-}
-
-budget = TimeoutBudget(
-total_timeout.total_seconds() * 1000,
-allocation
-)
-
-results = []
-
-for phase, operation, args, kwargs in operations:
-if budget.is_exhausted():
-raise TimeoutException(f"Timeout budget exhausted at phase {phase}")
-
-# Get timeout for this phase
-phase_timeout_ms = budget.remaining_for_phase(phase)
-
-# Execute with phase timeout
-start_time = datetime.now(timezone.utc)
-
-result = await self.execute(
-operation,
-*args,
-timeout=timedelta(milliseconds=phase_timeout_ms),
-operation_name=phase,
-**kwargs
-)
-
-# Update budget
-duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-budget.consume(phase, duration_ms)
-
-results.append(result)
-
-return results
+    async def with_budget(
+        self,
+        total_timeout: timedelta,
+        operations: List[tuple[str, Callable, tuple, dict]],
+        allocation: Optional[Dict[str, float]] = None
+    ) -> List[Any]:
+        """Execute multiple operations with timeout budget."""
+        if not allocation:
+            # Equal allocation by default
+            allocation = {
+                op[0]: 1.0 / len(operations)
+                for op in operations
+            }
+        
+        budget = TimeoutBudget(
+            total_timeout.total_seconds() * 1000,
+            allocation
+        )
+        
+        results = []
+        
+        for phase, operation, args, kwargs in operations:
+            if budget.is_exhausted():
+                raise TimeoutException(f"Timeout budget exhausted at phase {phase}")
+            
+            # Get timeout for this phase
+            phase_timeout_ms = budget.remaining_for_phase(phase)
+            
+            # Execute with phase timeout
+            start_time = datetime.now(timezone.utc)
+            
+            result = await self.execute(
+                operation,
+                *args,
+                timeout=timedelta(milliseconds=phase_timeout_ms),
+                operation_name=phase,
+                **kwargs
+            )
+            
+            # Update budget
+            duration_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+            budget.consume(phase, duration_ms)
+            
+            results.append(result)
+        
+        return results
 
     def get_metrics(self) -> Dict[str, Any]:
-    """Get timeout metrics."""
-    pass
+        """Get timeout metrics."""
         return {
-"latency_stats": asyncio.run(self.latency_tracker.get_stats()),
-"timeout_effectiveness": self.latency_tracker.get_timeout_effectiveness(),
-"adaptive_timeouts": dict(self.timeout_calculator.adaptive_timeouts),
-"timeout_count": self.latency_tracker.timeout_count,
-"successful_count": self.latency_tracker.successful_count
-}
+            "latency_stats": asyncio.run(self.latency_tracker.get_stats()),
+            "timeout_effectiveness": self.latency_tracker.get_timeout_effectiveness(),
+            "adaptive_timeouts": dict(self.timeout_calculator.adaptive_timeouts),
+            "timeout_count": self.latency_tracker.timeout_count,
+            "successful_count": self.latency_tracker.successful_count
+        }
 
 
 class TimeoutException(Exception):
@@ -625,18 +622,18 @@ def with_timeout(
     """
     def decorator(func):
         config = TimeoutConfig(
-        strategy=strategy,
-        default_timeout_ms=timeout.total_seconds() * 1000 if timeout else 5000
-)
-timeout_handler = AdaptiveTimeout(config)
-
-    async def wrapper(*args, **kwargs):
-        return await timeout_handler.execute(
-    func,
-*args,
-timeout=timeout,
-**kwargs
-)
-
-return wrapper
-return decorator
+            strategy=strategy,
+            default_timeout_ms=timeout.total_seconds() * 1000 if timeout else 5000
+        )
+        timeout_handler = AdaptiveTimeout(config)
+        
+        async def wrapper(*args, **kwargs):
+            return await timeout_handler.execute(
+                func,
+                *args,
+                timeout=timeout,
+                **kwargs
+            )
+        
+        return wrapper
+    return decorator
