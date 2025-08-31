@@ -288,10 +288,8 @@ class FallbackAgent(AgentBase[TInput, TOutput, TState], Generic[TInput, TOutput,
         """Extract output using primary agent."""
         return self.primary_agent._extract_output(final_state)
     
-        async def health_check(self) -> Dict[str, Any]:
-            pass
+    async def health_check(self) -> Dict[str, Any]:
         """Check health of fallback system."""
-        pass
         health = await super().health_check()
         
         # Add circuit breaker status
