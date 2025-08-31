@@ -42,11 +42,12 @@ from .raft import (
 )
 # LogEntry is imported from types above
 
-from .byzantine import (
-    ByzantineConsensus,
-    BFTConfig
-    # BFTMessage, HotStuffConsensus, BFTProof - not implemented yet
-)
+# Temporarily commented out - byzantine.py is broken
+# from .byzantine import (
+#     ByzantineConsensus,
+#     BFTConfig
+#     # BFTMessage, HotStuffConsensus, BFTProof - not implemented yet
+# )
 
 # from .multi_raft import (
 #     MultiRaftConsensus,
@@ -137,12 +138,12 @@ __all__ = [
         "RaftElectionWorkflow",
         "RaftReplicationWorkflow",
     
-    # Byzantine
-        "ByzantineConsensus",
-        "BFTConfig",
-        "BFTMessage",
-        "HotStuffConsensus",
-        "BFTProof",
+    # Byzantine - temporarily commented out
+    #     "ByzantineConsensus",
+    #     "BFTConfig",
+    #     "BFTMessage",
+    #     "HotStuffConsensus",
+    #     "BFTProof",
     
     # Multi-Raft
         "MultiRaftConsensus",
