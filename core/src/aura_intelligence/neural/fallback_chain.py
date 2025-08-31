@@ -27,7 +27,7 @@ from .provider_adapters import (
 )
 from .model_router import RoutingDecision, RoutingContext
 from ..observability import create_tracer, create_meter
-from ..resilience import CircuitBreaker, HealthChecker
+from ..resilience import CircuitBreaker
 
 logger = structlog.get_logger(__name__)
 tracer = create_tracer("fallback_chain")

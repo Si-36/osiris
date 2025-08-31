@@ -26,6 +26,9 @@ CircuitBreakerState,
 CircuitBreakerConfig
 )
 
+# Alias for backward compatibility
+CircuitBreaker = AdaptiveCircuitBreaker
+
 from .bulkhead import (
 DynamicBulkhead,
 BulkheadConfig,
@@ -388,6 +391,7 @@ __all__ = [
 
 # Circuit breaker
 "AdaptiveCircuitBreaker",
+"CircuitBreaker",  # Alias for backward compatibility
 "CircuitBreakerState",
 "CircuitBreakerConfig",
 
