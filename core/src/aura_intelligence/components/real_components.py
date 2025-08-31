@@ -700,19 +700,16 @@ class RealLNNComponent(RealComponent):
             self.integration_time = torch.tensor([0, 1]).float()
             self.real_implementation = True
         except ImportError:
-                    pass
-                self.real_implementation = False
+            pass
+        self.real_implementation = False
     
-                async def process(self, data: Any) -> Dict[str, Any]:
-                    pass
-                if not self.real_implementation:
-                    pass
-                return {'error': 'Install ncps or torchdiffeq for real LNN'}
+    async def process(self, data: Any) -> Dict[str, Any]:
+        if not self.real_implementation:
+            return {'error': 'Install ncps or torchdiffeq for real LNN'}
         
-                if isinstance(data, dict) and 'values' in data:
-                    pass
-                values = torch.tensor(data['values'], dtype=torch.float32)
-                if values.dim() == 1:
+        if isinstance(data, dict) and 'values' in data:
+            values = torch.tensor(data['values'], dtype=torch.float32)
+            if values.dim() == 1:
                     pass
                 values = values.unsqueeze(0)
             
