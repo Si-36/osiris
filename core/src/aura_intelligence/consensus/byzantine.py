@@ -151,7 +151,6 @@ class BFTVoteCollector:
     
     def get_byzantine_nodes(self) -> Set[str]:
         """Detect nodes with conflicting votes."""
-        pass
         byzantine = set()
         for voter_id, votes in self.vote_history.items():
             # Check for conflicting votes in same phase/view/sequence
