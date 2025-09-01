@@ -110,19 +110,28 @@ from .security import (
 )
 
 # Backup and recovery
-from .backup import (
-    # Backup management
-    BackupManager,
-    BackupSchedule,
-    
-    # Recovery
-    RestoreEngine,
-    PointInTimeRecovery,
-    
-    # Replication
-    ReplicationManager,
-    CrossRegionSync
-)
+try:
+    from .backup import (
+        # Backup management
+        BackupManager,
+        BackupSchedule,
+        
+        # Recovery
+        RestoreEngine,
+        PointInTimeRecovery,
+        
+        # Replication
+        ReplicationManager,
+        CrossRegionSync
+    )
+except ImportError:
+    # Fallback if backup module not available
+    BackupManager = None
+    BackupSchedule = None
+    RestoreEngine = None
+    PointInTimeRecovery = None
+    ReplicationManager = None
+    CrossRegionSync = None
 
 # Version and metadata
 __version__ = "2.0.0"
@@ -209,15 +218,18 @@ __all__ = [
     'DataResidencyManager',
     'RowLevelSecurity',
     
-    # Backup
-    'BackupManager',
-    'BackupSchedule',
-    'RestoreEngine',
-    'PointInTimeRecovery',
-    'ReplicationManager',
-    'CrossRegionSync',
-    
     # Convenience
     'initialize_persistence',
     'get_default_registry'
 ]
+
+# Add backup items if available
+if BackupManager is not None:
+    __all__.extend([
+        'BackupManager',
+        'BackupSchedule',
+        'RestoreEngine',
+        'PointInTimeRecovery',
+        'ReplicationManager',
+        'CrossRegionSync'
+    ])
