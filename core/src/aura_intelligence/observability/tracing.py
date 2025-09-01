@@ -130,6 +130,12 @@ if not OPENTELEMETRY_AVAILABLE:
                 return data[:]
             else:
                 return [data]
+        
+        def set_status(self, status):
+            pass
+        
+        def record_exception(self, exc):
+            pass
 
         def __enter__(self):
             return self
@@ -161,9 +167,31 @@ if not OPENTELEMETRY_AVAILABLE:
         def start_as_current_span(self, *args, **kwargs):
             return MockSpan()
     
+    class MockSpanKind:
+        INTERNAL = 0
+        SERVER = 1
+        CLIENT = 2
+        PRODUCER = 3
+        CONSUMER = 4
+    
+    class MockStatusCode:
+        UNSET = 0
+        OK = 1
+        ERROR = 2
+    
+    class MockStatus:
+        def __init__(self, status_code=None, description=None):
+            self.status_code = status_code
+            self.description = description
+    
+    # Make Status and StatusCode available globally when OpenTelemetry is not available
+    Status = MockStatus
+    StatusCode = MockStatusCode
+    
     trace = type('trace', (), {
         'get_tracer': lambda *args: MockTracer(),
         'Tracer': MockTracer,
+        'SpanKind': MockSpanKind,
         'get_current_span': lambda *args: MockSpan()
     })()
 
@@ -342,7 +370,7 @@ class OpenTelemetryManager:
         self,
         operation_name: str,
         attributes: Optional[Dict[str, Any]] = None,
-        kind: trace.SpanKind = trace.SpanKind.INTERNAL
+        kind = None
     ):
         """
         Context manager for tracing operations
@@ -352,6 +380,9 @@ class OpenTelemetryManager:
             # Your code here
             pass
         """
+        if kind is None:
+            kind = trace.SpanKind.INTERNAL if OPENTELEMETRY_AVAILABLE else 0
+        
         tracer = self.get_tracer()
 
         with tracer.start_as_current_span(
