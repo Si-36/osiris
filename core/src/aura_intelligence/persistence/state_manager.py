@@ -149,15 +149,13 @@ class StatePersistenceManager:
     async def _cleanup_old_checkpoints(self):
         try:
             checkpoint_files = [f for f in os.listdir(self.storage_path) if f.endswith('.checkpoint')]
-        checkpoint_files.sort(reverse=True)
+            checkpoint_files.sort(reverse=True)
             
-        for old_checkpoint in checkpoint_files[self.max_snapshots:]:
-            pass
-        old_path = os.path.join(self.storage_path, old_checkpoint)
-        os.remove(old_path)
+            for old_checkpoint in checkpoint_files[self.max_snapshots:]:
+                old_path = os.path.join(self.storage_path, old_checkpoint)
+                os.remove(old_path)
         except Exception as e:
-            pass
-        logger.warning(f"Checkpoint cleanup failed: {e}")
+            logger.warning(f"Checkpoint cleanup failed: {e}")
     
     def _calculate_checksum(self, data: Dict[str, Any]) -> str:
         import hashlib
