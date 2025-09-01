@@ -69,6 +69,9 @@ class SimpleMeter:
         
     def create_histogram(self, name: str, **kwargs):
         return SimpleHistogram(name)
+    
+    def create_gauge(self, name: str, **kwargs):
+        return SimpleGauge(name)
 
 class SimpleCounter:
     def __init__(self, name: str):
@@ -84,6 +87,17 @@ class SimpleHistogram:
         
     def record(self, value: float, **kwargs):
         pass
+
+class SimpleGauge:
+    def __init__(self, name: str):
+        self.name = name
+        self.value = 0.0
+        
+    def set(self, value: float, **kwargs):
+        self.value = value
+    
+    def get(self):
+        return self.value
 
 # Simple observability core
 class NeuralObservabilityCore:
