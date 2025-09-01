@@ -203,10 +203,8 @@ class AdaptiveCheckpointCoalescer:
             
         return False
     
-        async def _coalescing_loop(self):
-            pass
+    async def _coalescing_loop(self):
         """Background task for adaptive coalescing"""
-        pass
         while self._running:
             try:
                 # Adaptive sleep based on current interval
