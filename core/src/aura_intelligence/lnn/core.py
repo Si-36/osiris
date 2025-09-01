@@ -63,11 +63,11 @@ class WiringConfig:
         if self.wiring_type == "random":
             mask = torch.rand(out_features, in_features) > self.sparsity
         elif self.wiring_type == "small_world":
-        mask = self._small_world_mask(in_features, out_features)
+            mask = self._small_world_mask(in_features, out_features)
         elif self.wiring_type == "scale_free":
-        mask = self._scale_free_mask(in_features, out_features)
+            mask = self._scale_free_mask(in_features, out_features)
         else:
-        raise ValueError(f"Unknown wiring type: {self.wiring_type}")
+            raise ValueError(f"Unknown wiring type: {self.wiring_type}")
         
         # Ensure self-connections if specified
         if self.self_connections and in_features == out_features:
