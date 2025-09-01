@@ -102,15 +102,15 @@ class WiringConfig:
         # Preferential attachment
         n_edges = int((1 - self.sparsity) * in_features * out_features)
         for _ in range(n_edges):
-        # Sample based on degree
-        probs = degrees / degrees.sum()
-        i = torch.multinomial(probs[:out_features], 1).item()
-        j = torch.multinomial(probs[:in_features], 1).item()
+            # Sample based on degree
+            probs = degrees / degrees.sum()
+            i = torch.multinomial(probs[:out_features], 1).item()
+            j = torch.multinomial(probs[:in_features], 1).item()
             
-        mask[i, j] = 1
-        degrees[i] += 1
-        if j < len(degrees):
-            degrees[j] += 1
+            mask[i, j] = 1
+            degrees[i] += 1
+            if j < len(degrees):
+                degrees[j] += 1
         
         return mask
 
