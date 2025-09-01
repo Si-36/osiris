@@ -100,7 +100,6 @@ class SignalFirstRouter:
         logger.info("SignalFirstRouter initialized with 20ms latency reduction target")
     
         async def start(self):
-            pass
         """Start the SignalFirst router"""
         pass
         if self._running:
@@ -114,10 +113,8 @@ class SignalFirstRouter:
             
         logger.info("SignalFirst router started")
     
-        async def stop(self):
-            pass
+    async def stop(self):
         """Stop the SignalFirst router"""
-        pass
         self._running = False
         
         if self._routing_task:
@@ -199,8 +196,7 @@ class SignalFirstRouter:
         # Batch if explicitly marked or low priority
         return metadata.batch_key is not None or metadata.priority == SignalPriority.BATCH
     
-        async def _add_to_batch(self, metadata: SignalMetadata, signal_data: Any):
-            pass
+    async def _add_to_batch(self, metadata: SignalMetadata, signal_data: Any):
         """Add signal to batch accumulator"""
         batch_key = metadata.batch_key or metadata.signal_type
         key = f"{metadata.workflow_id}:{batch_key}"
@@ -260,7 +256,6 @@ class SignalFirstRouter:
         return base_score
     
         async def _routing_loop(self):
-            pass
         """Background task for signal routing"""
         pass
         while self._running:
@@ -307,7 +302,6 @@ class SignalFirstRouter:
             ])
     
         async def _batching_loop(self):
-            pass
         """Background task for signal batching"""
         pass
         while self._running:
@@ -322,7 +316,6 @@ class SignalFirstRouter:
                 logger.error(f"Error in batching loop: {e}")
     
         async def _flush_all_batches(self):
-            pass
         """Flush all accumulated batches"""
         pass
         keys = list(self.batch_accumulator.keys())
@@ -428,7 +421,6 @@ class SignalFirstRouter:
         )
     
         async def _flush_all_signals(self):
-            pass
         """Flush all pending signals"""
         pass
         # Flush batches first
@@ -505,10 +497,8 @@ class OptimizedWorkflow:
         self.signals_processed = 0
     
     @workflow.run
-        async def run(self):
-            pass
+    async def run(self):
         """Main workflow logic"""
-        pass
         while True:
             # Process signals efficiently
             await workflow.wait_condition(lambda: self.signals_processed > 0)
@@ -520,20 +510,18 @@ class OptimizedWorkflow:
             self.signals_processed = 0
     
     @workflow.signal
-        async def process_signal(self, data: Dict[str, Any]):
-            pass
+    async def process_signal(self, data: Dict[str, Any]):
         """Handle incoming signals"""
         self.signals_processed += 1
         self.state.update(data)
 
 
 # Factory function
-    def create_signalfirst_router(**kwargs) -> SignalFirstRouter:
-        """Create SignalFirst router with feature flag support"""
-        from ..feature_flags import is_feature_enabled, FeatureFlag
+def create_signalfirst_router(**kwargs) -> SignalFirstRouter:
+    """Create SignalFirst router with feature flag support"""
+    from ..feature_flags import is_feature_enabled, FeatureFlag
     
-        if not is_feature_enabled(FeatureFlag.TEMPORAL_SIGNALFIRST_ENABLED):
-            pass
+    if not is_feature_enabled(FeatureFlag.TEMPORAL_SIGNALFIRST_ENABLED):
         raise RuntimeError("Temporal SignalFirst is not enabled. Enable with feature flag.")
     
-        return SignalFirstRouter(**kwargs)
+    return SignalFirstRouter(**kwargs)
