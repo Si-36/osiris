@@ -115,7 +115,7 @@ class WiringConfig:
         return mask
 
 
-    @dataclass
+@dataclass
 class LiquidConfig:
     """Configuration for liquid neural networks."""
     # Neuron dynamics
