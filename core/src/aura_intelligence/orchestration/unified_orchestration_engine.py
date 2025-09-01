@@ -20,31 +20,26 @@ from datetime import datetime, timedelta
 from enum import Enum
 import structlog
 
-# LangGraph imports (optional)
+logger = structlog.get_logger(__name__)
+
+# LangGraph imports
+from langgraph.graph import StateGraph, END
 try:
-    from langgraph.graph import StateGraph, END
     from langgraph.checkpoint.postgres import PostgresSaver
     from langgraph.store.postgres import PostgresStore
-    from langchain_core.messages import BaseMessage
-    LANGGRAPH_AVAILABLE = True
+    POSTGRES_CHECKPOINT_AVAILABLE = True
 except ImportError:
-    LANGGRAPH_AVAILABLE = False
-    StateGraph = None
-    END = None
+    # Postgres checkpoint is optional - use memory checkpointer instead
     PostgresSaver = None
     PostgresStore = None
-    BaseMessage = None
+    POSTGRES_CHECKPOINT_AVAILABLE = False
+    logger.warning("langgraph-checkpoint-postgres not installed, using memory checkpointer")
+    
+from langchain_core.messages import BaseMessage
 
-# Temporal imports (optional)
-try:
-    from temporalio import workflow, activity
-    from temporalio.client import Client as TemporalClient
-    TEMPORAL_AVAILABLE = True
-except ImportError:
-    TEMPORAL_AVAILABLE = False
-    workflow = None
-    activity = None
-    TemporalClient = None
+# Temporal imports
+from temporalio import workflow, activity
+from temporalio.client import Client as TemporalClient
 
 # Internal imports
 from .temporal_signalfirst import SignalFirstOrchestrator, SignalPriority
@@ -138,12 +133,6 @@ class UnifiedOrchestrationEngine:
     def __init__(self, config: Optional[OrchestrationConfig] = None):
         self.config = config or OrchestrationConfig()
         
-        # Warn if dependencies are missing
-        if not LANGGRAPH_AVAILABLE:
-            logger.warning("LangGraph not available - orchestration features will be limited")
-        if not TEMPORAL_AVAILABLE:
-            logger.warning("Temporal not available - workflow features will be limited")
-        
         # Core components
         self.postgres_saver: Optional[PostgresSaver] = None
         self.postgres_store: Optional[PostgresStore] = None
@@ -233,8 +222,9 @@ class UnifiedOrchestrationEngine:
     
     async def _setup_postgres_persistence(self):
         """Setup PostgreSQL for LangGraph persistence"""
-        if not LANGGRAPH_AVAILABLE:
-            logger.warning("LangGraph not available, skipping PostgreSQL persistence setup")
+        if not POSTGRES_CHECKPOINT_AVAILABLE:
+            logger.warning("PostgreSQL checkpoint not available, using in-memory checkpointer")
+            # TODO: Setup memory checkpointer as fallback
             return
             
         # Create PostgresSaver for checkpoints
