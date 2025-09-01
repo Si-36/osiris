@@ -7,6 +7,11 @@ Built on your proven schema foundation.
 
 # from .workflows import CollectiveWorkflow  
 from .checkpoints import WorkflowCheckpointManager
+from .unified_orchestration_engine import (
+    UnifiedOrchestrationEngine,
+    OrchestrationConfig,
+    WorkflowDefinition
+)
 
 try:
     from .langgraph_workflows import AURACollectiveIntelligence, AgentState
@@ -19,6 +24,9 @@ except ImportError:
 __all__ = [
     # "CollectiveWorkflow",  
     "WorkflowCheckpointManager",
+    "UnifiedOrchestrationEngine",
+    "OrchestrationConfig",
+    "WorkflowDefinition",
     "AURACollectiveIntelligence",
     "AgentState"
 ]

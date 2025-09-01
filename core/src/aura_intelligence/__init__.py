@@ -52,8 +52,8 @@ from .tda import (
 from .orchestration import (
     UnifiedOrchestrationEngine,
     OrchestrationConfig,
-    Pipeline,
-    PipelineStatus,
+    WorkflowDefinition,
+    WorkflowCheckpointManager,
 )
 
 # 5. Swarm Intelligence - Collective Coordination
@@ -168,8 +168,8 @@ __all__ = [
     # Orchestration
     "UnifiedOrchestrationEngine",
     "OrchestrationConfig",
-    "Pipeline",
-    "PipelineStatus",
+    "WorkflowDefinition",
+    "WorkflowCheckpointManager",
     
     # Swarm Intelligence
     "SwarmCoordinator",
