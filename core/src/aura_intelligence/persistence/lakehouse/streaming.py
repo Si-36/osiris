@@ -421,12 +421,13 @@ class CDCSink:
                 await asyncio.sleep(self.config.metrics_interval_ms / 1000)
                 
                 # Log current metrics
-                logger.info(f"CDC Metrics: {json.dumps({
+                metrics_data = {
                     'messages_processed': self.metrics.messages_processed,
                     'messages_per_second': self.metrics.messages_per_second,
                     'avg_latency_ms': self.metrics.avg_latency_ms,
                     'error_count': self.metrics.error_count
-                })}")
+                }
+                logger.info(f"CDC Metrics: {json.dumps(metrics_data)}")
                 
             except Exception as e:
                 logger.error(f"Metrics reporting error: {e}")

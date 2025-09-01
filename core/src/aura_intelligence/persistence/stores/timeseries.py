@@ -177,7 +177,8 @@ class TimeSeriesQuery:
         if self.aggregation and self.group_by_time:
             window_clause = f'every: {self.group_by_time}'
             if self.group_by_tags:
-                column_clause = f'column: ["_time", {", ".join(f'"{t}"' for t in self.group_by_tags)}]'
+                columns = ["_time"] + [f'"{t}"' for t in self.group_by_tags]
+                column_clause = f'column: [{", ".join(columns)}]'
             else:
                 column_clause = 'column: "_time"'
                 
