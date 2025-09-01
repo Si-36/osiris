@@ -4,6 +4,7 @@ LNN Training - Minimal implementation for compatibility
 
 import torch
 import torch.nn as nn
+from typing import Dict, Any
 
 class LiquidTrainer:
     """Liquid Neural Network trainer."""

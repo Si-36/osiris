@@ -212,12 +212,12 @@ class LiquidNeuron(nn.Module):
         }
         return activations[activation_type]
     
-        def forward(
+    def forward(
         self,
         input_current: torch.Tensor,
         state: Optional[torch.Tensor] = None,
         dt: Optional[float] = None
-        ) -> Tuple[torch.Tensor, torch.Tensor]:
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Forward pass computing liquid dynamics.
         
@@ -315,12 +315,12 @@ class LiquidNeuron(nn.Module):
             recurrent = F.linear(self.activation(s), masked_weight.t())
             if self.bias is not None:
                 # Ensure bias dimensions match recurrent tensor
-            if self.bias.shape[0] == recurrent.shape[-1]:
-                recurrent = recurrent + self.bias
-            else:
-            # Reshape bias to match recurrent dimensions
-            bias_expanded = self.bias[:recurrent.shape[-1]] if self.bias.shape[0] > recurrent.shape[-1] else self.bias
-            recurrent = recurrent + bias_expanded
+                if self.bias.shape[0] == recurrent.shape[-1]:
+                    recurrent = recurrent + self.bias
+                else:
+                    # Reshape bias to match recurrent dimensions
+                    bias_expanded = self.bias[:recurrent.shape[-1]] if self.bias.shape[0] > recurrent.shape[-1] else self.bias
+                    recurrent = recurrent + bias_expanded
             # Ensure dimension compatibility
             if i.shape[-1] != decay.shape[-1]:
                 if not hasattr(self, 'input_projection'):
@@ -340,10 +340,10 @@ class LiquidNeuron(nn.Module):
             return state + (dt / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
     
     def reset_state(self, batch_size: Optional[int] = None):
-                """Reset neuron state."""
-            if batch_size is None:
-                self.state.zero_()
-            else:
+        """Reset neuron state."""
+        if batch_size is None:
+            self.state.zero_()
+        else:
             return torch.zeros(batch_size, self.output_size, device=self.state.device)
 
 
@@ -561,16 +561,16 @@ class LiquidNeuralNetwork(nn.Module):
         sparsity_stats = {}
         
         for i, layer in enumerate(self.layers):
-        mask = layer.neurons.mask
-        sparsity = 1.0 - (mask.sum() / mask.numel()).item()
-        sparsity_stats[f"layer_{i}"] = sparsity
+            mask = layer.neurons.mask
+            sparsity = 1.0 - (mask.sum() / mask.numel()).item()
+            sparsity_stats[f"layer_{i}"] = sparsity
         
         sparsity_stats["average"] = np.mean(list(sparsity_stats.values()))
         
         return sparsity_stats
     
     def prune_connections(self, threshold: float = 0.01):
-            """Prune weak connections below threshold."""
+        """Prune weak connections below threshold."""
         pruned_count = 0
         
         for layer in self.layers:
@@ -604,25 +604,25 @@ class LiquidNeuralNetwork(nn.Module):
         }
         
         for i, layer_data in enumerate(dynamics["layers"]):
-        states = layer_data["states"]
-        tau = layer_data["tau"]
-            
-        # Compute statistics
-        layer_analysis = {
-        "mean_activation": states.mean().item(),
-        "std_activation": states.std().item(),
-        "mean_tau": tau.mean().item(),
-        "tau_range": (tau.min().item(), tau.max().item()),
-        "state_norm": states.norm(dim=-1).mean().item()
-        }
-            
-        # Check for stability
-        if states.max().item() > 100 or torch.isnan(states).any():
-            layer_analysis["stability"] = "unstable"
-        else:
-        layer_analysis["stability"] = "stable"
-            
-        analysis["layer_dynamics"].append(layer_analysis)
+            states = layer_data["states"]
+            tau = layer_data["tau"]
+                
+            # Compute statistics
+            layer_analysis = {
+                "mean_activation": states.mean().item(),
+                "std_activation": states.std().item(),
+                "mean_tau": tau.mean().item(),
+                "tau_range": (tau.min().item(), tau.max().item()),
+                "state_norm": states.norm(dim=-1).mean().item()
+            }
+                
+            # Check for stability
+            if states.max().item() > 100 or torch.isnan(states).any():
+                layer_analysis["stability"] = "unstable"
+            else:
+                layer_analysis["stability"] = "stable"
+                
+            analysis["layer_dynamics"].append(layer_analysis)
         
         # Overall stability
         all_stable = all(
@@ -634,8 +634,7 @@ class LiquidNeuralNetwork(nn.Module):
         return analysis
     
     def reset_states(self):
-            """Reset all neuron states in the network."""
-        pass
+        """Reset all neuron states in the network."""
         for layer in self.layers:
             layer.neurons.reset_state()
     

@@ -210,12 +210,12 @@ def liquid_dynamics(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
         """Compatibility function for liquid dynamics."""
         dynamics = LiquidDynamics()
         if len(args) >= 3:
-        return dynamics.dynamics_fn(state, args[0], args[1], args[2])
+            return dynamics.dynamics_fn(state, args[0], args[1], args[2])
         return state
 
-    def compute_gradients(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
-        """Compatibility function for gradient computation."""
-        return torch.autograd.grad(state.sum(), state, create_graph=True)[0] if state.requires_grad else torch.zeros_like(state)
+def compute_gradients(state: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+    """Compatibility function for gradient computation."""
+    return torch.autograd.grad(state.sum(), state, create_graph=True)[0] if state.requires_grad else torch.zeros_like(state)
 
 # Export main classes
 __all__ = [
