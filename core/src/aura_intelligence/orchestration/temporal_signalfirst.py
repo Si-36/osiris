@@ -374,8 +374,7 @@ class SignalFirstRouter:
         
         await self._send_signal(batch_metadata, batch_signal)
     
-        async def _send_signal(self, metadata: SignalMetadata, signal_data: Any):
-            pass
+    async def _send_signal(self, metadata: SignalMetadata, signal_data: Any):
         """Send signal to Temporal workflow"""
         start_time = time.time()
         
@@ -383,7 +382,6 @@ class SignalFirstRouter:
             # Compress if needed
             if (self.config.enable_compression and 
                 metadata.size_bytes > self.config.compression_threshold_bytes):
-                    pass
                 signal_data = self._compress_signal(signal_data)
             
             # Send to Temporal (simulated for now)
