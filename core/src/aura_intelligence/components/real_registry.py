@@ -10,7 +10,7 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 import json
-from .real_components import create_real_component, RealComponent as BaseRealComponent
+from .real_components_fixed import create_real_component, RealComponent as BaseRealComponent
 
 # Import new components from pestre.md
 try:
