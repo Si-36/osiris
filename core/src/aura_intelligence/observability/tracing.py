@@ -5,7 +5,7 @@ OpenTelemetry integration for distributed tracing
 import asyncio
 from functools import wraps
 from contextlib import contextmanager
-from typing import Optional, Dict, Any, List, Callable
+from typing import Optional, Dict, Any, List, Callable, TYPE_CHECKING
 import time
 import logging
 
@@ -154,7 +154,18 @@ if not OPENTELEMETRY_AVAILABLE:
         'SamplingResult': MockSamplingResult,
         'Decision': MockDecision
     })()
-    trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
+    # Create mock trace module with Tracer class
+    class MockTracer:
+        def start_span(self, *args, **kwargs):
+            return MockSpan()
+        def start_as_current_span(self, *args, **kwargs):
+            return MockSpan()
+    
+    trace = type('trace', (), {
+        'get_tracer': lambda *args: MockTracer(),
+        'Tracer': MockTracer,
+        'get_current_span': lambda *args: MockSpan()
+    })()
 
 
 class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampler):
@@ -320,7 +331,7 @@ class OpenTelemetryManager:
         except Exception as e:
             logger.warning(f"Some auto-instrumentation failed: {e}")
 
-    def get_tracer(self, name: str = None) -> trace.Tracer:
+    def get_tracer(self, name: str = None):
         """Get a tracer instance"""
         if name is None:
             name = self.config.service_name
@@ -417,7 +428,7 @@ def initialize_tracing(config: ObservabilityConfig):
     return _manager
 
 
-def get_tracer(name: str = None) -> trace.Tracer:
+def get_tracer(name: str = None):
     """Get a tracer instance"""
     if _manager:
         return _manager.get_tracer(name)
