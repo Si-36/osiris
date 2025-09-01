@@ -90,7 +90,11 @@ if not OPENTELEMETRY_AVAILABLE:
             return result
 
         def should_sample(self, *args, **kwargs):
-            return None
+            # Return a mock sampling result that always samples
+            return type('MockSamplingResult', (), {
+                'decision': 1,  # RECORD_AND_SAMPLE
+                'attributes': {}
+            })()
 
     class MockSpan:
         """Mock span when OpenTelemetry is not available"""
@@ -134,7 +138,22 @@ if not OPENTELEMETRY_AVAILABLE:
             return None
 
     # Set fallback base classes
-    sampling = type('sampling', (), {'Sampler': MockSampler})()
+    class MockSamplingResult:
+        """Mock SamplingResult for when OpenTelemetry is not available"""
+        def __init__(self, decision=None, attributes=None):
+            self.decision = decision
+            self.attributes = attributes or {}
+    
+    class MockDecision:
+        RECORD_AND_SAMPLE = 1
+        DROP = 0
+    
+    # Create mock sampling module with all needed attributes
+    sampling = type('sampling', (), {
+        'Sampler': MockSampler,
+        'SamplingResult': MockSamplingResult,
+        'Decision': MockDecision
+    })()
     trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
 
 
