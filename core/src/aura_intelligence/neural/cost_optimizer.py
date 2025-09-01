@@ -24,7 +24,7 @@ from pathlib import Path
 
 from .provider_adapters import ProviderType, ModelConfig, ProviderRequest
 from .model_router import RoutingContext, RoutingPolicy
-from ..persistence import PersistenceManager
+from ..persistence.state_manager import StatePersistenceManager
 from ..observability import create_tracer, create_meter
 
 logger = structlog.get_logger(__name__)
@@ -342,7 +342,7 @@ class ModelCostDatabase:
 class CostOptimizer:
     """Main cost optimization engine"""
     
-    def __init__(self, persistence: Optional[PersistenceManager] = None):
+    def __init__(self, persistence: Optional[StatePersistenceManager] = None):
         self.persistence = persistence
         self.cost_db = ModelCostDatabase()
         
