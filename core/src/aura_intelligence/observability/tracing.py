@@ -99,62 +99,38 @@ if not OPENTELEMETRY_AVAILABLE:
             import time
             import numpy as np
 
-start_time = time.time()
+            start_time = time.time()
 
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
+            # Validate input
+            if not data:
+                return {'error': 'No input data provided', 'status': 'failed'}
 
-# Process data
-processed_data = self._process_data(data)
+            # Process data
+            processed_data = self._process_data(data)
 
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
+            # Generate result
+            result = {
+                'status': 'success',
+                'processed_count': len(processed_data),
+                'processing_time': time.time() - start_time,
+                'data': processed_data
+            }
 
-return result
+            return result
 
-def _process_data(self, data):
-"""Process the data"""
-if isinstance(data, dict):
-return {k: v for k, v in data.items()}
-elif isinstance(data, list):
-return data[:]
-else:
-return [data]
+        def _process_data(self, data):
+            """Process the data"""
+            if isinstance(data, dict):
+                return {k: v for k, v in data.items()}
+            elif isinstance(data, list):
+                return data[:]
+            else:
+                return [data]
 
-def __enter__(self):
-return self
+        def __enter__(self):
+            return self
 
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
-
-start_time = time.time()
-
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
-
-# Process data
-processed_data = self._process_data(data)
-
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
-
-return result
-
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        def __exit__(self, exc_type, exc_val, exc_tb):
 """REAL processing implementation"""
 import time
 import numpy as np

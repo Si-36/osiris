@@ -23,20 +23,13 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 # LangGraph imports
-try:
-    from langgraph.graph import StateGraph, END
-    from langchain_core.runnables import RunnableConfig
-    LANGGRAPH_AVAILABLE = True
-except ImportError:
-    LANGGRAPH_AVAILABLE = False
-    StateGraph = None
-    END = None
-    RunnableConfig = None
+from langgraph.graph import StateGraph, END
+from langchain_core.runnables import RunnableConfig
 
 try:
     from langgraph.checkpoint.postgres import PostgresSaver
     from langgraph.store.postgres import PostgresStore
-    POSTGRES_CHECKPOINT_AVAILABLE = True and LANGGRAPH_AVAILABLE
+    POSTGRES_CHECKPOINT_AVAILABLE = True
 except ImportError:
     # Postgres checkpoint is optional - use memory checkpointer instead
     PostgresSaver = None
@@ -44,21 +37,11 @@ except ImportError:
     POSTGRES_CHECKPOINT_AVAILABLE = False
     logger.warning("langgraph-checkpoint-postgres not installed, using memory checkpointer")
     
-try:
-    from langchain_core.messages import BaseMessage
-except ImportError:
-    BaseMessage = None
+from langchain_core.messages import BaseMessage
 
 # Temporal imports
-try:
-    from temporalio import workflow, activity
-    from temporalio.client import Client as TemporalClient
-    TEMPORAL_AVAILABLE = True
-except ImportError:
-    TEMPORAL_AVAILABLE = False
-    workflow = None
-    activity = None
-    TemporalClient = None
+from temporalio import workflow, activity
+from temporalio.client import Client as TemporalClient
 
 # Internal imports
 from .temporal_signalfirst import SignalFirstOrchestrator, SignalPriority
@@ -178,7 +161,7 @@ class UnifiedOrchestrationEngine:
             )
         
         # Workflow graphs
-        self.workflow_graphs: Dict[str, StateGraph] = {} if LANGGRAPH_AVAILABLE else None
+        self.workflow_graphs: Dict[str, StateGraph] = {}
         
         # Metrics
         self.metrics = {
@@ -290,9 +273,8 @@ class UnifiedOrchestrationEngine:
         )
         
         # 2. Build LangGraph
-        if LANGGRAPH_AVAILABLE:
-            graph = await self._build_workflow_graph(definition)
-            self.workflow_graphs[definition.workflow_id] = graph
+        graph = await self._build_workflow_graph(definition)
+        self.workflow_graphs[definition.workflow_id] = graph
         
         # 3. Setup saga if needed
         if definition.enable_saga:
@@ -474,9 +456,6 @@ class UnifiedOrchestrationEngine:
     
     async def _build_workflow_graph(self, definition: WorkflowDefinition) -> StateGraph:
         """Build LangGraph from definition"""
-        if not LANGGRAPH_AVAILABLE:
-            raise RuntimeError("LangGraph not available - install with: pip install langgraph")
-            
         # This would build the actual graph
         # For now, return a placeholder
         graph = StateGraph(dict)
