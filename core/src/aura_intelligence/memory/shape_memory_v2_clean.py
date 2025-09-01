@@ -39,6 +39,7 @@ class MemoryEntry:
     
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
+        pass
         return {
             "id": self.id,
             "content": self.content,
@@ -101,7 +102,7 @@ class ShapeMemoryV2:
         content: Dict[str, Any],
         tda_result: TDAResult,
         context_type: str = "general"
-    ) -> str:
+        ) -> str:
         """
         Store a memory with its topological signature.
         
@@ -152,7 +153,7 @@ class ShapeMemoryV2:
         query_tda: TDAResult,
         k: int = 10,
         context_filter: Optional[str] = None
-    ) -> List[Tuple[MemoryEntry, float]]:
+        ) -> List[Tuple[MemoryEntry, float]]:
         """
         Retrieve memories similar to the query.
         
@@ -199,6 +200,7 @@ class ShapeMemoryV2:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get memory system statistics."""
+        pass
         context_counts = {}
         for entry in self.storage.values():
             context_counts[entry.context_type] = context_counts.get(entry.context_type, 0) + 1

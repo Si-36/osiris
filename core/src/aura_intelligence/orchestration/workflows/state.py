@@ -11,7 +11,7 @@ from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
 
-from ...core.config import AuraConfig as AURASettings
+from aura_intelligence.core.config import AuraConfig as AURASettings
 
 
 class CollectiveState(TypedDict):

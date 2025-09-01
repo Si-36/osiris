@@ -20,7 +20,8 @@ class RealEventStore:
         else:
             self.producer = None
     
-    async def store_event(self, event_type: str, data: Dict[str, Any]) -> str:
+        async def store_event(self, event_type: str, data: Dict[str, Any]) -> str:
+            pass
         """Store event in Kafka"""
         event = {
             'type': event_type,
@@ -35,5 +36,5 @@ class RealEventStore:
         else:
             return f"mock_{event['id']}"
 
-def get_real_event_store():
-    return RealEventStore()
+    def get_real_event_store():
+        return RealEventStore()

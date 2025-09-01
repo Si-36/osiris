@@ -3,6 +3,7 @@
 Advanced security and threat assessment agent for AURA Intelligence
 
 Capabilities:
+    pass
 - Security threat detection and analysis
 - Risk assessment and mitigation
 - Compliance monitoring and enforcement
@@ -16,7 +17,7 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 import hashlib
 
-from ...core.types import ConfidenceScore
+from aura_intelligence.core.types import ConfidenceScore
 
 
 @dataclass
@@ -77,19 +78,24 @@ class RealGuardianAgent:
             'detection_accuracy': 0.92
         }
     
-    async def start(self) -> None:
+        async def start(self) -> None:
+            pass
         """Start the guardian agent"""
+        pass
         print(f"🛡️ {self.agent_id} started")
     
-    async def stop(self) -> None:
+        async def stop(self) -> None:
+            pass
         """Stop the guardian agent"""
+        pass
         print(f"🛑 {self.agent_id} stopped")
     
-    async def assess_security(
+        async def assess_security(
         self,
         evidence_log: List[Dict[str, Any]],
         context: Dict[str, Any] = None
-    ) -> SecurityAssessment:
+        ) -> SecurityAssessment:
+            pass
         """
         Conduct comprehensive security assessment
         
@@ -140,11 +146,12 @@ class RealGuardianAgent:
             processing_time=processing_time
         )
     
-    async def _detect_threats(
+        async def _detect_threats(
         self,
         evidence_log: List[Dict[str, Any]],
         context: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
+            pass
         """Detect security threats in evidence"""
         # Simulate threat detection processing
         await asyncio.sleep(0.05 + len(evidence_log) * 0.01)
@@ -183,7 +190,8 @@ class RealGuardianAgent:
         evidence: Dict[str, Any],
         category: str,
         context: Dict[str, Any]
-    ) -> List[str]:
+        ) -> List[str]:
+            pass
         """Check evidence for specific threat category indicators"""
         indicators = []
         
@@ -318,7 +326,8 @@ class RealGuardianAgent:
         self,
         threats: List[Dict[str, Any]],
         evidence_log: List[Dict[str, Any]]
-    ) -> float:
+        ) -> float:
+            pass
         """Calculate overall risk score"""
         if not threats:
             return 0.0
@@ -352,7 +361,8 @@ class RealGuardianAgent:
         threats: List[Dict[str, Any]],
         risk_score: float,
         context: Dict[str, Any]
-    ) -> List[str]:
+        ) -> List[str]:
+            pass
         """Generate security recommendations based on threats"""
         recommendations = []
         
@@ -400,7 +410,8 @@ class RealGuardianAgent:
         self,
         evidence_log: List[Dict[str, Any]],
         threats: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
+            pass
         """Check compliance status based on evidence and threats"""
         compliance_status = {
             'overall_status': 'compliant',
@@ -445,7 +456,8 @@ class RealGuardianAgent:
         threats: List[Dict[str, Any]],
         evidence_log: List[Dict[str, Any]],
         context: Dict[str, Any]
-    ) -> ConfidenceScore:
+        ) -> ConfidenceScore:
+            pass
         """Calculate confidence in security assessment"""
         # Base confidence from evidence quality
         evidence_quality = min(1.0, len(evidence_log) / 10.0)
@@ -483,6 +495,7 @@ class RealGuardianAgent:
     
     def get_agent_status(self) -> Dict[str, Any]:
         """Get current agent status and metrics"""
+        pass
         return {
             'agent_id': self.agent_id,
             'agent_type': 'guardian',

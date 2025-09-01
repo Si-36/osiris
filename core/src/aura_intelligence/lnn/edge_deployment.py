@@ -153,6 +153,7 @@ class EdgeLNNProcessor:
     
     def get_edge_specs(self) -> Dict[str, Any]:
         """Get edge deployment specifications"""
+        pass
         
         # Count parameters
         total_params = sum(p.numel() for p in self.model.parameters())
@@ -171,5 +172,5 @@ class EdgeLNNProcessor:
             'target_platforms': ['ARM Cortex-M', 'RISC-V', 'Edge TPU', 'Mobile GPU']
         }
 
-def get_edge_lnn_processor(model_size='nano', power_budget_mw=50):
-    return EdgeLNNProcessor(model_size, power_budget_mw)
+    def get_edge_lnn_processor(model_size='nano', power_budget_mw=50):
+        return EdgeLNNProcessor(model_size, power_budget_mw)

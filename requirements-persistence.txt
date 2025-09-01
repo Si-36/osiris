@@ -1,0 +1,8 @@
+# Persistence dependencies for AURA
+asyncpg>=0.29.0
+duckdb>=0.10.0
+zstandard>=0.22.0
+aiokafka>=0.10.0
+confluent-kafka>=2.3.0
+psycopg[binary]>=3.1.0
+cupy-cuda12x>=13.0.0  # For GPU memory operations

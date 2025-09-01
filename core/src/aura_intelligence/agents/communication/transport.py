@@ -66,6 +66,7 @@ class RedisStreamsTransport:
             max_connections: Maximum Redis connections
             retry_attempts: Number of retry attempts
         """
+        pass
         self.redis_url = redis_url
         self.agent_endpoint = agent_endpoint
         self.stream_prefix = stream_prefix
@@ -99,6 +100,7 @@ class RedisStreamsTransport:
     
     async def start(self) -> None:
         """Start the transport and initialize Redis connections."""
+        pass
         if self._running:
             return
         
@@ -140,6 +142,7 @@ class RedisStreamsTransport:
     
     async def stop(self) -> None:
         """Stop the transport and cleanup resources."""
+        pass
         self._running = False
         
         # Cancel background tasks
@@ -162,6 +165,7 @@ class RedisStreamsTransport:
     
     async def _initialize_streams(self) -> None:
         """Initialize Redis streams and consumer groups."""
+        pass
         # Create priority-based streams
         priorities = [Priority.CRITICAL, Priority.URGENT, Priority.HIGH, Priority.NORMAL, Priority.LOW]
         
@@ -372,6 +376,7 @@ class RedisStreamsTransport:
     
     async def _heartbeat_loop(self) -> None:
         """Background task to send periodic heartbeats."""
+        pass
         while self._running:
             try:
                 if self.agent_endpoint:
@@ -403,6 +408,7 @@ class RedisStreamsTransport:
     
     async def _agent_discovery_loop(self) -> None:
         """Background task to discover and cache agent information."""
+        pass
         while self._running:
             try:
                 # Refresh known agents
@@ -441,6 +447,7 @@ class RedisStreamsTransport:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get transport statistics."""
+        pass
         return {
             **self.stats,
             'known_agents': len(self.known_agents),

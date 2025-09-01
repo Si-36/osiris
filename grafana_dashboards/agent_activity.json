@@ -1,0 +1,227 @@
+{
+  "uid": "aura-agent-activity",
+  "title": "AURA Agent Activity",
+  "tags": [
+    "agents",
+    "activity",
+    "monitoring",
+    "aura"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 28,
+      "type": "stat",
+      "title": "Active Observer Agents",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "agents_active_total{agent_type=\"observer\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 29,
+      "type": "stat",
+      "title": "Active Analyst Agents",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "agents_active_total{agent_type=\"analyst\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 30,
+      "type": "stat",
+      "title": "Active Executor Agents",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "agents_active_total{agent_type=\"executor\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 31,
+      "type": "stat",
+      "title": "Active Coordinator Agents",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "agents_active_total{agent_type=\"coordinator\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 32,
+      "type": "graph",
+      "title": "Agent Spawn Rate",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "sum by (agent_type) (rate(agents_spawn_seconds_count[5m]))",
+          "legendFormat": "{{agent_type}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "ops",
+          "min": 0
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "type": "graph",
+      "title": "Collective Decision Time",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(agents_collective_decision_seconds_bucket[5m])))",
+          "legendFormat": "p99 Decision Time",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "s",
+          "min": 0
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "type": "heatmap",
+      "title": "Agent Resource Usage Heatmap",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "targets": [
+        {
+          "expr": "sum by (agent_type) (agents_active_total * 0.1)",
+          "format": "heatmap",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "calculate": false,
+        "calculation": {},
+        "color": {
+          "cardColor": "#b4ff00",
+          "colorScale": "sqrt",
+          "colorScheme": "interpolateOranges",
+          "exponent": 0.5,
+          "mode": "spectrum"
+        }
+      }
+    }
+  ]
+}

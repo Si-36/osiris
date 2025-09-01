@@ -130,6 +130,7 @@ class TDARequest(BaseModel):
     @validator('data')
     def validate_data_structure(cls, v, values):
         """Validate data structure based on format."""
+        pass
         data_format = values.get('data_format')
         
         if data_format == DataFormat.POINT_CLOUD:
@@ -156,6 +157,7 @@ class TDARequest(BaseModel):
     @model_validator(mode='before')
     def validate_algorithm_compatibility(cls, values):
         """Validate algorithm and data format compatibility."""
+        pass
         # GPU algorithms require compatible data formats
         algorithm = values.get('algorithm')
         use_gpu = values.get('use_gpu')
@@ -188,6 +190,7 @@ class PersistenceDiagram(BaseModel):
     @validator('intervals')
     def validate_intervals(cls, v):
         """Validate persistence intervals."""
+        pass
         for interval in v:
             if len(interval) != 2:
                 raise ValueError("Each interval must have exactly 2 values [birth, death]")
@@ -345,6 +348,7 @@ class TDAResponse(BaseModel):
     @model_validator(mode='before')
     def validate_diagrams_consistency(cls, values):
         """Validate consistency between diagrams and betti numbers."""
+        pass
         persistence_diagrams = values.get('persistence_diagrams', [])
         betti_numbers = values.get('betti_numbers', [])
         
@@ -542,6 +546,7 @@ class PersistenceFeature(BaseModel):
     @model_validator(mode='before')
     def compute_persistence(cls, values):
         """Compute persistence from birth and death times."""
+        pass
         birth = values.get('birth')
         death = values.get('death')
         

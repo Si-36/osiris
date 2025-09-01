@@ -114,6 +114,7 @@ class AURAPrometheusMetrics:
     
     def update_component_metrics(self):
         """Update metrics for all 209 components"""
+        pass
         for comp_id, component in self.component_registry.components.items():
             comp_type = component.type.value
             
@@ -174,13 +175,14 @@ class AURAPrometheusMetrics:
     
     def get_metrics(self) -> str:
         """Get all metrics in Prometheus format"""
+        pass
         return generate_latest(self.registry).decode('utf-8')
 
 # Global metrics instance
 _aura_metrics = None
 
 def get_aura_metrics():
-    global _aura_metrics
-    if _aura_metrics is None:
+        global _aura_metrics
+        if _aura_metrics is None:
         _aura_metrics = AURAPrometheusMetrics()
-    return _aura_metrics
+        return _aura_metrics

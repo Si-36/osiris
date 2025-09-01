@@ -21,35 +21,38 @@ from opentelemetry import trace
 from opentelemetry import metrics as otel_metrics
 
 from .circuit_breaker import (
-    AdaptiveCircuitBreaker,
-    CircuitBreakerState,
-    CircuitBreakerConfig
+AdaptiveCircuitBreaker,
+CircuitBreakerState,
+CircuitBreakerConfig
 )
 
+# Alias for backward compatibility
+CircuitBreaker = AdaptiveCircuitBreaker
+
 from .bulkhead import (
-    DynamicBulkhead,
-    BulkheadConfig,
-    PriorityLevel,
-    ResourceRequest,
-    ResourceType
+DynamicBulkhead,
+BulkheadConfig,
+PriorityLevel,
+ResourceRequest,
+ResourceType
 )
 
 from .retry import (
-    ContextAwareRetry,
-    RetryStrategy,
-    RetryBudget,
-    RetryConfig
+ContextAwareRetry,
+RetryStrategy,
+RetryBudget,
+RetryConfig
 )
 
 from .timeout import (
-    AdaptiveTimeout,
-    TimeoutConfig,
-    DeadlineContext
+AdaptiveTimeout,
+TimeoutConfig,
+DeadlineContext
 )
 
 from .metrics import (
-    ResilienceMetrics,
-    MetricsCollector
+ResilienceMetrics,
+MetricsCollector
 )
 
 __version__ = "1.0.0"
@@ -80,17 +83,17 @@ class ResilienceConfig:
     enable_retry: bool = True
     enable_timeout: bool = True
     enable_chaos: bool = False
-    
+
     # Global settings
     default_timeout_ms: int = 5000
     max_retry_attempts: int = 3
     circuit_breaker_threshold: float = 0.5
     bulkhead_max_concurrent: int = 100
-    
+
     # AI-specific
     enable_model_fallback: bool = True
     enable_consensus_resilience: bool = True
-    
+
     # Observability
     metrics_enabled: bool = True
     detailed_tracing: bool = False
@@ -98,11 +101,11 @@ class ResilienceConfig:
 
 class ResiliencePolicy(Protocol):
     """Protocol for resilience policies."""
-    
+
     async def execute(self, operation: Any) -> Any:
         """Execute operation with resilience."""
         ...
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get policy metrics."""
         ...
@@ -116,11 +119,11 @@ class ResilienceContext:
     timeout: Optional[timedelta] = None
     retry_budget: Optional[int] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     @property
     def is_critical(self) -> bool:
         return self.criticality == ResilienceLevel.CRITICAL
-    
+
     def get(self, key: str, default=None):
         """Get attribute value like a dictionary for compatibility."""
         return getattr(self, key, default)
@@ -129,7 +132,7 @@ class ResilienceContext:
 class ResilientOperation(Generic[T]):
     """
     Wraps an operation with multiple resilience patterns.
-    
+
     Example:
         operation = ResilientOperation(
             my_async_function,
@@ -140,7 +143,7 @@ class ResilientOperation(Generic[T]):
         )
         result = await operation.execute()
     """
-    
+
     def __init__(
         self,
         operation: Any,
@@ -150,10 +153,10 @@ class ResilientOperation(Generic[T]):
         self.operation = operation
         self.context = context
         self.config = config or ResilienceConfig()
-        
+
         # Initialize resilience components
         self._init_components()
-    
+
     def _init_components(self):
         """Initialize resilience components based on config."""
         if self.config.enable_circuit_breaker:
@@ -164,7 +167,7 @@ class ResilientOperation(Generic[T]):
                     half_open_requests=5
                 )
             )
-        
+
         if self.config.enable_bulkhead:
             self.bulkhead = DynamicBulkhead(
                 BulkheadConfig(
@@ -173,7 +176,7 @@ class ResilientOperation(Generic[T]):
                     priority_enabled=True
                 )
             )
-        
+
         if self.config.enable_retry:
             self.retry = ContextAwareRetry(
                 RetryConfig(
@@ -182,7 +185,7 @@ class ResilientOperation(Generic[T]):
                     budget_enabled=True
                 )
             )
-        
+
         if self.config.enable_timeout:
             self.timeout = AdaptiveTimeout(
                 TimeoutConfig(
@@ -190,7 +193,7 @@ class ResilientOperation(Generic[T]):
                     adaptive_enabled=True
                 )
             )
-    
+
     async def execute(self, *args, **kwargs) -> T:
         """Execute operation with full resilience stack."""
         with tracer.start_as_current_span(
@@ -200,72 +203,72 @@ class ResilientOperation(Generic[T]):
                 "resilience.level": self.context.criticality.value,
                 "resilience.operation": self.context.operation_name
             })
-            
+
             try:
                 # Apply resilience layers in order
                 result = await self._execute_with_resilience(*args, **kwargs)
                 span.set_attribute("resilience.success", True)
                 return result
-                
+
             except Exception as e:
                 span.record_exception(e)
                 span.set_attribute("resilience.success", False)
                 raise
-    
+
     async def _execute_with_resilience(self, *args, **kwargs) -> T:
         """Apply resilience patterns in order."""
         operation = self.operation
-        
+
         # Layer 1: Bulkhead isolation
         if self.config.enable_bulkhead:
             operation = self._wrap_with_bulkhead(operation)
-        
+
         # Layer 2: Circuit breaker
         if self.config.enable_circuit_breaker:
             operation = self._wrap_with_circuit_breaker(operation)
-        
+
         # Layer 3: Timeout
         if self.config.enable_timeout:
             operation = self._wrap_with_timeout(operation)
-        
+
         # Layer 4: Retry
         if self.config.enable_retry:
             operation = self._wrap_with_retry(operation)
-        
+
         # Execute
         return await operation(*args, **kwargs)
-    
+
     def _wrap_with_bulkhead(self, operation):
         """Wrap operation with bulkhead."""
         async def wrapped(*args, **kwargs):
             # Import ResourceRequest here to avoid circular imports
             from .bulkhead import ResourceRequest, ResourceType, PriorityLevel
-            
+
             # Determine priority
             priority = (
-                PriorityLevel.HIGH 
-                if self.context.is_critical 
+                PriorityLevel.HIGH
+                if self.context.is_critical
                 else PriorityLevel.NORMAL
             )
-            
+
             # Create a proper ResourceRequest
             request = ResourceRequest(
-                id=f"req-{id(operation)}-{hash(str(args))}", 
+                id=f"req-{id(operation)}-{hash(str(args))}",
                 operation_name=operation.__name__,
                 priority=priority,
                 resources={ResourceType.AGENT_SLOT: 1.0}
             )
-            
+
             # Remove any request from kwargs to avoid conflicts
             kwargs_clean = {k: v for k, v in kwargs.items() if k != 'request'}
             return await self.bulkhead.execute(
-                operation, 
+                operation,
                 request,
-                *args, 
+                *args,
                 **kwargs_clean
             )
         return wrapped
-    
+
     def _wrap_with_circuit_breaker(self, operation):
         """Wrap operation with circuit breaker."""
         async def wrapped(*args, **kwargs):
@@ -275,7 +278,7 @@ class ResilientOperation(Generic[T]):
                 **kwargs
             )
         return wrapped
-    
+
     def _wrap_with_timeout(self, operation):
         """Wrap operation with timeout."""
         async def wrapped(*args, **kwargs):
@@ -289,7 +292,7 @@ class ResilientOperation(Generic[T]):
                 **kwargs
             )
         return wrapped
-    
+
     def _wrap_with_retry(self, operation):
         """Wrap operation with retry."""
         async def wrapped(*args, **kwargs):
@@ -305,15 +308,15 @@ class ResilientOperation(Generic[T]):
 class ResilienceManager:
     """
     Central manager for resilience policies.
-    
+
     Handles policy composition, metrics aggregation, and chaos testing.
     """
-    
+
     def __init__(self, config: ResilienceConfig):
         self.config = config
         self.metrics = ResilienceMetrics()
         self.policies: Dict[str, ResiliencePolicy] = {}
-        
+
     def create_resilient_operation(
         self,
         operation: Any,
@@ -321,7 +324,7 @@ class ResilienceManager:
     ) -> ResilientOperation:
         """Create a resilient operation."""
         return ResilientOperation(operation, context, self.config)
-    
+
     async def execute_with_resilience(
         self,
         operation: Any,
@@ -332,11 +335,11 @@ class ResilienceManager:
         """Execute operation with resilience."""
         resilient_op = self.create_resilient_operation(operation, context)
         return await resilient_op.execute(*args, **kwargs)
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get aggregated resilience metrics."""
         return self.metrics.get_all()
-    
+
     def enable_chaos(self, experiment_name: str):
         """Enable chaos testing."""
         if not self.config.enable_chaos:
@@ -354,7 +357,7 @@ def resilient(
 ):
     """
     Decorator to make a function resilient.
-    
+
     Example:
         @resilient(criticality=ResilienceLevel.CRITICAL)
         async def critical_operation():
@@ -367,52 +370,53 @@ def resilient(
                 criticality=criticality,
                 timeout=timedelta(milliseconds=timeout_ms) if timeout_ms else None
             )
-            
+
             manager = ResilienceManager(ResilienceConfig())
             return await manager.execute_with_resilience(
                 func, context, *args, **kwargs
             )
-        
+
         return wrapper
     return decorator
 
 
 __all__ = [
-    # Core classes
-    "ResilienceConfig",
-    "ResilienceContext", 
-    "ResilienceLevel",
-    "ResiliencePolicy",
-    "ResilientOperation",
-    "ResilienceManager",
-    
-    # Circuit breaker
-    "AdaptiveCircuitBreaker",
-    "CircuitBreakerState",
-    "CircuitBreakerConfig",
-    
-    # Bulkhead
-    "DynamicBulkhead",
-    "BulkheadConfig",
-    "PriorityLevel",
-    "ResourceRequest",
-    "ResourceType",
-    
-    # Retry
-    "ContextAwareRetry",
-    "RetryStrategy",
-    "RetryBudget",
-    "RetryConfig",
-    
-    # Timeout
-    "AdaptiveTimeout",
-    "TimeoutConfig",
-    "DeadlineContext",
-    
-    # Metrics
-    "ResilienceMetrics",
-    "MetricsCollector",
-    
-    # Decorator
-    "resilient"
+# Core classes
+"ResilienceConfig",
+"ResilienceContext", 
+"ResilienceLevel",
+"ResiliencePolicy",
+"ResilientOperation",
+"ResilienceManager",
+
+# Circuit breaker
+"AdaptiveCircuitBreaker",
+"CircuitBreaker",  # Alias for backward compatibility
+"CircuitBreakerState",
+"CircuitBreakerConfig",
+
+# Bulkhead
+"DynamicBulkhead",
+"BulkheadConfig",
+"PriorityLevel",
+"ResourceRequest",
+"ResourceType",
+
+# Retry
+"ContextAwareRetry",
+"RetryStrategy",
+"RetryBudget",
+"RetryConfig",
+
+# Timeout
+"AdaptiveTimeout",
+"TimeoutConfig",
+"DeadlineContext",
+
+# Metrics
+"ResilienceMetrics",
+"MetricsCollector",
+
+# Decorator
+"resilient"
 ]

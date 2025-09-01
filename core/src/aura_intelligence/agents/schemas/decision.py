@@ -129,6 +129,7 @@ class DecisionOption(QualityMetrics):
     
     def get_evidence_support_score(self) -> float:
         """Calculate overall evidence support score."""
+        pass
         if not self.evidence_strength:
             return 0.5  # Neutral if no evidence
         
@@ -139,6 +140,7 @@ class DecisionOption(QualityMetrics):
     
     def get_risk_score(self) -> float:
         """Get numeric risk score."""
+        pass
         return self.risk_level.get_numeric_value() / 5.0  # Normalize to 0-1
 
 
@@ -269,6 +271,7 @@ class DecisionPoint(
     
     def _get_canonical_decision(self) -> str:
         """Get canonical string representation of decision for signing."""
+        pass
         try:
             from .base import datetime_to_iso
         except ImportError:
@@ -282,6 +285,7 @@ class DecisionPoint(
     # ========================================================================
     def get_chosen_option(self) -> Optional[DecisionOption]:
         """Get the chosen decision option."""
+        pass
         if not self.chosen_option_id:
             return None
         
@@ -293,6 +297,7 @@ class DecisionPoint(
     
     def get_runner_up_option(self) -> Optional[DecisionOption]:
         """Get the runner-up decision option."""
+        pass
         if not self.runner_up_option_id:
             return None
         
@@ -304,6 +309,7 @@ class DecisionPoint(
     
     def calculate_option_scores(self) -> Dict[str, float]:
         """Calculate weighted scores for all options."""
+        pass
         scores = {}
         
         for option in self.options:
@@ -326,6 +332,7 @@ class DecisionPoint(
     
     def get_decision_explanation(self) -> Dict[str, Any]:
         """Generate detailed explanation of the decision."""
+        pass
         chosen_option = self.get_chosen_option()
         runner_up = self.get_runner_up_option()
         scores = self.calculate_option_scores()

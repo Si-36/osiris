@@ -61,6 +61,7 @@ class BulkheadConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
+        pass
         if self.max_concurrent <= 0:
             raise ValueError("max_concurrent must be positive")
         if self.max_queue_size < 0:
@@ -85,6 +86,7 @@ class BulkheadStats:
     
     def record_execution_start(self) -> None:
         """Record start of execution."""
+        pass
         self.total_executions += 1
         self.current_active += 1
         self.peak_active = max(self.peak_active, self.current_active)
@@ -99,19 +101,23 @@ class BulkheadStats:
     
     def record_rejection(self) -> None:
         """Record rejected execution."""
+        pass
         self.rejected_executions += 1
     
     def record_timeout(self) -> None:
         """Record timeout in queue."""
+        pass
         self.timeout_executions += 1
     
     def record_queue_add(self) -> None:
         """Record addition to queue."""
+        pass
         self.current_queued += 1
         self.peak_queued = max(self.peak_queued, self.current_queued)
     
     def record_queue_remove(self) -> None:
         """Record removal from queue."""
+        pass
         self.current_queued -= 1
 
 
@@ -120,6 +126,7 @@ class Bulkhead:
     Bulkhead implementation for resource isolation.
     
     Features:
+        pass
     - Limits concurrent executions
     - Optional queueing with timeout
     - Full observability
@@ -280,7 +287,6 @@ class Bulkhead:
         Usage:
             async with bulkhead.acquire():
                 # Protected code here
-                pass
         """
         if self._semaphore.locked() and self._queue.full():
             self.stats.record_rejection()

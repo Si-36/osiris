@@ -40,6 +40,7 @@ class FusionConfig:
     
     def __post_init__(self):
         """Validate configuration."""
+        pass
         if not np.isclose(self.base_alpha + self.base_beta, 1.0):
             raise ValueError(f"Weights must sum to 1.0, got {self.base_alpha + self.base_beta}")
         if self.tau_hours <= 0:
@@ -69,7 +70,7 @@ class AdaptiveFusionScorer:
         persistence_diagram2: np.ndarray,
         embedding_age_hours: float = 0.0,
         enable_exploration: bool = False
-    ) -> Dict[str, float]:
+        ) -> Dict[str, float]:
         """
         Compute adaptive fusion score.
         
@@ -126,7 +127,7 @@ class AdaptiveFusionScorer:
         self, 
         diagram1: np.ndarray, 
         diagram2: np.ndarray
-    ) -> float:
+        ) -> float:
         """
         Compute Wasserstein distance between persistence diagrams.
         
@@ -216,7 +217,7 @@ class AdaptiveFusionScorer:
         stored_diagrams: List[np.ndarray],
         embedding_ages: np.ndarray,
         enable_exploration: bool = False
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """
         Efficiently score multiple candidates.
         
@@ -236,6 +237,7 @@ class AdaptiveFusionScorer:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get scorer statistics for monitoring."""
+        pass
         return {
             "initialized": self._initialized,
             "wasserstein_samples": len(self._wasserstein_history),

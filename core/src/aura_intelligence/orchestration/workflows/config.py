@@ -143,21 +143,22 @@ class WorkflowConfig(BaseModel):
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         return self.model_dump()
 
 
-def extract_config(config: RunnableConfig) -> Dict[str, Any]:
-    """
-    Extract configuration using latest patterns from assistants-demo.
+    def extract_config(config: RunnableConfig) -> Dict[str, Any]:
+        """
+        Extract configuration using latest patterns from assistants-demo.
     
-    This function maintains backward compatibility while leveraging
-    the new WorkflowConfig model.
+        This function maintains backward compatibility while leveraging
+        the new WorkflowConfig model.
     
-    Args:
+        Args:
         config: LangGraph runnable configuration
         
-    Returns:
+        Returns:
         Configuration dictionary
-    """
-    workflow_config = WorkflowConfig.from_runnable_config(config)
-    return workflow_config.to_dict()
+        """
+        workflow_config = WorkflowConfig.from_runnable_config(config)
+        return workflow_config.to_dict()

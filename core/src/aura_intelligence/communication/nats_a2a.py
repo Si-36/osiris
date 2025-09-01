@@ -189,6 +189,7 @@ class NATSA2ASystem:
     
     async def _setup_streams(self) -> None:
         """Setup NATS JetStream streams for A2A communication"""
+        pass
         
         # Agent-to-Agent Messages Stream
         a2a_stream_config = StreamConfig(
@@ -501,6 +502,52 @@ class NATSA2ASystem:
                 break
             except Exception as e:
                 print(f"Error in metrics collector: {e}")
+
+
+    async def _publish_with_headers(
+        self,
+        subject: str,
+        message: AgentMessage,
+        headers: Dict[str, str]
+    ) -> None:
+        """
+        Publish message with headers including deduplication and tracing.
+        
+        Implements exactly-once semantics with Nats-Msg-Id.
+        """
+        if not self.js:
+            raise RuntimeError("JetStream not initialized")
+        
+        # Prepare message data
+        data = message.to_bytes()
+        
+        # Add deduplication header
+        if "Nats-Msg-Id" not in headers:
+            headers["Nats-Msg-Id"] = message.id
+        
+        try:
+            # Publish with headers
+            ack = await self.js.publish(
+                subject=subject,
+                payload=data,
+                headers=headers,
+                timeout=5.0
+            )
+            
+            self.metrics['messages_sent'] += 1
+            
+            logger.info(
+                "Message published with headers",
+                subject=subject,
+                message_id=message.id,
+                sequence=ack.seq,
+                headers=list(headers.keys())
+            )
+            
+        except Exception as e:
+            self.metrics['messages_failed'] += 1
+            logger.error(f"Failed to publish with headers: {e}")
+            raise
     
     def _update_latency_metrics(self, latency_ms: float) -> None:
         """Update average latency metrics"""
@@ -508,16 +555,16 @@ class NATSA2ASystem:
         alpha = 0.1  # Exponential moving average factor
         self.metrics['avg_latency_ms'] = (alpha * latency_ms) + ((1 - alpha) * current_avg)
     
-    async def _error_callback(self, error) -> None:
-        """Handle NATS connection errors"""
+        async def _error_callback(self, error) -> None:
+            """Handle NATS connection errors"""
         print(f"NATS Error: {error}")
     
-    async def _disconnected_callback(self) -> None:
-        """Handle NATS disconnection"""
+        async def _disconnected_callback(self) -> None:
+            """Handle NATS disconnection"""
         print("NATS Disconnected - attempting reconnection...")
     
-    async def _reconnected_callback(self) -> None:
-        """Handle NATS reconnection"""
+        async def _reconnected_callback(self) -> None:
+            """Handle NATS reconnection"""
         print("NATS Reconnected successfully")
     
     def get_metrics(self) -> Dict[str, Any]:

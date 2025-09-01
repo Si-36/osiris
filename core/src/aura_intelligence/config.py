@@ -45,54 +45,63 @@ class Config:
     
     def __init__(self):
         """Initialize with new settings system."""
+        pass
         self._settings = AURASettings.from_env()
     
     def get_config(self) -> Dict[str, Any]:
         """Get configuration in legacy format."""
+        pass
         return self._settings.get_legacy_config()
     
     @property
     def environment(self) -> EnvironmentType:
         """Get environment type."""
+        pass
         return self._settings.environment
     
     @property
     def agent_config(self) -> AgentSettings:
         """Get agent configuration."""
+        pass
         return self._settings.agent
     
     @property
     def memory_config(self) -> MemorySettings:
         """Get memory configuration."""
+        pass
         return self._settings.memory
     
     @property
     def api_config(self) -> APISettings:
         """Get API configuration."""
+        pass
         return self._settings.api
     
     @property
     def observability_config(self) -> ObservabilitySettings:
         """Get observability configuration."""
+        pass
         return self._settings.observability
     
     @property
     def is_production(self) -> bool:
         """Check if running in production."""
+        pass
         return self._settings.is_production
     
     @property
     def is_development(self) -> bool:
         """Check if running in development."""
+        pass
         return self._settings.is_development
 
 
 # Legacy function for backward compatibility
-def get_config() -> Dict[str, Any]:
-    """Get configuration in legacy format."""
-    warnings.warn(
+    def get_config() -> Dict[str, Any]:
+        """Get configuration in legacy format."""
+        warnings.warn(
         "get_config() is deprecated. Use AURASettings.from_env() instead.",
         DeprecationWarning,
         stacklevel=2
-    )
-    return AURASettings.from_env().get_legacy_config()
+        )
+        return AURASettings.from_env().get_legacy_config()

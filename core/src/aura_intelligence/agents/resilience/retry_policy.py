@@ -162,6 +162,8 @@ class RetryPolicy(ABC):
                     
                     # Wait before retry
                     await asyncio.sleep(delay.total_seconds())
+                    
+                    # Continue to next iteration
             
             # Should never reach here, but just in case
             if last_exception:
@@ -182,7 +184,7 @@ class ExponentialBackoff(RetryPolicy):
         """Calculate exponential backoff delay with optional jitter."""
         # Calculate base delay
         delay_seconds = self.config.initial_delay.total_seconds() * (
-            self.config.exponential_base ** (attempt - 1)
+        self.config.exponential_base ** (attempt - 1)
         )
         
         # Apply max delay cap
@@ -243,8 +245,7 @@ class RetryWithBackoff:
         @RetryWithBackoff(max_attempts=3)
         async def my_function():
             # Function that might fail
-            pass
-    """
+            """
     
     def __init__(
         self,

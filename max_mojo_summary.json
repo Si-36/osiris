@@ -1,0 +1,89 @@
+{
+  "max_serve": {
+    "container_reduction": 93,
+    "startup_speedup": 25,
+    "latency_speedup": 10
+  },
+  "selective_scan": [
+    {
+      "seq_len": 128,
+      "python_ms": 219.57,
+      "mojo_ms": 14.638,
+      "speedup": 15
+    },
+    {
+      "seq_len": 256,
+      "python_ms": 124.93,
+      "mojo_ms": 8.328666666666667,
+      "speedup": 15
+    },
+    {
+      "seq_len": 512,
+      "python_ms": 304.14,
+      "mojo_ms": 20.276,
+      "speedup": 15
+    },
+    {
+      "seq_len": 1024,
+      "python_ms": 508.58,
+      "mojo_ms": 33.90533333333333,
+      "speedup": 15
+    }
+  ],
+  "tda_distance": [
+    {
+      "n_points": 100,
+      "python_ms": 8.67,
+      "mojo_ms": 0.4335,
+      "speedup": 20
+    },
+    {
+      "n_points": 500,
+      "python_ms": 213.42,
+      "mojo_ms": 10.671,
+      "speedup": 20
+    },
+    {
+      "n_points": 1000,
+      "python_ms": 869.01,
+      "mojo_ms": 43.4505,
+      "speedup": 20
+    },
+    {
+      "n_points": 2000,
+      "python_ms": 4000.0,
+      "mojo_ms": 200.0,
+      "speedup": 20
+    }
+  ],
+  "expert_routing": [
+    {
+      "config": "16x256x8",
+      "pytorch_ms": 0.24576,
+      "mojo_ms": 0.024576,
+      "speedup": 10,
+      "throughput": 166666666.66666666
+    },
+    {
+      "config": "32x256x8",
+      "pytorch_ms": 0.49152,
+      "mojo_ms": 0.049152,
+      "speedup": 10,
+      "throughput": 166666666.66666666
+    },
+    {
+      "config": "64x256x8",
+      "pytorch_ms": 0.98304,
+      "mojo_ms": 0.098304,
+      "speedup": 10,
+      "throughput": 166666666.66666666
+    },
+    {
+      "config": "128x256x16",
+      "pytorch_ms": 1.96608,
+      "mojo_ms": 0.196608,
+      "speedup": 10,
+      "throughput": 166666666.66666666
+    }
+  ]
+}

@@ -122,4 +122,5 @@ class MemorySettings(BaseSettings):
     @property
     def requires_api_key(self) -> bool:
         """Check if vector store requires API key."""
+        pass
         return self.vector_store_type in {"pinecone", "weaviate", "qdrant"}

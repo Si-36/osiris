@@ -594,28 +594,28 @@ class ContextAwareRetry:
 
 # Example configurations for common scenarios
 LATENCY_SENSITIVE_CONFIG = RetryConfig(
-    max_attempts=2,
-    strategy=RetryStrategy.IMMEDIATE,
-    hedged_requests=True,
-    hedge_delay_ms=50,
-    budget_per_minute=200
+        max_attempts=2,
+        strategy=RetryStrategy.IMMEDIATE,
+        hedged_requests=True,
+        hedge_delay_ms=50,
+        budget_per_minute=200
 )
 
 BACKGROUND_JOB_CONFIG = RetryConfig(
-    max_attempts=5,
-    strategy=RetryStrategy.EXPONENTIAL,
-    initial_delay_ms=1000,
-    max_delay_ms=60000,
-    budget_enabled=False
+        max_attempts=5,
+        strategy=RetryStrategy.EXPONENTIAL,
+        initial_delay_ms=1000,
+        max_delay_ms=60000,
+        budget_enabled=False
 )
 
 API_CALL_CONFIG = RetryConfig(
-    max_attempts=3,
-    strategy=RetryStrategy.EXPONENTIAL,
-    initial_delay_ms=100,
-    backoff_base=2.0,
-    jitter_factor=0.2,
-    error_strategies={
+        max_attempts=3,
+        strategy=RetryStrategy.EXPONENTIAL,
+        initial_delay_ms=100,
+        backoff_base=2.0,
+        jitter_factor=0.2,
+        error_strategies={
         ErrorCategory.RATE_LIMIT: {
             "strategy": RetryStrategy.EXPONENTIAL,
             "backoff_base": 3.0,
@@ -624,5 +624,5 @@ API_CALL_CONFIG = RetryConfig(
         ErrorCategory.CIRCUIT_OPEN: {
             "retry": False
         }
-    }
+        }
 )

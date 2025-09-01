@@ -40,8 +40,8 @@ class HybridMemoryManager:
         
         # Metrics
         self.metrics = {
-            'hot_hits': 0, 'warm_hits': 0, 'cold_hits': 0, 'misses': 0,
-            'promotions': 0, 'demotions': 0
+        'hot_hits': 0, 'warm_hits': 0, 'cold_hits': 0, 'misses': 0,
+        'promotions': 0, 'demotions': 0
         }
         
     def store(self, key: str, data: Any, hint: Optional[MemoryTier] = None) -> bool:
@@ -61,30 +61,30 @@ class HybridMemoryManager:
         # Check hot tier
         if key in self.hot_memory:
             item = self.hot_memory[key]
-            item.access_count += 1
-            item.last_access = time.time()
-            self.metrics['hot_hits'] += 1
-            return item.data
+        item.access_count += 1
+        item.last_access = time.time()
+        self.metrics['hot_hits'] += 1
+        return item.data
         
         # Check warm tier
         try:
             warm_data = self.warm_redis.get(f"warm:{key}")
-            if warm_data:
-                data = json.loads(warm_data.decode('utf-8'))
-                self.metrics['warm_hits'] += 1
-                return data
+        if warm_data:
+            data = json.loads(warm_data.decode('utf-8'))
+        self.metrics['warm_hits'] += 1
+        return data
         except:
-            pass
+        pass
         
         # Check cold tier
         try:
             cold_data = self.cold_redis.get(f"cold:{key}")
-            if cold_data:
-                data = json.loads(cold_data.decode('utf-8'))
-                self.metrics['cold_hits'] += 1
-                return data
+        if cold_data:
+            data = json.loads(cold_data.decode('utf-8'))
+        self.metrics['cold_hits'] += 1
+        return data
         except:
-            pass
+        pass
         
         self.metrics['misses'] += 1
         return None
@@ -101,24 +101,24 @@ class HybridMemoryManager:
         if item.tier == MemoryTier.HOT:
             if len(self.hot_memory) >= self.hot_capacity:
                 self._evict_from_hot()
-            self.hot_memory[item.key] = item
-            return True
+        self.hot_memory[item.key] = item
+        return True
             
         elif item.tier == MemoryTier.WARM:
-            try:
-                data_str = json.dumps(item.data)
-                self.warm_redis.set(f"warm:{item.key}", data_str, ex=86400)
-                return True
-            except:
-                return False
+        try:
+            data_str = json.dumps(item.data)
+        self.warm_redis.set(f"warm:{item.key}", data_str, ex=86400)
+        return True
+        except:
+        return False
                 
         else:  # COLD
-            try:
-                data_str = json.dumps(item.data)
-                self.cold_redis.set(f"cold:{item.key}", data_str, ex=604800)
-                return True
-            except:
-                return False
+        try:
+            data_str = json.dumps(item.data)
+        self.cold_redis.set(f"cold:{item.key}", data_str, ex=604800)
+        return True
+        except:
+        return False
     
     def _evict_from_hot(self):
         if not self.hot_memory:
@@ -131,48 +131,48 @@ class HybridMemoryManager:
     def get_stats(self) -> Dict[str, Any]:
         total = sum(self.metrics.values())
         return {
-            'tier_sizes': {
-                'hot': len(self.hot_memory),
-                'warm': len(self.warm_redis.keys("warm:*") or []),
-                'cold': len(self.cold_redis.keys("cold:*") or [])
-            },
-            'hit_rates': {
-                'hot': self.metrics['hot_hits'] / max(1, total),
-                'warm': self.metrics['warm_hits'] / max(1, total),
-                'cold': self.metrics['cold_hits'] / max(1, total)
-            },
-            'cache_efficiency': (self.metrics['hot_hits'] + self.metrics['warm_hits']) / max(1, total)
+        'tier_sizes': {
+        'hot': len(self.hot_memory),
+        'warm': len(self.warm_redis.keys("warm:*") or []),
+        'cold': len(self.cold_redis.keys("cold:*") or [])
+        },
+        'hit_rates': {
+        'hot': self.metrics['hot_hits'] / max(1, total),
+        'warm': self.metrics['warm_hits'] / max(1, total),
+        'cold': self.metrics['cold_hits'] / max(1, total)
+        },
+        'cache_efficiency': (self.metrics['hot_hits'] + self.metrics['warm_hits']) / max(1, total)
         }
 
 
-def test_hybrid_memory():
-    print("🧪 Testing Hybrid Memory System...")
+    def test_hybrid_memory():
+        print("🧪 Testing Hybrid Memory System...")
     
-    memory = HybridMemoryManager()
+        memory = HybridMemoryManager()
     
     # Test data
-    test_data = [
+        test_data = [
         ("small", {"val": 42}, MemoryTier.HOT),
         ("medium", {"arr": list(range(100))}, MemoryTier.WARM),
         ("large", {"matrix": [[i*j for j in range(50)] for i in range(50)]}, MemoryTier.COLD)
-    ]
+        ]
     
     # Store
-    for key, data, hint in test_data:
+        for key, data, hint in test_data:
         success = memory.store(key, data, hint)
         print(f"  Stored {key}: {success}")
     
     # Retrieve
-    for key, _, _ in test_data:
+        for key, _, _ in test_data:
         result = memory.retrieve(key)
         print(f"  Retrieved {key}: {result is not None}")
     
     # Stats
-    stats = memory.get_stats()
-    print(f"📊 Tier sizes: {stats['tier_sizes']}")
-    print(f"📊 Cache efficiency: {stats['cache_efficiency']:.2%}")
-    print("✅ Hybrid memory working!")
+        stats = memory.get_stats()
+        print(f"📊 Tier sizes: {stats['tier_sizes']}")
+        print(f"📊 Cache efficiency: {stats['cache_efficiency']:.2%}")
+        print("✅ Hybrid memory working!")
 
 
-if __name__ == "__main__":
-    test_hybrid_memory()
+        if __name__ == "__main__":
+        test_hybrid_memory()

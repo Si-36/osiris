@@ -76,13 +76,7 @@ class AuraError(Exception):
     determination for systematic error handling.
     """
     
-    def __init__(
-        self, 
-        message: str, 
-        error_topology: ErrorTopology = ErrorTopology.UNKNOWN,
-        component_id: str = "unknown",
-        context: Optional[Dict[str, Any]] = None
-    ):
+    def __init__( self, message: str, error_topology: ErrorTopology = ErrorTopology.UNKNOWN, component_id: str = "unknown", context: Optional[Dict[str, Any]] = None ):
         super().__init__(message)
         self.message = message
         self.error_topology = error_topology
@@ -277,11 +271,7 @@ class SecurityError(AuraError):
 
 
 # Convenience functions for error creation
-def create_consciousness_error(
-    message: str, 
-    component_id: str = "consciousness",
-    consciousness_level: float = 0.0
-) -> ConsciousnessError:
+def create_consciousness_error( message: str, component_id: str = "consciousness", consciousness_level: float = 0.0 ) -> ConsciousnessError:
     """Create a consciousness error with appropriate context."""
     return ConsciousnessError(
         message=message,
@@ -291,11 +281,7 @@ def create_consciousness_error(
     )
 
 
-def create_topological_error(
-    message: str,
-    component_id: str = "topology",
-    computation_type: str = "persistent_homology"
-) -> TopologicalComputationError:
+def create_topological_error( message: str, component_id: str = "topology", computation_type: str = "persistent_homology" ) -> TopologicalComputationError:
     """Create a topological computation error with appropriate context."""
     return TopologicalComputationError(
         message=message,
@@ -305,12 +291,7 @@ def create_topological_error(
     )
 
 
-def create_swarm_error(
-    message: str,
-    component_id: str = "swarm",
-    swarm_size: int = 0,
-    affected_agents: List[str] = None
-) -> SwarmCoordinationError:
+def create_swarm_error( message: str, component_id: str = "swarm", swarm_size: int = 0, affected_agents: List[str] = None ) -> SwarmCoordinationError:
     """Create a swarm coordination error with appropriate context."""
     return SwarmCoordinationError(
         message=message,
@@ -323,11 +304,7 @@ def create_swarm_error(
     )
 
 
-def create_quantum_error(
-    message: str,
-    component_id: str = "quantum",
-    quantum_fidelity: float = 0.0
-) -> QuantumComputationError:
+def create_quantum_error( message: str, component_id: str = "quantum", quantum_fidelity: float = 0.0 ) -> QuantumComputationError:
     """Create a quantum computation error with appropriate context."""
     return QuantumComputationError(
         message=message,
@@ -357,7 +334,7 @@ class ErrorAnalysisManager:
             from .error_topology import ErrorTopologyAnalyzer
             self.topology_analyzer = ErrorTopologyAnalyzer()
         except ImportError:
-            # Graceful degradation if topology analyzer is not available
+                    # Graceful degradation if topology analyzer is not available
             self.topology_analyzer = None
     
     def register_error(self, error: AuraError) -> Dict[str, Any]:
@@ -420,7 +397,7 @@ class ErrorAnalysisManager:
                 })
                 
             except Exception as e:
-                analysis_result['topology_analysis_error'] = str(e)
+                    analysis_result['topology_analysis_error'] = str(e)
         
         return analysis_result
     
@@ -460,7 +437,7 @@ class ErrorAnalysisManager:
                     topology_health = 'stable'
                     
             except Exception:
-                topology_health = 'analysis_failed'
+                    topology_health = 'analysis_failed'
         
         # Overall status
         if error_rate > 10:

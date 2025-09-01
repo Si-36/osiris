@@ -2,6 +2,7 @@
 🔍 Production-Grade Search API - 2025 Observability Enhanced
 
 FastAPI endpoints for the Intelligence Flywheel search system with:
+    pass
 - Multi-tier search (Hot/Cold/Semantic) with OpenTelemetry tracing
 - Sub-3ms episodic retrieval with comprehensive metrics
 - Sub-1ms semantic pattern matching with AI-powered monitoring
@@ -253,6 +254,7 @@ async def search_intelligence_flywheel(
         },
         ai_operation=True
     ) as span:
+        pass
         
         try:
             # Determine search tier
@@ -407,58 +409,60 @@ async def _search_hybrid(query: SearchQuery, span) -> List[SearchResult]:
     return all_results[:query.limit]
 
 
-def _calculate_result_confidence(results: List[SearchResult]) -> float:
-    """Calculate confidence score for search results."""
+    def _calculate_result_confidence(results: List[SearchResult]) -> float:
+        """Calculate confidence score for search results."""
     
-    if not results:
+        if not results:
+            pass
         return 0.0
     
     # Simple confidence calculation based on top result score
-    return results[0].score
+        return results[0].score
 
 
 # Error handlers
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    """Handle HTTP exceptions with telemetry."""
+        """Handle HTTP exceptions with telemetry."""
     
-    request_id = getattr(request.state, 'request_id', 'unknown')
+        request_id = getattr(request.state, 'request_id', 'unknown')
     
-    return JSONResponse(
+        return JSONResponse(
         status_code=exc.status_code,
         content={
             "error": exc.detail,
             "request_id": request_id,
             "timestamp": datetime.now().isoformat()
         }
-    )
+        )
 
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
-    """Handle general exceptions with telemetry."""
+        """Handle general exceptions with telemetry."""
     
-    request_id = getattr(request.state, 'request_id', 'unknown')
+        request_id = getattr(request.state, 'request_id', 'unknown')
     
-    logger.error(f"❌ Unhandled exception for request {request_id}: {exc}")
+        logger.error(f"❌ Unhandled exception for request {request_id}: {exc}")
     
-    return JSONResponse(
+        return JSONResponse(
         status_code=500,
         content={
             "error": "Internal server error",
             "request_id": request_id,
             "timestamp": datetime.now().isoformat()
         }
-    )
+        )
 
 
-if __name__ == "__main__":
-    import uvicorn
+        if __name__ == "__main__":
+            pass
+        import uvicorn
     
-    uvicorn.run(
+        uvicorn.run(
         "aura_intelligence.api.search:app",
         host="0.0.0.0",
         port=8000,
         reload=True,
         log_level="info"
-    )
+        )

@@ -28,16 +28,18 @@ class RealMITLNN(nn.Module):
         
         if NCPS_AVAILABLE:
             # Use official MIT implementation
-            wiring = AutoNCP(hidden_size, output_size)
-            self.lnn = CfC(input_size, wiring)
-            self.fallback_mode = False
+        wiring = AutoNCP(hidden_size, output_size)
+        self.lnn = CfC(input_size, wiring)
+        self.fallback_mode = False
         else:
-            # Fallback: Real ODE-based implementation
-            self.lnn = self._create_ode_fallback()
-            self.fallback_mode = True
+            pass
+        # Fallback: Real ODE-based implementation
+        self.lnn = self._create_ode_fallback()
+        self.fallback_mode = True
     
     def _create_ode_fallback(self):
-        """Real ODE-based LNN when ncps not available"""
+            """Real ODE-based LNN when ncps not available"""
+        pass
         try:
             from torchdiffeq import odeint
             
@@ -45,9 +47,9 @@ class RealMITLNN(nn.Module):
                 def __init__(self, hidden_dim):
                     super().__init__()
                     self.net = nn.Sequential(
-                        nn.Linear(hidden_dim, hidden_dim),
-                        nn.Tanh(),
-                        nn.Linear(hidden_dim, hidden_dim),
+                    nn.Linear(hidden_dim, hidden_dim),
+                    nn.Tanh(),
+                    nn.Linear(hidden_dim, hidden_dim),
                     )
                 
                 def forward(self, t, y):
@@ -63,42 +65,47 @@ class RealMITLNN(nn.Module):
                     out = odeint(self.odefunc, x, self.integration_time, rtol=1e-3, atol=1e-4)
                     return out[1]
             
-            odefunc = ODEFunc(self.hidden_size)
-            return nn.Sequential(
-                nn.Linear(self.input_size, self.hidden_size),
-                ODEBlock(odefunc),
-                nn.Linear(self.hidden_size, self.output_size)
-            )
+                    odefunc = ODEFunc(self.hidden_size)
+                    return nn.Sequential(
+                    nn.Linear(self.input_size, self.hidden_size),
+                    ODEBlock(odefunc),
+                    nn.Linear(self.hidden_size, self.output_size)
+                    )
             
-        except ImportError:
+                    except ImportError:
+                        pass
             # Basic fallback
-            return nn.Sequential(
-                nn.Linear(self.input_size, self.hidden_size),
-                nn.Tanh(),
-                nn.Linear(self.hidden_size, self.output_size)
-            )
+                    return nn.Sequential(
+                    nn.Linear(self.input_size, self.hidden_size),
+                    nn.Tanh(),
+                    nn.Linear(self.hidden_size, self.output_size)
+                    )
     
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Forward pass through real MIT LNN"""
-        if self.fallback_mode:
+                def forward(self, x: torch.Tensor) -> torch.Tensor:
+                    """Forward pass through real MIT LNN"""
+                    if self.fallback_mode:
+                        pass
             # Simple fallback processing
-            return self.lnn(x)
-        else:
-            # Real ncps processing
-            if x.dim() == 2:
-                x = x.unsqueeze(1)  # Add time dimension
-            return self.lnn(x)
+                    return self.lnn(x)
+                    else:
+                        pass
+        # Real ncps processing
+                    if x.dim() == 2:
+                        pass
+                    x = x.unsqueeze(1)  # Add time dimension
+                    return self.lnn(x)
     
-    def get_info(self) -> Dict[str, Any]:
-        """Get LNN information"""
-        return {
-            'type': 'Real MIT LNN',
-            'library': 'ncps' if NCPS_AVAILABLE else 'torchdiffeq_fallback',
-            'parameters': sum(p.numel() for p in self.parameters()),
-            'continuous_time': True,
-            'ode_solver': 'adaptive' if NCPS_AVAILABLE else 'dopri5'
-        }
+                def get_info(self) -> Dict[str, Any]:
+                    """Get LNN information"""
+                    pass
+                    return {
+                    'type': 'Real MIT LNN',
+                    'library': 'ncps' if NCPS_AVAILABLE else 'torchdiffeq_fallback',
+                    'parameters': sum(p.numel() for p in self.parameters()),
+                    'continuous_time': True,
+                    'ode_solver': 'adaptive' if NCPS_AVAILABLE else 'dopri5'
+                    }
 
-def get_real_mit_lnn(input_size: int = 10, hidden_size: int = 64, output_size: int = 10):
-    """Get real MIT LNN instance"""
-    return RealMITLNN(input_size, hidden_size, output_size)
+                def get_real_mit_lnn(input_size: int = 10, hidden_size: int = 64, output_size: int = 10):
+                    """Get real MIT LNN instance"""
+                    return RealMITLNN(input_size, hidden_size, output_size)

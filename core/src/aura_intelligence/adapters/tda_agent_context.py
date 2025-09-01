@@ -85,7 +85,7 @@ class TDAAgentContextAdapter:
         agent_id: str,
         base_context: AgentContext,
         data_id: Optional[str] = None
-    ) -> TDAContextEnrichment:
+        ) -> TDAContextEnrichment:
         """
         Enrich agent context with TDA insights.
         
@@ -154,10 +154,11 @@ class TDAAgentContextAdapter:
             logger.error(f"Failed to enrich agent context: {e}")
             raise
             
-    async def _get_general_topological_context(
+        async def _get_general_topological_context(
         self,
         base_context: AgentContext
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
+            pass
         """Get general topological context based on agent's current state"""
         # Query recent TDA results relevant to context
         filters = {
@@ -183,7 +184,7 @@ class TDAAgentContextAdapter:
         self,
         topo_context: Dict[str, Any],
         tda_memories: Dict[str, Any]
-    ) -> List[TopologicalSignal]:
+        ) -> List[TopologicalSignal]:
         """Analyze and identify topological signals"""
         signals = []
         
@@ -253,7 +254,7 @@ class TDAAgentContextAdapter:
         signals: List[TopologicalSignal],
         persistence_summary: Dict[str, float],
         base_context: AgentContext
-    ) -> List[str]:
+        ) -> List[str]:
         """Generate actionable recommendations based on TDA insights"""
         recommendations = []
         
@@ -294,7 +295,7 @@ class TDAAgentContextAdapter:
         self,
         topo_context: Dict[str, Any],
         tda_memories: Dict[str, Any]
-    ) -> float:
+        ) -> float:
         """Calculate confidence score for TDA insights"""
         confidence = 1.0
         
@@ -328,7 +329,7 @@ class TDAAgentContextAdapter:
         agent_id: str,
         event_types: List[TopologicalSignal],
         callback: callable
-    ) -> str:
+        ) -> str:
         """
         Subscribe agent to TDA event stream.
         
@@ -344,7 +345,7 @@ class TDAAgentContextAdapter:
         
         # Create subscription handler
         async def event_handler(event):
-            # Check if event matches subscription
+        # Check if event matches subscription
             if event.get("type") in [e.value for e in event_types]:
                 # Enrich event with context
                 enriched_event = {
@@ -378,7 +379,8 @@ class TDAAgentContextAdapter:
         
         return subscription_id
         
-    async def unsubscribe(self, subscription_id: str):
+        async def unsubscribe(self, subscription_id: str):
+            pass
         """Unsubscribe from TDA events"""
         if subscription_id in self._subscriptions:
             await self.event_bus.unsubscribe(subscription_id)

@@ -21,12 +21,38 @@ from .aura import AURASettings
 
 # Backward compatibility aliases
 # These map the modern *Settings classes to the legacy *Config names
-# TODO: Migrate all code to use *Settings naming convention
+
 UltimateAURAConfig = AURASettings
+AuraConfig = AURASettings  # Main config alias
 AgentConfig = AgentSettings
 MemoryConfig = MemorySettings
+ObservabilityConfig = ObservabilitySettings
 KnowledgeConfig = AURASettings  # Knowledge is part of main AURA settings
 TopologyConfig = AURASettings  # Topology is part of main AURA settings
+
+# Additional legacy aliases that core module expects
+DatabaseConfig = AURASettings  # Database is part of main settings
+RedisConfig = MemorySettings   # Redis is part of memory settings
+Neo4jConfig = AURASettings     # Neo4j is part of main settings
+QuantumConfig = AURASettings   # Quantum is part of main settings
+ConsciousnessConfig = AURASettings  # Consciousness is part of main settings
+SwarmConfig = AgentSettings    # Swarm is part of agent settings
+TDAConfig = AURASettings       # TDA is part of main settings
+ConfigurationManager = AURASettings  # Manager is the main settings class
+ConfigLoader = AURASettings    # Loader is the main settings class
+ConfigValidator = AURASettings # Validator is the main settings class
+
+# Additional missing imports that core expects
+Environment = EnvironmentType  # Environment alias
+ConfigSource = AURASettings    # Config source is main settings
+ConfigMetadata = AURASettings  # Metadata is main settings
+
+# Factory function aliases (will be defined after the factory functions)
+def get_config_manager():
+    return get_config()
+
+def reload_config():
+    return get_config()
 
 # Factory functions for configuration
 def get_ultimate_config() -> AURASettings:
@@ -98,6 +124,19 @@ def get_development_config() -> AURASettings:
     config.observability.enable_tracing = False
     return config
 
+def create_testing_config() -> AURASettings:
+    """
+    Get testing AURA configuration.
+    
+    Returns:
+        AURASettings: Testing configuration
+    """
+    return get_development_config()
+
+# Additional factory function aliases
+create_development_config = get_development_config
+create_production_config = get_production_config
+
 __all__ = [
     # Base classes
     "BaseSettings",
@@ -116,14 +155,35 @@ __all__ = [
     
     # Backward compatibility aliases
     "UltimateAURAConfig",
+    "AuraConfig",
     "AgentConfig",
     "MemoryConfig",
+    "ObservabilityConfig",
     "KnowledgeConfig",
     "TopologyConfig",
+    "DatabaseConfig",
+    "RedisConfig",
+    "Neo4jConfig",
+    "QuantumConfig",
+    "ConsciousnessConfig",
+    "SwarmConfig",
+    "TDAConfig",
+    "ConfigurationManager",
+    "ConfigLoader",
+    "ConfigValidator",
+    "Environment",
+    "ConfigSource",
+    "ConfigMetadata",
     
     # Factory functions
     "get_ultimate_config",
     "get_production_config",
     "get_enterprise_config",
     "get_development_config",
+    "get_config",
+    "get_config_manager",
+    "reload_config",
+    "create_development_config",
+    "create_production_config",
+    "create_testing_config",
 ]

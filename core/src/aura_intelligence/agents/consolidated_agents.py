@@ -90,7 +90,8 @@ class ConsolidatedAgent(AgentComponent):
                 "response_time_ms": (time.time() - start_time) * 1000
             }
     
-    async def _council_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        async def _council_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Council agent decision logic."""
         # Simple neural-like processing
         input_strength = len(str(context)) / 1000.0
@@ -109,7 +110,8 @@ class ConsolidatedAgent(AgentComponent):
             ]
         }
     
-    async def _bio_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        async def _bio_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Bio agent decision logic."""
         # Simple biological simulation
         energy = 0.8  # Simplified energy level
@@ -135,7 +137,8 @@ class ConsolidatedAgent(AgentComponent):
             ]
         }
     
-    async def _generic_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        async def _generic_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Generic agent decision logic."""
         # Simple rule-based decision
         context_size = len(context)
@@ -162,6 +165,7 @@ class ConsolidatedAgent(AgentComponent):
     
     def get_status(self) -> Dict[str, Any]:
         """Get agent status."""
+        pass
         return {
             "agent_id": self.component_id,
             "agent_type": self.agent_type.value,
@@ -193,6 +197,7 @@ class ConsolidatedAgentFactory:
     @staticmethod
     def get_available_types() -> List[str]:
         """Get available agent types."""
+        pass
         return [t.value for t in AgentType]
 
 # ============================================================================
@@ -223,6 +228,7 @@ class ConsolidatedAgentRegistry:
     
     def get_status(self) -> Dict[str, Any]:
         """Get registry status."""
+        pass
         type_counts = {}
         for agent in self.agents.values():
             agent_type = agent.agent_type.value
@@ -241,5 +247,5 @@ class ConsolidatedAgentRegistry:
 _global_registry = ConsolidatedAgentRegistry()
 
 def get_agent_registry() -> ConsolidatedAgentRegistry:
-    """Get the global agent registry."""
-    return _global_registry
+        """Get the global agent registry."""
+        return _global_registry

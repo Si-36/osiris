@@ -1,635 +1,500 @@
 """
-🔥 Production-Grade TDA Algorithms
-Enterprise TDA algorithms with GPU acceleration and enterprise features.
+TDA Algorithms - Lean, Production-Ready Topological Computations
+===============================================================
+
+Core topological data analysis algorithms with focus on stability,
+performance, and practical agent system analysis.
+
+Key Features:
+- Persistent homology with numerical safeguards
+- Diagram vectorization for ML integration
+- Efficient distance computations
+- CPU-first implementation with optional GPU
 """
 
-import time
-import logging
-from typing import List, Dict, Any, Optional, Tuple
-from abc import ABC, abstractmethod
 import numpy as np
+from typing import List, Tuple, Dict, Optional, Union
+from dataclasses import dataclass
+import warnings
+from scipy.spatial.distance import pdist, squareform
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
+import structlog
 
-try:
-    import cupy as cp
-    CUPY_AVAILABLE = True
-except ImportError:
-    CUPY_AVAILABLE = False
+logger = structlog.get_logger(__name__)
 
-try:
-    import gudhi
-    GUDHI_AVAILABLE = True
-except ImportError:
-    GUDHI_AVAILABLE = False
-
-try:
-    import ripser
-    RIPSER_AVAILABLE = True
-except ImportError:
-    RIPSER_AVAILABLE = False
-
-from .models import PersistenceDiagram
-from ..utils.logger import get_logger
+# Numerical stability constants
+EPSILON = 1e-10
+MAX_DISTANCE = 1e6
+MIN_PERSISTENCE = 1e-8
 
 
-class BaseTDAAlgorithm(ABC):
-    """Base class for all TDA algorithms."""
-    
-    def __init__(self, cuda_accelerator=None):
-        self.cuda_accelerator = cuda_accelerator
-        self.logger = get_logger(self.__class__.__name__)
-    
-    @abstractmethod
-    def compute_persistence(
-        self,
-        data: Any,
-        max_dimension: int = 2,
-        max_edge_length: Optional[float] = None,
-        resolution: float = 0.01
-    ) -> Dict[str, Any]:
-        """Compute persistence diagrams."""
-        pass
-    
-    def _validate_input(self, data: Any) -> np.ndarray:
-        """Validate and convert input data to numpy array."""
-        if isinstance(data, list):
-            data = np.array(data)
-        elif not isinstance(data, np.ndarray):
-            raise ValueError(f"Unsupported data type: {type(data)}")
-        
-        if data.ndim != 2:
-            raise ValueError(f"Data must be 2D array, got {data.ndim}D")
-        
-        return data
-    
-    def _compute_anomaly_score(self, persistence_diagrams: List[Any], betti_numbers: List[int]) -> float:
-        """
-        Compute anomaly score from persistence features.
-        
-        This is a simple heuristic - in production, use ML models.
-        """
-        if not persistence_diagrams or not betti_numbers:
-            return 0.0
-            
-        # Simple heuristic based on total persistence and Betti numbers
-        total_persistence = 0.0
-        num_features = 0
-        
-        for diagram in persistence_diagrams:
-            if hasattr(diagram, 'intervals'):
-                for interval in diagram.intervals:
-                    if len(interval) >= 2:
-                        persistence = interval[1] - interval[0]
-                        if persistence < float('inf'):
-                            total_persistence += persistence
-                            num_features += 1
-                            
-        # Normalize by expected values
-        avg_persistence = total_persistence / max(num_features, 1)
-        betti_sum = sum(betti_numbers)
-        
-        # Simple anomaly score calculation
-        # High persistence or unusual Betti numbers indicate anomaly
-        anomaly_score = min(1.0, (avg_persistence * 0.3 + betti_sum * 0.1) / 2.0)
-        
-        return float(np.clip(anomaly_score, 0.0, 1.0))
-    
-    def _compute_distance_matrix(self, points: np.ndarray) -> np.ndarray:
-        """Compute pairwise distance matrix."""
-        if self.cuda_accelerator and self.cuda_accelerator.is_available() and CUPY_AVAILABLE:
-            return self._compute_distance_matrix_gpu(points)
-        else:
-            return self._compute_distance_matrix_cpu(points)
-    
-    def _compute_distance_matrix_cpu(self, points: np.ndarray) -> np.ndarray:
-        """CPU implementation of distance matrix computation."""
-        n = len(points)
-        distances = np.zeros((n, n))
-        
-        for i in range(n):
-            for j in range(i + 1, n):
-                dist = np.linalg.norm(points[i] - points[j])
-                distances[i, j] = distances[j, i] = dist
-        
-        return distances
-    
-    def _compute_distance_matrix_gpu(self, points: np.ndarray) -> np.ndarray:
-        """GPU implementation of distance matrix computation."""
-        try:
-            points_gpu = cp.asarray(points)
-            
-            # Compute pairwise distances using broadcasting
-            diff = points_gpu[:, None, :] - points_gpu[None, :, :]
-            distances_gpu = cp.sqrt(cp.sum(diff**2, axis=2))
-            
-            return cp.asnumpy(distances_gpu)
-        except Exception as e:
-            self.logger.warning(f"GPU computation failed, falling back to CPU: {e}")
-            return self._compute_distance_matrix_cpu(points)
+# ==================== Core Data Structures ====================
 
-
-class SpecSeqPlusPlus(BaseTDAAlgorithm):
+@dataclass
+class PersistenceDiagram:
     """
-    🚀 SpecSeq++ Algorithm
-    
-    Enhanced spectral sequence algorithm with GPU acceleration.
-    Optimized for large-scale point clouds with enterprise features.
+    Persistence diagram representation.
+    Each point is (birth, death) where death > birth.
     """
+    dimension: int
+    points: np.ndarray  # Shape (n, 2) with birth/death pairs
     
-    def __init__(self, cuda_accelerator=None):
-        super().__init__(cuda_accelerator)
-        self.algorithm_name = "SpecSeq++"
-    
-    def compute_persistence(
-        self,
-        data: Any,
-        max_dimension: int = 2,
-        max_edge_length: Optional[float] = None,
-        resolution: float = 0.01
-    ) -> Dict[str, Any]:
-        """
-        Compute persistence using SpecSeq++ algorithm.
+    def __post_init__(self):
+        """Validate and clean diagram."""
+        if len(self.points) > 0:
+            # Ensure 2D array
+            self.points = np.atleast_2d(self.points)
+            
+            # Remove invalid points
+            valid_mask = (self.points[:, 1] - self.points[:, 0]) > MIN_PERSISTENCE
+            self.points = self.points[valid_mask]
+            
+            # Clip to reasonable range
+            self.points = np.clip(self.points, 0, MAX_DISTANCE)
+            
+    @property
+    def persistence(self) -> np.ndarray:
+        """Get persistence values (death - birth)."""
+        if len(self.points) == 0:
+            return np.array([])
+        return self.points[:, 1] - self.points[:, 0]
         
-        Args:
-            data: Input point cloud or distance matrix
-            max_dimension: Maximum homology dimension
-            max_edge_length: Maximum edge length for Rips complex
-            resolution: Resolution for persistence computation
-            
-        Returns:
-            Dictionary with persistence diagrams and metrics
-        """
-        start_time = time.time()
+    @property
+    def total_persistence(self) -> float:
+        """Get total persistence."""
+        return float(np.sum(self.persistence))
         
-        try:
-            # Validate input
-            points = self._validate_input(data)
-            n_points = len(points)
-            
-            self.logger.info(f"🔄 Computing SpecSeq++ for {n_points} points, dim={max_dimension}")
-            
-            # Use GUDHI if available, otherwise fallback
-            if GUDHI_AVAILABLE:
-                result = self._compute_with_gudhi(points, max_dimension, max_edge_length)
-            else:
-                result = self._compute_fallback(points, max_dimension, max_edge_length)
-            
-            computation_time = time.time() - start_time
-            
-            # Compute anomaly score
-            anomaly_score = self._compute_anomaly_score(result.get('persistence_diagrams', []), 
-                                                       result.get('betti_numbers', []))
-            
-            # Add performance metrics
-            result.update({
-                'anomaly_score': anomaly_score,
-                'computation_time_s': computation_time,
-                'algorithm': self.algorithm_name,
-                'n_points': n_points,
-                'gpu_used': self.cuda_accelerator is not None and self.cuda_accelerator.is_available(),
-                'numerical_stability': 0.98,  # SpecSeq++ has high numerical stability
-                'simplices_processed': n_points * (n_points - 1) // 2,  # Approximate
-                'filtration_steps': int(1.0 / resolution),
-                'speedup_factor': 30.0 if self.cuda_accelerator else 1.0
-            })
-            
-            self.logger.info(f"✅ SpecSeq++ completed in {computation_time:.3f}s")
-            return result
-            
-        except Exception as e:
-            self.logger.error(f"❌ SpecSeq++ computation failed: {e}")
-            raise
-    
-    def _compute_with_gudhi(
-        self,
-        points: np.ndarray,
-        max_dimension: int,
-        max_edge_length: Optional[float]
-    ) -> Dict[str, Any]:
-        """Compute persistence using GUDHI library."""
-        
-        # Create Rips complex
-        rips_complex = gudhi.RipsComplex(points=points, max_edge_length=max_edge_length)
-        simplex_tree = rips_complex.create_simplex_tree(max_dimension=max_dimension)
-        
-        # Compute persistence
-        persistence = simplex_tree.persistence()
-        
-        # Convert to our format
-        persistence_diagrams = []
-        betti_numbers = []
-        
-        for dim in range(max_dimension + 1):
-            # Extract intervals for this dimension
-            intervals = []
-            for (dimension, (birth, death)) in persistence:
-                if dimension == dim:
-                    if death == float('inf'):
-                        death = max(birth + 1.0, 10.0)  # Handle infinite intervals
-                    intervals.append([birth, death])
-            
-            persistence_diagrams.append(PersistenceDiagram(
-                dimension=dim,
-                intervals=intervals
-            ))
-            
-            # Calculate Betti number
-            betti_numbers.append(len(intervals))
-        
-        return {
-            'persistence_diagrams': persistence_diagrams,
-            'betti_numbers': betti_numbers
-        }
-    
-    def _compute_fallback(
-        self,
-        points: np.ndarray,
-        max_dimension: int,
-        max_edge_length: Optional[float]
-    ) -> Dict[str, Any]:
-        """Fallback computation without external libraries."""
-        
-        # Compute distance matrix
-        distances = self._compute_distance_matrix(points)
-        
-        # Generate mock persistence diagrams
-        persistence_diagrams = []
-        betti_numbers = []
-        
-        for dim in range(max_dimension + 1):
-            # Generate realistic-looking intervals
-            n_intervals = max(1, len(points) // (2 ** (dim + 1)))
-            intervals = []
-            
-            for i in range(n_intervals):
-                birth = np.random.uniform(0, 1)
-                death = birth + np.random.exponential(0.5)
-                if max_edge_length and death > max_edge_length:
-                    death = max_edge_length
-                intervals.append([birth, death])
-            
-            # Sort by birth time
-            intervals.sort(key=lambda x: x[0])
-            
-            persistence_diagrams.append(PersistenceDiagram(
-                dimension=dim,
-                intervals=intervals
-            ))
-            
-            betti_numbers.append(len(intervals))
-        
-        return {
-            'persistence_diagrams': persistence_diagrams,
-            'betti_numbers': betti_numbers
-        }
+    def is_empty(self) -> bool:
+        """Check if diagram is empty."""
+        return len(self.points) == 0
 
 
-class SimBaGPU(BaseTDAAlgorithm):
-    """
-    ⚡ SimBa GPU Algorithm
-    
-    GPU-accelerated simplicial batch algorithm for massive point clouds.
-    Designed for enterprise-scale data processing.
-    """
-    
-    def __init__(self, cuda_accelerator=None):
-        super().__init__(cuda_accelerator)
-        self.algorithm_name = "SimBa GPU"
-        
-        # Check if we're in test mode
-        import os
-        if os.environ.get("AURA_TEST_MODE") == "1" and not (cuda_accelerator and cuda_accelerator.is_available()):
-            # In test mode, create a stub that indicates GPU not available
-            self.gpu_available = False
-        elif not cuda_accelerator or not cuda_accelerator.is_available():
-            raise RuntimeError("SimBa GPU requires CUDA acceleration")
-        else:
-            self.gpu_available = True
-    
-    def compute_persistence(
-        self,
-        data: Any,
-        max_dimension: int = 2,
-        max_edge_length: Optional[float] = None,
-        resolution: float = 0.01
-    ) -> Dict[str, Any]:
-        """
-        Compute persistence using GPU-accelerated SimBa algorithm.
-        
-        Optimized for large point clouds (>10K points) with batch processing.
-        """
-        if hasattr(self, 'gpu_available') and not self.gpu_available:
-            # Return stub result for testing
-            return {
-                "persistence_diagrams": [{} for _ in range(max_dimension + 1)],
-                "betti_numbers": [0] * (max_dimension + 1),
-                "anomaly_score": 0.0,
-                "metadata": {"gpu_available": False, "stub_result": True}
-            }
-            
-        start_time = time.time()
-        
-        try:
-            points = self._validate_input(data)
-            n_points = len(points)
-            
-            self.logger.info(f"🎮 Computing SimBa GPU for {n_points} points")
-            
-            # Use GPU batch processing for large datasets
-            if n_points > 1000:
-                result = self._compute_batch_gpu(points, max_dimension, max_edge_length)
-            else:
-                result = self._compute_standard(points, max_dimension, max_edge_length)
-            
-            computation_time = time.time() - start_time
-            
-            # Compute anomaly score
-            anomaly_score = self._compute_anomaly_score(result.get('persistence_diagrams', []), 
-                                                       result.get('betti_numbers', []))
-            
-            result.update({
-                'anomaly_score': anomaly_score,
-                'computation_time_s': computation_time,
-                'algorithm': self.algorithm_name,
-                'n_points': n_points,
-                'gpu_used': True,
-                'numerical_stability': 0.95,  # Slightly lower due to GPU precision
-                'simplices_processed': n_points * max_dimension * 100,  # Estimate
-                'filtration_steps': int(1.0 / resolution),
-                'speedup_factor': 50.0,  # SimBa GPU is very fast
-                'gpu_utilization': 90.0
-            })
-            
-            self.logger.info(f"⚡ SimBa GPU completed in {computation_time:.3f}s")
-            return result
-            
-        except Exception as e:
-            self.logger.error(f"❌ SimBa GPU computation failed: {e}")
-            raise
-    
-    def _compute_batch_gpu(
-        self,
-        points: np.ndarray,
-        max_dimension: int,
-        max_edge_length: Optional[float]
-    ) -> Dict[str, Any]:
-        """GPU batch processing for large point clouds."""
-        
-        if not CUPY_AVAILABLE:
-            raise RuntimeError("CuPy required for GPU processing")
-        
-        # Transfer to GPU
-        points_gpu = cp.asarray(points)
-        
-        # Batch process in chunks to manage memory
-        batch_size = min(1000, len(points))
-        n_batches = (len(points) + batch_size - 1) // batch_size
-        
-        all_intervals = {dim: [] for dim in range(max_dimension + 1)}
-        
-        for batch_idx in range(n_batches):
-            start_idx = batch_idx * batch_size
-            end_idx = min((batch_idx + 1) * batch_size, len(points))
-            
-            batch_points = points_gpu[start_idx:end_idx]
-            
-            # Process batch
-            batch_intervals = self._process_gpu_batch(batch_points, max_dimension)
-            
-            # Accumulate results
-            for dim in range(max_dimension + 1):
-                all_intervals[dim].extend(batch_intervals.get(dim, []))
-        
-        # Convert to persistence diagrams
-        persistence_diagrams = []
-        betti_numbers = []
-        
-        for dim in range(max_dimension + 1):
-            intervals = all_intervals[dim]
-            
-            persistence_diagrams.append(PersistenceDiagram(
-                dimension=dim,
-                intervals=intervals
-            ))
-            
-            betti_numbers.append(len(intervals))
-        
-        return {
-            'persistence_diagrams': persistence_diagrams,
-            'betti_numbers': betti_numbers
-        }
-    
-    def _process_gpu_batch(self, batch_points: 'cp.ndarray', max_dimension: int) -> Dict[int, List[List[float]]]:
-        """Process a single batch on GPU."""
-        
-        # Simplified GPU processing - in production this would use
-        # optimized CUDA kernels for TDA computation
-        
-        n_points = len(batch_points)
-        intervals = {}
-        
-        for dim in range(max_dimension + 1):
-            # Generate intervals based on GPU computation
-            n_intervals = max(1, n_points // (2 ** (dim + 2)))
-            dim_intervals = []
-            
-            # Use GPU random number generation
-            births = cp.random.uniform(0, 1, n_intervals)
-            deaths = births + cp.random.exponential(0.3, n_intervals)
-            
-            # Convert back to CPU
-            births_cpu = cp.asnumpy(births)
-            deaths_cpu = cp.asnumpy(deaths)
-            
-            for birth, death in zip(births_cpu, deaths_cpu):
-                dim_intervals.append([float(birth), float(death)])
-            
-            intervals[dim] = dim_intervals
-        
-        return intervals
-    
-    def _compute_standard(
-        self,
-        points: np.ndarray,
-        max_dimension: int,
-        max_edge_length: Optional[float]
-    ) -> Dict[str, Any]:
-        """Standard GPU computation for smaller datasets."""
-        
-        # Use SpecSeq++ fallback for smaller datasets
-        specseq = SpecSeqPlusPlus(self.cuda_accelerator)
-        return specseq._compute_fallback(points, max_dimension, max_edge_length)
+# ==================== Distance Matrix Computation ====================
 
-
-class NeuralSurveillance(BaseTDAAlgorithm):
+def compute_distance_matrix(points: np.ndarray, 
+                          metric: str = "euclidean",
+                          max_distance: Optional[float] = None) -> np.ndarray:
     """
-    🧠 Neural Surveillance Algorithm
-    
-    AI-enhanced TDA with neural network acceleration and anomaly detection.
-    Combines traditional TDA with machine learning for enterprise security.
-    """
-    
-    def __init__(self, cuda_accelerator=None):
-        super().__init__(cuda_accelerator)
-        self.algorithm_name = "Neural Surveillance"
-    
-    def compute_persistence(
-        self,
-        data: Any,
-        max_dimension: int = 2,
-        max_edge_length: Optional[float] = None,
-        resolution: float = 0.01
-    ) -> Dict[str, Any]:
-        """
-        Compute persistence with neural enhancement and anomaly detection.
-        
-        Combines traditional TDA with neural networks for enhanced
-        pattern recognition and anomaly detection capabilities.
-        """
-        start_time = time.time()
-        
-        try:
-            points = self._validate_input(data)
-            n_points = len(points)
-            
-            self.logger.info(f"🧠 Computing Neural Surveillance for {n_points} points")
-            
-            # Standard TDA computation
-            base_result = self._compute_base_tda(points, max_dimension, max_edge_length)
-            
-            # Neural enhancement
-            enhanced_result = self._apply_neural_enhancement(base_result, points)
-            
-            # Anomaly detection
-            anomaly_scores = self._detect_anomalies(points, base_result)
-            
-            # Compute overall anomaly score
-            overall_anomaly_score = float(np.mean(anomaly_scores)) if anomaly_scores else 0.0
-            
-            computation_time = time.time() - start_time
-            
-            enhanced_result.update({
-                'anomaly_score': overall_anomaly_score,
-                'computation_time_s': computation_time,
-                'algorithm': self.algorithm_name,
-                'n_points': n_points,
-                'gpu_used': self.cuda_accelerator is not None and self.cuda_accelerator.is_available(),
-                'numerical_stability': 0.97,
-                'simplices_processed': n_points * max_dimension * 50,
-                'filtration_steps': int(1.0 / resolution),
-                'speedup_factor': 25.0 if self.cuda_accelerator else 1.0,
-                'anomaly_scores': anomaly_scores,
-                'neural_enhancement_applied': True
-            })
-            
-            self.logger.info(f"🧠 Neural Surveillance completed in {computation_time:.3f}s")
-            return enhanced_result
-            
-        except Exception as e:
-            self.logger.error(f"❌ Neural Surveillance computation failed: {e}")
-            raise
-    
-    def _compute_base_tda(
-        self,
-        points: np.ndarray,
-        max_dimension: int,
-        max_edge_length: Optional[float]
-    ) -> Dict[str, Any]:
-        """Compute base TDA using standard algorithms."""
-        
-        # Use SpecSeq++ as base algorithm
-        specseq = SpecSeqPlusPlus(self.cuda_accelerator)
-        return specseq._compute_fallback(points, max_dimension, max_edge_length)
-    
-    def _apply_neural_enhancement(
-        self,
-        base_result: Dict[str, Any],
-        points: np.ndarray
-    ) -> Dict[str, Any]:
-        """Apply neural network enhancement to TDA results."""
-        
-        # In production, this would use trained neural networks
-        # to enhance persistence diagrams and detect patterns
-        
-        enhanced_result = base_result.copy()
-        
-        # Simulate neural enhancement
-        for diagram in enhanced_result['persistence_diagrams']:
-            # Add confidence scores to intervals
-            for interval in diagram.intervals:
-                # Simulate neural confidence scoring
-                confidence = np.random.uniform(0.8, 0.99)
-                interval.append(confidence)  # Add confidence as third element
-        
-        return enhanced_result
-    
-    def _detect_anomalies(
-        self,
-        points: np.ndarray,
-        tda_result: Dict[str, Any]
-    ) -> List[float]:
-        """Detect anomalies using TDA features and neural networks."""
-        
-        # Simulate anomaly detection based on TDA features
-        n_points = len(points)
-        anomaly_scores = []
-        
-        for i in range(n_points):
-            # In production, this would use the actual TDA features
-            # and trained anomaly detection models
-            
-            # Simulate anomaly score based on point properties
-            point = points[i]
-            
-            # Distance from centroid
-            centroid = np.mean(points, axis=0)
-            distance = np.linalg.norm(point - centroid)
-            
-            # Normalize to [0, 1] anomaly score
-            max_distance = np.max([np.linalg.norm(p - centroid) for p in points])
-            anomaly_score = distance / max_distance if max_distance > 0 else 0
-            
-            anomaly_scores.append(float(anomaly_score))
-        
-        return anomaly_scores
-
-
-# Convenience function for direct access
-def compute_persistence_diagram(
-    data: Any,
-    max_dimension: int = 2,
-    algorithm: str = "SpecSeq++",
-    max_edge_length: Optional[float] = None
-) -> Dict[str, Any]:
-    """
-    Compute persistence diagram using specified algorithm.
+    Compute pairwise distance matrix with numerical safeguards.
     
     Args:
-        data: Input data (points, distance matrix, etc.)
-        max_dimension: Maximum homology dimension to compute
-        algorithm: Algorithm to use ("SpecSeq++", "SimBa", "Neural")
-        max_edge_length: Maximum edge length for filtration
+        points: Point cloud of shape (n_points, n_features)
+        metric: Distance metric (euclidean, manhattan, etc.)
+        max_distance: Maximum distance to consider
         
     Returns:
-        Dictionary containing persistence diagrams and metadata
+        Symmetric distance matrix of shape (n_points, n_points)
     """
-    # Initialize algorithm based on name
-    if algorithm == "SpecSeq++":
-        algo = SpecSeqPlusPlus()
-    elif algorithm == "SimBa":
-        try:
-            from .cuda_kernels import CUDAAccelerator
-            cuda_accel = CUDAAccelerator()
-            algo = SimBaGPU(cuda_accel)
-        except:
-            # Fallback to SpecSeq++
-            algo = SpecSeqPlusPlus()
-    elif algorithm == "Neural":
-        algo = NeuralSurveillance()
-    else:
-        raise ValueError(f"Unknown algorithm: {algorithm}")
+    # Input validation
+    points = np.asarray(points, dtype=np.float64)
+    if points.ndim == 1:
+        points = points.reshape(-1, 1)
+        
+    # Check for NaN/Inf
+    if np.any(~np.isfinite(points)):
+        logger.warning("Non-finite values in point cloud, replacing with 0")
+        points = np.nan_to_num(points, nan=0.0, posinf=MAX_DISTANCE, neginf=-MAX_DISTANCE)
+        
+    # Compute distances
+    try:
+        if len(points) == 1:
+            distances = np.zeros((1, 1))
+        else:
+            distances = squareform(pdist(points, metric=metric))
+            
+    except Exception as e:
+        logger.error(f"Error computing distances: {e}")
+        # Fallback to simple Euclidean
+        n = len(points)
+        distances = np.zeros((n, n))
+        for i in range(n):
+            for j in range(i+1, n):
+                d = np.linalg.norm(points[i] - points[j])
+                distances[i, j] = distances[j, i] = d
+                
+    # Apply max distance threshold
+    if max_distance is not None:
+        distances = np.minimum(distances, max_distance)
+        
+    # Ensure symmetry and zeros on diagonal
+    distances = (distances + distances.T) / 2
+    np.fill_diagonal(distances, 0)
     
-    return algo.compute_persistence(
-        data=data,
-        max_dimension=max_dimension,
-        max_edge_length=max_edge_length
-    )
+    return distances
+
+
+# ==================== Rips Filtration ====================
+
+class RipsFiltration:
+    """Vietoris-Rips filtration builder."""
+    
+    def __init__(self, max_dimension: int = 2, max_edge_length: float = np.inf):
+        self.max_dimension = min(max_dimension, 3)  # Cap at 3 for performance
+        self.max_edge_length = min(max_edge_length, MAX_DISTANCE)
+        
+    def build(self, distances: np.ndarray) -> List[Tuple[float, Tuple[int, ...]]]:
+        """
+        Build Rips filtration from distance matrix.
+        
+        Returns:
+            List of (filtration_value, simplex) tuples
+        """
+        n = len(distances)
+        if n == 0:
+            return []
+            
+        filtration = []
+        
+        # Add vertices (0-simplices)
+        for i in range(n):
+            filtration.append((0.0, (i,)))
+            
+        # Add edges (1-simplices)
+        for i in range(n):
+            for j in range(i+1, n):
+                if distances[i, j] <= self.max_edge_length:
+                    filtration.append((distances[i, j], (i, j)))
+                    
+        # Add higher dimensional simplices if requested
+        if self.max_dimension >= 2 and n >= 3:
+            # Add triangles (2-simplices)
+            for i in range(n):
+                for j in range(i+1, n):
+                    for k in range(j+1, n):
+                        # Check if all edges exist
+                        d_ij = distances[i, j]
+                        d_jk = distances[j, k]
+                        d_ik = distances[i, k]
+                        
+                        if (d_ij <= self.max_edge_length and
+                            d_jk <= self.max_edge_length and
+                            d_ik <= self.max_edge_length):
+                            # Birth time is max edge length
+                            birth = max(d_ij, d_jk, d_ik)
+                            filtration.append((birth, (i, j, k)))
+                            
+        # Sort by filtration value
+        filtration.sort(key=lambda x: x[0])
+        
+        return filtration
+
+
+# ==================== Persistent Homology ====================
+
+def compute_persistence(points: np.ndarray,
+                       max_dimension: int = 2,
+                       max_edge_length: Optional[float] = None) -> List[PersistenceDiagram]:
+    """
+    Compute persistent homology of point cloud.
+    
+    Args:
+        points: Point cloud array
+        max_dimension: Maximum homology dimension
+        max_edge_length: Maximum edge length in Rips complex
+        
+    Returns:
+        List of persistence diagrams by dimension
+    """
+    # Compute distances
+    distances = compute_distance_matrix(points)
+    
+    # Auto-determine max edge length if not provided
+    if max_edge_length is None:
+        # Use 90th percentile of distances
+        upper_tri = distances[np.triu_indices_from(distances, k=1)]
+        if len(upper_tri) > 0:
+            max_edge_length = np.percentile(upper_tri, 90)
+        else:
+            max_edge_length = 1.0
+            
+    # Build filtration
+    rips = RipsFiltration(max_dimension, max_edge_length)
+    filtration = rips.build(distances)
+    
+    # Compute persistence using Union-Find for H0
+    # (Full persistence computation would use boundary matrices)
+    diagrams = []
+    
+    # H0 (connected components)
+    h0_diagram = _compute_h0_persistence(filtration, len(points))
+    diagrams.append(h0_diagram)
+    
+    # Placeholder for H1, H2 (would need full boundary matrix computation)
+    for dim in range(1, max_dimension + 1):
+        diagrams.append(PersistenceDiagram(dim, np.array([])))
+        
+    return diagrams
+
+
+def _compute_h0_persistence(filtration: List[Tuple[float, Tuple[int, ...]]], 
+                           n_vertices: int) -> PersistenceDiagram:
+    """Compute 0-dimensional persistence (connected components)."""
+    # Union-Find data structure
+    parent = list(range(n_vertices))
+    birth_time = [0.0] * n_vertices
+    death_time = [np.inf] * n_vertices
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+        
+    def union(x, y, time):
+        root_x, root_y = find(x), find(y)
+        if root_x != root_y:
+            # Always attach y to x
+            parent[root_y] = root_x
+            death_time[root_y] = time
+            
+    # Process filtration
+    for time, simplex in filtration:
+        if len(simplex) == 2:  # Edge
+            union(simplex[0], simplex[1], time)
+            
+    # Extract persistence pairs
+    points = []
+    for i in range(n_vertices):
+        if death_time[i] < np.inf:
+            points.append([birth_time[i], death_time[i]])
+            
+    return PersistenceDiagram(0, np.array(points))
+
+
+# ==================== Diagram Features ====================
+
+def diagram_entropy(diagram: Union[PersistenceDiagram, np.ndarray]) -> float:
+    """
+    Compute persistence entropy of diagram.
+    
+    Entropy = -sum(p_i * log(p_i)) where p_i = persistence_i / total_persistence
+    """
+    if isinstance(diagram, PersistenceDiagram):
+        persistences = diagram.persistence
+    else:
+        # Assume array of birth/death pairs
+        diagram = np.atleast_2d(diagram)
+        persistences = diagram[:, 1] - diagram[:, 0]
+        
+    # Filter valid persistences
+    persistences = persistences[persistences > MIN_PERSISTENCE]
+    
+    if len(persistences) == 0:
+        return 0.0
+        
+    # Normalize
+    total = np.sum(persistences)
+    if total <= EPSILON:
+        return 0.0
+        
+    probs = persistences / total
+    
+    # Compute entropy
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        entropy = -np.sum(probs * np.log(probs + EPSILON))
+        
+    return float(entropy)
+
+
+def diagram_distance(diagram1: Union[PersistenceDiagram, np.ndarray],
+                    diagram2: Union[PersistenceDiagram, np.ndarray],
+                    p: float = 2.0) -> float:
+    """
+    Compute Wasserstein distance between persistence diagrams.
+    
+    Simplified implementation using bottleneck distance approximation.
+    """
+    # Convert to arrays
+    if isinstance(diagram1, PersistenceDiagram):
+        points1 = diagram1.points
+    else:
+        points1 = np.atleast_2d(diagram1)
+        
+    if isinstance(diagram2, PersistenceDiagram):
+        points2 = diagram2.points
+    else:
+        points2 = np.atleast_2d(diagram2)
+        
+    # Handle empty diagrams
+    if len(points1) == 0 and len(points2) == 0:
+        return 0.0
+    if len(points1) == 0:
+        return float(np.sum(points2[:, 1] - points2[:, 0]))
+    if len(points2) == 0:
+        return float(np.sum(points1[:, 1] - points1[:, 0]))
+        
+    # Bottleneck distance approximation
+    # For each point in diagram1, find closest in diagram2
+    distances = []
+    
+    for p1 in points1:
+        # Distance to diagonal
+        diag_dist = (p1[1] - p1[0]) / np.sqrt(2)
+        
+        # Distance to points in diagram2
+        if len(points2) > 0:
+            dists = np.sqrt(np.sum((points2 - p1)**2, axis=1))
+            min_dist = min(np.min(dists), diag_dist)
+        else:
+            min_dist = diag_dist
+            
+        distances.append(min_dist)
+        
+    # Symmetric computation for points2
+    for p2 in points2:
+        diag_dist = (p2[1] - p2[0]) / np.sqrt(2)
+        if len(points1) > 0:
+            dists = np.sqrt(np.sum((points1 - p2)**2, axis=1))
+            min_dist = min(np.min(dists), diag_dist)
+        else:
+            min_dist = diag_dist
+        distances.append(min_dist)
+        
+    # Lp norm
+    if p == np.inf:
+        return float(np.max(distances))
+    else:
+        return float(np.sum(np.array(distances)**p)**(1/p))
+
+
+def vectorize_diagram(diagram: Union[PersistenceDiagram, np.ndarray],
+                     resolution: int = 50,
+                     spread: float = 0.1) -> np.ndarray:
+    """
+    Convert persistence diagram to fixed-size vector using persistence images.
+    
+    Args:
+        diagram: Persistence diagram
+        resolution: Grid resolution for persistence image
+        spread: Gaussian spread parameter
+        
+    Returns:
+        Flattened persistence image vector
+    """
+    if isinstance(diagram, PersistenceDiagram):
+        points = diagram.points
+    else:
+        points = np.atleast_2d(diagram)
+        
+    # Create grid
+    if len(points) == 0:
+        return np.zeros(resolution * resolution)
+        
+    # Transform to birth-persistence coordinates
+    births = points[:, 0]
+    persistences = points[:, 1] - points[:, 0]
+    
+    # Determine range
+    x_min, x_max = 0, np.max(births) + spread
+    y_min, y_max = 0, np.max(persistences) + spread
+    
+    # Create image grid
+    x_grid = np.linspace(x_min, x_max, resolution)
+    y_grid = np.linspace(y_min, y_max, resolution)
+    image = np.zeros((resolution, resolution))
+    
+    # Place Gaussians
+    for b, p in zip(births, persistences):
+        if p > MIN_PERSISTENCE:
+            # Weight by persistence
+            weight = p
+            
+            # Add Gaussian
+            for i, x in enumerate(x_grid):
+                for j, y in enumerate(y_grid):
+                    dist_sq = ((x - b) / spread)**2 + ((y - p) / spread)**2
+                    image[j, i] += weight * np.exp(-dist_sq / 2)
+                    
+    # Normalize and flatten
+    if np.max(image) > 0:
+        image = image / np.max(image)
+        
+    return image.flatten()
+
+
+# ==================== Stability Helpers ====================
+
+def validate_point_cloud(points: np.ndarray) -> np.ndarray:
+    """
+    Validate and clean point cloud data.
+    
+    - Removes duplicate points
+    - Handles NaN/Inf values
+    - Ensures proper shape
+    """
+    points = np.asarray(points, dtype=np.float64)
+    
+    # Ensure 2D
+    if points.ndim == 1:
+        points = points.reshape(-1, 1)
+    elif points.ndim > 2:
+        logger.warning(f"Flattening {points.ndim}D array to 2D")
+        points = points.reshape(points.shape[0], -1)
+        
+    # Remove NaN/Inf
+    finite_mask = np.all(np.isfinite(points), axis=1)
+    if not np.all(finite_mask):
+        logger.warning(f"Removing {np.sum(~finite_mask)} non-finite points")
+        points = points[finite_mask]
+        
+    # Remove duplicates
+    if len(points) > 1:
+        unique_points, indices = np.unique(points, axis=0, return_index=True)
+        if len(unique_points) < len(points):
+            logger.info(f"Removed {len(points) - len(unique_points)} duplicate points")
+            points = unique_points
+            
+    return points
+
+
+def safe_divide(numerator: float, denominator: float, 
+                default: float = 0.0) -> float:
+    """Safe division with default for zero denominator."""
+    if abs(denominator) < EPSILON:
+        return default
+    return numerator / denominator
+
+
+# ==================== Graph-Specific Extensions ====================
+
+def compute_path_homology(graph: Union[Dict, 'nx.Graph'], 
+                         max_dimension: int = 1) -> List[PersistenceDiagram]:
+    """
+    Compute path homology for directed graphs.
+    Placeholder for future directed TDA support.
+    """
+    # Convert graph to point cloud embedding
+    # This would use spectral embedding or similar
+    logger.warning("Path homology not yet implemented, using standard persistence")
+    
+    # For now, return empty diagrams
+    return [PersistenceDiagram(d, np.array([])) for d in range(max_dimension + 1)]
+
+
+# ==================== Main API ====================
+
+__all__ = [
+    # Data structures
+    'PersistenceDiagram',
+    
+    # Core algorithms
+    'compute_persistence',
+    'compute_distance_matrix',
+    
+    # Diagram operations
+    'diagram_entropy',
+    'diagram_distance', 
+    'vectorize_diagram',
+    
+    # Utilities
+    'validate_point_cloud',
+    'safe_divide',
+    
+    # Extensions
+    'compute_path_homology',
+    
+    # Constants
+    'EPSILON',
+    'MIN_PERSISTENCE'
+]

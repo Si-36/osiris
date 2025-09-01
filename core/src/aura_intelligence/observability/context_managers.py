@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
 except ImportError:
     # Fallback for direct import
     from config import ObservabilityConfig
@@ -58,6 +58,7 @@ class ObservabilityContext:
     
     def __post_init__(self):
         """Post-initialization setup."""
+        pass
         
         # Set default prometheus labels
         if not self.prometheus_labels:
@@ -91,17 +92,20 @@ class ObservabilityContext:
     
     def set_success(self) -> None:
         """Mark context as successful."""
+        pass
         self.status = "success"
         self.add_tag("success")
     
     def calculate_duration(self) -> float:
         """Calculate and set duration."""
+        pass
         if self.duration is None:
             self.duration = time.time() - self.start_time
         return self.duration
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert context to dictionary for serialization."""
+        pass
         
         return {
             "workflow_id": self.workflow_id,
@@ -122,18 +126,22 @@ class ObservabilityContext:
     
     def get_correlation_id(self) -> str:
         """Get correlation ID for log correlation."""
+        pass
         return f"{self.workflow_id}:{self.trace_id or 'no-trace'}"
     
     def is_successful(self) -> bool:
         """Check if context represents successful operation."""
+        pass
         return self.status == "success"
     
     def is_failed(self) -> bool:
         """Check if context represents failed operation."""
+        pass
         return self.status == "failed"
     
     def is_running(self) -> bool:
         """Check if context represents running operation."""
+        pass
         return self.status == "running"
 
 
@@ -187,6 +195,7 @@ class AgentContext:
     
     def calculate_duration(self) -> float:
         """Calculate and set duration."""
+        pass
         if self.duration is None:
             self.duration = time.time() - self.start_time
         return self.duration
@@ -198,16 +207,19 @@ class AgentContext:
     
     def set_success(self) -> None:
         """Mark operation as successful."""
+        pass
         self.status = "success"
     
     def get_workflow_id(self) -> str:
         """Get workflow ID from parent context."""
+        pass
         if self.workflow_context:
             return self.workflow_context.workflow_id
         return "unknown"
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert context to dictionary."""
+        pass
         
         return {
             "agent_name": self.agent_name,
@@ -266,6 +278,7 @@ class LLMUsageContext:
     
     def __post_init__(self):
         """Post-initialization calculations."""
+        pass
         
         # Calculate total tokens
         self.total_tokens = self.input_tokens + self.output_tokens
@@ -280,6 +293,7 @@ class LLMUsageContext:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         
         return {
             "model_name": self.model_name,

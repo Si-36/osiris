@@ -108,4 +108,5 @@ class IntegrationSettings(BaseSettings):
     @property
     def is_distributed(self) -> bool:
         """Check if running in distributed mode."""
+        pass
         return self.enable_service_discovery or self.message_queue_type != "redis"

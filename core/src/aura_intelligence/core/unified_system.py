@@ -409,8 +409,7 @@ class UnifiedSystem:
                 'error': str(e)
             }
     
-    async def _update_system_state(self, agent_results: Dict, memory_results: Dict, 
-                                 neural_results: Dict, orchestration_results: Dict) -> None:
+    async def _update_system_state(self, agent_results: Dict, memory_results: Dict, neural_results: Dict, orchestration_results: Dict) -> None:
         """Update system state based on cycle results."""
         # Calculate consciousness level based on agent performance
         if agent_results:
@@ -480,8 +479,7 @@ class UnifiedSystem:
     # EVENT HANDLING
     # ========================================================================
     
-    async def _emit_system_event(self, event_type: str, data: Dict[str, Any], 
-                                priority: Priority = Priority.NORMAL) -> None:
+    async def _emit_system_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
         """Emit a system-level event."""
         event = SystemEvent(
             event_type=event_type,
@@ -560,7 +558,7 @@ class UnifiedSystem:
                 else:
                     hook(self)
             except Exception as e:
-                print(f"Startup hook error: {e}")
+                    print(f"Startup hook error: {e}")
     
     async def _run_shutdown_hooks(self) -> None:
         """Run all shutdown hooks."""
@@ -571,7 +569,7 @@ class UnifiedSystem:
                 else:
                     hook(self)
             except Exception as e:
-                print(f"Shutdown hook error: {e}")
+                    print(f"Shutdown hook error: {e}")
     
     # ========================================================================
     # UTILITY METHODS
@@ -645,7 +643,6 @@ def get_unified_system() -> UnifiedSystem:
         _global_system = UnifiedSystem()
     return _global_system
 
-def create_unified_system(config: Optional[UnifiedConfig] = None, 
-                         system_id: Optional[str] = None) -> UnifiedSystem:
+def create_unified_system(config: Optional[UnifiedConfig] = None, system_id: Optional[str] = None) -> UnifiedSystem:
     """Create a new unified system instance."""
     return UnifiedSystem(config=config, system_id=system_id)

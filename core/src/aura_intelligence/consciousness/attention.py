@@ -68,6 +68,7 @@ class AttentionMechanism:
     
     def get_attention_state(self) -> Dict[str, Any]:
         """Get attention state from workspace."""
+        pass
         return self.workspace_controller.get_state()
     
     def _get_priority(self, event_data: Dict[str, Any]) -> int:

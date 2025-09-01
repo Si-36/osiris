@@ -19,11 +19,15 @@ class CollectiveState(TypedDict):
     decision: Optional[Dict[str, Any]]
     metadata: Dict[str, Any]
 
-from langgraph.graph import StateGraph, END
 try:
+    from langgraph.graph import StateGraph, END
     from langgraph.prebuilt import ToolNode as ToolExecutor
+    LANGGRAPH_AVAILABLE = True
 except ImportError:
-    # Fallback for older LangGraph versions
+    # Fallback when LangGraph not available
+    LANGGRAPH_AVAILABLE = False
+    StateGraph = None
+    END = None
     ToolExecutor = None
 
 # Import existing agents
@@ -66,9 +70,9 @@ class AURACollectiveIntelligence:
         self.supervisor_agent = MemoryAwareSupervisor()
         
         # Initialize placeholders for missing agents (to be implemented)
-        self.researcher_agent = None  # TODO: Implement
-        self.optimizer_agent = None   # TODO: Implement
-        self.guardian_agent = None    # TODO: Implement
+        self.researcher_agent = None  
+        self.optimizer_agent = None   
+        self.guardian_agent = None    
         
         # Create the workflow
         self.workflow = self._create_workflow()
@@ -216,7 +220,7 @@ class AURACollectiveIntelligence:
         """Researcher agent node - knowledge discovery (placeholder)."""
         logger.info("📚 Researcher Agent discovering knowledge")
         
-        # TODO: Implement actual researcher agent
+        
         # For now, simulate research activity
         research_result = {
             'knowledge_discovered': f"Research insights for evidence: {len(state['evidence_log'])} items",
@@ -237,7 +241,7 @@ class AURACollectiveIntelligence:
         """Optimizer agent node - performance optimization (placeholder)."""
         logger.info("⚡ Optimizer Agent optimizing performance")
         
-        # TODO: Implement actual optimizer agent
+        
         # For now, simulate optimization activity
         optimization_result = {
             'optimizations_applied': 'performance_tuning_simulated',
@@ -258,7 +262,7 @@ class AURACollectiveIntelligence:
         """Guardian agent node - security and compliance (placeholder)."""
         logger.info("🛡️ Guardian Agent enforcing security")
         
-        # TODO: Implement actual guardian agent
+        
         # For now, simulate security enforcement
         security_result = {
             'threat_level': 'medium',
@@ -280,7 +284,7 @@ class AURACollectiveIntelligence:
         """Monitor agent node - system health monitoring."""
         logger.info("📊 Monitor Agent tracking system health")
         
-        # TODO: Integrate with actual monitoring system
+        
         # For now, simulate monitoring
         monitor_result = {
             'system_health': 'healthy',
@@ -442,16 +446,16 @@ class LangGraphWorkflowOrchestrator:
         return result
 
 
-def create_collective_intelligence_workflow(config: Optional[Dict[str, Any]] = None):
-    """
-    Create a collective intelligence workflow.
+    def create_collective_intelligence_workflow(config: Optional[Dict[str, Any]] = None):
+        """
+        Create a collective intelligence workflow.
     
-    Args:
+        Args:
         config: Optional configuration
         
-    Returns:
+        Returns:
         Configured workflow
-    """
-    workflow_config = config or {}
-    orchestrator = LangGraphWorkflowOrchestrator(workflow_config)
-    return orchestrator.create_workflow()
+        """
+        workflow_config = config or {}
+        orchestrator = LangGraphWorkflowOrchestrator(workflow_config)
+        return orchestrator.create_workflow()

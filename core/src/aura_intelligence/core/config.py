@@ -76,17 +76,20 @@ class ConfigValidator:
         errors = {}
         
         for key, value in config.items():
-            if key in self.validation_rules:
-                key_errors = []
-                for validator_func in self.validation_rules[key]:
-                    try:
-                        if not validator_func(value):
-                            key_errors.append(f"Validation failed for {key}")
-                    except Exception as e:
-                        key_errors.append(f"Validation error for {key}: {str(e)}")
+            pass
+        if key in self.validation_rules:
+            key_errors = []
+        for validator_func in self.validation_rules[key]:
+            pass
+        try:
+            if not validator_func(value):
+                key_errors.append(f"Validation failed for {key}")
+        except Exception as e:
+            pass
+        key_errors.append(f"Validation error for {key}: {str(e)}")
                 
-                if key_errors:
-                    errors[key] = key_errors
+        if key_errors:
+            errors[key] = key_errors
         
         return errors
     
@@ -99,8 +102,7 @@ class ConfigValidator:
         except Exception:
             return False
     
-    def validate_range(self, value: Union[int, float], min_val: Optional[Union[int, float]] = None, 
-                      max_val: Optional[Union[int, float]] = None) -> bool:
+    def validate_range(self, value: Union[int, float], min_val: Optional[Union[int, float]] = None, max_val: Optional[Union[int, float]] = None) -> bool:
         """Validate that a numeric value is within a specified range."""
         if min_val is not None and value < min_val:
             return False
@@ -128,18 +130,19 @@ class ConfigLoader:
         """Load configuration from environment variables."""
         config = {}
         for key, value in os.environ.items():
-            if key.startswith('AURA_'):
-                config_key = key[5:].lower()  # Remove AURA_ prefix
-                config[config_key] = self._parse_env_value(value)
+            pass
+        if key.startswith('AURA_'):
+            config_key = key[5:].lower()  # Remove AURA_ prefix
+        config[config_key] = self._parse_env_value(value)
                 
-                # Create metadata
-                self.metadata_cache[config_key] = ConfigMetadata(
-                    source=ConfigSource.ENVIRONMENT,
-                    last_updated=time.time(),
-                    version="1.0",
-                    checksum=hashlib.sha256(str(value).encode()).hexdigest(),
-                    sensitive=self._is_sensitive_key(config_key)
-                )
+        # Create metadata
+        self.metadata_cache[config_key] = ConfigMetadata(
+        source=ConfigSource.ENVIRONMENT,
+        last_updated=time.time(),
+        version="1.0",
+        checksum=hashlib.sha256(str(value).encode()).hexdigest(),
+        sensitive=self._is_sensitive_key(config_key)
+        )
         
         return config
     
@@ -244,8 +247,8 @@ class ConfigLoader:
     def _is_sensitive_key(self, key: str) -> bool:
         """Check if a configuration key contains sensitive information."""
         sensitive_patterns = [
-            'password', 'secret', 'key', 'token', 'credential',
-            'auth', 'private', 'cert', 'ssl', 'tls'
+        'password', 'secret', 'key', 'token', 'credential',
+        'auth', 'private', 'cert', 'ssl', 'tls'
         ]
         key_lower = key.lower()
         return any(pattern in key_lower for pattern in sensitive_patterns)
@@ -543,87 +546,88 @@ class ConfigurationManager:
     
     def _setup_validation_rules(self) -> None:
         """Set up validation rules for configuration values."""
+        pass
         # Database validation
         self.validator.add_validation_rule(
-            'database.port',
-            lambda x: self.validator.validate_range(x, 1, 65535)
+        'database.port',
+        lambda x: self.validator.validate_range(x, 1, 65535)
         )
         
         # Redis validation
         self.validator.add_validation_rule(
-            'redis.port',
-            lambda x: self.validator.validate_range(x, 1, 65535)
+        'redis.port',
+        lambda x: self.validator.validate_range(x, 1, 65535)
         )
         
         # Quantum validation
         self.validator.add_validation_rule(
-            'quantum.shots',
-            lambda x: self.validator.validate_range(x, 1, 100000)
+        'quantum.shots',
+        lambda x: self.validator.validate_range(x, 1, 100000)
         )
         
         # Consciousness validation
         self.validator.add_validation_rule(
-            'consciousness.consciousness_threshold',
-            lambda x: self.validator.validate_range(x, 0.0, 1.0)
+        'consciousness.consciousness_threshold',
+        lambda x: self.validator.validate_range(x, 0.0, 1.0)
         )
         
         # TDA validation
         self.validator.add_validation_rule(
-            'tda.max_dimension',
-            lambda x: self.validator.validate_range(x, 0, 10)
+        'tda.max_dimension',
+        lambda x: self.validator.validate_range(x, 0, 10)
         )
 
 
-# Global configuration manager instance
-_config_manager: Optional[ConfigurationManager] = None
+    # Global configuration manager instance
+        _config_manager: Optional[ConfigurationManager] = None
 
 
-def get_config_manager() -> ConfigurationManager:
-    """Get the global configuration manager instance."""
-    global _config_manager
-    if _config_manager is None:
-        _config_manager = ConfigurationManager()
-    return _config_manager
+    def get_config_manager() -> ConfigurationManager:
+        """Get the global configuration manager instance."""
+        global _config_manager
+        if _config_manager is None:
+            _config_manager = ConfigurationManager()
+        return _config_manager
 
 
-def get_config() -> AuraConfig:
-    """Get the current AURA configuration."""
-    return get_config_manager().get_config()
+    def get_config() -> AuraConfig:
+        """Get the current AURA configuration."""
+        return get_config_manager().get_config()
 
 
-def reload_config(config_files: Optional[List[Union[str, Path]]] = None) -> AuraConfig:
-    """Reload the AURA configuration."""
-    return get_config_manager().reload_config(config_files)
+    def reload_config(config_files: Optional[List[Union[str, Path]]] = None) -> AuraConfig:
+        """Reload the AURA configuration."""
+        return get_config_manager().reload_config(config_files)
 
 
-# Configuration factory functions
-def create_development_config() -> AuraConfig:
-    """Create a development configuration."""
-    return AuraConfig(
+    # Configuration factory functions
+    def create_development_config() -> AuraConfig:
+        """Create a development configuration."""
+        return AuraConfig(
         environment=Environment.DEVELOPMENT,
         debug=True,
         secret_key="dev-secret-key-32-characters-long",
         jwt_secret_key="dev-jwt-secret-key-32-characters-long"
-    )
+        )
 
 
-def create_testing_config() -> AuraConfig:
-    """Create a testing configuration."""
-    return AuraConfig(
+    def create_testing_config() -> AuraConfig:
+        """Create a testing configuration."""
+        return AuraConfig(
         environment=Environment.TESTING,
         testing=True,
         debug=True,
         secret_key="test-secret-key-32-characters-long",
         jwt_secret_key="test-jwt-secret-key-32-characters-long"
-    )
+        )
 
 
-def create_production_config() -> AuraConfig:
-    """Create a production configuration."""
-    return AuraConfig(
+    def create_production_config() -> AuraConfig:
+        """Create a production configuration."""
+        return AuraConfig(
         environment=Environment.PRODUCTION,
         debug=False,
-        # Production secrets should come from environment variables
+    # Production secrets should come from environment variables
         secret_key=os.getenv("AURA_SECRET_KEY", "change-me-in-production-32-chars"),
         jwt_secret_key=os.getenv("AURA_JWT_SECRET_KEY", "change-me-in-production-32-chars")
-    )
+        )
