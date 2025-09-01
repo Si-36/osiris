@@ -158,7 +158,7 @@ class Mamba2CoRaLSystem(BestCoRaLSystem):
         
         return embeddings
     
-        async def communicate_unlimited(self, contexts: list) -> Dict[str, Any]:
+    async def communicate_unlimited(self, contexts: list) -> Dict[str, Any]:
         """Communication with unlimited context length"""
         start_time = asyncio.get_event_loop().time()
         

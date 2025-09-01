@@ -29,20 +29,23 @@ class AntColonyDetection:
     def _get_registry(self):
         try:
             from ..components.real_registry import get_real_registry
-        return get_real_registry()
-        except: return None
+            return get_real_registry()
+        except: 
+            return None
 
     def _get_coral(self):
         try:
             from ..coral.best_coral import CoRaLSystem
             return CoRaLSystem()
-        except: return None
+        except: 
+            return None
 
     def _get_tda_adapter(self):
         try:
             from ..tda.unified_engine_2025 import UnifiedTDAEngine
-        return UnifiedTDAEngine()
-        except: return None
+            return UnifiedTDAEngine()
+        except: 
+            return None
 
     def _signature_key(self, result: Any) -> str:
         """Build stable error signature from response"""

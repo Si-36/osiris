@@ -52,8 +52,32 @@ with comprehensive observability and resilience patterns.
 from .simple_agent import SimpleAgent, create_simple_agent, get_simple_registry
 from .consolidated_agents import ConsolidatedAgent, ConsolidatedAgentFactory, get_agent_registry
 
+# Production LangGraph agents (2025 patterns)
+try:
+    from .production_langgraph_agent import (
+        AURAProductionAgent,
+        ProductionAgentConfig,
+        ProductionAgentState,
+        create_production_agent
+    )
+    PRODUCTION_AGENTS_AVAILABLE = True
+except ImportError:
+    PRODUCTION_AGENTS_AVAILABLE = False
+    AURAProductionAgent = None
+    ProductionAgentConfig = None
+    ProductionAgentState = None
+    create_production_agent = None
+
 __version__ = "2.0.0"
 __author__ = "AURA Intelligence Team"
+
+# Aliases for backward compatibility
+AURAAgent = AURAProductionAgent
+AgentConfig = ProductionAgentConfig
+
+# Placeholders for expected imports
+LNNCouncilOrchestrator = None  # Not implemented yet
+agent_templates = {}  # Not implemented yet
 
 # Export main classes for easy import
 __all__ = [
@@ -64,6 +88,19 @@ __all__ = [
     "ConsolidatedAgent",
     "ConsolidatedAgentFactory",
     "get_agent_registry",
+    
+    # Production LangGraph agents
+    "AURAProductionAgent",
+    "ProductionAgentConfig",
+    "ProductionAgentState",
+    "create_production_agent",
+    "PRODUCTION_AGENTS_AVAILABLE",
+    
+    # Aliases for backward compatibility
+    "AURAAgent",
+    "AgentConfig",
+    "LNNCouncilOrchestrator",
+    "agent_templates",
     
     # Phase 2 New Base (commented out due to dependencies)
     # "AgentBase",

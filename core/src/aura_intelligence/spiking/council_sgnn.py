@@ -117,6 +117,7 @@ class SpikingCouncil:
         }
     
         async def process_component_messages(self, messages: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+            pass
         """Main processing function"""
         if not messages:
             return {"consensus_signal": [0.0] * 32, "status": "no_input"}

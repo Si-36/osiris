@@ -42,7 +42,6 @@ class SystemMetrics:
     @property
     def success_rate(self) -> float:
         """Calculate overall success rate."""
-        pass
         if self.total_cycles == 0:
             return 1.0
         return self.successful_cycles / self.total_cycles
@@ -50,7 +49,6 @@ class SystemMetrics:
     @property
     def component_health_rate(self) -> float:
         """Calculate component health rate."""
-        pass
         if self.total_components == 0:
             return 1.0
         return self.active_components / self.total_components
@@ -112,9 +110,8 @@ class UnifiedSystem:
     # LIFECYCLE MANAGEMENT
     # ========================================================================
     
-        async def initialize(self) -> bool:
+    async def initialize(self) -> bool:
         """Initialize the unified system."""
-        pass
         try:
             print("🔧 Initializing Unified AURA Intelligence System...")
             self.state.status = ComponentStatus.INITIALIZING
@@ -151,9 +148,8 @@ class UnifiedSystem:
             print(f"❌ System initialization failed: {e}")
             return False
     
-        async def start(self) -> bool:
+    async def start(self) -> bool:
         """Start the unified system."""
-        pass
         try:
             if self.running:
                 print("⚠️ System is already running")
@@ -185,9 +181,8 @@ class UnifiedSystem:
             print(f"❌ System start failed: {e}")
             return False
     
-        async def stop(self) -> bool:
+    async def stop(self) -> bool:
         """Stop the unified system."""
-        pass
         try:
             print("🛑 Stopping Unified AURA Intelligence System...")
             self.running = False
@@ -229,9 +224,8 @@ class UnifiedSystem:
             print(f"❌ System stop failed: {e}")
             return False
     
-        async def restart(self) -> bool:
+    async def restart(self) -> bool:
         """Restart the unified system."""
-        pass
         print("🔄 Restarting Unified AURA Intelligence System...")
         if await self.stop():
             return await self.start()
@@ -259,9 +253,8 @@ class UnifiedSystem:
         """Get all components of a specific type."""
         return self.registry.get_components_by_type(component_type)
     
-        async def _initialize_components(self) -> None:
+    async def _initialize_components(self) -> None:
         """Initialize all registered components."""
-        pass
         components = self.registry.list_components()
         
         for component_id, component_type in components.items():
@@ -279,9 +272,8 @@ class UnifiedSystem:
                 except Exception as e:
                     print(f"❌ Component initialization error {component_id}: {e}")
     
-        async def _stop_components(self) -> None:
+    async def _stop_components(self) -> None:
         """Stop all registered components."""
-        pass
         components = self.registry.list_components()
         
         for component_id, component_type in components.items():
@@ -297,9 +289,8 @@ class UnifiedSystem:
     # SYSTEM ORCHESTRATION
     # ========================================================================
     
-        async def _main_system_loop(self) -> None:
+    async def _main_system_loop(self) -> None:
         """Main system orchestration loop."""
-        pass
         cycle_count = 0
         
         while self.running:
@@ -335,7 +326,7 @@ class UnifiedSystem:
                 self._update_cycle_metrics(cycle_time_ms, False)
                 await asyncio.sleep(1.0)  # Error recovery wait
     
-        async def _run_system_cycle(self, cycle_number: int) -> Dict[str, Any]:
+    async def _run_system_cycle(self, cycle_number: int) -> Dict[str, Any]:
         """Run a single system cycle."""
         try:
             cycle_data = {
@@ -418,8 +409,7 @@ class UnifiedSystem:
                 'error': str(e)
             }
     
-        async def _update_system_state(self, agent_results: Dict, memory_results: Dict,
-        neural_results: Dict, orchestration_results: Dict) -> None:
+    async def _update_system_state(self, agent_results: Dict, memory_results: Dict, neural_results: Dict, orchestration_results: Dict) -> None:
         """Update system state based on cycle results."""
         # Calculate consciousness level based on agent performance
         if agent_results:
@@ -447,9 +437,8 @@ class UnifiedSystem:
     # HEALTH MONITORING
     # ========================================================================
     
-        async def _health_monitor_loop(self) -> None:
+    async def _health_monitor_loop(self) -> None:
         """Health monitoring loop."""
-        pass
         while self.running:
             try:
                 # Get health status from all components
@@ -490,8 +479,7 @@ class UnifiedSystem:
     # EVENT HANDLING
     # ========================================================================
     
-        async def _emit_system_event(self, event_type: str, data: Dict[str, Any],
-        priority: Priority = Priority.NORMAL) -> None:
+    async def _emit_system_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
         """Emit a system-level event."""
         event = SystemEvent(
             event_type=event_type,
@@ -501,9 +489,8 @@ class UnifiedSystem:
         )
         await self._event_queue.put(event)
     
-        async def _process_events(self) -> None:
+    async def _process_events(self) -> None:
         """Process system events."""
-        pass
         while self.running:
             try:
                 # Get event with timeout
@@ -536,7 +523,7 @@ class UnifiedSystem:
             self._event_handlers[event_type] = []
         self._event_handlers[event_type].append(handler)
     
-        async def _handle_component_error(self, event: SystemEvent) -> None:
+    async def _handle_component_error(self, event: SystemEvent) -> None:
         """Handle component error events."""
         print(f"🚨 Component error: {event.component_id} - {event.data}")
         
@@ -546,7 +533,7 @@ class UnifiedSystem:
             "error_data": event.data
         }, Priority.HIGH)
     
-        async def _handle_component_status_change(self, event: SystemEvent) -> None:
+    async def _handle_component_status_change(self, event: SystemEvent) -> None:
         """Handle component status change events."""
         print(f"📊 Component status change: {event.component_id} - {event.data}")
     
@@ -562,9 +549,8 @@ class UnifiedSystem:
         """Add shutdown hook."""
         self._shutdown_hooks.append(hook)
     
-        async def _run_startup_hooks(self) -> None:
+    async def _run_startup_hooks(self) -> None:
         """Run all startup hooks."""
-        pass
         for hook in self._startup_hooks:
             try:
                 if asyncio.iscoroutinefunction(hook):
@@ -574,9 +560,8 @@ class UnifiedSystem:
             except Exception as e:
                     print(f"Startup hook error: {e}")
     
-        async def _run_shutdown_hooks(self) -> None:
+    async def _run_shutdown_hooks(self) -> None:
         """Run all shutdown hooks."""
-        pass
         for hook in self._shutdown_hooks:
             try:
                 if asyncio.iscoroutinefunction(hook):
@@ -608,7 +593,6 @@ class UnifiedSystem:
     
     def _calculate_cycle_wait_time(self) -> float:
         """Calculate adaptive wait time between cycles."""
-        pass
         base_interval = self.config.agents.cycle_interval
         
         # Adjust based on system load
@@ -621,7 +605,6 @@ class UnifiedSystem:
     
     def get_system_status(self) -> Dict[str, Any]:
         """Get comprehensive system status."""
-        pass
         return {
             'system_id': self.system_id,
             'status': self.state.status.value,
@@ -653,14 +636,13 @@ class UnifiedSystem:
 # Global system instance
 _global_system: Optional[UnifiedSystem] = None
 
-    def get_unified_system() -> UnifiedSystem:
-        """Get the global unified system instance."""
-        global _global_system
-        if _global_system is None:
+def get_unified_system() -> UnifiedSystem:
+    """Get the global unified system instance."""
+    global _global_system
+    if _global_system is None:
         _global_system = UnifiedSystem()
-        return _global_system
+    return _global_system
 
-def create_unified_system(config: Optional[UnifiedConfig] = None, 
-                         system_id: Optional[str] = None) -> UnifiedSystem:
+def create_unified_system(config: Optional[UnifiedConfig] = None, system_id: Optional[str] = None) -> UnifiedSystem:
     """Create a new unified system instance."""
     return UnifiedSystem(config=config, system_id=system_id)

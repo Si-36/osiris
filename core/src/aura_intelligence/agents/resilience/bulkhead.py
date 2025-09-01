@@ -126,6 +126,7 @@ class Bulkhead:
     Bulkhead implementation for resource isolation.
     
     Features:
+        pass
     - Limits concurrent executions
     - Optional queueing with timeout
     - Full observability
@@ -134,7 +135,6 @@ class Bulkhead:
     
     def __init__(self, config: BulkheadConfig):
         """Initialize bulkhead."""
-        pass
         config.validate()
         self.config = config
         self.stats = BulkheadStats()
@@ -147,12 +147,12 @@ class Bulkhead:
         self._queue: asyncio.Queue = asyncio.Queue(maxsize=config.max_queue_size)
         self._lock = asyncio.Lock()
     
-        async def execute(
+    async def execute(
         self,
         func: Callable[..., T],
         *args,
         **kwargs
-        ) -> T:
+    ) -> T:
         """
         Execute function with bulkhead protection.
         
@@ -235,12 +235,12 @@ class Bulkhead:
                         {"bulkhead.name": self.config.name}
                     )
     
-        async def _execute_with_bulkhead(
+    async def _execute_with_bulkhead(
         self,
         func: Callable[..., T],
         *args,
         **kwargs
-        ) -> T:
+    ) -> T:
         """Execute function with bulkhead semaphore."""
         async with self._semaphore:
             # Update stats
@@ -280,16 +280,14 @@ class Bulkhead:
                         )
     
     @asynccontextmanager
-        async def acquire(self):
+    async def acquire(self):
         """
         Context manager for bulkhead protection.
         
         Usage:
             async with bulkhead.acquire():
                 # Protected code here
-        pass
         """
-        pass
         if self._semaphore.locked() and self._queue.full():
             self.stats.record_rejection()
             raise BulkheadFullError(
@@ -323,22 +321,18 @@ class Bulkhead:
     
     def get_stats(self) -> BulkheadStats:
         """Get bulkhead statistics."""
-        pass
         return self.stats
     
     def is_full(self) -> bool:
         """Check if bulkhead is at capacity."""
-        pass
         return self._semaphore.locked()
     
     def available_slots(self) -> int:
         """Get number of available execution slots."""
-        pass
         return self.config.max_concurrent - self.stats.current_active
     
-        async def health_check(self) -> Dict[str, Any]:
+    async def health_check(self) -> Dict[str, Any]:
         """Check bulkhead health."""
-        pass
         utilization = self.stats.current_active / self.config.max_concurrent
         
         health_status = "healthy"

@@ -7,11 +7,26 @@ Built on your proven schema foundation.
 
 # from .workflows import CollectiveWorkflow  
 from .checkpoints import WorkflowCheckpointManager
-from .langgraph_workflows import AURACollectiveIntelligence, AgentState
+from .unified_orchestration_engine import (
+    UnifiedOrchestrationEngine,
+    OrchestrationConfig,
+    WorkflowDefinition
+)
+
+try:
+    from .langgraph_workflows import AURACollectiveIntelligence, AgentState
+    LANGGRAPH_WORKFLOWS_AVAILABLE = True
+except ImportError:
+    LANGGRAPH_WORKFLOWS_AVAILABLE = False
+    AURACollectiveIntelligence = None
+    AgentState = None
 
 __all__ = [
     # "CollectiveWorkflow",  
     "WorkflowCheckpointManager",
+    "UnifiedOrchestrationEngine",
+    "OrchestrationConfig",
+    "WorkflowDefinition",
     "AURACollectiveIntelligence",
     "AgentState"
 ]

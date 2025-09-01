@@ -31,6 +31,7 @@ class EventBus:
         self._task: Optional[asyncio.Task] = None
         
         async def start(self):
+            pass
         """Start the event bus processor"""
         pass
         if self._running:
@@ -41,6 +42,7 @@ class EventBus:
         logger.info("EventBus started")
         
         async def stop(self):
+            pass
         """Stop the event bus processor"""
         pass
         self._running = False
@@ -49,6 +51,7 @@ class EventBus:
         logger.info("EventBus stopped")
         
         async def _process_events(self):
+            pass
         """Process events from the queue"""
         pass
         while self._running:
@@ -61,6 +64,7 @@ class EventBus:
                 logger.error(f"Error processing event: {e}")
                 
         async def _dispatch_event(self, event: Event):
+            pass
         """Dispatch event to subscribers"""
         subscribers = self._subscribers.get(event.event_type, [])
         
@@ -86,10 +90,12 @@ class EventBus:
             self._subscribers[event_type].remove(handler)
             
         async def publish(self, event: Event):
+            pass
         """Publish an event"""
         await self._queue.put(event)
         
         async def publish_event(self, event_type: str, payload: Dict[str, Any], metadata: Optional[Dict[str, Any]] = None):
+            pass
         """Convenience method to publish an event"""
         event = Event(
             event_type=event_type,
@@ -103,12 +109,12 @@ class EventBus:
 _event_bus: Optional[EventBus] = None
 
 
-    def get_event_bus() -> EventBus:
-        """Get the global event bus instance"""
-        global _event_bus
-        if _event_bus is None:
+def get_event_bus() -> EventBus:
+    """Get the global event bus instance"""
+    global _event_bus
+    if _event_bus is None:
         _event_bus = EventBus()
-        return _event_bus
+    return _event_bus
 
 
 __all__ = ["EventBus", "Event", "get_event_bus"]

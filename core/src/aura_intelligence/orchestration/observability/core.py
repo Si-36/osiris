@@ -2,6 +2,7 @@
 🎯 Observability Core - 2025 State-of-the-Art
 
 Ultra-minimal, functional-first observability core using latest patterns:
+    pass
 - Functional composition over inheritance
 - Immutable data structures with structural sharing
 - Effect systems for pure side-effect management
@@ -9,6 +10,7 @@ Ultra-minimal, functional-first observability core using latest patterns:
 - Zero-cost abstractions with compile-time optimization
 
 Research Sources:
+    pass
 - Effect-TS patterns for pure functional effects
 - Rust's type system influence on Python typing
 - OCaml's module system for composition
@@ -36,6 +38,7 @@ class Effect(Generic[T]):
         self._computation = computation
     
         async def run(self) -> T:
+            pass
         return await self._computation()
     
     def map(self, f: Callable[[T], A]) -> Effect[A]:

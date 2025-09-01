@@ -2,6 +2,7 @@
 🏗️ Base Schema Components - Foundation Classes
 
 Core base models, utilities, and common functionality for all schemas:
+    pass
 - DateTime handling and serialization
 - Base model configurations
 - Common validators
@@ -219,8 +220,10 @@ class GloballyIdentifiable(VersionedSchema):
     def validate_confidence_score(v: float) -> float:
         """Validate confidence scores are between 0.0 and 1.0."""
         if not isinstance(v, (int, float)):
+            pass
         raise ValueError("Confidence score must be a number")
         if not 0.0 <= v <= 1.0:
+            pass
         raise ValueError("Confidence score must be between 0.0 and 1.0")
         return float(v)
 
@@ -228,8 +231,10 @@ class GloballyIdentifiable(VersionedSchema):
     def validate_signature_format(v: str) -> str:
         """Validate cryptographic signature format."""
         if not v or not isinstance(v, str):
+            pass
         raise ValueError("Signature must be a non-empty string")
         if len(v) < 32:
+            pass
         raise ValueError("Signature must be at least 32 characters")
         return v
 
@@ -237,6 +242,7 @@ class GloballyIdentifiable(VersionedSchema):
     def validate_non_empty_string(v: str) -> str:
         """Validate string is non-empty."""
         if not v or not isinstance(v, str) or not v.strip():
+            pass
         raise ValueError("Field must be a non-empty string")
         return v.strip()
 
@@ -244,10 +250,10 @@ class GloballyIdentifiable(VersionedSchema):
     def validate_uuid_format(v: str) -> str:
         """Validate UUID format."""
         try:
-        uuid.UUID(v)
+            uuid.UUID(v)
+        except Exception:
+            raise ValueError(f"Invalid UUID format: {v}")
         return v
-        except ValueError:
-        raise ValueError("Invalid UUID format")
 
 
 # ============================================================================
@@ -289,6 +295,7 @@ class GloballyIdentifiable(VersionedSchema):
     def truncate_string(text: str, max_length: int = 100, suffix: str = "...") -> str:
         """Truncate string to max length with suffix."""
         if len(text) <= max_length:
+            pass
         return text
         return text[:max_length - len(suffix)] + suffix
 
@@ -364,6 +371,7 @@ class TemporalSupport(VersionedSchema):
     and deadline management across all time-sensitive entities.
     
     Common temporal patterns:
+        pass
     - Creation and update tracking
     - Event vs collection time distinction  
     - Expiration and deadline management
@@ -586,9 +594,9 @@ class MigrationProtocol(Protocol):
         ...
 
 
-    def create_migration_registry() -> Dict[str, MigrationProtocol]:
-        """Create a registry for schema migrations."""
-        return {}
+def create_migration_registry() -> Dict[str, MigrationProtocol]:
+    """Create a registry for schema migrations."""
+    return {}
 
 
 # Export commonly used items

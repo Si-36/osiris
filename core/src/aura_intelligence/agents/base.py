@@ -169,7 +169,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
     @abstractmethod
-        async def _execute_step(self, state: TState, step_name: str) -> TState:
+    async def _execute_step(self, state: TState, step_name: str) -> TState:
         """
         Execute a specific step in the agent workflow.
         
@@ -183,6 +183,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         pass
     
         async def _process(self, input_data: TInput) -> TOutput:
+            pass
         """
         Process input through the agent workflow.
         
@@ -236,6 +237,7 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
                 raise
     
         async def _run_graph(self, state: TState) -> TState:
+            pass
         """Run the compiled graph with the given state."""
         # For now, manually execute steps (LangGraph integration pending)
         current_state = state
@@ -285,9 +287,8 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
         """Extract the output from the final state."""
         pass
     
-        async def health_check(self) -> Dict[str, Any]:
+    async def health_check(self) -> Dict[str, Any]:
         """Check agent health."""
-        pass
         health = await super().health_check()
         
         # Add agent-specific metrics
@@ -302,5 +303,4 @@ class AgentBase(AtomicComponent[TInput, TOutput, AgentConfig], ABC, Generic[TInp
     
     def get_capabilities(self) -> List[str]:
         """Get list of agent capabilities."""
-        pass
         return ["base_agent", "observability", "state_management"]

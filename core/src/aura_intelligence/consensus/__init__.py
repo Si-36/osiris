@@ -2,19 +2,21 @@
 AURA Intelligence Consensus Protocols
 
 Advanced consensus mechanisms for distributed decision-making:
+    pass
 - Raft consensus for operational decisions
 - Byzantine fault tolerance for critical decisions
 - Multi-Raft for scalability
 - Neuro-symbolic validation for explainability
 
 Key Features:
+    pass
 - Hierarchical consensus based on decision criticality
 - Integration with Temporal workflows and Kafka event mesh
 - Explainable decisions with causal reasoning
 - Self-healing and Byzantine fault detection
 """
 
-from .types import (
+from .consensus_types import (
     DecisionType,
     ConsensusRequest,
     ConsensusResult,
@@ -42,9 +44,12 @@ from .raft import (
 
 from .byzantine import (
     ByzantineConsensus,
-    BFTConfig
-    # BFTMessage, HotStuffConsensus, BFTProof - not implemented yet
+    BFTConfig,
+    BFTMessage,
+    BFTProof
 )
+# HotStuffConsensus not implemented yet - using ByzantineConsensus
+HotStuffConsensus = ByzantineConsensus
 
 # from .multi_raft import (
 #     MultiRaftConsensus,
@@ -61,12 +66,21 @@ from .byzantine import (
 #     SymbolicReasoner
 # ) - module not implemented yet
 
-from .workflows import (
-    ConsensusWorkflow,
-    ConsensusWorkflowInput,
-    ConsensusVotingWorkflow,
-    BFTConsensusWorkflow
-)
+# Workflows require temporalio
+try:
+    from .workflows import (
+        ConsensusWorkflow,
+        ConsensusWorkflowInput,
+        ConsensusVotingWorkflow,
+        BFTConsensusWorkflow
+    )
+    WORKFLOWS_AVAILABLE = True
+except ImportError:
+    ConsensusWorkflow = None
+    ConsensusWorkflowInput = None
+    ConsensusVotingWorkflow = None
+    BFTConsensusWorkflow = None
+    WORKFLOWS_AVAILABLE = False
 
 # from aura_intelligence.events import (
 #     ConsensusProposalEvent,
@@ -97,6 +111,7 @@ class SimpleConsensus:
             setattr(self, key, value)
     
         async def decide(self, request):
+            pass
         return {"decision": "approved", "confidence": 0.8}
 
 class Decision:

@@ -34,15 +34,20 @@ def resilient_operation(
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs) -> T:
+            pass
         last_exception = None
         current_delay = delay
             
         for attempt in range(max_retries + 1):
+            pass
         try:
+            pass
         return func(*args, **kwargs)
         except exceptions as e:
+            pass
         last_exception = e
         if attempt < max_retries:
+            pass
         logger.warning(
         f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
         error=str(e),
@@ -51,6 +56,7 @@ def resilient_operation(
         time.sleep(current_delay)
         current_delay *= backoff_factor
         else:
+            pass
         logger.error(
         f"All {max_retries + 1} attempts failed for {func.__name__}",
         error=str(e)
@@ -60,15 +66,20 @@ def resilient_operation(
         
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs) -> T:
+            pass
         last_exception = None
         current_delay = delay
             
         for attempt in range(max_retries + 1):
+            pass
         try:
+            pass
         return await func(*args, **kwargs)
         except exceptions as e:
+            pass
         last_exception = e
         if attempt < max_retries:
+            pass
         logger.warning(
         f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}",
         error=str(e),
@@ -77,6 +88,7 @@ def resilient_operation(
         await asyncio.sleep(current_delay)
         current_delay *= backoff_factor
         else:
+            pass
         logger.error(
         f"All {max_retries + 1} attempts failed for {func.__name__}",
         error=str(e)
@@ -86,8 +98,10 @@ def resilient_operation(
         
         # Return appropriate wrapper based on function type
         if asyncio.iscoroutinefunction(func):
+            pass
         return async_wrapper
         else:
+            pass
         return sync_wrapper
     
         return decorator

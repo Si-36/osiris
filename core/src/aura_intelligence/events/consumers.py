@@ -2,6 +2,7 @@
 Kafka Event Consumers for AURA Intelligence
 
 Implements various consumer patterns:
+    pass
 - Standard consumer with manual commit
 - Consumer groups for scaling
 - Stream processor for stateful processing
@@ -112,6 +113,7 @@ class ConsumerConfig:
         if self.client_id:
             config["client_id"] = self.client_id
         else:
+            pass
         config["client_id"] = f"{self.group_id}-consumer"
             
         if self.sasl_mechanism:
@@ -132,6 +134,7 @@ class EventProcessor(ABC):
         pass
     
         async def on_error(self, event: EventSchema, error: Exception) -> None:
+            pass
         """Handle processing error."""
         logger.error(f"Error processing event: {error}", event_id=event.event_id)
 
@@ -141,6 +144,7 @@ class EventConsumer:
     Standard event consumer with manual commit control.
     
     Features:
+        pass
     - Configurable processing strategies
     - Automatic retries with backoff
     - Circuit breaker protection
@@ -184,17 +188,18 @@ class EventConsumer:
         
         try:
             self.consumer = AIOKafkaConsumer(
-        *self.config.topics,
-        **self.config.to_kafka_config(),
-        value_deserializer=lambda v: json.loads(v.decode()) if v else None
-        )
+                *self.config.topics,
+                **self.config.to_kafka_config(),
+                value_deserializer=lambda v: json.loads(v.decode()) if v else None
+            )
             
-        await self.consumer.start()
-        self._running = True
+            await self.consumer.start()
+            self._running = True
             
-        logger.info(f"Event consumer started for topics: {self.config.topics}")
+            logger.info(f"Event consumer started for topics: {self.config.topics}")
             
         except Exception as e:
+            pass
         logger.error(f"Failed to start consumer: {e}")
         raise
     
@@ -214,18 +219,19 @@ class EventConsumer:
         
         try:
             async for msg in self.consumer:
-        await self._process_message(msg)
+                await self._process_message(msg)
                 
         except asyncio.CancelledError:
-        logger.info("Consumer cancelled")
-        raise
+            logger.info("Consumer cancelled")
+            raise
         except Exception as e:
-        logger.error(f"Consumer error: {e}")
-        raise
+            logger.error(f"Consumer error: {e}")
+            raise
         finally:
-        await self.stop()
+            await self.stop()
     
         async def _process_message(self, msg: ConsumerRecord) -> None:
+            pass
         """Process a single message."""
         with tracer.start_as_current_span(
             "kafka.consume.message",
@@ -307,12 +313,14 @@ class EventConsumer:
         
         @self.retry_processor
         async def process_with_retry():
+            pass
         async with self.circuit_breaker:
+            pass
         await self.processor.process(event)
         
         await process_with_retry()
     
-        async def _process_event_transactionally(
+    async def _process_event_transactionally(
         self,
         event: EventSchema,
         msg: ConsumerRecord
@@ -346,6 +354,7 @@ class ConsumerGroup:
     Manages a group of consumers for parallel processing.
     
     Features:
+        pass
     - Automatic partition assignment
     - Rebalance handling
     - Coordinated shutdown
@@ -375,6 +384,7 @@ class ConsumerGroup:
         
         # Create consumers with unique client IDs
         for i in range(self.num_consumers):
+            pass
         config = ConsumerConfig(**self.config.dict())
         config.client_id = f"{config.group_id}-{i}"
             
@@ -425,6 +435,7 @@ class StreamProcessor(EventProcessor):
     Stateful stream processor with windowing and aggregation.
     
     Features:
+        pass
     - Time and count-based windows
     - State management
     - Aggregation functions
@@ -456,6 +467,7 @@ class StreamProcessor(EventProcessor):
             try:
                 await self._window_task
             except asyncio.CancelledError:
+                pass
         pass
     
     async def process(self, event: EventSchema) -> None:
@@ -477,6 +489,7 @@ class StreamProcessor(EventProcessor):
         return f"{event.source_type}:{window_start}"
     
         async def _update_state(self, event: EventSchema) -> None:
+            pass
         """Update processor state with new event."""
         # Example: Count events by type
         event_type = event.event_type.value
@@ -484,9 +497,8 @@ class StreamProcessor(EventProcessor):
             self.state[event_type] = 0
         self.state[event_type] += 1
     
-        async def _process_windows(self) -> None:
+    async def _process_windows(self) -> None:
         """Background task to process completed windows."""
-        pass
         while True:
             try:
                 await asyncio.sleep(self.window_size.total_seconds())
@@ -513,6 +525,7 @@ class StreamProcessor(EventProcessor):
                 logger.error(f"Error processing windows: {e}")
     
         async def _process_window(self, window_key: str, events: List[EventSchema]) -> None:
+            pass
         """Process a completed window of events."""
         with tracer.start_as_current_span(
         "kafka.stream.window",
@@ -521,31 +534,31 @@ class StreamProcessor(EventProcessor):
         "window.size": len(events)
         }
         ) as span:
-        try:
-            # Example aggregation: Count by event type
-        aggregation = {}
-        for event in events:
-        event_type = event.event_type.value
-        aggregation[event_type] = aggregation.get(event_type, 0) + 1
+            try:
+                # Example aggregation: Count by event type
+                aggregation = {}
+                for event in events:
+                    event_type = event.event_type.value
+                    aggregation[event_type] = aggregation.get(event_type, 0) + 1
                 
-        logger.info(
-        f"Window processed",
-        window_key=window_key,
-        event_count=len(events),
-        aggregation=aggregation
-        )
+                logger.info(
+                    f"Window processed",
+                    window_key=window_key,
+                    event_count=len(events),
+                    aggregation=aggregation
+                )
                 
-        # Here you would typically:
-        # 1. Perform aggregations
-        # 2. Update state stores
-        # 3. Emit results to output topics
+                # Here you would typically:
+                # 1. Perform aggregations
+                # 2. Update state stores
+                # 3. Emit results to output topics
                 
-        span.set_status(Status(StatusCode.OK))
+                span.set_status(Status(StatusCode.OK))
                 
-        except Exception as e:
-        span.set_status(Status(StatusCode.ERROR, str(e)))
-        span.record_exception(e)
-        raise
+            except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                raise
 
 
     # Example processor implementations
@@ -572,14 +585,14 @@ class RouterProcessor(EventProcessor):
         """Add a route for an event type."""
         self.routes[event_type] = processor
     
-        async def process(self, event: EventSchema) -> None:
+    async def process(self, event: EventSchema) -> None:
         """Route event to appropriate processor."""
         processor = self.routes.get(event.event_type.value)
         
         if processor:
             await processor.process(event)
         else:
-        logger.warning(f"No route for event type: {event.event_type.value}")
+            logger.warning(f"No route for event type: {event.event_type.value}")
 
 
     # Factory function for creating consumers

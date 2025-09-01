@@ -27,9 +27,9 @@ class ObservabilityConfig:
         self.enable_metrics = True
 
 
-            try:
-        from .context_managers import ObservabilityContext
-            except ImportError:
+try:
+    from .context_managers import ObservabilityContext
+except ImportError:
     class ObservabilityContext:
         def __init__(self, **kwargs):
             self.workflow_id = kwargs.get('workflow_id', 'unknown')
@@ -59,29 +59,29 @@ class LangSmithIntegration:
         self._batch_queue: List[Dict[str, Any]] = []
         self._batch_task: Optional[asyncio.Task] = None
     
-        async def initialize(self) -> None:
+    async def initialize(self) -> None:
         """
         Initialize LangSmith client with latest 2025 configuration.
         """
-            if not self.is_available:
+        if not self.is_available:
             print("⚠️ LangSmith not available - skipping initialization")
             return
-            
-            try:
+        
+        try:
             self.client = Client(api_key=self.config.langsmith_api_key)
             print("✅ LangSmith client initialized successfully")
-            except Exception as e:
+        except Exception as e:
             print(f"❌ Failed to initialize LangSmith client: {e}")
             self.is_available = False
     
-        async def start_workflow_run(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
+    async def start_workflow_run(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
         """
         Start LangSmith run for workflow with streaming traces.
         """
-            if not self.is_available or not self.client:
+        if not self.is_available or not self.client:
             return
-            
-            try:
+        
+        try:
             run = self.client.create_run(
                 name=f"workflow_{context.workflow_id}",
                 run_type=RunTypeEnum.CHAIN,
@@ -91,33 +91,33 @@ class LangSmithIntegration:
             )
             self._active_runs[context.workflow_id] = str(run.id)
             print(f"✅ Started LangSmith run for workflow {context.workflow_id}")
-            except Exception as e:
+        except Exception as e:
             print(f"❌ Failed to start LangSmith run: {e}")
     
-        async def update_run(self, context: ObservabilityContext, data: Dict[str, Any]) -> None:
+    async def update_run(self, context: ObservabilityContext, data: Dict[str, Any]) -> None:
         """
         Update active run with streaming data.
         """
-            if not self.is_available or context.workflow_id not in self._active_runs:
+        if not self.is_available or context.workflow_id not in self._active_runs:
             return
-            
-            try:
+        
+        try:
             run_id = self._active_runs[context.workflow_id]
             self.client.update_run(
                 run_id=run_id,
                 outputs=data
             )
-            except Exception as e:
+        except Exception as e:
             print(f"⚠️ Failed to update LangSmith run: {e}")
     
-        async def end_workflow_run(self, context: ObservabilityContext, final_state: Dict[str, Any]) -> None:
+    async def end_workflow_run(self, context: ObservabilityContext, final_state: Dict[str, Any]) -> None:
         """
         End workflow run with final results.
         """
-            if not self.is_available or context.workflow_id not in self._active_runs:
+        if not self.is_available or context.workflow_id not in self._active_runs:
             return
-            
-            try:
+        
+        try:
             run_id = self._active_runs[context.workflow_id]
             self.client.update_run(
                 run_id=run_id,
@@ -126,5 +126,5 @@ class LangSmithIntegration:
             )
             del self._active_runs[context.workflow_id]
             print(f"✅ Ended LangSmith run for workflow {context.workflow_id}")
-            except Exception as e:
+        except Exception as e:
             print(f"❌ Failed to end LangSmith run: {e}")

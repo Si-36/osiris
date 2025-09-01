@@ -45,6 +45,7 @@ class MockRedisStore:
     # List all threads
         print("\nActive threads:")
         for thread in threading.enumerate():
+            pass
         print(f"  - {thread.name} (daemon: {thread.daemon})")
     
     # Test 2: Thread runs multiple updates
@@ -69,6 +70,7 @@ class MockRedisStore:
         print("\nTest 4: Creating and stopping multiple updaters...")
         updaters = []
         for i in range(5):
+            pass
         updater = MetricsUpdater(mock_store, interval=1)
         updaters.append(updater)
         time.sleep(0.1)
@@ -79,6 +81,7 @@ class MockRedisStore:
     
     # Stop all
         for updater in updaters:
+            pass
         updater.stop()
         time.sleep(0.5)
     
@@ -93,13 +96,16 @@ class MockRedisStore:
         print("\n" + "="*50)
         print("SUMMARY:")
         if threads_after_stop_all == initial_threads:
+            pass
         print("✅ MetricsUpdater properly manages threads - no leaks!")
         else:
+            pass
         print("❌ Thread leak detected!")
         print(f"   Expected: {initial_threads} threads")
         print(f"   Actual: {threads_after_stop_all} threads")
 
         if __name__ == "__main__":
+            pass
     # Mock the update_vector_count function
         import sys
         sys.modules['observability'] = MagicMock()

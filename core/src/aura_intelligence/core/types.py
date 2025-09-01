@@ -113,7 +113,6 @@ class TypeIdentity:
     
     def is_reflexive(self) -> bool:
         """Check if this is a reflexive identity (a = a)."""
-        pass
         return self.left == self.right
     
     def is_symmetric(self) -> bool:
@@ -157,7 +156,6 @@ class AuraType(ABC):
         """Get canonical form of the type."""
         pass
 
-    
     def create_identity(self, other: 'AuraType') -> Optional[TypeIdentity]:
         """Create identity type between this and other type."""
         if self.is_equivalent_to(other):
@@ -166,28 +164,24 @@ class AuraType(ABC):
     
     def get_path_space(self) -> 'PathSpace':
         """Get the path space of this type."""
-        pass
         if self._path_space is None:
             self._path_space = PathSpace(self)
         return self._path_space
     
     def get_higher_groupoid(self) -> 'HigherGroupoid':
         """Get the higher groupoid structure."""
-        pass
         if self._higher_groupoid is None:
             self._higher_groupoid = HigherGroupoid(self)
         return self._higher_groupoid
     
     def __eq__(self, other) -> bool:
         """Equality based on canonical forms."""
-        pass
         if not isinstance(other, AuraType):
             return False
         return self.get_canonical_form().name == other.get_canonical_form().name
     
     def __hash__(self) -> int:
         """Hash based on canonical form."""
-        pass
         return hash(self.get_canonical_form().name)
 
 
@@ -201,7 +195,6 @@ class Path:
     
     def is_identity_path(self) -> bool:
         """Check if this is an identity path (start = end)."""
-        pass
         return self.start == self.end
     
     def compose(self, other: 'Path') -> Optional['Path']:
@@ -217,7 +210,6 @@ class Path:
     
     def inverse(self) -> 'Path':
         """Get the inverse path."""
-        pass
         return Path(
             start=self.end,
             end=self.start,
@@ -288,7 +280,6 @@ class PathSpace:
     
     def get_fundamental_group(self) -> 'FundamentalGroup':
         """Get the fundamental group of the path space."""
-        pass
         if self._fundamental_group is None:
             self._fundamental_group = FundamentalGroup(self)
         return self._fundamental_group
@@ -328,12 +319,10 @@ class FundamentalGroup:
     
     def is_trivial(self) -> bool:
         """Check if the fundamental group is trivial."""
-        pass
         return len(self.generators) == 0
     
     def get_presentation(self) -> Dict[str, Any]:
         """Get group presentation with generators and relations."""
-        pass
         return {
             'generators': [g.path_data for g in self.generators],
             'relations': self.relations,
@@ -358,7 +347,6 @@ class HomotopyGroup:
     
     def compute_rank(self) -> int:
         """Compute the rank of the homotopy group."""
-        pass
         if self.is_trivial():
             return 0
         # Simplified computation
@@ -395,7 +383,6 @@ class HigherGroupoid:
     
     def compute_homotopy_dimension(self) -> int:
         """Compute the homotopy dimension of the groupoid."""
-        pass
         max_level = 0
         for level, morphisms in self.morphisms.items():
             if morphisms:
@@ -492,7 +479,6 @@ class TypeUniverse:
     
     def check_consistency(self) -> 'ConsistencyResult':
         """Check consistency of the type universe."""
-        pass
         if self._consistency_checker is None:
             self._consistency_checker = ConsistencyChecker(self)
         
@@ -500,12 +486,10 @@ class TypeUniverse:
     
     def get_all_types(self) -> List[AuraType]:
         """Get all types in the universe."""
-        pass
         return list(self.types.values())
     
     def compute_type_graph(self) -> Dict[str, List[str]]:
         """Compute the dependency graph of types."""
-        pass
         graph = defaultdict(list)
         
         for type_name, aura_type in self.types.items():
@@ -529,7 +513,6 @@ class ConsistencyResult:
     
     def __post_init__(self):
         """Validate consistency result."""
-        pass
         if self.is_consistent and self.violations:
             raise ValueError("Cannot be consistent with violations")
 
@@ -542,7 +525,6 @@ class ConsistencyChecker:
     
     def check(self) -> ConsistencyResult:
         """Perform comprehensive consistency check."""
-        pass
         violations = []
         warnings = []
         checked_properties = []
@@ -576,7 +558,6 @@ class ConsistencyChecker:
     
     def _check_universe_levels(self) -> List[str]:
         """Check universe level consistency."""
-        pass
         violations = []
         
         for type_name, aura_type in self.universe.types.items():
@@ -590,7 +571,6 @@ class ConsistencyChecker:
     
     def _check_univalence(self) -> List[str]:
         """Check univalence axiom consistency."""
-        pass
         violations = []
         
         for (type1, type2), equivalence in self.universe.equivalences.items():
@@ -603,7 +583,6 @@ class ConsistencyChecker:
     
     def _check_equivalences(self) -> List[str]:
         """Check type equivalence consistency."""
-        pass
         violations = []
         
         for (type1, type2), equivalence in self.universe.equivalences.items():
@@ -616,14 +595,13 @@ class ConsistencyChecker:
     
     def _check_circular_dependencies(self) -> List[str]:
         """Check for circular dependencies in type graph."""
-        pass
         violations = []
         
         type_graph = self.universe.compute_type_graph()
         visited = set()
         rec_stack = set()
         
-    def has_cycle(node: str) -> bool:
+        def has_cycle(node: str) -> bool:
             visited.add(node)
             rec_stack.add(node)
             
@@ -661,7 +639,6 @@ class BasicType(AuraType):
     
     def get_canonical_form(self) -> AuraType:
         """Return self as canonical form."""
-        pass
         return self
 
 
@@ -683,7 +660,6 @@ class FunctionType(AuraType):
     
     def get_canonical_form(self) -> AuraType:
         """Get canonical form with canonical domain and codomain."""
-        pass
         canonical_domain = self.domain.get_canonical_form()
         canonical_codomain = self.codomain.get_canonical_form()
         return FunctionType(canonical_domain, canonical_codomain)
@@ -707,26 +683,25 @@ class ProductType(AuraType):
     
     def get_canonical_form(self) -> AuraType:
         """Get canonical form with canonical components."""
-        pass
         canonical_left = self.left.get_canonical_form()
         canonical_right = self.right.get_canonical_form()
         return ProductType(canonical_left, canonical_right)
 
 
 # Factory functions for common types
-    def create_basic_type(name: str, data_type: type) -> BasicType:
-        """Create a basic type."""
-        return BasicType(name, data_type)
+def create_basic_type(name: str, data_type: type) -> BasicType:
+    """Create a basic type."""
+    return BasicType(name, data_type)
 
 
-    def create_function_type(domain: AuraType, codomain: AuraType) -> FunctionType:
-        """Create a function type."""
-        return FunctionType(domain, codomain)
+def create_function_type(domain: AuraType, codomain: AuraType) -> FunctionType:
+    """Create a function type."""
+    return FunctionType(domain, codomain)
 
 
-    def create_product_type(left: AuraType, right: AuraType) -> ProductType:
-        """Create a product type."""
-        return ProductType(left, right)
+def create_product_type(left: AuraType, right: AuraType) -> ProductType:
+    """Create a product type."""
+    return ProductType(left, right)
 
 
 # Additional enums for system components
@@ -757,7 +732,6 @@ class ConfidenceScore:
     
     def __post_init__(self):
         """Validate confidence score."""
-        pass
         if not 0.0 <= self.value <= 1.0:
             raise ValueError(f"Confidence value must be between 0.0 and 1.0, got {self.value}")
         if not 0.0 <= self.uncertainty <= 1.0:

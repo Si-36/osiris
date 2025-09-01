@@ -1,0 +1,301 @@
+{
+  "summary": {
+    "total_files": 673,
+    "files_with_errors": 290,
+    "total_classes": 2277,
+    "total_functions": 9255,
+    "error_rate": "43.1%"
+  },
+  "components": {
+    "core_system": {
+      "file_count": 430,
+      "error_count": 222,
+      "files": [
+        "/workspace/core/src/aura_intelligence/cloud_integration.py",
+        "/workspace/core/src/aura_intelligence/unified_brain.py",
+        "/workspace/core/src/aura_intelligence/production_wiring.py",
+        "/workspace/core/src/aura_intelligence/enhanced_integration.py",
+        "/workspace/core/src/aura_intelligence/feature_flags.py"
+      ]
+    },
+    "infrastructure": {
+      "file_count": 4,
+      "error_count": 2,
+      "files": [
+        "/workspace/core/src/aura_intelligence/infrastructure/gemini_client.py",
+        "/workspace/core/src/aura_intelligence/infrastructure/kafka_event_mesh.py",
+        "/workspace/core/src/aura_intelligence/infrastructure/guardrails.py",
+        "/workspace/core/src/aura_intelligence/infrastructure/__init__.py"
+      ]
+    },
+    "core_agents": {
+      "file_count": 70,
+      "error_count": 25,
+      "files": [
+        "/workspace/core/src/aura_intelligence/agents/consolidated_agents.py",
+        "/workspace/core/src/aura_intelligence/agents/observability.py",
+        "/workspace/core/src/aura_intelligence/agents/base.py",
+        "/workspace/core/src/aura_intelligence/agents/enhanced_council.py",
+        "/workspace/core/src/aura_intelligence/agents/working_council_agent.py"
+      ]
+    },
+    "council_system": {
+      "file_count": 69,
+      "error_count": 33,
+      "files": [
+        "/workspace/core/src/aura_intelligence/agents/council/steps.py",
+        "/workspace/core/src/aura_intelligence/agents/council/observability.py",
+        "/workspace/core/src/aura_intelligence/agents/council/decision_pipeline.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_observability_standalone.py",
+        "/workspace/core/src/aura_intelligence/agents/council/test_models_standalone.py"
+      ]
+    },
+    "executor_agents": {
+      "file_count": 3,
+      "error_count": 1,
+      "files": [
+        "/workspace/core/src/aura_intelligence/agents/executor/agent.py",
+        "/workspace/core/src/aura_intelligence/agents/executor/real_executor_agent_2025.py",
+        "/workspace/core/src/aura_intelligence/agents/executor/__init__.py"
+      ]
+    },
+    "memory_agents": {
+      "file_count": 1,
+      "error_count": 0,
+      "files": [
+        "/workspace/core/src/aura_intelligence/agents/memory/unified.py"
+      ]
+    },
+    "adapters": {
+      "file_count": 8,
+      "error_count": 6,
+      "files": [
+        "/workspace/core/src/aura_intelligence/adapters/tda_mem0_adapter.py",
+        "/workspace/core/src/aura_intelligence/adapters/redis_high_performance.py",
+        "/workspace/core/src/aura_intelligence/adapters/mem0_adapter.py",
+        "/workspace/core/src/aura_intelligence/adapters/redis_adapter.py",
+        "/workspace/core/src/aura_intelligence/adapters/__init__.py"
+      ]
+    },
+    "memory_system": {
+      "file_count": 3,
+      "error_count": 0,
+      "files": [
+        "/workspace/src/aura/memory/systems.py",
+        "/workspace/src/aura/memory/shape_aware.py",
+        "/workspace/src/aura/memory/__init__.py"
+      ]
+    },
+    "tda_system": {
+      "file_count": 4,
+      "error_count": 0,
+      "files": [
+        "/workspace/src/aura/tda/engine.py",
+        "/workspace/src/aura/tda/algorithms.py",
+        "/workspace/src/aura/tda/real_algorithms_2025.py",
+        "/workspace/src/aura/tda/__init__.py"
+      ]
+    },
+    "lnn_system": {
+      "file_count": 4,
+      "error_count": 0,
+      "files": [
+        "/workspace/src/aura/lnn/liquid_networks.py",
+        "/workspace/src/aura/lnn/real_liquid_nn_2025.py",
+        "/workspace/src/aura/lnn/variants.py",
+        "/workspace/src/aura/lnn/__init__.py"
+      ]
+    }
+  },
+  "critical_path": [
+    {
+      "file": "core/src/aura_intelligence/lnn/core.py",
+      "blocking_score": 8,
+      "error": "unexpected unindent (line 53)"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/real_registry.py",
+      "blocking_score": 8,
+      "error": "expected an indented block after 'try' statement on line 16 (line 17)"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/tracing.py",
+      "blocking_score": 6,
+      "error": "expected an indented block after 'try' statement on line 13 (line 14)"
+    },
+    {
+      "file": "core/src/aura_intelligence/graph/neo4j_integration.py",
+      "blocking_score": 5,
+      "error": "expected 'except' or 'finally' block (line 111)"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_semantic/sync.py",
+      "blocking_score": 4,
+      "error": "unindent does not match any outer indentation level (line 72)"
+    },
+    {
+      "file": "core/src/aura_intelligence/streaming/kafka_integration.py",
+      "blocking_score": 4,
+      "error": "expected an indented block after class definition on line 14 (line 15)"
+    },
+    {
+      "file": "core/src/aura_intelligence/coral/best_coral.py",
+      "blocking_score": 4,
+      "error": "unexpected indent (line 328)"
+    },
+    {
+      "file": "core/src/aura_intelligence/consciousness/global_workspace.py",
+      "blocking_score": 4,
+      "error": "unexpected indent (line 187)"
+    },
+    {
+      "file": "core/src/aura_intelligence/dpo/preference_optimizer.py",
+      "blocking_score": 4,
+      "error": "unindent does not match any outer indentation level (line 150)"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/tda_neo4j_bridge.py",
+      "blocking_score": 4,
+      "error": "expected an indented block after 'if' statement on line 49 (line 50)"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/ingest.py",
+      "blocking_score": 3,
+      "error": "expected 'except' or 'finally' block (line 145)"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/vectorize.py",
+      "blocking_score": 3,
+      "error": "expected 'except' or 'finally' block (line 148)"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/neo4j_adapter.py",
+      "blocking_score": 3,
+      "error": "unexpected indent (line 104)"
+    },
+    {
+      "file": "core/src/aura_intelligence/enhanced_integration.py",
+      "blocking_score": 3,
+      "error": "unexpected indent (line 175)"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_homeostatic/metabolic_manager.py",
+      "blocking_score": 3,
+      "error": "unindent does not match any outer indentation level (line 16)"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/complete_system_2025.py",
+      "blocking_score": 3,
+      "error": "unexpected indent (line 339)"
+    },
+    {
+      "file": "core/src/aura_intelligence/lnn/real_mit_lnn.py",
+      "blocking_score": 3,
+      "error": "expected an indented block after 'if' statement on line 29 (line 31)"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/real_components.py",
+      "blocking_score": 3,
+      "error": "expected 'except' or 'finally' block (line 51)"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_semantic/rank.py",
+      "blocking_score": 2,
+      "error": "expected 'except' or 'finally' block (line 169)"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/knowledge_context.py",
+      "blocking_score": 2,
+      "error": "expected an indented block after 'try' statement on line 92 (line 94)"
+    }
+  ],
+  "error_patterns": {
+    "unexpected_indent": 50,
+    "unindent_mismatch": 87,
+    "missing_indent": 71,
+    "other": 33,
+    "malformed_try_block": 49
+  },
+  "fix_priority": [
+    {
+      "component": "infrastructure",
+      "importance": 10,
+      "files": 4,
+      "errors": 2,
+      "error_rate": "50.0%",
+      "fix_score": "7.50"
+    },
+    {
+      "component": "core_system",
+      "importance": 9,
+      "files": 430,
+      "errors": 222,
+      "error_rate": "51.6%",
+      "fix_score": "6.68"
+    },
+    {
+      "component": "core_agents",
+      "importance": 7,
+      "files": 70,
+      "errors": 25,
+      "error_rate": "35.7%",
+      "fix_score": "5.75"
+    },
+    {
+      "component": "memory_agents",
+      "importance": 5,
+      "files": 1,
+      "errors": 0,
+      "error_rate": "0.0%",
+      "fix_score": "5.00"
+    },
+    {
+      "component": "adapters",
+      "importance": 8,
+      "files": 8,
+      "errors": 6,
+      "error_rate": "75.0%",
+      "fix_score": "5.00"
+    },
+    {
+      "component": "memory_system",
+      "importance": 5,
+      "files": 3,
+      "errors": 0,
+      "error_rate": "0.0%",
+      "fix_score": "5.00"
+    },
+    {
+      "component": "tda_system",
+      "importance": 5,
+      "files": 4,
+      "errors": 0,
+      "error_rate": "0.0%",
+      "fix_score": "5.00"
+    },
+    {
+      "component": "lnn_system",
+      "importance": 5,
+      "files": 4,
+      "errors": 0,
+      "error_rate": "0.0%",
+      "fix_score": "5.00"
+    },
+    {
+      "component": "executor_agents",
+      "importance": 5,
+      "files": 3,
+      "errors": 1,
+      "error_rate": "33.3%",
+      "fix_score": "4.17"
+    },
+    {
+      "component": "council_system",
+      "importance": 5,
+      "files": 69,
+      "errors": 33,
+      "error_rate": "47.8%",
+      "fix_score": "3.80"
+    }
+  ]
+}

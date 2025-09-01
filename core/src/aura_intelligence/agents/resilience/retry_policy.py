@@ -34,7 +34,6 @@ class RetryConfig:
     
     def validate(self) -> None:
         """Validate configuration."""
-        pass
         if self.max_attempts <= 0:
             raise ValueError("max_attempts must be positive")
         if self.initial_delay.total_seconds() <= 0:
@@ -50,12 +49,11 @@ class RetryPolicy(ABC):
     
     def __init__(self, config: RetryConfig):
         """Initialize retry policy."""
-        pass
         config.validate()
         self.config = config
         self.logger = structlog.get_logger()
     
-        @abstractmethod
+    @abstractmethod
     def calculate_delay(self, attempt: int) -> timedelta:
         """Calculate delay before next retry attempt."""
         pass
@@ -69,19 +67,19 @@ class RetryPolicy(ABC):
         # Check if exception is retryable
         if self.config.retryable_exceptions:
             return any(
-        isinstance(exception, exc_type)
-        for exc_type in self.config.retryable_exceptions
-        )
+                isinstance(exception, exc_type)
+                for exc_type in self.config.retryable_exceptions
+            )
         
         # Default: retry on any exception
         return True
     
-        async def execute(
+    async def execute(
         self,
         func: Callable[..., T],
         *args,
         **kwargs
-        ) -> T:
+    ) -> T:
         """
         Execute function with retry policy.
         
@@ -164,6 +162,8 @@ class RetryPolicy(ABC):
                     
                     # Wait before retry
                     await asyncio.sleep(delay.total_seconds())
+                    
+                    # Continue to next iteration
             
             # Should never reach here, but just in case
             if last_exception:
@@ -193,8 +193,8 @@ class ExponentialBackoff(RetryPolicy):
         # Apply jitter if enabled
         if self.config.jitter:
             # Add random jitter between 50% and 150% of delay
-        jitter_factor = random.uniform(0.5, 1.5)
-        delay_seconds *= jitter_factor
+            jitter_factor = random.uniform(0.5, 1.5)
+            delay_seconds *= jitter_factor
         
         return timedelta(seconds=delay_seconds)
 
@@ -213,7 +213,7 @@ class LinearBackoff(RetryPolicy):
         
         if self.config.jitter:
             jitter_factor = random.uniform(0.8, 1.2)
-        delay_seconds *= jitter_factor
+            delay_seconds *= jitter_factor
         
         return timedelta(seconds=delay_seconds)
 
@@ -231,8 +231,8 @@ class FixedDelay(RetryPolicy):
         
         if self.config.jitter:
             # Add small jitter even for fixed delay
-        jitter_seconds = random.uniform(-0.1, 0.1) * delay.total_seconds()
-        delay = timedelta(seconds=delay.total_seconds() + jitter_seconds)
+            jitter_seconds = random.uniform(-0.1, 0.1) * delay.total_seconds()
+            delay = timedelta(seconds=delay.total_seconds() + jitter_seconds)
         
         return delay
 
@@ -245,34 +245,32 @@ class RetryWithBackoff:
         @RetryWithBackoff(max_attempts=3)
         async def my_function():
             # Function that might fail
-            pass
             """
     
-            def __init__(
-            self,
-            max_attempts: int = 3,
-            initial_delay: float = 1.0,
-            max_delay: float = 60.0,
-            exponential_base: float = 2.0,
-            jitter: bool = True,
-            retryable_exceptions: Optional[List[Type[Exception]]] = None
-            ):
-            """Initialize retry decorator."""
-            pass
-            self.config = RetryConfig(
+    def __init__(
+        self,
+        max_attempts: int = 3,
+        initial_delay: float = 1.0,
+        max_delay: float = 60.0,
+        exponential_base: float = 2.0,
+        jitter: bool = True,
+        retryable_exceptions: Optional[List[Type[Exception]]] = None
+    ):
+        """Initialize retry decorator."""
+        self.config = RetryConfig(
             max_attempts=max_attempts,
             initial_delay=timedelta(seconds=initial_delay),
             max_delay=timedelta(seconds=max_delay),
             exponential_base=exponential_base,
             jitter=jitter,
             retryable_exceptions=retryable_exceptions
-            )
-            self.policy = ExponentialBackoff(self.config)
+        )
+        self.policy = ExponentialBackoff(self.config)
     
     def __call__(self, func: Callable[..., T]) -> Callable[..., T]:
-            """Wrap function with retry logic."""
-            async def wrapper(*args, **kwargs):
-        return await self.policy.execute(func, *args, **kwargs)
+        """Wrap function with retry logic."""
+        async def wrapper(*args, **kwargs):
+            return await self.policy.execute(func, *args, **kwargs)
         
         # Preserve function metadata
         wrapper.__name__ = func.__name__

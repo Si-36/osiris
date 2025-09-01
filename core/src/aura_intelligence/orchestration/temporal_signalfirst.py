@@ -97,9 +97,8 @@ class SignalFirstRouter:
         
         logger.info("SignalFirstRouter initialized with 20ms latency reduction target")
     
-        async def start(self):
+    async def start(self):
         """Start the SignalFirst router"""
-        pass
         if self._running:
             return
             
@@ -111,9 +110,8 @@ class SignalFirstRouter:
             
         logger.info("SignalFirst router started")
     
-        async def stop(self):
+    async def stop(self):
         """Stop the SignalFirst router"""
-        pass
         self._running = False
         
         if self._routing_task:
@@ -127,7 +125,7 @@ class SignalFirstRouter:
         
         logger.info(f"SignalFirst router stopped. Stats: {self.get_stats()}")
     
-        async def route_signal(
+    async def route_signal(
         self,
         workflow_id: str,
         signal_type: str,
@@ -135,7 +133,7 @@ class SignalFirstRouter:
         priority: SignalPriority = SignalPriority.NORMAL,
         deadline: Optional[datetime] = None,
         batch_key: Optional[str] = None
-        ) -> str:
+    ) -> str:
         """
         Route a signal with SignalFirst optimization
         
@@ -194,7 +192,7 @@ class SignalFirstRouter:
         # Batch if explicitly marked or low priority
         return metadata.batch_key is not None or metadata.priority == SignalPriority.BATCH
     
-        async def _add_to_batch(self, metadata: SignalMetadata, signal_data: Any):
+    async def _add_to_batch(self, metadata: SignalMetadata, signal_data: Any):
         """Add signal to batch accumulator"""
         batch_key = metadata.batch_key or metadata.signal_type
         key = f"{metadata.workflow_id}:{batch_key}"
@@ -206,7 +204,7 @@ class SignalFirstRouter:
         if len(self.batch_accumulator[key]) >= self.config.max_batch_size:
             await self._flush_batch(key)
     
-        async def _add_to_priority_queue(self, metadata: SignalMetadata, signal_data: Any):
+    async def _add_to_priority_queue(self, metadata: SignalMetadata, signal_data: Any):
         """Add signal to priority queue"""
         # Calculate priority score (lower is higher priority)
         priority_score = self._calculate_priority_score(metadata)
@@ -252,9 +250,8 @@ class SignalFirstRouter:
         
         return base_score
     
-        async def _routing_loop(self):
+    async def _routing_loop(self):
         """Background task for signal routing"""
-        pass
         while self._running:
             try:
                 # Process signals for each workflow
@@ -269,7 +266,7 @@ class SignalFirstRouter:
             except Exception as e:
                 logger.error(f"Error in routing loop: {e}")
     
-        async def _process_workflow_signals(self, workflow_id: str):
+    async def _process_workflow_signals(self, workflow_id: str):
         """Process signals for a specific workflow"""
         queue = self.signal_queues[workflow_id]
         
@@ -297,9 +294,8 @@ class SignalFirstRouter:
                 for metadata, signal_data in signals_to_process
             ])
     
-        async def _batching_loop(self):
+    async def _batching_loop(self):
         """Background task for signal batching"""
-        pass
         while self._running:
             try:
                 # Wait for batch window
@@ -311,16 +307,15 @@ class SignalFirstRouter:
             except Exception as e:
                 logger.error(f"Error in batching loop: {e}")
     
-        async def _flush_all_batches(self):
+    async def _flush_all_batches(self):
         """Flush all accumulated batches"""
-        pass
         keys = list(self.batch_accumulator.keys())
         
         await asyncio.gather(*[
             self._flush_batch(key) for key in keys
         ])
     
-        async def _flush_batch(self, key: str):
+    async def _flush_batch(self, key: str):
         """Flush a specific batch"""
         batch = self.batch_accumulator[key]
         
@@ -362,7 +357,7 @@ class SignalFirstRouter:
         
         await self._send_signal(batch_metadata, batch_signal)
     
-        async def _send_signal(self, metadata: SignalMetadata, signal_data: Any):
+    async def _send_signal(self, metadata: SignalMetadata, signal_data: Any):
         """Send signal to Temporal workflow"""
         start_time = time.time()
         
@@ -387,12 +382,12 @@ class SignalFirstRouter:
         except Exception as e:
             logger.error(f"Failed to send signal {metadata.signal_id}: {e}")
     
-        async def _temporal_send_signal(
+    async def _temporal_send_signal(
         self, 
         workflow_id: str, 
         signal_name: str, 
         signal_data: Any
-        ):
+    ):
         """Send signal to Temporal workflow (placeholder)"""
         # In real implementation:
         # await client.get_workflow_handle(workflow_id).signal(signal_name, signal_data)
@@ -415,9 +410,8 @@ class SignalFirstRouter:
             (1 - alpha) * self.stats["avg_latency_ms"]
         )
     
-        async def _flush_all_signals(self):
+    async def _flush_all_signals(self):
         """Flush all pending signals"""
-        pass
         # Flush batches first
         await self._flush_all_batches()
         
@@ -428,7 +422,6 @@ class SignalFirstRouter:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get router statistics"""
-        pass
         stats = self.stats.copy()
         
         # Add queue information
@@ -449,22 +442,22 @@ class SignalFirstRouter:
 
 
 # Temporal workflow decorator with SignalFirst
-    def signalfirst_workflow(cls):
-        """Decorator to enable SignalFirst for a Temporal workflow"""
+def signalfirst_workflow(cls):
+    """Decorator to enable SignalFirst for a Temporal workflow"""
     
-        original_init = cls.__init__
+    original_init = cls.__init__
     
     def new_init(self, *args, **kwargs):
         original_init(self, *args, **kwargs)
         self._signal_router = SignalFirstRouter()
         asyncio.create_task(self._signal_router.start())
     
-        cls.__init__ = new_init
+    cls.__init__ = new_init
     
     # Add signal handler
-        original_signal = getattr(cls, 'signal', None)
+    original_signal = getattr(cls, 'signal', None)
     
-        async def signal_with_router(self, signal_name: str, signal_data: Any):
+    async def signal_with_router(self, signal_name: str, signal_data: Any):
         # Route through SignalFirst
         await self._signal_router.route_signal(
             workflow_id=workflow.info().workflow_id,
@@ -476,9 +469,9 @@ class SignalFirstRouter:
         if original_signal:
             await original_signal(self, signal_name, signal_data)
     
-        cls.signal = signal_with_router
+    cls.signal = signal_with_router
     
-        return workflow.defn(cls)
+    return workflow.defn(cls)
 
 
 # Example workflow using SignalFirst
@@ -491,9 +484,8 @@ class OptimizedWorkflow:
         self.signals_processed = 0
     
     @workflow.run
-        async def run(self):
+    async def run(self):
         """Main workflow logic"""
-        pass
         while True:
             # Process signals efficiently
             await workflow.wait_condition(lambda: self.signals_processed > 0)
@@ -505,18 +497,43 @@ class OptimizedWorkflow:
             self.signals_processed = 0
     
     @workflow.signal
-        async def process_signal(self, data: Dict[str, Any]):
+    async def process_signal(self, data: Dict[str, Any]):
         """Handle incoming signals"""
         self.signals_processed += 1
         self.state.update(data)
 
 
 # Factory function
-    def create_signalfirst_router(**kwargs) -> SignalFirstRouter:
-        """Create SignalFirst router with feature flag support"""
-        from ..feature_flags import is_feature_enabled, FeatureFlag
+def create_signalfirst_router(**kwargs) -> SignalFirstRouter:
+    """Create SignalFirst router with feature flag support"""
+    from ..feature_flags import is_feature_enabled, FeatureFlag
     
-        if not is_feature_enabled(FeatureFlag.TEMPORAL_SIGNALFIRST_ENABLED):
+    if not is_feature_enabled(FeatureFlag.TEMPORAL_SIGNALFIRST_ENABLED):
         raise RuntimeError("Temporal SignalFirst is not enabled. Enable with feature flag.")
     
-        return SignalFirstRouter(**kwargs)
+    return SignalFirstRouter(**kwargs)
+
+
+# SignalFirst orchestrator for unified interface
+class SignalFirstOrchestrator:
+    """Orchestrator using SignalFirst optimization"""
+    
+    def __init__(self, config: Optional[SignalFirstConfig] = None):
+        self.router = SignalFirstRouter(config)
+        self.workflows: Dict[str, Any] = {}
+    
+    async def start(self):
+        """Start the orchestrator"""
+        await self.router.start()
+    
+    async def stop(self):
+        """Stop the orchestrator"""
+        await self.router.stop()
+    
+    async def route_signal(self, **kwargs):
+        """Route a signal through the system"""
+        return await self.router.route_signal(**kwargs)
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get orchestrator statistics"""
+        return self.router.get_stats()

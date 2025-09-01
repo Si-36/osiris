@@ -2,6 +2,7 @@
 📊 Metric Collectors - External Platform Adapters
 
 Functional adapters for external observability platforms using 2025 patterns:
+    pass
 - Protocol-based polymorphism over inheritance
 - Pure functions with effect composition
 - Graceful degradation with Maybe/Option types
@@ -119,6 +120,7 @@ class NoOpCollector:
     def create_multi_collector(*collectors: MetricCollector) -> MetricCollector:
         """Compose multiple collectors into one"""
     class MultiCollector:
+        pass
     __slots__ = ('_collectors',)
         
         def __init__(self, collectors: tuple[MetricCollector, ...]):
@@ -127,6 +129,7 @@ class NoOpCollector:
         def collect(self, point: MetricPoint) -> Effect[None]:
             """Collect to all collectors in parallel"""
             async def _collect_all():
+                pass
             effects = [collector.collect(point) for collector in self._collectors]
             await asyncio.gather(*[effect.run() for effect in effects])
             

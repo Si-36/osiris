@@ -126,7 +126,7 @@ class WebSubHub:
         self.app.middlewares.append(self._auth_middleware)
     
     @web.middleware
-        async def _cors_middleware(self, request, handler):
+    async def _cors_middleware(self, request, handler):
         """CORS middleware for browser support"""
         pass
         # Preflight handling

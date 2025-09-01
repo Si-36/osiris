@@ -3,7 +3,11 @@ Memory module for AURA Intelligence
 """
 
 # Import only the essentials to avoid circular imports
-from .knn_index_real import HybridKNNIndex, KNNConfig, create_knn_index
+try:
+    from .knn_index_real import HybridKNNIndex, KNNConfig, create_knn_index
+except (ImportError, NameError):
+    # Fallback to simple implementation if dependencies are missing
+    from .knn_index_simple import HybridKNNIndex, KNNConfig, create_knn_index
 
 # Import MemorySettings if available
 try:
@@ -19,9 +23,79 @@ except ImportError:
             self.persistence_enabled = True
             self.cache_size = 10000
 
-            __all__ = [
-            'HybridKNNIndex',
-            'KNNConfig',
-            'create_knn_index',
-            'MemorySettings',
-            ]
+# Import unified memory interface
+from .unified_memory_interface import (
+    UnifiedMemoryInterface,
+    MemoryType,
+    ConsistencyLevel,
+    SearchType,
+    MemoryMetadata,
+    MemoryResult
+)
+
+# Import Mem0 pipeline
+from .mem0_pipeline import (
+    Mem0Pipeline,
+    ExtractedFact,
+    FactType,
+    ConfidenceLevel,
+    RetrievalContext
+)
+
+# Import H-MEM hierarchical routing
+from .hierarchical_routing import (
+    HMemSystem,
+    MemoryLevel,
+    HierarchicalRouter
+)
+
+# Import Qdrant configuration
+from .qdrant_config import (
+    QdrantMultitenantManager,
+    QdrantCollectionConfig,
+    QuantizationType,
+    QuantizationPreset
+)
+
+# Import HybridMemoryManager and alias for backward compatibility
+from .hybrid_manager import HybridMemoryManager
+MemoryManager = HybridMemoryManager
+
+# Import HierarchicalMemorySystem and alias for backward compatibility
+from .advanced_memory_system import HierarchicalMemorySystem
+HierarchicalMemoryManager = HierarchicalMemorySystem
+
+__all__ = [
+    # KNN Index
+    'HybridKNNIndex',
+    'KNNConfig',
+    'create_knn_index',
+    'MemorySettings',
+    # Memory Manager
+    'HybridMemoryManager',
+    'MemoryManager',  # Alias for backward compatibility
+    'HierarchicalMemorySystem',
+    'HierarchicalMemoryManager',  # Alias for backward compatibility
+    # Unified Interface
+    'UnifiedMemoryInterface',
+    'MemoryType',
+    'ConsistencyLevel',
+    'SearchType',
+    'MemoryMetadata',
+    'MemoryResult',
+    # Mem0 Pipeline
+    'Mem0Pipeline',
+    'ExtractedFact',
+    'FactType',
+    'ConfidenceLevel',
+    'RetrievalContext',
+    # H-MEM
+    'HMemSystem',
+    'MemoryLevel',
+    'HierarchicalRouter',
+    # Qdrant
+    'QdrantMultitenantManager',
+    'QdrantCollectionConfig',
+    'QuantizationType',
+    'QuantizationPreset'
+]

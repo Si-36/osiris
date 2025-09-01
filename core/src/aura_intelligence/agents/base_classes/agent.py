@@ -2,6 +2,7 @@
 🤖 Base Agent Class - Foundation for The Collective
 
 Enterprise-grade base agent implementation with:
+    pass
 - OpenTelemetry instrumentation for observability
 - Integration with UnifiedMemory and ACP protocol
 - Structured logging and error handling
@@ -71,6 +72,7 @@ else:
             }
     
             async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+                pass
         """REAL agent processing with decision making"""
         import time
         import numpy as np
@@ -97,6 +99,7 @@ else:
         def __enter__(self):
             return self
             async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+                pass
             """REAL agent processing with decision making"""
             import time
             import numpy as np
@@ -123,14 +126,17 @@ else:
     class NoOpTracer:
         def start_as_current_span(self, name):
             # Return a decorator function for @tracer.start_as_current_span usage
+            pass
         def decorator(func):
             return func  # Just return the original function
             return decorator
             tracer = NoOpTracer()
 
             if metrics:
+                pass
             meter = metrics.get_meter(__name__)
             else:
+                pass
             # Fallback meter that does nothing
             class NoOpMeter:
                 def create_counter(self, **kwargs):
@@ -219,6 +225,7 @@ class NoOpGauge:
     
     # Fallback trace functions
     if not trace:
+        pass
     def get_current_span():
         return NoOpSpan()
         trace = type('trace', (), {'get_current_span': get_current_span})()
@@ -272,14 +279,12 @@ class AgentMetrics:
     
     def get_success_rate(self) -> float:
         """Calculate task success rate."""
-        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_successful / self.tasks_processed
     
     def get_failure_rate(self) -> float:
         """Calculate task failure rate."""
-        pass
         if self.tasks_processed == 0:
             return 0.0
         return self.tasks_failed / self.tasks_processed
@@ -317,7 +322,6 @@ class BaseAgent(ABC):
             instance_id: Instance ID for scaled deployments
             config: Agent configuration
         """
-        pass
         self.agent_id = agent_id
         self.role = role
         self.capabilities = capabilities
@@ -353,7 +357,6 @@ class BaseAgent(ABC):
     
     def _setup_metrics(self) -> None:
         """Setup OpenTelemetry metrics."""
-        pass
         self.task_counter = meter.create_counter(
         name=f"agent_tasks_total",
         description="Total number of tasks processed by agent",
@@ -385,8 +388,8 @@ class BaseAgent(ABC):
         )
     
         async def start(self) -> None:
+            pass
         """Start the agent and initialize services."""
-        pass
         if self._running:
             return
         
@@ -417,8 +420,8 @@ class BaseAgent(ABC):
             raise
     
         async def stop(self) -> None:
+            pass
         """Stop the agent and cleanup resources."""
-        pass
         self.status = AgentStatus.SHUTTING_DOWN
         self._update_health_metric()
         
@@ -426,6 +429,7 @@ class BaseAgent(ABC):
         
         # Cancel background tasks
         for task in self._background_tasks:
+            pass
         task.cancel()
         
         if self._background_tasks:
@@ -439,16 +443,17 @@ class BaseAgent(ABC):
     
         @abstractmethod
         async def initialize(self) -> None:
+            pass
         """Agent-specific initialization logic."""
-        pass
     
     @abstractmethod
         async def cleanup(self) -> None:
+            pass
         """Agent-specific cleanup logic."""
-        pass
     
         @abstractmethod
         async def process_task(self, state: AgentState) -> AgentState:
+            pass
         """
         Process a task and return updated state.
         
@@ -458,11 +463,10 @@ class BaseAgent(ABC):
         Returns:
             Updated agent state
         """
-        pass
     
         async def _register_message_handlers(self) -> None:
+            pass
         """Register ACP message handlers."""
-        pass
         self.protocol.register_handler(
         MessageType.REQUEST,
         self._handle_request
@@ -480,6 +484,7 @@ class BaseAgent(ABC):
     
         @tracer.start_as_current_span("agent_handle_request")
         async def _handle_request(self, envelope: ACPEnvelope) -> ACPResponse:
+            pass
         """Handle incoming request messages."""
         span = trace.get_current_span()
         span.set_attributes({
@@ -538,14 +543,14 @@ class BaseAgent(ABC):
             )
     
         async def _handle_notification(self, envelope: ACPEnvelope) -> None:
+            pass
         """Handle incoming notification messages."""
         # Default implementation - can be overridden by subclasses
-        pass
     
         async def _handle_broadcast(self, envelope: ACPEnvelope) -> None:
+            pass
         """Handle incoming broadcast messages."""
         # Default implementation - can be overridden by subclasses
-        pass
     
     @tracer.start_as_current_span("agent_query_memory")
         async def query_memory(
@@ -555,6 +560,7 @@ class BaseAgent(ABC):
         limit: int = 10,
         context: Optional[Dict[str, Any]] = None
         ) -> List[QueryResult]:
+            pass
         """
         Query the unified memory system.
         
@@ -622,6 +628,7 @@ class BaseAgent(ABC):
         impact_level: ImpactLevel = ImpactLevel.LOW,
         context_used: Optional[List[Dict[str, Any]]] = None
         ) -> str:
+            pass
         """
         Log an action to the memory system.
         
@@ -667,9 +674,10 @@ class BaseAgent(ABC):
         return event.event_id
     
         async def _health_monitor_loop(self) -> None:
+            pass
         """Background task to monitor agent health."""
-        pass
         while self._running:
+            pass
         try:
             # Check agent health
         health_ok = await self._check_health()
@@ -677,6 +685,7 @@ class BaseAgent(ABC):
         if health_ok and self.status == AgentStatus.DEGRADED:
             self.status = AgentStatus.HEALTHY
         elif not health_ok and self.status == AgentStatus.HEALTHY:
+            pass
         self.status = AgentStatus.DEGRADED
                 
         self._update_health_metric()
@@ -684,14 +693,16 @@ class BaseAgent(ABC):
         await asyncio.sleep(30)  # Check every 30 seconds
                 
         except asyncio.CancelledError:
+            pass
         break
         except Exception as e:
+            pass
         print(f"Error in health monitor: {e}")
         await asyncio.sleep(30)
     
         async def _metrics_update_loop(self) -> None:
+            pass
         """Background task to update metrics."""
-        pass
         while self._running:
             try:
                 # Update uptime
@@ -707,8 +718,8 @@ class BaseAgent(ABC):
                 await asyncio.sleep(60)
     
         async def _check_health(self) -> bool:
+            pass
         """Check agent health status."""
-        pass
         try:
             # Basic health checks
         if not self._running:
@@ -726,11 +737,11 @@ class BaseAgent(ABC):
         return True
             
         except Exception:
+            pass
         return False
     
     def _update_health_metric(self) -> None:
         """Update the health metric."""
-        pass
         health_value = 1.0 if self.status == AgentStatus.HEALTHY else 0.0
         self.health_gauge.set(health_value, {
             "agent_id": self.agent_id,
@@ -740,7 +751,6 @@ class BaseAgent(ABC):
     
     def get_status(self) -> Dict[str, Any]:
         """Get agent status information."""
-        pass
         return {
         'agent_id': self.agent_id,
         'role': self.role.value,

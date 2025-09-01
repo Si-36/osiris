@@ -190,6 +190,7 @@ class ResilienceMetrics:
         Calculate overall resilience health score (0-100).
         
         Based on:
+            pass
         - Circuit breaker health
         - Bulkhead utilization
         - Retry success rate
@@ -417,23 +418,23 @@ class MetricsCollector:
         self.components: Dict[str, Any] = {}
         self._collection_task: Optional[asyncio.Task] = None
         
-    def register_component(self, name: str, component: Any):
+    async def register_component(self, name: str, component: Any):
         """Register a resilience component for metrics collection."""
         self.components[name] = component
         
-        async def start(self):
+    async def start(self):
         """Start metrics collection."""
         pass
         self._collection_task = asyncio.create_task(self._collection_loop())
         logger.info("Started resilience metrics collector")
         
-        async def stop(self):
+    async def stop(self):
         """Stop metrics collection."""
         pass
         if self._collection_task:
             self._collection_task.cancel()
             
-        async def _collection_loop(self):
+    async def _collection_loop(self):
         """Main collection loop."""
         pass
         while True:
@@ -446,7 +447,7 @@ class MetricsCollector:
             except Exception as e:
                 logger.error(f"Metrics collection error: {e}")
     
-        async def _collect_metrics(self):
+    async def _collect_metrics(self):
         """Collect metrics from all components."""
         pass
         for name, component in self.components.items():
@@ -458,7 +459,7 @@ class MetricsCollector:
             except Exception as e:
                 logger.error(f"Error collecting metrics from {name}: {e}")
     
-        async def _process_component_metrics(self, component_name: str, metrics: Dict[str, Any]):
+    async def _process_component_metrics(self, component_name: str, metrics: Dict[str, Any]):
         """Process metrics from a component."""
         # Circuit breaker metrics
         if "state" in metrics:

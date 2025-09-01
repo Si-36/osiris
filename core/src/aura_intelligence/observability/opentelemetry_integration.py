@@ -121,7 +121,7 @@ class OpenTelemetryManager:
         self.logger.warning("Using mock OpenTelemetry components")
     
     @asynccontextmanager
-        async def trace_workflow(self, workflow_name: str, context: ObservabilityContext):
+    async def trace_workflow(self, workflow_name: str, context: ObservabilityContext):
         """Context manager for tracing workflow execution."""
         span_name = f"workflow.{workflow_name}"
         
@@ -149,7 +149,7 @@ class OpenTelemetryManager:
             except Exception as e:
                 self.logger.error(f"Failed to record metric {name}: {e}")
     
-        async def shutdown(self):
+    async def shutdown(self):
         """Shutdown OpenTelemetry components."""
         if self.initialized:
             try:

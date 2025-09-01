@@ -49,7 +49,7 @@ remediation_breaker = CircuitBreaker(
 )
 
 
-        def with_error_handling(func):
+def with_error_handling(func):
             """
             Decorator to add consistent error handling to tools.
     

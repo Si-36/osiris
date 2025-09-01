@@ -1,187 +1,162 @@
 """
-🧠 AURA Intelligence Ultimate Memory System
-
-Complete memory system integrating mem0, LangGraph, and federated learning.
-All your memory research with production-grade implementation.
+Advanced Memory System for AURA Intelligence
+2025 Best Practices Implementation
 """
 
-import asyncio
-import time
-from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Any, Union
+from datetime import datetime
+from enum import Enum
+import asyncio
 
-from aura_intelligence.config import MemorySettings as MemoryConfig
-from aura_intelligence.utils.logger import get_logger
+from ..utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+
+class MemoryType(Enum):
+    """Types of memory in the system"""
+    SHORT_TERM = "short_term"
+    LONG_TERM = "long_term"
+    EPISODIC = "episodic"
+    SEMANTIC = "semantic"
+    PROCEDURAL = "procedural"
 
 
 @dataclass
-class UltimateMemoryInsights:
-    """Ultimate memory insights with consciousness integration."""
-    learning_potential: float = 0.5
-    pattern_recognition: float = 0.5
-    consciousness_integration: float = 0.5
-    federated_knowledge: float = 0.0
+class MemoryEntry:
+    """Individual memory entry"""
+    id: str
+    content: Any
+    memory_type: MemoryType
+    timestamp: datetime
+    importance: float = 0.5
+    access_count: int = 0
+    metadata: Dict[str, Any] = None
+    
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
 
 
-class UltimateMemorySystem:
+class MemorySystem:
     """
-    🧠 Ultimate Memory System
+    Advanced Memory System with Multiple Storage Tiers
     
-    Complete memory system integrating:
-    - mem0 for production-grade storage with your API key
-    - LangGraph memory concepts
-    - Federated learning memory
-    - Consciousness-driven consolidation
+    Features:
+    - Multi-tier memory (short-term, long-term, episodic, semantic)
+    - Importance-based retention
+    - Context-aware retrieval
+    - Memory consolidation
     """
     
-    def __init__(self, config: MemoryConfig, consciousness_core):
-        self.config = config
-        self.consciousness = consciousness_core
-        self.logger = get_logger(__name__)
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
+        self.memories: Dict[str, MemoryEntry] = {}
+        self.memory_index: Dict[MemoryType, List[str]] = {
+            mem_type: [] for mem_type in MemoryType
+        }
+        self._initialized = False
         
-        # Memory state
-        self.memory_store = {}
-        self.consolidation_count = 0
+    async def initialize(self):
+        """Initialize memory system"""
+        if self._initialized:
+            return
+            
+        # Setup memory stores
+        self._initialized = True
+        logger.info("Memory system initialized")
         
-        # Check if we have real API keys
-        self.production_mode = (
-        config.openai_api_key.startswith("sk-") and
-        config.mem0_api_key.startswith("m0-")
+    async def store(
+        self,
+        content: Any,
+        memory_type: MemoryType,
+        importance: float = 0.5,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> str:
+        """Store a memory"""
+        memory_id = f"{memory_type.value}_{datetime.utcnow().timestamp()}"
+        
+        entry = MemoryEntry(
+            id=memory_id,
+            content=content,
+            memory_type=memory_type,
+            timestamp=datetime.utcnow(),
+            importance=importance,
+            metadata=metadata
         )
         
-        if self.production_mode:
-            self.logger.info("🧠 Ultimate Memory System initialized with production API keys")
-        else:
-        self.logger.info("🧠 Ultimate Memory System initialized in demo mode")
-    
-        async def initialize(self):
-            """Initialize the ultimate memory system."""
-        pass
-        try:
-            self.logger.info("🔧 Initializing ultimate memory system...")
-            
-            if self.production_mode:
-                # Initialize real mem0 integration
-                await self._initialize_production_mem0()
-            else:
-                # Initialize demo system
-                await self._initialize_demo_system()
-            
-            self.logger.info("✅ Ultimate memory system initialized")
-            
-        except Exception as e:
-            self.logger.error(f"❌ Ultimate memory system initialization failed: {e}")
-            raise
-    
-        async def _initialize_production_mem0(self):
-        """Initialize production mem0 with real API keys."""
-        pass
-        try:
-            # Try to import and initialize mem0
-        from mem0 import Memory
-            
-        memory_config = {
-        "llm": {
-        "provider": "openai",
-        "config": {
-        "model": "gpt-4o",
-        "api_key": self.config.openai_api_key
-        }
-        }
-        }
-            
-        self.mem0_client = Memory.from_config(memory_config)
-        self.logger.info("✅ Production mem0 initialized with OpenAI")
-            
-        except ImportError:
-        self.logger.warning("mem0 not available, using demo mode")
-        self.production_mode = False
-        await self._initialize_demo_system()
-        except Exception as e:
-        self.logger.warning(f"Production mem0 init failed: {e}, using demo mode")
-        self.production_mode = False
-        await self._initialize_demo_system()
-    
-        async def _initialize_demo_system(self):
-            """Initialize demo memory system."""
-        pass
-        self.demo_memories = {}
-        self.logger.info("✅ Demo memory system initialized")
-    
-        async def consolidate_ultimate_memory(self, memory_context: Dict[str, Any]) -> Dict[str, Any]:
-        """Consolidate ultimate memory with consciousness integration."""
-        try:
-            self.consolidation_count += 1
-            
-        # Create memory content
-        memory_content = f"""
-        Ultimate Memory Consolidation #{self.consolidation_count}
-            
-        Consciousness State: {memory_context.get('consciousness_state', {})}
-        Agent Results: {memory_context.get('agent_results', {})}
-        Topology Results: {memory_context.get('topology_results', {})}
-        Timestamp: {memory_context.get('timestamp', time.time())}
-        """
-            
-        if self.production_mode and hasattr(self, 'mem0_client'):
-            # Store in production mem0
-        result = self.mem0_client.add(
-        messages=memory_content,
-        user_id="aura_consciousness"
-        )
-        memory_id = result.get("id", f"mem_{self.consolidation_count}")
-        else:
-        # Store in demo system
-        memory_id = f"demo_mem_{self.consolidation_count}"
-        self.demo_memories[memory_id] = {
-        "content": memory_content,
-        "timestamp": time.time()
-        }
-            
-        # Generate insights
-        insights = UltimateMemoryInsights(
-        learning_potential=0.8,
-        pattern_recognition=0.7,
-        consciousness_integration=0.9,
-        federated_knowledge=0.6
-        )
-            
-        return {
-        "memory_id": memory_id,
-        "consolidation_successful": True,
-        "insights": insights.__dict__,
-        "production_mode": self.production_mode
-        }
-            
-        except Exception as e:
-        self.logger.error(f"Ultimate memory consolidation failed: {e}")
-        return {
-        "consolidation_successful": False,
-        "error": str(e)
-        }
-    
-        async def enable_accelerated_learning(self):
-            """Enable accelerated learning mode."""
-        pass
-        self.logger.info("🚀 Enabling accelerated learning mode")
-        # Accelerated learning logic here
-    
-    def get_health_status(self) -> Dict[str, Any]:
-        """Get ultimate memory system health status."""
-        pass
-        return {
-        "status": "ultimate" if self.production_mode else "demo",
-        "production_mode": self.production_mode,
-        "consolidations": self.consolidation_count,
-        "api_keys_configured": self.production_mode
-        }
-    
-        async def cleanup(self):
-            """Cleanup ultimate memory system resources."""
-        pass
-        self.logger.info("🧹 Cleaning up ultimate memory system...")
+        self.memories[memory_id] = entry
+        self.memory_index[memory_type].append(memory_id)
         
-        if hasattr(self, 'demo_memories'):
-            self.demo_memories.clear()
+        # Trigger consolidation if needed
+        if len(self.memories) > self.config.get("consolidation_threshold", 1000):
+            asyncio.create_task(self._consolidate_memories())
+            
+        return memory_id
         
-        self.logger.info("✅ Ultimate memory system cleanup completed")
+    async def retrieve(
+        self,
+        query: Union[str, Dict[str, Any]],
+        memory_types: Optional[List[MemoryType]] = None,
+        limit: int = 10
+    ) -> List[MemoryEntry]:
+        """Retrieve memories based on query"""
+        results = []
+        
+        # Simple retrieval - can be enhanced with semantic search
+        for memory_id, memory in self.memories.items():
+            if memory_types and memory.memory_type not in memory_types:
+                continue
+                
+            # Simple relevance check
+            if isinstance(query, str) and query.lower() in str(memory.content).lower():
+                results.append(memory)
+                memory.access_count += 1
+                
+        # Sort by importance and recency
+        results.sort(key=lambda m: (m.importance, m.timestamp.timestamp()), reverse=True)
+        
+        return results[:limit]
+        
+    async def forget(self, memory_id: str) -> bool:
+        """Remove a memory"""
+        if memory_id in self.memories:
+            memory = self.memories[memory_id]
+            self.memory_index[memory.memory_type].remove(memory_id)
+            del self.memories[memory_id]
+            return True
+        return False
+        
+    async def _consolidate_memories(self):
+        """Consolidate memories based on importance and access patterns"""
+        # Remove low-importance, rarely accessed memories
+        threshold_time = datetime.utcnow().timestamp() - 86400  # 24 hours
+        
+        to_remove = []
+        for memory_id, memory in self.memories.items():
+            if (memory.importance < 0.3 and 
+                memory.access_count < 2 and
+                memory.timestamp.timestamp() < threshold_time):
+                to_remove.append(memory_id)
+                
+        for memory_id in to_remove:
+            await self.forget(memory_id)
+            
+        logger.info("Consolidated memories, removed {} entries", len(to_remove))
+        
+    def get_statistics(self) -> Dict[str, Any]:
+        """Get memory system statistics"""
+        stats = {
+            "total_memories": len(self.memories),
+            "by_type": {}
+        }
+        
+        for mem_type in MemoryType:
+            stats["by_type"][mem_type.value] = len(self.memory_index[mem_type])
+            
+        return stats
+
+
+# Export main classes
+__all__ = ["MemorySystem", "MemoryEntry", "MemoryType"]

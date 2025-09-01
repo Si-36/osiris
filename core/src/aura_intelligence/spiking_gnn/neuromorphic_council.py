@@ -250,6 +250,7 @@ class SpikingGNNCouncil:
         return spike_patterns.unsqueeze(0)  # Add batch dimension
     
         async def spiking_communication_round(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
+            pass
         """Execute spiking communication round"""
         start_time = time.time()
         
@@ -352,5 +353,6 @@ _spiking_council = None
     def get_spiking_council():
         global _spiking_council
         if _spiking_council is None:
+            pass
         _spiking_council = SpikingGNNCouncil()
         return _spiking_council

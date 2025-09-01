@@ -14,6 +14,7 @@ class AuraError(Exception):
     Base exception for all AURA errors.
     
     Features:
+        pass
     - Rich error context
     - Correlation ID tracking
     - Error categorization
@@ -57,6 +58,7 @@ class AuraError(Exception):
                 from ..logging.correlation import get_correlation_id
                 self.correlation_id = get_correlation_id()
             except ImportError:
+                pass
         pass
     
     def to_dict(self) -> Dict[str, Any]:
@@ -74,6 +76,7 @@ class AuraError(Exception):
         }
     
         def to_json(self) -> str:
+            pass
         """Convert to JSON string."""
         return json.dumps(self.to_dict(), indent=2)
     
@@ -83,6 +86,7 @@ class AuraError(Exception):
         return self
     
         def with_suggestion(self, suggestion: str) -> 'AuraError':
+            pass
         """Add a suggestion for fixing the error."""
         self.suggestions.append(suggestion)
         return self

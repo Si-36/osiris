@@ -23,7 +23,7 @@ import structlog
 from ..agents.council.lnn_council import (
     LNNCouncilAgent, CouncilTask, CouncilVote, VoteType
 )
-from ..consensus.types import DecisionType, ConsensusState
+from ..consensus.consensus_types import DecisionType, ConsensusState
 from ..events.schemas import EventType, AgentEvent
 
 logger = structlog.get_logger()

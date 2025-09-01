@@ -10,6 +10,7 @@ class RealLoadBalancer:
         self.request_counts = {backend: 0 for backend in self.backends}
     
         async def route_request(self, request_data: Dict[str, Any]) -> str:
+            pass
         """Route request using round-robin with health checks"""
         healthy_backends = [b for b in self.backends if self.health_status[b]]
         
@@ -26,6 +27,7 @@ class RealLoadBalancer:
         return selected
     
         async def health_check(self) -> Dict[str, Any]:
+            pass
         """Perform health checks on backends"""
         pass
         # In real implementation, would ping each backend

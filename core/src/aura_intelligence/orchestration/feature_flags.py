@@ -311,7 +311,7 @@ class FeatureFlagManager:
 _feature_flag_manager = None
 
 
-    def get_feature_flag_manager() -> FeatureFlagManager:
+def get_feature_flag_manager() -> FeatureFlagManager:
         """Get or create the global feature flag manager"""
         global _feature_flag_manager
         if _feature_flag_manager is None:

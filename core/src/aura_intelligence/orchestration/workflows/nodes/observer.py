@@ -18,6 +18,8 @@ def get_logger(name):
     return structlog.get_logger(name)
 
 def with_correlation_id():
+    pass
+    pass
     def decorator(func):
     return func
     return decorator
@@ -36,6 +38,8 @@ def resilient_operation(**kwargs):
 
 
 class ObserverNode:
+    pass
+    pass
     """
     Observer node for evidence collection.
     
@@ -94,6 +98,8 @@ class ObserverNode:
             # Analyze if LLM available
             analysis = None
             if self.llm and is_feature_enabled("llm_analysis"):
+    pass
+    pass
                 analysis = await self._analyze_with_llm(evidence, state)
             
             # Build observation
@@ -117,6 +123,8 @@ class ObserverNode:
             
             # Add message if we have analysis
             if analysis:
+    pass
+    pass
                 message = AIMessage(
                     content=f"Observation: {analysis['summary']}",
                     additional_kwargs={"node": self.name}
@@ -170,6 +178,8 @@ class ObserverNode:
         
         # Message history analysis
         if state["messages"]:
+    pass
+    pass
             evidence.append({
                 "type": "message_analysis",
                 "data": {
@@ -181,6 +191,8 @@ class ObserverNode:
         
         # Previous decisions
         if state["supervisor_decisions"]:
+    pass
+    pass
             evidence.append({
                 "type": "decision_history",
                 "data": {
@@ -192,6 +204,8 @@ class ObserverNode:
         
         # Error patterns
         if state["error_log"]:
+    pass
+    pass
             evidence.append({
                 "type": "error_patterns",
                 "data": {
@@ -210,6 +224,8 @@ class ObserverNode:
         ) -> Optional[Dict[str, Any]]:
         """Use LLM to analyze evidence."""
         if not self.llm:
+    pass
+    pass
             return None
         
         try:
@@ -259,21 +275,33 @@ class ObserverNode:
         }
         
         if analysis:
+    pass
+    pass
             observation["analysis"] = analysis
         
         # Add risk indicators
         risk_indicators = []
         for e in evidence:
             if e["type"] == "error_patterns" and e["data"]["error_count"] > 5:
+    pass
+    pass
                 risk_indicators.append("high_error_rate")
             if e["type"] == "system_metrics":
+    pass
+    pass
                 metrics = e["data"]
                 if metrics.get("cpu_usage", 0) > 0.8:
+    pass
+    pass
                     risk_indicators.append("high_cpu_usage")
                 if metrics.get("memory_usage", 0) > 0.8:
+    pass
+    pass
                     risk_indicators.append("high_memory_usage")
         
         if risk_indicators:
+    pass
+    pass
             observation["risk_indicators"] = risk_indicators
         
         return observation

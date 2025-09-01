@@ -18,18 +18,21 @@ class CloudProvider:
         self.connected = False
         
         async def connect(self):
+            pass
         """Connect to cloud provider."""
         pass
         self.connected = True
         logger.info(f"Connected to {self.__class__.__name__}")
         
         async def disconnect(self):
+            pass
         """Disconnect from cloud provider."""
         pass
         self.connected = False
         logger.info(f"Disconnected from {self.__class__.__name__}")
         
         async def upload(self, key: str, data: bytes) -> str:
+            pass
         """Upload data to cloud storage."""
         if not self.connected:
             await self.connect()
@@ -37,6 +40,7 @@ class CloudProvider:
         return f"cloud://{key}"
         
         async def download(self, key: str) -> bytes:
+            pass
         """Download data from cloud storage."""
         if not self.connected:
             await self.connect()
@@ -74,6 +78,7 @@ class CloudManager:
         return self.providers.get(name)
         
         async def upload_to_all(self, key: str, data: bytes) -> Dict[str, str]:
+            pass
         """Upload data to all configured providers."""
         results = {}
         for name, provider in self.providers.items():
@@ -98,12 +103,14 @@ class GoogleA2AClient:
         self.authenticated = False
         
         async def authenticate(self):
+            pass
         """Authenticate with Google services."""
         pass
         self.authenticated = True
         return True
         
         async def call_api(self, endpoint: str, data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         """Call Google API endpoint."""
         if not self.authenticated:
             await self.authenticate()

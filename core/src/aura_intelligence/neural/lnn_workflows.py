@@ -81,7 +81,7 @@ class LNNActivities:
         self.orchestrators: Dict[str, LNNConsensusOrchestrator] = {}
     
     @activity.defn(name="load_dataset")
-        async def load_dataset(self, dataset_path: str) -> Dict[str, Any]:
+    async def load_dataset(self, dataset_path: str) -> Dict[str, Any]:
         """Load and preprocess dataset for training."""
         # In production, this would load from S3, database, etc.
         # For now, generate synthetic data

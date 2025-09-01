@@ -2,6 +2,7 @@
 Byzantine Fault Tolerant Consensus for AURA Intelligence.
 
 HotStuff-inspired implementation for critical strategic decisions:
+    pass
 - Model updates affecting all agents
 - Safety-critical operations
 - Financial transactions
@@ -19,12 +20,23 @@ import structlog
 
 from opentelemetry import trace, metrics
 
-from .types import (
+from .consensus_types import (
     ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
     Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
 )
-from aura_intelligence.events import EventProducer
-from ..agents.temporal import execute_workflow
+# Optional event producer
+try:
+    from aura_intelligence.events import EventProducer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    EVENTS_AVAILABLE = False
+try:
+    from ..agents.temporal import execute_workflow
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    execute_workflow = None
+    TEMPORAL_AVAILABLE = False
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
@@ -150,7 +162,6 @@ class BFTVoteCollector:
     
     def get_byzantine_nodes(self) -> Set[str]:
         """Detect nodes with conflicting votes."""
-        pass
         byzantine = set()
         for voter_id, votes in self.vote_history.items():
             # Check for conflicting votes in same phase/view/sequence
@@ -308,7 +319,7 @@ class BFTCore:
         current_leader = self.view_manager.get_leader(self.view_manager.view)
         return self.node_id == current_leader
     
-        async def _initiate_consensus(self, request: ConsensusRequest):
+    async def _initiate_consensus(self, request: ConsensusRequest):
         """Leader initiates three-phase consensus."""
         # Reset vote collector
         self.vote_collector.reset()
@@ -328,7 +339,7 @@ class BFTCore:
             self._phase_timeout(BFTPhase.PREPARE, prepare_msg.sequence)
         )
     
-        async def _broadcast_message(self, msg: BFTMessage):
+    async def _broadcast_message(self, msg: BFTMessage):
         """Broadcast message to all validators."""
         await self.event_producer.send_event("bft.messages", {
             "phase": msg.type.value,
@@ -343,7 +354,7 @@ class BFTCore:
             "node_id": self.node_id
         })
     
-        async def handle_message(self, msg: BFTMessage):
+    async def handle_message(self, msg: BFTMessage):
         """Handle incoming BFT message."""
         # Validate message
         if not self.message_handler.validate_message(msg):
@@ -362,7 +373,7 @@ class BFTCore:
         elif msg.type == BFTPhase.COMMIT:
             await self._handle_commit(msg)
     
-        async def _handle_prepare(self, msg: BFTMessage):
+    async def _handle_prepare(self, msg: BFTMessage):
         """Handle prepare phase message."""
         # Validate proposal
         if not await self._validate_proposal(msg.proposal):
@@ -388,7 +399,7 @@ class BFTCore:
         if self._is_leader():
             await self._handle_vote(vote)
     
-        async def _handle_vote(self, vote: BFTVote):
+    async def _handle_vote(self, vote: BFTVote):
         """Handle vote from validator."""
         # Add vote and check threshold
         if self.vote_collector.add_vote(vote):
@@ -400,7 +411,7 @@ class BFTCore:
             elif vote.phase == BFTPhase.COMMIT:
                 await self._finalize_consensus()
     
-        async def _start_precommit(self):
+    async def _start_precommit(self):
         """Start pre-commit phase."""
         pass
         # Find the proposal
@@ -417,7 +428,7 @@ class BFTCore:
         
         await self._broadcast_message(msg)
     
-        async def _start_commit(self):
+    async def _start_commit(self):
         """Start commit phase."""
         pass
         request = next(iter(self.pending_proposals.values()), None)
@@ -433,7 +444,7 @@ class BFTCore:
         
         await self._broadcast_message(msg)
     
-        async def _finalize_consensus(self):
+    async def _finalize_consensus(self):
         """Finalize consensus after commit phase."""
         pass
         # Find request
@@ -493,7 +504,7 @@ class BFTCore:
             view=self.view_manager.view
         )
     
-        async def _view_change_monitor(self):
+    async def _view_change_monitor(self):
         """Monitor for view timeouts."""
         pass
         while True:
@@ -528,7 +539,7 @@ class BFTCore:
             for votes in self.vote_collector.phase_votes.values()
         )
     
-        async def _report_byzantine(self, node_id: str, reason: str):
+    async def _report_byzantine(self, node_id: str, reason: str):
         """Report Byzantine behavior."""
         logger.warning(
             f"Byzantine behavior detected",
@@ -548,12 +559,12 @@ class BFTCore:
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
     
-        async def _validate_proposal(self, proposal: Dict[str, Any]) -> bool:
+    async def _validate_proposal(self, proposal: Dict[str, Any]) -> bool:
         """Validate proposal before voting."""
         # Add custom validation logic
         return True
     
-        async def _forward_to_leader(self, request: ConsensusRequest):
+    async def _forward_to_leader(self, request: ConsensusRequest):
         """Forward request to current leader."""
         leader = self.view_manager.get_leader(self.view_manager.view)
         await execute_workflow(
@@ -566,14 +577,14 @@ class BFTCore:
             id=f"bft-forward-{request.request_id}"
         )
     
-        async def _send_vote(self, target: str, vote: BFTVote):
+    async def _send_vote(self, target: str, vote: BFTVote):
         """Send vote to target node."""
         await self.event_producer.send_event(
             f"bft.votes.{target}",
             vote.to_dict()
         )
     
-        async def _phase_timeout(self, phase: BFTPhase, sequence: int):
+    async def _phase_timeout(self, phase: BFTPhase, sequence: int):
         """Handle phase timeout."""
         await asyncio.sleep(self.config.phase_timeout_ms / 1000.0)
         
@@ -585,17 +596,17 @@ class BFTCore:
                 sequence=sequence
             )
     
-        async def _handle_precommit(self, msg: BFTMessage):
+    async def _handle_precommit(self, msg: BFTMessage):
         """Handle pre-commit message."""
         # Similar to prepare
         await self._handle_prepare(msg)
     
-        async def _handle_commit(self, msg: BFTMessage):
+    async def _handle_commit(self, msg: BFTMessage):
         """Handle commit message."""
         # Similar to prepare
         await self._handle_prepare(msg)
     
-        async def get_status(self) -> Dict[str, Any]:
+    async def get_status(self) -> Dict[str, Any]:
         """Get BFT node status."""
         pass
         byzantine_nodes = self.vote_collector.get_byzantine_nodes()
@@ -634,21 +645,21 @@ class ByzantineConsensus:
         self.event_producer = EventProducer(config.kafka_bootstrap_servers)
         self.core = BFTCore(config, self.event_producer, self.metrics)
     
-        async def start(self):
+    async def start(self):
         """Start Byzantine consensus."""
         pass
         await self.core.start()
     
-        async def stop(self):
+    async def stop(self):
         """Stop Byzantine consensus."""
         pass
         await self.core.stop()
     
-        async def propose(self, request: ConsensusRequest) -> ConsensusResult:
+    async def propose(self, request: ConsensusRequest) -> ConsensusResult:
         """Propose value for Byzantine consensus."""
         return await self.core.propose(request)
     
-        async def get_status(self) -> Dict[str, Any]:
+    async def get_status(self) -> Dict[str, Any]:
         """Get consensus status."""
         pass
         return await self.core.get_status()
