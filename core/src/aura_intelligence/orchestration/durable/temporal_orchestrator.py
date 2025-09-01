@@ -128,16 +128,14 @@ class TemporalDurableOrchestrator:
     
     def _initialize_fallback_mode(self):
         """Initialize fallback mode when Temporal.io is not available"""
-        pass
         self.fallback_mode = True
         self.fallback_workflows: Dict[str, Dict[str, Any]] = {}
     
-        async def execute_durable_workflow(
+    async def execute_durable_workflow(
         self,
         config: DurableWorkflowConfig,
         input_data: Dict[str, Any]
-        ) -> WorkflowExecutionResult:
-            pass
+    ) -> WorkflowExecutionResult:
         """
         Execute a durable workflow with automatic retry and recovery
         """

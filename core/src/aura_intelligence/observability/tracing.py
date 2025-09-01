@@ -11,51 +11,51 @@ import logging
 
 # Try to import OpenTelemetry components with graceful fallbacks
 try:
-from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk.resources import Resource, SERVICE_NAME
-from opentelemetry.sdk.trace import TracerProvider, sampling
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.trace import Status, StatusCode
-from opentelemetry.propagate import set_global_textmap
-from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-OPENTELEMETRY_AVAILABLE = True
+    from opentelemetry import trace
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+    from opentelemetry.sdk.resources import Resource, SERVICE_NAME
+    from opentelemetry.sdk.trace import TracerProvider, sampling
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.trace import Status, StatusCode
+    from opentelemetry.propagate import set_global_textmap
+    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+    OPENTELEMETRY_AVAILABLE = True
 except ImportError as e:
-logging.warning(f"OpenTelemetry core not available: {e}")
-OPENTELEMETRY_AVAILABLE = False
+    logging.warning(f"OpenTelemetry core not available: {e}")
+    OPENTELEMETRY_AVAILABLE = False
 
 # Try to import instrumentation components (these are optional)
 INSTRUMENTATION_AVAILABLE = {}
 
 try:
-from opentelemetry.instrumentation.requests import RequestsInstrumentor
-INSTRUMENTATION_AVAILABLE['requests'] = RequestsInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    INSTRUMENTATION_AVAILABLE['requests'] = RequestsInstrumentor
 except ImportError:
-INSTRUMENTATION_AVAILABLE['requests'] = None
+    INSTRUMENTATION_AVAILABLE['requests'] = None
 
 try:
-from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
-INSTRUMENTATION_AVAILABLE['aiohttp'] = AioHttpClientInstrumentor
+    from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
+    INSTRUMENTATION_AVAILABLE['aiohttp'] = AioHttpClientInstrumentor
 except ImportError:
-INSTRUMENTATION_AVAILABLE['aiohttp'] = None
+    INSTRUMENTATION_AVAILABLE['aiohttp'] = None
 
 try:
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-INSTRUMENTATION_AVAILABLE['sqlalchemy'] = SQLAlchemyInstrumentor
+    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+    INSTRUMENTATION_AVAILABLE['sqlalchemy'] = SQLAlchemyInstrumentor
 except ImportError:
-INSTRUMENTATION_AVAILABLE['sqlalchemy'] = None
+    INSTRUMENTATION_AVAILABLE['sqlalchemy'] = None
 
 try:
-from opentelemetry.instrumentation.redis import RedisInstrumentor
-INSTRUMENTATION_AVAILABLE['redis'] = RedisInstrumentor
+    from opentelemetry.instrumentation.redis import RedisInstrumentor
+    INSTRUMENTATION_AVAILABLE['redis'] = RedisInstrumentor
 except ImportError:
-INSTRUMENTATION_AVAILABLE['redis'] = None
+    INSTRUMENTATION_AVAILABLE['redis'] = None
 
 try:
-from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
-INSTRUMENTATION_AVAILABLE['psycopg2'] = Psycopg2Instrumentor
+    from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
+    INSTRUMENTATION_AVAILABLE['psycopg2'] = Psycopg2Instrumentor
 except ImportError:
-INSTRUMENTATION_AVAILABLE['psycopg2'] = None
+    INSTRUMENTATION_AVAILABLE['psycopg2'] = None
 
 from aura_intelligence.config import ObservabilityConfig
 
@@ -63,41 +63,41 @@ logger = logging.getLogger(__name__)
 
 # Fallback classes when OpenTelemetry is not available
 if not OPENTELEMETRY_AVAILABLE:
-class MockSampler:
-"""Mock sampler when OpenTelemetry is not available"""
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
+    class MockSampler:
+        """Mock sampler when OpenTelemetry is not available"""
+        def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            """REAL processing implementation"""
+            import time
+            import numpy as np
 
-start_time = time.time()
+            start_time = time.time()
 
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
+            # Validate input
+            if not data:
+                return {'error': 'No input data provided', 'status': 'failed'}
 
-# Process data
-processed_data = self._process_data(data)
+            # Process data
+            processed_data = self._process_data(data)
 
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
+            # Generate result
+            result = {
+                'status': 'success',
+                'processed_count': len(processed_data),
+                'processing_time': time.time() - start_time,
+                'data': processed_data
+            }
 
-return result
+            return result
 
-def should_sample(self, *args, **kwargs):
-return None
+        def should_sample(self, *args, **kwargs):
+            return None
 
-class MockSpan:
-"""Mock span when OpenTelemetry is not available"""
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
+    class MockSpan:
+        """Mock span when OpenTelemetry is not available"""
+        def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            """REAL processing implementation"""
+            import time
+            import numpy as np
 
 start_time = time.time()
 
@@ -337,94 +337,92 @@ self.config = config
 self.tracer_provider: Optional[TracerProvider] = None
 self.sampler: Optional[AdaptiveSampler] = None
 
-def initialize(self):
-"""Initialize OpenTelemetry with OTLP exporter"""
-pass
-if not self.config.enable_tracing:
-logger.info("Tracing disabled in configuration")
-return
+    def initialize(self):
+        """Initialize OpenTelemetry with OTLP exporter"""
+        if not self.config.enable_tracing:
+            logger.info("Tracing disabled in configuration")
+            return
 
-try:
-# Create resource with service information
-resource = Resource.create({
-SERVICE_NAME: self.config.service_name,
-"service.version": "1.0.0",
-"deployment.environment": "production"
-})
+        try:
+            # Create resource with service information
+            resource = Resource.create({
+                SERVICE_NAME: self.config.service_name,
+                "service.version": "1.0.0",
+                "deployment.environment": "production"
+            })
 
-# Setup sampler
-if self.config.adaptive_sampling:
-sampler = AdaptiveSampler(self.config.sample_rate)
-else:
-sampler = sampling.TraceIdRatioBased(self.config.sample_rate)
+            # Setup sampler
+            if self.config.adaptive_sampling:
+                sampler = AdaptiveSampler(self.config.sample_rate)
+            else:
+                sampler = sampling.TraceIdRatioBased(self.config.sample_rate)
 
-# Create tracer provider
-self.tracer_provider = TracerProvider(
-resource=resource,
-sampler=sampler
-)
+            # Create tracer provider
+            self.tracer_provider = TracerProvider(
+                resource=resource,
+                sampler=sampler
+            )
 
-# Configure OTLP exporter
-otlp_exporter = OTLPSpanExporter(
-endpoint=self.config.otlp_endpoint,
-insecure=self.config.otlp_insecure
-)
+            # Configure OTLP exporter
+            otlp_exporter = OTLPSpanExporter(
+                endpoint=self.config.otlp_endpoint,
+                insecure=self.config.otlp_insecure
+            )
 
-# Add batch processor
-span_processor = BatchSpanProcessor(
-otlp_exporter,
-max_queue_size=2048,
-max_export_batch_size=512,
-max_export_interval_millis=5000
-)
+            # Add batch processor
+            span_processor = BatchSpanProcessor(
+                otlp_exporter,
+                max_queue_size=2048,
+                max_export_batch_size=512,
+                max_export_interval_millis=5000
+            )
 
-self.tracer_provider.add_span_processor(span_processor)
+            self.tracer_provider.add_span_processor(span_processor)
 
-# Set as global tracer provider
-trace.set_tracer_provider(self.tracer_provider)
+            # Set as global tracer provider
+            trace.set_tracer_provider(self.tracer_provider)
 
-# Set up propagator
-set_global_textmap(TraceContextTextMapPropagator())
+            # Set up propagator
+            set_global_textmap(TraceContextTextMapPropagator())
 
-# Auto-instrument libraries
-self._setup_auto_instrumentation()
+            # Auto-instrument libraries
+            self._setup_auto_instrumentation()
 
-logger.info(
-"OpenTelemetry initialized successfully",
-extra={
-"endpoint": self.config.otlp_endpoint,
-"service_name": self.config.service_name,
-"sample_rate": self.config.sample_rate
-}
-)
+            logger.info(
+                "OpenTelemetry initialized successfully",
+                extra={
+                    "endpoint": self.config.otlp_endpoint,
+                    "service_name": self.config.service_name,
+                    "sample_rate": self.config.sample_rate
+                }
+            )
 
-except Exception as e:
-logger.error(f"Failed to initialize OpenTelemetry: {e}")
-raise
+        except Exception as e:
+            logger.error(f"Failed to initialize OpenTelemetry: {e}")
+            raise
 
-def _setup_auto_instrumentation(self):
-"""Setup automatic instrumentation for common libraries"""
-pass
-try:
-# HTTP clients
-RequestsInstrumentor().instrument()
-AioHttpClientInstrumentor().instrument()
+    def _setup_auto_instrumentation(self):
+        """Setup automatic instrumentation for common libraries"""
+        try:
+            # HTTP clients
+            RequestsInstrumentor().instrument()
+            AioHttpClientInstrumentor().instrument()
 
-# Databases
-SQLAlchemyInstrumentor().instrument()
-RedisInstrumentor().instrument()
-Psycopg2Instrumentor().instrument()
+            # Databases
+            SQLAlchemyInstrumentor().instrument()
+            RedisInstrumentor().instrument()
+            Psycopg2Instrumentor().instrument()
 
-logger.info("Auto-instrumentation configured")
+            logger.info("Auto-instrumentation configured")
 
-except Exception as e:
-logger.warning(f"Some auto-instrumentation failed: {e}")
+        except Exception as e:
+            logger.warning(f"Some auto-instrumentation failed: {e}")
 
-def get_tracer(self, name: str = None) -> trace.Tracer:
-"""Get a tracer instance"""
-if name is None:
-name = self.config.service_name
-return trace.get_tracer(name)
+    def get_tracer(self, name: str = None) -> trace.Tracer:
+        """Get a tracer instance"""
+        if name is None:
+            name = self.config.service_name
+        return trace.get_tracer(name)
 
 @contextmanager
 def trace_operation(
