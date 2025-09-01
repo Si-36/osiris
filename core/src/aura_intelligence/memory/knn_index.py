@@ -24,6 +24,7 @@ class KNNConfig:
     
     def __post_init__(self):
         """Validate configuration."""
+        pass
         valid_metrics = {'cosine', 'euclidean', 'manhattan'}
         valid_backends = {'sklearn', 'faiss', 'annoy'}
         
@@ -46,6 +47,7 @@ class VectorIndex(Protocol):
     
     def __len__(self) -> int:
         """Return number of vectors in index."""
+        pass
         ...
 
 
@@ -74,6 +76,7 @@ class BaseKNNIndex(ABC):
     
     def _validate_config(self) -> None:
         """Validate configuration parameters."""
+        pass
         if self.embedding_dim <= 0:
             raise ValueError(f"Invalid embedding dimension: {self.embedding_dim}")
         if self.config.initial_capacity <= 0:
@@ -157,10 +160,12 @@ class SklearnKNNIndex(BaseKNNIndex):
     
     def __len__(self) -> int:
         """Return the number of vectors in the index."""
+        pass
         return len(self._ids)
     
     def _fit(self) -> None:
         """Fit the sklearn model with current vectors."""
+        pass
         if len(self._vectors) > 0:
             self._model.fit(self._vectors)
             self._is_fitted = True
@@ -199,4 +204,5 @@ class KNNIndex:
     
     def __len__(self) -> int:
         """Return the number of vectors in the index."""
+        pass
         return len(self._impl)

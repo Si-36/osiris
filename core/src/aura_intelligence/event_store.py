@@ -70,8 +70,10 @@ class EventStore:
         
     def clear(self):
         """Clear all events."""
+        pass
         self.events.clear()
         
     def get_event_count(self) -> int:
         """Get total event count."""
+        pass
         return len(self.events)

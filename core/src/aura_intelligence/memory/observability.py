@@ -83,31 +83,31 @@ class TraceContextFormatter(logging.Formatter):
             record.otelSpanID = "0" * 16
         return super().format(record)
 
-def setup_logging():
-    """Configure structured logging with trace correlation."""
-    handler = logging.StreamHandler()
-    formatter = TraceContextFormatter(
+    def setup_logging():
+        """Configure structured logging with trace correlation."""
+        handler = logging.StreamHandler()
+        formatter = TraceContextFormatter(
         '%(asctime)s - %(name)s - %(levelname)s - '
         '[trace_id=%(otelTraceID)s span_id=%(otelSpanID)s] - %(message)s'
-    )
-    handler.setFormatter(formatter)
-    logging.basicConfig(level=logging.INFO, handlers=[handler])
+        )
+        handler.setFormatter(formatter)
+        logging.basicConfig(level=logging.INFO, handlers=[handler])
 
 # --- Decorator for Tracing and Metrics ---
 
-def instrument(operation: str, backend: str = "redis"):
-    """
-    A decorator that provides production-grade tracing and metrics for a function.
-    This is the core of our observability strategy.
+    def instrument(operation: str, backend: str = "redis"):
+        """
+        A decorator that provides production-grade tracing and metrics for a function.
+        This is the core of our observability strategy.
 
-    Args:
+        Args:
         operation: The logical name of the operation (e.g., 'store', 'retrieve').
         backend: The system being interacted with (e.g., 'redis', 'neo4j').
-    """
+        """
     def decorator(func: Callable):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            # 1. Start a new span in the trace
+    def wrapper(*args, **kwargs):
+        # 1. Start a new span in the trace
             with tracer.start_as_current_span(f"ShapeMemory.{operation}") as span:
                 # Add useful attributes to the span for debugging
                 span.set_attribute("memory.operation", operation)
@@ -140,38 +140,38 @@ def instrument(operation: str, backend: str = "redis"):
                     duration = time.perf_counter() - start_time
                     QUERY_LATENCY.labels(operation=operation, backend=backend).observe(duration)
         return wrapper
-    return decorator
+        return decorator
 
 # --- Centralized Metric Updates ---
 
-def update_recall(value: float):
-    """Updates the recall@5 metric from the watchdog job."""
-    RECALL_GAUGE.set(value)
+    def update_recall(value: float):
+        """Updates the recall@5 metric from the watchdog job."""
+        RECALL_GAUGE.set(value)
 
-def update_false_positive_rate(value: float):
-    """Updates the false positive rate from shadow deployment."""
-    FALSE_POSITIVE_GAUGE.set(value)
+    def update_false_positive_rate(value: float):
+        """Updates the false positive rate from shadow deployment."""
+        FALSE_POSITIVE_GAUGE.set(value)
 
-def update_vector_count(backend: str, count: int):
-    """Updates the total vector count for a given backend."""
-    MEMORY_VECTORS.labels(backend=backend).set(count)
+    def update_vector_count(backend: str, count: int):
+        """Updates the total vector count for a given backend."""
+        MEMORY_VECTORS.labels(backend=backend).set(count)
 
-def record_embedding_age(age_hours: float):
-    """Records the age of an embedding for staleness tracking."""
-    EMBEDDING_AGE.observe(age_hours)
+    def record_embedding_age(age_hours: float):
+        """Records the age of an embedding for staleness tracking."""
+        EMBEDDING_AGE.observe(age_hours)
 
 # --- Context Manager for Manual Tracing ---
 
 @contextmanager
-def trace_operation(operation: str, attributes: Optional[Dict[str, Any]] = None):
-    """
-    Context manager for manual tracing of operations.
+    def trace_operation(operation: str, attributes: Optional[Dict[str, Any]] = None):
+        """
+        Context manager for manual tracing of operations.
     
-    Usage:
+        Usage:
         with trace_operation("custom_operation", {"key": "value"}):
             # do something
-    """
-    with tracer.start_as_current_span(operation) as span:
+        """
+        with tracer.start_as_current_span(operation) as span:
         # Add attributes
         if attributes:
             for key, value in attributes.items():
@@ -211,12 +211,12 @@ class ObservabilityManager:
 observability = ObservabilityManager()
 
 # Backward compatibility for traced decorator
-def traced(operation: str):
-    """Deprecated - use @instrument instead."""
-    import warnings
-    warnings.warn(
+    def traced(operation: str):
+        """Deprecated - use @instrument instead."""
+        import warnings
+        warnings.warn(
         "traced() is deprecated. Use @instrument(operation, backend) instead.",
         DeprecationWarning,
         stacklevel=2
-    )
-    return instrument(operation, "redis")
+        )
+        return instrument(operation, "redis")

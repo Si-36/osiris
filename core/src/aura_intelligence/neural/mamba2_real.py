@@ -12,7 +12,7 @@ class Mamba2Layer(nn.Module):
     """Real Mamba-2 layer with selective state-space model"""
     
     def __init__(self, d_model: int, d_state: int = 128, d_conv: int = 4, expand: int = 2, 
-                 dt_rank: Optional[int] = None, dt_min: float = 0.001, dt_max: float = 0.1):
+        dt_rank: Optional[int] = None, dt_min: float = 0.001, dt_max: float = 0.1):
         super().__init__()
         self.d_model = d_model
         self.d_state = d_state
@@ -191,4 +191,5 @@ class UnlimitedContextMamba2:
     
     def reset_context(self):
         """Reset context buffer"""
+        pass
         self.context_buffer.clear()

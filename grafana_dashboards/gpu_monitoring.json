@@ -1,0 +1,385 @@
+{
+  "uid": "aura-gpu-monitoring",
+  "title": "AURA GPU Monitoring",
+  "tags": [
+    "gpu",
+    "performance",
+    "aura"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Active GPUs",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(gpu_utilization_percent)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "gauge",
+      "title": "Avg GPU Utilization",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "avg(gpu_utilization_percent)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Total GPU Memory",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(gpu_memory_total_bytes) / 1024 / 1024 / 1024",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "decgbytes"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Max GPU Temperature",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 9,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "max(gpu_temperature_celsius)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "gauge",
+      "title": "Total Power Draw",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(gpu_power_draw_watts)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "max": 2000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1000
+              },
+              {
+                "color": "red",
+                "value": 1500
+              }
+            ]
+          },
+          "unit": "watt"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "graph",
+      "title": "GPU Utilization Timeline",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "gpu_utilization_percent",
+          "legendFormat": "GPU {{device_id}} - {{device_name}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "percent",
+          "max": 100,
+          "min": 0
+        },
+        {
+          "format": "short"
+        }
+      ],
+      "lines": true,
+      "fill": 1,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      }
+    },
+    {
+      "id": 7,
+      "type": "graph",
+      "title": "GPU Memory Usage",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "gpu_memory_used_bytes / 1024 / 1024 / 1024",
+          "legendFormat": "Used - GPU {{device_id}}",
+          "refId": "A"
+        },
+        {
+          "expr": "gpu_memory_total_bytes / 1024 / 1024 / 1024",
+          "legendFormat": "Total - GPU {{device_id}}",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "decgbytes",
+          "min": 0
+        },
+        {
+          "format": "short"
+        }
+      ],
+      "lines": true,
+      "fill": 1,
+      "linewidth": 2
+    },
+    {
+      "id": 8,
+      "type": "graph",
+      "title": "GPU Temperature",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "targets": [
+        {
+          "expr": "gpu_temperature_celsius",
+          "legendFormat": "GPU {{device_id}} - {{device_name}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "celsius",
+          "min": 0,
+          "max": 100
+        },
+        {
+          "format": "short"
+        }
+      ],
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                80
+              ],
+              "type": "gt"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "max"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "frequency": "60s",
+        "handler": 1,
+        "name": "GPU Temperature Alert",
+        "noDataState": "no_data",
+        "notifications": []
+      }
+    },
+    {
+      "id": 9,
+      "type": "graph",
+      "title": "GPU Power Consumption",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "targets": [
+        {
+          "expr": "gpu_power_draw_watts",
+          "legendFormat": "GPU {{device_id}} - {{device_name}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "watt",
+          "min": 0
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "table",
+      "title": "GPU Details",
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "targets": [
+        {
+          "expr": "\n                    gpu_utilization_percent * on(device_id) group_left(device_name) \n                    (label_replace(gpu_memory_used_bytes, \"x\", \"$1\", \"device_id\", \"(.*)\") * 0 + 1)\n                ",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        }
+      }
+    }
+  ]
+}

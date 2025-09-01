@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-08-26T13:30:15.282932+00:00",
+  "test_type": "direct_unified_supervisor",
+  "performance": {
+    "average_duration": 0.00034689903259277344,
+    "scenario_results": [
+      {
+        "scenario": "Light Load",
+        "duration": 0.0003643035888671875,
+        "evidence_count": 2,
+        "message_count": 3
+      },
+      {
+        "scenario": "Medium Load",
+        "duration": 0.0003428459167480469,
+        "evidence_count": 5,
+        "message_count": 8
+      },
+      {
+        "scenario": "Heavy Load",
+        "duration": 0.00033354759216308594,
+        "evidence_count": 10,
+        "message_count": 15
+      }
+    ]
+  },
+  "capabilities": {
+    "tda_available": false,
+    "lnn_available": false,
+    "has_caching": true,
+    "has_learning": true
+  },
+  "success_ratio": 1.0
+}

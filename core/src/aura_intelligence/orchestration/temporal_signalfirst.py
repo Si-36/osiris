@@ -512,3 +512,28 @@ def create_signalfirst_router(**kwargs) -> SignalFirstRouter:
         raise RuntimeError("Temporal SignalFirst is not enabled. Enable with feature flag.")
     
     return SignalFirstRouter(**kwargs)
+
+
+# SignalFirst orchestrator for unified interface
+class SignalFirstOrchestrator:
+    """Orchestrator using SignalFirst optimization"""
+    
+    def __init__(self, config: Optional[SignalFirstConfig] = None):
+        self.router = SignalFirstRouter(config)
+        self.workflows: Dict[str, Any] = {}
+    
+    async def start(self):
+        """Start the orchestrator"""
+        await self.router.start()
+    
+    async def stop(self):
+        """Stop the orchestrator"""
+        await self.router.stop()
+    
+    async def route_signal(self, **kwargs):
+        """Route a signal through the system"""
+        return await self.router.route_signal(**kwargs)
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get orchestrator statistics"""
+        return self.router.get_stats()

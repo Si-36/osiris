@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AURA Custom Styles */
+:root {
+  /* Neural color scheme */
+  --neural-primary: #00ffff;    /* Cyan */
+  --neural-secondary: #ff00ff;  /* Magenta */
+  --neural-tertiary: #ffff00;   /* Yellow */
+  --neural-success: #00ff00;    /* Green */
+  --neural-danger: #ff0000;     /* Red */
+  
+  /* Dark theme */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #141414;
+  
+  /* Glass morphism */
+  --glass: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  
+  /* Animations */
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Cyber-noir aesthetic */
+.neural-glow {
+  box-shadow: 
+    0 0 20px var(--neural-primary),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.holographic {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(0, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: holographic-sweep 3s linear infinite;
+}
+
+@keyframes holographic-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neural-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 255, 0.8);
+}
+
+/* Glass panel effect */
+.glass-panel {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+}
+
+/* Neural network grid */
+.neural-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* AURA specific styles */
+.aura-bg {
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+}
+
+.aura-text-glow {
+  text-shadow: 0 0 10px var(--neural-primary);
+}
+
+.aura-border-glow {
+  border: 1px solid var(--neural-primary);
+  box-shadow: 0 0 10px var(--neural-primary);
+}

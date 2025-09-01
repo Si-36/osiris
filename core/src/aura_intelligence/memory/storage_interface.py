@@ -67,7 +67,7 @@ class InMemoryStorage(MemoryStorage):
         content: Dict[str, Any],
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> bool:
+        ) -> bool:
         """Store in memory."""
         self.memories[memory_id] = {
             "id": memory_id,
@@ -84,7 +84,7 @@ class InMemoryStorage(MemoryStorage):
         k: int = 10,
         context_filter: Optional[str] = None,
         score_threshold: float = 0.0
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
         """Brute force search."""
         results = []
         
@@ -121,6 +121,7 @@ class InMemoryStorage(MemoryStorage):
     
     def health_check(self) -> Dict[str, Any]:
         """Always healthy for in-memory."""
+        pass
         return {
             "status": "healthy",
             "total_memories": len(self.memories)

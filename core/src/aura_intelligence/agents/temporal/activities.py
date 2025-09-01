@@ -18,9 +18,9 @@ import structlog
 from aiokafka import AIOKafkaProducer
 # import aioredis  # Temporarily commented out due to Python 3.13 compatibility issue
 
-from ...agents.base import AgentBase, AgentState, AgentConfig
-from ...agents.observability import AgentInstrumentor, GenAIAttributes
-from ...agents.resilience import CircuitBreaker, CircuitBreakerConfig
+from aura_intelligence.agents.base import AgentBase, AgentState, AgentConfig
+from aura_intelligence.agents.observability import AgentInstrumentor, GenAIAttributes
+from aura_intelligence.agents.resilience import CircuitBreaker, CircuitBreakerConfig
 # from ..legacy.core.observer import ObserverAgent as LegacyObserverAgent  # Temporarily commented out - module not available
 from ..v2.observer import ObserverAgentV2
 # from ..v2.analyst import AnalystAgentV2  # Temporarily commented out - module not available
@@ -85,7 +85,7 @@ class AgentActivity:
                 )
                 
                 async def process_with_agent():
-                    # Convert state if needed
+        # Convert state if needed
                     if hasattr(agent, 'process_state'):
                         return await agent.process_state(state)
                     else:
@@ -326,6 +326,7 @@ class KafkaProducerActivity:
     @classmethod
     async def _get_producer(cls) -> AIOKafkaProducer:
         """Get or create Kafka producer."""
+        pass
         if cls._producer is None:
             cls._producer = AIOKafkaProducer(
                 bootstrap_servers='localhost:9092',

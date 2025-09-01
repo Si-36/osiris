@@ -37,5 +37,5 @@ class RealSpikingGNN(nn.Module):
             x = self.linear2(x)
             return x
 
-def get_real_spiking_gnn():
-    return RealSpikingGNN()
+    def get_real_spiking_gnn():
+        return RealSpikingGNN()

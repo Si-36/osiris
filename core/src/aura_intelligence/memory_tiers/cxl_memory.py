@@ -111,7 +111,8 @@ class CXLMemoryManager:
         """Deserialize data from storage"""
         return pickle.loads(data)
     
-    async def store(self, key: str, data: Any, tier: Optional[MemoryTier] = None) -> bool:
+        async def store(self, key: str, data: Any, tier: Optional[MemoryTier] = None) -> bool:
+            pass
         """Store data in appropriate tier"""
         serialized_data = self._serialize_data(data)
         size_bytes = len(serialized_data)
@@ -156,50 +157,49 @@ class CXLMemoryManager:
         
         return True
     
-    async def retrieve(self, key: str) -> Optional[Any]:
-        """Retrieve data from any tier"""
-        # Search through tiers (hot to cold)
-        for tier in [MemoryTier.L0_HBM, MemoryTier.L1_DDR, MemoryTier.L2_CXL, 
-                     MemoryTier.L3_PMEM, MemoryTier.L4_SSD]:
+        async def retrieve(self, key: str) -> Optional[Any]:
+            """Retrieve data from any tier"""
+            # Search through tiers (hot to cold)
+            for tier in [MemoryTier.L0_HBM, MemoryTier.L1_DDR, MemoryTier.L2_CXL, 
+                         MemoryTier.L3_PMEM, MemoryTier.L4_SSD]:
+                if key in self.tiers[tier]:
+                    obj = self.tiers[tier][key]
+                    
+                    # Update access statistics
+                    obj.access_count += 1
+                    obj.last_access = time.time()
+                    
+                    # Retrieve data based on tier
+                    if tier == MemoryTier.L0_HBM or tier == MemoryTier.L1_DDR:
+                        data = obj.data
+                    elif tier == MemoryTier.L2_CXL and self.redis_client:
+                        try:
+                            serialized_data = self.redis_client.get(f"cxl:{key}")
+                            data = self._deserialize_data(serialized_data) if serialized_data else None
+                        except:
+                            data = None
+                    else:
+                        # File-based retrieval
+                        tier_dir = f"/tmp/aura_memory/{tier.value}"
+                        file_path = f"{tier_dir}/{hashlib.md5(key.encode()).hexdigest()}.pkl"
+                        try:
+                            with open(file_path, 'rb') as f:
+                                data = self._deserialize_data(f.read())
+                        except:
+                            data = None
+                    
+                    if data is not None:
+                        self.stats['cache_hits'] += 1
+                        
+                        # Check if promotion is needed
+                        optimal_tier = self._get_optimal_tier(obj)
+                        if optimal_tier.value < tier.value:  # Promote to faster tier
+                            await self._promote_object(key, obj, optimal_tier)
+                        
+                        return data
             
-            if key in self.tiers[tier]:
-                obj = self.tiers[tier][key]
-                
-                # Update access statistics
-                obj.access_count += 1
-                obj.last_access = time.time()
-                
-                # Retrieve data based on tier
-                if tier == MemoryTier.L0_HBM or tier == MemoryTier.L1_DDR:
-                    data = obj.data
-                elif tier == MemoryTier.L2_CXL and self.redis_client:
-                    try:
-                        serialized_data = self.redis_client.get(f"cxl:{key}")
-                        data = self._deserialize_data(serialized_data) if serialized_data else None
-                    except:
-                        data = None
-                else:
-                    # File-based retrieval
-                    tier_dir = f"/tmp/aura_memory/{tier.value}"
-                    file_path = f"{tier_dir}/{hashlib.md5(key.encode()).hexdigest()}.pkl"
-                    try:
-                        with open(file_path, 'rb') as f:
-                            data = self._deserialize_data(f.read())
-                    except:
-                        data = None
-                
-                if data is not None:
-                    self.stats['cache_hits'] += 1
-                    
-                    # Check if promotion is needed
-                    optimal_tier = self._get_optimal_tier(obj)
-                    if optimal_tier.value < tier.value:  # Promote to faster tier
-                        await self._promote_object(key, obj, optimal_tier)
-                    
-                    return data
-        
-        self.stats['cache_misses'] += 1
-        return None
+            self.stats['cache_misses'] += 1
+            return None
     
     async def _promote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
         """Promote object to faster tier"""
@@ -218,7 +218,8 @@ class CXLMemoryManager:
         
         self.stats['promotion_events'] += 1
     
-    async def _demote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+        async def _demote_object(self, key: str, obj: MemoryObject, target_tier: MemoryTier):
+            pass
         """Demote object to slower tier"""
         if obj.tier == target_tier:
             return
@@ -237,6 +238,7 @@ class CXLMemoryManager:
     
     def _background_promotion(self):
         """Background thread for promotion/demotion"""
+        pass
         while True:
             try:
                 # Check all objects for promotion/demotion opportunities
@@ -259,6 +261,7 @@ class CXLMemoryManager:
     
     def get_memory_stats(self) -> Dict[str, Any]:
         """Get memory tier statistics"""
+        pass
         total_size_by_tier = {}
         for tier, objects in self.tiers.items():
             total_size = sum(obj.size_bytes for obj in objects.values())
@@ -276,5 +279,5 @@ class CXLMemoryManager:
             'cache_hit_rate': self.stats['cache_hits'] / max(1, self.stats['cache_hits'] + self.stats['cache_misses'])
         }
 
-def get_cxl_memory_manager():
-    return CXLMemoryManager()
+    def get_cxl_memory_manager():
+        return CXLMemoryManager()

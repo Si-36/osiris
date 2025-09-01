@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import asyncio
 import hashlib
 
-from ...events import EventProducer
+from aura_intelligence.events import EventProducer
 
 
 @dataclass
@@ -41,7 +41,8 @@ class SimpleConsensus:
         self.is_leader = False
         self.term = 0
         
-    async def decide(self, decision: Decision) -> Dict[str, Any]:
+        async def decide(self, decision: Decision) -> Dict[str, Any]:
+            pass
         """Route decision to appropriate mechanism."""
         if decision.type in self.NEEDS_CONSENSUS:
             return await self._consensus_decide(decision)
@@ -54,7 +55,8 @@ class SimpleConsensus:
             })
             return {"status": "published", "mode": "event"}
     
-    async def _consensus_decide(self, decision: Decision) -> Dict[str, Any]:
+        async def _consensus_decide(self, decision: Decision) -> Dict[str, Any]:
+            pass
         """Simple Raft-like consensus for critical decisions."""
         if not self.is_leader:
             # Forward to leader or trigger election
@@ -75,14 +77,17 @@ class SimpleConsensus:
         else:
             return {"status": "rejected", "votes": votes}
     
-    async def _collect_votes(self, decision: Decision) -> Dict[str, int]:
+        async def _collect_votes(self, decision: Decision) -> Dict[str, int]:
+            pass
         """Collect votes from peers (simplified)."""
         # In production: actual RPC or Temporal activities
         await asyncio.sleep(0.05)  # Simulate network
         return {"approved": 2, "rejected": 0, "total": 3}
     
-    async def _start_election(self):
+        async def _start_election(self):
+            pass
         """Start leader election (simplified Raft)."""
+        pass
         self.term += 1
         votes = 1  # Vote for self
         
@@ -97,17 +102,21 @@ class SimpleConsensus:
                 "term": self.term
             })
     
-    async def _find_leader(self) -> Optional[str]:
+        async def _find_leader(self) -> Optional[str]:
+            pass
         """Find current leader from recent heartbeats."""
+        pass
         # In production: track from heartbeats
         return None
     
-    async def _forward_to_leader(self, leader: str, decision: Decision):
+        async def _forward_to_leader(self, leader: str, decision: Decision):
+            pass
         """Forward decision to leader."""
         await self.events.send_event(f"forward.{leader}", decision.__dict__)
         return {"status": "forwarded", "to": leader}
     
-    async def _commit_decision(self, decision: Decision):
+        async def _commit_decision(self, decision: Decision):
+            pass
         """Commit accepted decision."""
         await self.events.send_event("decisions.committed", {
             "id": decision.id,
@@ -120,22 +129,22 @@ class SimpleConsensus:
 
 # Example usage showing the simplicity
 async def example():
-    consensus = SimpleConsensus("node-1", ["node-2", "node-3"], "localhost:9092")
+        consensus = SimpleConsensus("node-1", ["node-2", "node-3"], "localhost:9092")
     
     # Regular decision - just publishes event (fast)
-    result = await consensus.decide(Decision(
+        result = await consensus.decide(Decision(
         id="cache-update-123",
         type="cache_update",
         data={"key": "user_prefs", "value": {"theme": "dark"}},
         requester="agent-7"
-    ))
+        ))
     # Result: {"status": "published", "mode": "event"} - ~5ms
     
     # Critical decision - uses consensus (slower but safe)
-    result = await consensus.decide(Decision(
+        result = await consensus.decide(Decision(
         id="gpu-alloc-456", 
         type="gpu_allocation",
         data={"agent": "researcher-1", "gpus": 4, "hours": 24},
         requester="researcher-1"
-    ))
+        ))
     # Result: {"status": "accepted", "votes": {...}} - ~50ms

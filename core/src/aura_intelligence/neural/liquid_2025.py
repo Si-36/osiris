@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import asyncio
 
 # Import your existing LNN system
-from .lnn import LiquidNeuralNetwork, LNNConfig
+from aura_intelligence.lnn import LiquidNeuralNetwork, LNNConfig
 from ..agents.council.production_lnn_council import ProductionLNNCouncilAgent
 
 @dataclass
@@ -173,6 +173,7 @@ class SelfModifyingLiquidNetwork(nn.Module):
     
     def _adapt_architecture(self) -> Dict[str, Any]:
         """Adapt network architecture based on complexity history"""
+        pass
         avg_complexity = np.mean(self.complexity_buffer[-self.config.adaptation_window:])
         self.complexity_buffer.clear()
         
@@ -223,8 +224,10 @@ class LiquidCouncilAgent2025(ProductionLNNCouncilAgent):
         self.liquid_network = SelfModifyingLiquidNetwork(liquid_config)
         self.adaptation_stats = {'total_adaptations': 0, 'growth_events': 0, 'pruning_events': 0}
     
-    async def _lnn_inference_step(self, state) -> Any:
+        async def _lnn_inference_step(self, state) -> Any:
+            pass
         """Enhanced LNN inference with self-modification"""
+        pass
         features = state.context.get("prepared_features")
         if features is None:
             raise ValueError("No prepared features found")
@@ -252,6 +255,7 @@ class LiquidCouncilAgent2025(ProductionLNNCouncilAgent):
     
     def get_architecture_stats(self) -> Dict[str, Any]:
         """Get current architecture statistics"""
+        pass
         return {
             'current_architecture': {
                 'input_neurons': self.liquid_network.input_pool.active_count,
@@ -267,6 +271,6 @@ class LiquidCouncilAgent2025(ProductionLNNCouncilAgent):
         }
 
 # Factory function for creating liquid agents
-def create_liquid_council_agent(config: Dict[str, Any]) -> LiquidCouncilAgent2025:
-    """Create a self-modifying liquid council agent"""
-    return LiquidCouncilAgent2025(config)
+    def create_liquid_council_agent(config: Dict[str, Any]) -> LiquidCouncilAgent2025:
+        """Create a self-modifying liquid council agent"""
+        return LiquidCouncilAgent2025(config)

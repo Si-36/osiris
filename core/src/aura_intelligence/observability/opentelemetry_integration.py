@@ -1,187 +1,162 @@
 """
-📊 OpenTelemetry Integration - Latest 2025 AI Semantic Conventions
-Professional OpenTelemetry integration with AI-specific patterns and latest semantic conventions.
-
-CURRENT STATUS: Temporarily disabled due to import issues
-- opentelemetry.semconv.ai module doesn't exist in current version
-- Complex dependencies blocking core integration testing
-- Using minimal fallback to allow system testing
-
-TODO: Restore full functionality after core integration works
+OpenTelemetry integration for AURA Intelligence observability.
+Provides tracing, metrics, and logging integration.
 """
 
-import os
+import logging
 import time
-from typing import Dict, Any, Optional
-from datetime import datetime, timezone
+from typing import Dict, Any, Optional, List, Union, AsyncContextManager
+from contextlib import asynccontextmanager
+import asyncio
 
-# ORIGINAL IMPORTS - COMMENTED OUT DUE TO DEPENDENCY ISSUES
-# Latest OpenTelemetry imports (2025 patterns)
-# from opentelemetry import trace, metrics
-# from opentelemetry.sdk.trace import TracerProvider
-# from opentelemetry.sdk.trace.export import BatchSpanProcessor
-# from opentelemetry.sdk.metrics import MeterProvider
-# from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-# from opentelemetry.sdk.resources import Resource
-# from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-# from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
-# from opentelemetry.instrumentation.auto_instrumentation import sitecustomize
-# PROBLEMATIC IMPORT: from opentelemetry.semconv.ai import SpanAttributes as AISpanAttributes
-# from opentelemetry.semconv.trace import SpanAttributes
-# from opentelemetry.trace import Status, StatusCode
-
-# TEMPORARY MINIMAL IMPORTS FOR TESTING
+# OpenTelemetry imports (optional)
 try:
     from opentelemetry import trace, metrics
-    from opentelemetry.trace import Status, StatusCode
+    from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+    from opentelemetry.exporter.prometheus import PrometheusMetricReader
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.sdk.metrics import MeterProvider
+    from opentelemetry.instrumentation.asyncio import AsyncioInstrumentor
+    from opentelemetry.instrumentation.logging import LoggingInstrumentor
     OPENTELEMETRY_AVAILABLE = True
 except ImportError:
     OPENTELEMETRY_AVAILABLE = False
-    # Create mock objects for testing
-    class MockTrace:
-        def get_tracer(self, *args, **kwargs): 
-            return MockTracer()
-    trace = MockTrace()
 
+# AURA Core imports with fallbacks
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
+    AURA_CORE_AVAILABLE = True
 except ImportError:
-    # Fallback for direct import
+    # Fallback implementations
     class ObservabilityConfig:
         def __init__(self, **kwargs):
             self.enabled = kwargs.get('enabled', False)
+            self.jaeger_endpoint = kwargs.get('jaeger_endpoint', 'http://localhost:14268/api/traces')
+            self.prometheus_port = kwargs.get('prometheus_port', 8090)
+            self.service_name = kwargs.get('service_name', 'aura-intelligence')
     
     class ObservabilityContext:
         def __init__(self, **kwargs):
             self.workflow_type = kwargs.get('workflow_type', 'unknown')
             self.workflow_id = kwargs.get('workflow_id', 'unknown')
-
+    
+            AURA_CORE_AVAILABLE = False
 
 class MockTracer:
     """Mock tracer for testing when OpenTelemetry not available."""
     def start_span(self, name, **kwargs):
         return MockSpan(name)
 
-
 class MockSpan:
     """Mock span for testing when OpenTelemetry not available."""
     def __init__(self, name):
         self.name = name
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
     
     def set_attribute(self, key, value):
         pass
     
     def set_status(self, status):
         pass
-    
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, *args):
-        pass
-
 
 class OpenTelemetryManager:
-    """
-    OpenTelemetry integration manager.
+    """Manages OpenTelemetry tracing, metrics, and logging for AURA Intelligence."""
     
-    CURRENT STATUS: Minimal implementation for testing
-    ORIGINAL FEATURES (to be restored):
-    - AI-specific span attributes and metrics
-    - LLM operation tracking with cost and performance
-    - Agent workflow tracing with decision points
-    - Automatic instrumentation for popular AI libraries
-    - W3C trace context propagation
-    - Resource detection and attribution
-    """
-    
-    def __init__(self, config: ObservabilityConfig):
-        """Initialize OpenTelemetry manager with fallback support."""
-        print("🔧 OpenTelemetryManager: Using minimal implementation for testing")
-        self.config = config
-        self.enabled = OPENTELEMETRY_AVAILABLE and getattr(config, 'enabled', False)
+    def __init__(self, config: Optional[ObservabilityConfig] = None):
+        self.config = config or ObservabilityConfig()
+        self.logger = logging.getLogger(__name__)
         
-        if self.enabled:
-            self.tracer = trace.get_tracer(__name__)
+        # Initialize components
+        self.tracer = None
+        self.meter = None
+        self.initialized = False
+        
+        if OPENTELEMETRY_AVAILABLE and self.config.enabled:
+            self._setup_opentelemetry()
         else:
-            self.tracer = MockTracer()
+            self._setup_mocks()
+    
+    def _setup_opentelemetry(self):
+        """Set up real OpenTelemetry components."""
+        try:
+            # Set up tracing
+            trace.set_tracer_provider(TracerProvider())
+            
+            # Jaeger exporter
+            jaeger_exporter = JaegerExporter(
+                endpoint=self.config.jaeger_endpoint
+            )
+            span_processor = BatchSpanProcessor(jaeger_exporter)
+            trace.get_tracer_provider().add_span_processor(span_processor)
+            
+            self.tracer = trace.get_tracer(self.config.service_name)
+            
+            # Set up metrics
+            metrics.set_meter_provider(MeterProvider())
+            self.meter = metrics.get_meter(self.config.service_name)
+            
+            # Instrument asyncio
+            AsyncioInstrumentor().instrument()
+            LoggingInstrumentor().instrument()
+            
+            self.initialized = True
+            self.logger.info("OpenTelemetry initialized successfully")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to initialize OpenTelemetry: {e}")
+            self._setup_mocks()
+    
+    def _setup_mocks(self):
+        """Set up mock components when OpenTelemetry is not available."""
+        self.tracer = MockTracer()
+        self.meter = None
+        self.initialized = False
+        self.logger.warning("Using mock OpenTelemetry components")
+    
+    @asynccontextmanager
+    async def trace_workflow(self, workflow_name: str, context: ObservabilityContext):
+        """Context manager for tracing workflow execution."""
+        span_name = f"workflow.{workflow_name}"
         
-        # ORIGINAL ATTRIBUTES (to be restored)
-        # self.tracer_provider = None
-        # self.meter_provider = None
-        # self.meter = None
-        # self._active_spans = {}
-        # self._llm_token_counter = None
-        # self._llm_cost_counter = None
-        # self._agent_operation_histogram = None
+        if self.tracer:
+            with self.tracer.start_span(span_name) as span:
+                if hasattr(span, 'set_attribute'):
+                    span.set_attribute("workflow.type", context.workflow_type)
+                    span.set_attribute("workflow.id", context.workflow_id)
+                
+                try:
+                    yield span
+                except Exception as e:
+                    if hasattr(span, 'set_status'):
+                        span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
+                    raise
+        else:
+            yield None
     
-    def start_span(self, name: str, **kwargs):
-        """Start a span with fallback support."""
-        return self.tracer.start_span(name)
-    
-    def create_workflow_span(self, context: ObservabilityContext):
-        """Create workflow span with minimal attributes."""
-        span = self.tracer.start_span(f"workflow.{context.workflow_type}")
-        if self.enabled:
-            span.set_attribute("workflow.type", context.workflow_type)
-        return span
-    
-    def record_metric(self, name: str, value: float, **kwargs):
-        """Record metric with fallback (no-op if not available)."""
-        if not self.enabled:
-            return
-        # TODO: Implement proper metric recording
-        pass
-    
-    async def initialize(self):
-        """Initialize with minimal setup."""
-        print("🔧 OpenTelemetryManager: Mock initialization complete")
-        # TODO: Restore full initialization:
-        # - Create AI resource with proper attributes
-        # - Initialize tracing with OTLP exporter
-        # - Initialize metrics with OTLP exporter
-        # - Create metric instruments
-        # - Setup auto instrumentation
-        pass
+    def record_metric(self, name: str, value: Union[int, float], tags: Dict[str, str] = None):
+        """Record a metric value."""
+        if self.meter:
+            try:
+                counter = self.meter.create_counter(name)
+                counter.add(value, tags or {})
+            except Exception as e:
+                self.logger.error(f"Failed to record metric {name}: {e}")
     
     async def shutdown(self):
-        """Shutdown with minimal cleanup."""
-        print("🔧 OpenTelemetryManager: Mock shutdown complete")
-        # TODO: Restore full shutdown:
-        # - End any remaining spans
-        # - Shutdown providers
-        pass
-
-    # ORIGINAL METHODS (commented out, to be restored):
-    
-    # async def start_workflow_span(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
-    #     """Start workflow span with AI semantic conventions."""
-    #     pass
-    
-    # async def complete_workflow_span(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
-    #     """Complete workflow span with results and metrics."""
-    #     pass
-    
-    # async def start_agent_span(self, agent_context: Dict[str, Any]) -> None:
-    #     """Start span for agent operation."""
-    #     pass
-    
-    # async def complete_agent_span(self, agent_context: Dict[str, Any]) -> None:
-    #     """Complete agent span with results."""
-    #     pass
-    
-    # async def track_llm_usage(self, model_name: str, tokens_used: int, cost_usd: Optional[float] = None) -> None:
-    #     """Track LLM usage with AI semantic conventions."""
-    #     pass
-
-
-# Export the main class
-__all__ = ['OpenTelemetryManager']
-
-# RESTORATION NOTES:
-# 1. Fix opentelemetry.semconv.ai import (use correct semantic conventions)
-# 2. Restore full initialization with proper resource creation
-# 3. Implement proper span and metric creation
-# 4. Add back AI-specific attributes and tracking
-# 5. Test with real OpenTelemetry setup
+        """Shutdown OpenTelemetry components."""
+        if self.initialized:
+            try:
+                # Shutdown span processors
+                if hasattr(trace.get_tracer_provider(), 'shutdown'):
+                    trace.get_tracer_provider().shutdown()
+                
+                self.logger.info("OpenTelemetry shutdown completed")
+            except Exception as e:
+                self.logger.error(f"Error during OpenTelemetry shutdown: {e}")

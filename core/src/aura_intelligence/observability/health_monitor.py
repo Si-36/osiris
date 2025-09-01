@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from dataclasses import dataclass, field
 
 try:
-    from .config import ObservabilityConfig
+    from aura_intelligence.config import ObservabilityConfig
     from .context_managers import ObservabilityContext
 except ImportError:
     # Fallback for direct import
@@ -56,24 +56,25 @@ class HealthMetrics:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         return {
-            "overall_score": self.overall_score,
-            "status": self.status,
-            "cpu_usage": self.cpu_usage,
-            "memory_usage": self.memory_usage,
-            "disk_usage": self.disk_usage,
-            "workflow_success_rate": self.workflow_success_rate,
-            "average_workflow_duration": self.average_workflow_duration,
-            "active_workflows": self.active_workflows,
-            "error_rate": self.error_rate,
-            "recovery_success_rate": self.recovery_success_rate,
-            "circuit_breaker_failures": self.circuit_breaker_failures,
-            "agent_success_rate": self.agent_success_rate,
-            "average_agent_response_time": self.average_agent_response_time,
-            "uptime_seconds": self.uptime_seconds,
-            "last_health_check": self.last_health_check,
-            "health_trend": self.health_trend,
-            "anomalies_detected": self.anomalies_detected,
+        "overall_score": self.overall_score,
+        "status": self.status,
+        "cpu_usage": self.cpu_usage,
+        "memory_usage": self.memory_usage,
+        "disk_usage": self.disk_usage,
+        "workflow_success_rate": self.workflow_success_rate,
+        "average_workflow_duration": self.average_workflow_duration,
+        "active_workflows": self.active_workflows,
+        "error_rate": self.error_rate,
+        "recovery_success_rate": self.recovery_success_rate,
+        "circuit_breaker_failures": self.circuit_breaker_failures,
+        "agent_success_rate": self.agent_success_rate,
+        "average_agent_response_time": self.average_agent_response_time,
+        "uptime_seconds": self.uptime_seconds,
+        "last_health_check": self.last_health_check,
+        "health_trend": self.health_trend,
+        "anomalies_detected": self.anomalies_detected,
         }
 
 
@@ -82,6 +83,7 @@ class OrganismHealthMonitor:
     Bio-inspired health monitoring for the digital organism.
     
     Features:
+        pass
     - Continuous vital signs monitoring
     - Anomaly detection and alerting
     - Self-repair trigger mechanisms
@@ -105,6 +107,7 @@ class OrganismHealthMonitor:
             prometheus_manager: Prometheus metrics manager (optional)
             logging_manager: Structured logging manager (optional)
         """
+        pass
         
         self.config = config
         self.prometheus = prometheus_manager
@@ -158,31 +161,35 @@ class OrganismHealthMonitor:
     
     async def initialize(self) -> None:
         """Initialize health monitoring."""
+        pass
         
         try:
             # Start continuous monitoring
-            self._is_monitoring = True
-            self._monitoring_task = asyncio.create_task(self._monitoring_loop())
+        self._is_monitoring = True
+        self._monitoring_task = asyncio.create_task(self._monitoring_loop())
             
-            # Initial health check
-            await self._perform_health_check()
+        # Initial health check
+        await self._perform_health_check()
             
-            if self.logging:
-                self.logging.logger.info(
-                    "organism_health_monitor_initialized",
-                    organism_id=self.config.organism_id,
-                    check_interval=self.config.health_check_interval,
-                    auto_recovery_enabled=self.config.enable_auto_recovery,
-                    initial_health_score=self.current_health.overall_score,
-                )
+        if self.logging:
+            self.logging.logger.info(
+        "organism_health_monitor_initialized",
+        organism_id=self.config.organism_id,
+        check_interval=self.config.health_check_interval,
+        auto_recovery_enabled=self.config.enable_auto_recovery,
+        initial_health_score=self.current_health.overall_score,
+        )
             
-            print(f"✅ Organism health monitor initialized - Score: {self.current_health.overall_score:.2f}")
+        print(f"✅ Organism health monitor initialized - Score: {self.current_health.overall_score:.2f}")
             
         except Exception as e:
-            print(f"⚠️ Health monitor initialization failed: {e}")
+            pass
+        print(f"⚠️ Health monitor initialization failed: {e}")
     
-    async def _monitoring_loop(self) -> None:
+        async def _monitoring_loop(self) -> None:
+            pass
         """Continuous health monitoring loop."""
+        pass
         
         while self._is_monitoring:
             try:
@@ -215,6 +222,7 @@ class OrganismHealthMonitor:
     
     async def _perform_health_check(self) -> None:
         """Perform comprehensive health check."""
+        pass
         
         # Get system metrics
         system_metrics = self._get_system_metrics()
@@ -224,24 +232,24 @@ class OrganismHealthMonitor:
         
         # Update current health
         self.current_health = HealthMetrics(
-            # System metrics
-            cpu_usage=system_metrics["cpu_usage"],
-            memory_usage=system_metrics["memory_usage"],
-            disk_usage=system_metrics["disk_usage"],
-            uptime_seconds=time.time() - self.start_time,
+        # System metrics
+        cpu_usage=system_metrics["cpu_usage"],
+        memory_usage=system_metrics["memory_usage"],
+        disk_usage=system_metrics["disk_usage"],
+        uptime_seconds=time.time() - self.start_time,
             
-            # Performance metrics
-            workflow_success_rate=performance_metrics["workflow_success_rate"],
-            average_workflow_duration=performance_metrics["average_workflow_duration"],
-            active_workflows=self._workflow_stats["active"],
-            error_rate=performance_metrics["error_rate"],
-            recovery_success_rate=performance_metrics["recovery_success_rate"],
-            circuit_breaker_failures=self._error_stats["circuit_breaker_failures"],
-            agent_success_rate=performance_metrics["agent_success_rate"],
-            average_agent_response_time=performance_metrics["average_agent_response_time"],
+        # Performance metrics
+        workflow_success_rate=performance_metrics["workflow_success_rate"],
+        average_workflow_duration=performance_metrics["average_workflow_duration"],
+        active_workflows=self._workflow_stats["active"],
+        error_rate=performance_metrics["error_rate"],
+        recovery_success_rate=performance_metrics["recovery_success_rate"],
+        circuit_breaker_failures=self._error_stats["circuit_breaker_failures"],
+        agent_success_rate=performance_metrics["agent_success_rate"],
+        average_agent_response_time=performance_metrics["average_agent_response_time"],
             
-            # Health analysis
-            last_health_check=datetime.now(timezone.utc).isoformat(),
+        # Health analysis
+        last_health_check=datetime.now(timezone.utc).isoformat(),
         )
         
         # Calculate overall health score
@@ -263,6 +271,7 @@ class OrganismHealthMonitor:
     
     def _get_system_metrics(self) -> Dict[str, float]:
         """Get system resource metrics."""
+        pass
         
         try:
             # CPU usage
@@ -298,6 +307,7 @@ class OrganismHealthMonitor:
     
     def _calculate_performance_metrics(self) -> Dict[str, float]:
         """Calculate performance metrics from tracked statistics."""
+        pass
         
         # Workflow metrics
         workflow_success_rate = 0.0
@@ -327,16 +337,17 @@ class OrganismHealthMonitor:
             average_agent_response_time = self._agent_stats["total_duration"] / self._agent_stats["successful"]
         
         return {
-            "workflow_success_rate": workflow_success_rate,
-            "average_workflow_duration": average_workflow_duration,
-            "error_rate": error_rate,
-            "recovery_success_rate": recovery_success_rate,
-            "agent_success_rate": agent_success_rate,
-            "average_agent_response_time": average_agent_response_time,
+        "workflow_success_rate": workflow_success_rate,
+        "average_workflow_duration": average_workflow_duration,
+        "error_rate": error_rate,
+        "recovery_success_rate": recovery_success_rate,
+        "agent_success_rate": agent_success_rate,
+        "average_agent_response_time": average_agent_response_time,
         }
     
     def _calculate_overall_health_score(self) -> float:
         """Calculate overall health score (0.0 to 1.0)."""
+        pass
         
         scores = []
         weights = []
@@ -376,30 +387,34 @@ class OrganismHealthMonitor:
     
     def _determine_health_status(self) -> str:
         """Determine health status based on score and metrics."""
+        pass
         
         score = self.current_health.overall_score
         
         # Check for critical conditions
         if (self.current_health.cpu_usage > self.thresholds["cpu_critical"] or
-            self.current_health.memory_usage > self.thresholds["memory_critical"] or
-            self.current_health.disk_usage > self.thresholds["disk_critical"] or
-            self.current_health.error_rate > self.thresholds["error_rate_critical"] or
-            self.current_health.workflow_success_rate < self.thresholds["workflow_success_critical"]):
-            return "critical"
+        self.current_health.memory_usage > self.thresholds["memory_critical"] or
+        self.current_health.disk_usage > self.thresholds["disk_critical"] or
+        self.current_health.error_rate > self.thresholds["error_rate_critical"] or
+        self.current_health.workflow_success_rate < self.thresholds["workflow_success_critical"]):
+            pass
+        return "critical"
         
         # Check for warning conditions
         if (self.current_health.cpu_usage > self.thresholds["cpu_warning"] or
-            self.current_health.memory_usage > self.thresholds["memory_warning"] or
-            self.current_health.disk_usage > self.thresholds["disk_warning"] or
-            self.current_health.error_rate > self.thresholds["error_rate_warning"] or
-            self.current_health.workflow_success_rate < self.thresholds["workflow_success_warning"] or
-            score < self.config.health_score_threshold):
-            return "degraded"
+        self.current_health.memory_usage > self.thresholds["memory_warning"] or
+        self.current_health.disk_usage > self.thresholds["disk_warning"] or
+        self.current_health.error_rate > self.thresholds["error_rate_warning"] or
+        self.current_health.workflow_success_rate < self.thresholds["workflow_success_warning"] or
+        score < self.config.health_score_threshold):
+            pass
+        return "degraded"
         
         return "healthy"
     
     def _analyze_health_trend(self) -> str:
         """Analyze health trend from recent history."""
+        pass
         
         if len(self.health_history) < 3:
             return "stable"
@@ -421,6 +436,7 @@ class OrganismHealthMonitor:
     
     def _detect_anomalies(self) -> List[str]:
         """Detect anomalies in current health metrics."""
+        pass
         
         anomalies = []
         
@@ -428,23 +444,27 @@ class OrganismHealthMonitor:
         if self.current_health.cpu_usage > self.thresholds["cpu_critical"]:
             anomalies.append("critical_cpu_usage")
         elif self.current_health.cpu_usage > self.thresholds["cpu_warning"]:
-            anomalies.append("high_cpu_usage")
+            pass
+        anomalies.append("high_cpu_usage")
         
         if self.current_health.memory_usage > self.thresholds["memory_critical"]:
             anomalies.append("critical_memory_usage")
         elif self.current_health.memory_usage > self.thresholds["memory_warning"]:
-            anomalies.append("high_memory_usage")
+            pass
+        anomalies.append("high_memory_usage")
         
         if self.current_health.disk_usage > self.thresholds["disk_critical"]:
             anomalies.append("critical_disk_usage")
         elif self.current_health.disk_usage > self.thresholds["disk_warning"]:
-            anomalies.append("high_disk_usage")
+            pass
+        anomalies.append("high_disk_usage")
         
         # Performance anomalies
         if self.current_health.error_rate > self.thresholds["error_rate_critical"]:
             anomalies.append("critical_error_rate")
         elif self.current_health.error_rate > self.thresholds["error_rate_warning"]:
-            anomalies.append("high_error_rate")
+            pass
+        anomalies.append("high_error_rate")
         
         if self.current_health.workflow_success_rate < self.thresholds["workflow_success_critical"]:
             anomalies.append("low_workflow_success_rate")
@@ -455,33 +475,39 @@ class OrganismHealthMonitor:
         
         return anomalies
     
-    async def _check_and_trigger_recovery(self) -> None:
+        async def _check_and_trigger_recovery(self) -> None:
+            pass
         """Check for recovery triggers and initiate self-repair."""
+        pass
         
         if self.current_health.status == "critical":
             await self._trigger_critical_recovery()
         elif self.current_health.status == "degraded":
             await self._trigger_degraded_recovery()
     
-    async def _trigger_critical_recovery(self) -> None:
+        async def _trigger_critical_recovery(self) -> None:
+            pass
         """Trigger critical recovery procedures."""
+        pass
         
         if self.logging:
             # Use standard logging format for compatibility
-            message = (
-                f"critical_health_detected_triggering_recovery - "
-                f"health_score={self.current_health.overall_score:.3f}, "
-                f"anomalies={len(self.current_health.anomalies_detected)}, "
-                f"organism_id={self.config.organism_id}"
-            )
-            self.logging.logger.error(message)
+        message = (
+        f"critical_health_detected_triggering_recovery - "
+        f"health_score={self.current_health.overall_score:.3f}, "
+        f"anomalies={len(self.current_health.anomalies_detected)}, "
+        f"organism_id={self.config.organism_id}"
+        )
+        self.logging.logger.error(message)
         
         # Implement critical recovery procedures
         # This would integrate with the circuit breaker and retry systems
         print(f"🚨 CRITICAL: Triggering emergency recovery - Health: {self.current_health.overall_score:.2f}")
     
-    async def _trigger_degraded_recovery(self) -> None:
+        async def _trigger_degraded_recovery(self) -> None:
+            pass
         """Trigger degraded performance recovery."""
+        pass
         
         if self.logging:
             self.logging.logger.warning(
@@ -496,11 +522,13 @@ class OrganismHealthMonitor:
     
     # Event handlers for tracking statistics
     
-    async def on_workflow_started(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
+        async def on_workflow_started(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
+            pass
         """Handle workflow start event."""
         self._workflow_stats["active"] += 1
     
-    async def on_workflow_completed(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
+        async def on_workflow_completed(self, context: ObservabilityContext, state: Dict[str, Any]) -> None:
+            pass
         """Handle workflow completion event."""
         self._workflow_stats["total"] += 1
         self._workflow_stats["active"] = max(0, self._workflow_stats["active"] - 1)
@@ -512,7 +540,8 @@ class OrganismHealthMonitor:
         else:
             self._workflow_stats["failed"] += 1
     
-    async def on_error_recovery(self, error_type: str, recovery_strategy: str, success: bool) -> None:
+        async def on_error_recovery(self, error_type: str, recovery_strategy: str, success: bool) -> None:
+            pass
         """Handle error recovery event."""
         self._error_stats["total"] += 1
         self._error_stats["recovery_attempts"] += 1
@@ -523,40 +552,44 @@ class OrganismHealthMonitor:
         if "circuit_breaker" in recovery_strategy.lower():
             self._error_stats["circuit_breaker_failures"] += 1
     
-    async def update_health_score(self, health_score: float) -> None:
+        async def update_health_score(self, health_score: float) -> None:
+            pass
         """Update health score externally."""
         self.current_health.overall_score = health_score
         self.current_health.status = self._determine_health_status()
     
     def get_current_health(self) -> HealthMetrics:
         """Get current health metrics."""
+        pass
         return self.current_health
     
     def get_health_history(self, limit: int = 10) -> List[HealthMetrics]:
         """Get recent health history."""
         return self.health_history[-limit:] if self.health_history else []
     
-    async def shutdown(self) -> None:
+        async def shutdown(self) -> None:
+            pass
         """Gracefully shutdown health monitor."""
+        pass
         
         self._is_monitoring = False
         
         if self._monitoring_task:
             self._monitoring_task.cancel()
-            try:
-                await self._monitoring_task
-            except asyncio.CancelledError:
-                pass
+        try:
+            await self._monitoring_task
+        except asyncio.CancelledError:
+        pass
         
         if self.logging:
             # Use standard logging format for compatibility
-            message = (
-                f"organism_health_monitor_shutdown - "
-                f"final_health_score={self.current_health.overall_score:.3f}, "
-                f"total_workflows={self._workflow_stats['total']}, "
-                f"uptime_seconds={self.current_health.uptime_seconds:.1f}, "
-                f"organism_id={self.config.organism_id}"
-            )
-            self.logging.logger.info(message)
+        message = (
+        f"organism_health_monitor_shutdown - "
+        f"final_health_score={self.current_health.overall_score:.3f}, "
+        f"total_workflows={self._workflow_stats['total']}, "
+        f"uptime_seconds={self.current_health.uptime_seconds:.1f}, "
+        f"organism_id={self.config.organism_id}"
+        )
+        self.logging.logger.info(message)
         
         print("✅ Organism health monitor shutdown complete")

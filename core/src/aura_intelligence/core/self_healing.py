@@ -147,13 +147,7 @@ class FailureInjector:
         self.active_injections: Dict[str, Dict[str, Any]] = {}
         self.injection_history: List[Dict[str, Any]] = []
     
-    async def inject_failure(
-        self, 
-        failure_type: FailureType, 
-        target_component: str,
-        intensity: float = 0.5,
-        duration: float = 10.0
-    ) -> str:
+    async def inject_failure(self, failure_type: FailureType, target_component: str, intensity: float = 0.5, duration: float = 10.0) -> str:
         """Inject a specific type of failure."""
         injection_id = f"{failure_type.value}_{target_component}_{int(time.time())}"
         
@@ -284,11 +278,7 @@ class BlastRadiusController:
         self.max_blast_radius = max_blast_radius
         self.component_criticality: Dict[str, float] = {}
     
-    def calculate_safe_blast_radius(
-        self, 
-        experiment: ChaosExperiment,
-        system_health: Dict[str, Any]
-    ) -> float:
+    def calculate_safe_blast_radius(self, experiment: ChaosExperiment, system_health: Dict[str, Any]) -> float:
         """Calculate safe blast radius for experiment."""
         base_radius = experiment.blast_radius
         
@@ -442,6 +432,7 @@ class ChaosEngineer:
     
     async def _capture_system_metrics(self) -> Dict[str, Any]:
         """Capture current system metrics."""
+        pass
         # Get error analysis manager
         from .exceptions import get_error_analysis_manager
         manager = get_error_analysis_manager()
@@ -512,12 +503,7 @@ class ChaosEngineer:
         except asyncio.CancelledError:
             observations.append("Monitoring stopped")
     
-    def _evaluate_success_criteria(
-        self, 
-        experiment: ChaosExperiment,
-        before_metrics: Dict[str, Any],
-        after_metrics: Dict[str, Any]
-    ) -> bool:
+    def _evaluate_success_criteria(self, experiment: ChaosExperiment, before_metrics: Dict[str, Any], after_metrics: Dict[str, Any]) -> bool:
         """Evaluate if experiment met success criteria."""
         # Basic success criteria: system recovered to steady state
         if not self._verify_steady_state(after_metrics):
@@ -535,11 +521,7 @@ class ChaosEngineer:
         
         return True
     
-    def _detect_system_learning(
-        self, 
-        before_metrics: Dict[str, Any],
-        after_metrics: Dict[str, Any]
-    ) -> bool:
+    def _detect_system_learning(self, before_metrics: Dict[str, Any], after_metrics: Dict[str, Any]) -> bool:
         """Detect if system learned from the experiment."""
         # System learned if it's more resilient after the experiment
         
@@ -641,11 +623,7 @@ class AntifragilityEngine:
         self.adaptation_history: List[AntifragileAdaptation] = []
         self.hormesis_thresholds: Dict[str, float] = {}
     
-    async def make_antifragile(
-        self, 
-        component: str, 
-        stressor: Stressor
-    ) -> AntifragileAdaptation:
+    async def make_antifragile(self, component: str, stressor: Stressor) -> AntifragileAdaptation:
         """Make a system component antifragile to a specific stressor."""
         logger.info(f"Applying antifragile adaptation to {component} with {stressor.name}")
         
@@ -713,11 +691,7 @@ class AntifragilityEngine:
         self.stress_history.append(stress_level)
         return stress_level
     
-    def _calculate_hormetic_response(
-        self, 
-        stress_level: Dict[str, Any], 
-        stressor: Stressor
-    ) -> Dict[str, Any]:
+    def _calculate_hormetic_response(self, stress_level: Dict[str, Any], stressor: Stressor) -> Dict[str, Any]:
         """Calculate hormetic response to stress (beneficial adaptation)."""
         overall_stress = stress_level['overall_stress']
         
@@ -747,12 +721,7 @@ class AntifragilityEngine:
         
         return response
     
-    async def _apply_adaptation(
-        self, 
-        component: str, 
-        hormetic_response: Dict[str, Any],
-        stressor: Stressor
-    ) -> Dict[str, Any]:
+    async def _apply_adaptation(self, component: str, hormetic_response: Dict[str, Any], stressor: Stressor) -> Dict[str, Any]:
         """Apply the adaptation based on hormetic response."""
         if not hormetic_response['is_hormetic']:
             # No beneficial adaptation possible
@@ -796,11 +765,7 @@ class AntifragilityEngine:
             'total_improvement': sum(a['improvement'] for a in adaptations)
         }
     
-    def _amplify_strength_gains(
-        self, 
-        adaptation: Dict[str, Any], 
-        stressor: Stressor
-    ) -> float:
+    def _amplify_strength_gains(self, adaptation: Dict[str, Any], stressor: Stressor) -> float:
         """Amplify strength gains through overcompensation."""
         if not adaptation.get('adapted', False):
             return 0.0
@@ -857,11 +822,7 @@ class PredictiveFailureDetector:
         self.anomaly_threshold = 2.0  # Standard deviations for anomaly detection
         self.prediction_horizon = 300.0  # 5 minutes prediction horizon
     
-    async def predict_failure(
-        self, 
-        component: str,
-        time_horizon: float = 300.0
-    ) -> Dict[str, Any]:
+    async def predict_failure(self, component: str, time_horizon: float = 300.0) -> Dict[str, Any]:
         """Predict potential failures for a component."""
         # Collect current metrics
         current_metrics = await self._collect_component_metrics(component)
@@ -1008,11 +969,7 @@ class PredictiveFailureDetector:
         trends['trends_available'] = True
         return trends
     
-    def _calculate_failure_probability(
-        self, 
-        anomalies: List[Dict[str, Any]], 
-        trends: Dict[str, Any]
-    ) -> float:
+    def _calculate_failure_probability(self, anomalies: List[Dict[str, Any]], trends: Dict[str, Any]) -> float:
         """Calculate probability of failure based on anomalies and trends."""
         if not trends.get('trends_available', False):
             return 0.1  # Low baseline probability
@@ -1226,11 +1183,7 @@ class SelfHealingErrorHandler:
         
         return healing_record
     
-    async def _determine_healing_strategy(
-        self, 
-        error: AuraError, 
-        failure_prediction: Dict[str, Any]
-    ) -> HealingStrategy:
+    async def _determine_healing_strategy(self, error: AuraError, failure_prediction: Dict[str, Any]) -> HealingStrategy:
         """Determine the optimal healing strategy."""
         failure_probability = failure_prediction['failure_probability']
         time_to_failure = failure_prediction.get('time_to_failure')
@@ -1265,12 +1218,7 @@ class SelfHealingErrorHandler:
         else:
             return HealingStrategy.RESTART
     
-    async def _execute_healing_strategy(
-        self, 
-        strategy: HealingStrategy, 
-        error: AuraError,
-        failure_prediction: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _execute_healing_strategy(self, strategy: HealingStrategy, error: AuraError, failure_prediction: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the selected healing strategy."""
         strategy_func = self.healing_strategies.get(strategy.value)
         
@@ -1453,13 +1401,7 @@ class SelfHealingErrorHandler:
         
         return False
     
-    async def _learn_from_healing(
-        self, 
-        error: AuraError,
-        strategy: HealingStrategy,
-        healing_result: Dict[str, Any],
-        success: bool
-    ) -> Dict[str, Any]:
+    async def _learn_from_healing(self, error: AuraError, strategy: HealingStrategy, healing_result: Dict[str, Any], success: bool) -> Dict[str, Any]:
         """Learn from the healing process to improve future responses."""
         learning = {
             'strategy_effectiveness': 1.0 if success else 0.0,
@@ -1538,18 +1480,12 @@ class SelfHealingErrorHandler:
 # Factory functions and utilities
 
 def create_self_healing_error_handler() -> SelfHealingErrorHandler:
-    """Create a new self-healing error handler."""
-    return SelfHealingErrorHandler()
+        """Create a new self-healing error handler."""
+        return SelfHealingErrorHandler()
 
 
 def create_chaos_experiment(
-    name: str,
-    failure_type: FailureType,
-    target_components: List[str],
-    duration: float = 30.0,
-    intensity: float = 0.5,
-    blast_radius: float = 0.1
-) -> ChaosExperiment:
+    name: str, failure_type: FailureType, target_components: List[str], duration: float = 30.0, intensity: float = 0.5, blast_radius: float = 0.1) -> ChaosExperiment:
     """Create a chaos experiment with sensible defaults."""
     return ChaosExperiment(
         experiment_id=f"chaos_{int(time.time())}",

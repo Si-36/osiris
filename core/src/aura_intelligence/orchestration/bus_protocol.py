@@ -83,14 +83,15 @@ class EventBus(Protocol):
     
     async def health_check(self) -> bool:
         """Check if the bus is operational."""
+        pass
         ...
 
 
 # LangGraph adapter interface (for future integration)
-def adapter_for_langgraph(bus: EventBus):
-    """
-    Returns a LangGraph-compatible adapter for the event bus.
-    This will be implemented when we wire LangGraph orchestration.
-    """
-    # TODO: Implement in Day 4
-    pass
+    def adapter_for_langgraph(bus: EventBus):
+        """
+        Returns a LangGraph-compatible adapter for the event bus.
+        This will be implemented when we wire LangGraph orchestration.
+        """
+    
+        pass

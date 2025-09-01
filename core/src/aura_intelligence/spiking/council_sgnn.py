@@ -27,6 +27,7 @@ class SpikingCouncil:
         
     def _init_adjacency(self) -> np.ndarray:
         """Initialize component adjacency matrix"""
+        pass
         # Simple ring topology + random connections
         adj = np.zeros((self.num_components, self.num_components))
         
@@ -115,7 +116,8 @@ class SpikingCouncil:
             "total_spikes": int(total_spikes)
         }
     
-    async def process_component_messages(self, messages: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+        async def process_component_messages(self, messages: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+            pass
         """Main processing function"""
         if not messages:
             return {"consensus_signal": [0.0] * 32, "status": "no_input"}
@@ -134,6 +136,7 @@ class SpikingCouncil:
     
     def get_metrics(self) -> Dict[str, Any]:
         """Get spiking council metrics"""
+        pass
         return {
             "power_consumption_mw": float(self.power_consumption),
             "sparsity_ratio": float(self.sparsity_ratio),

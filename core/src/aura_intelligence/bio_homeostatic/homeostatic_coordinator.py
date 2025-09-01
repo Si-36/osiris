@@ -33,6 +33,7 @@ class HomeostaticCoordinator:
     
     def get_system_status(self) -> Dict[str, Any]:
         """Get complete homeostatic system status"""
+        pass
         metabolic_status = self.metabolic.get_status()
         
         return {

@@ -33,6 +33,7 @@ class TraceContextManager:
     @staticmethod
     def get_current_trace_context() -> Dict[str, str]:
         """Get current W3C trace context."""
+        pass
         headers = {}
         inject(headers)
         return headers
@@ -69,6 +70,7 @@ class DossierEntryBuilder:
     
     def reset(self) -> 'DossierEntryBuilder':
         """Reset builder to initial state."""
+        pass
         self._data = {
             'workflow_id': self.workflow_id,
             'task_id': self.task_id,
@@ -190,6 +192,7 @@ class ActionRecordBuilder:
     
     def reset(self) -> 'ActionRecordBuilder':
         """Reset builder to initial state."""
+        pass
         self._data = {
             'workflow_id': self.workflow_id,
             'task_id': self.task_id,
@@ -295,6 +298,7 @@ class AgentStateBuilder:
     
     def reset(self) -> 'AgentStateBuilder':
         """Reset builder to initial state."""
+        pass
         current_time = utc_now()
         self._data = {
             'task_id': self.task_id,
@@ -491,6 +495,7 @@ class ObserverAgentBuilder:
     
     def build(self):
         """Build the Observer agent using the factory."""
+        pass
         from .agent_factory import create_observer_agent
         return create_observer_agent(self.config)
 
@@ -527,6 +532,7 @@ class AnalystAgentBuilder:
     
     def build(self):
         """Build the Analyst agent using the factory."""
+        pass
         from .agent_factory import create_analyst_agent
         return create_analyst_agent(self.config)
 
@@ -564,5 +570,6 @@ class SupervisorAgentBuilder:
     
     def build(self):
         """Build the Supervisor agent using the factory."""
+        pass
         from .agent_factory import create_supervisor_agent
         return create_supervisor_agent(self.config)

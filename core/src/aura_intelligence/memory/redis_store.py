@@ -26,7 +26,7 @@ from redis.exceptions import ResponseError, ConnectionError, TimeoutError
 from pybreaker import CircuitBreaker
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
-from .observability import instrument, update_vector_count, record_embedding_age
+from aura_intelligence.observability import instrument, update_vector_count, record_embedding_age
 from .storage_interface import MemoryStorage
 
 logger = logging.getLogger(__name__)
@@ -74,6 +74,7 @@ class MetricsUpdater:
     
     def _run(self):
         """Main loop for the metrics thread."""
+        pass
         while not self._stop_event.is_set():
             try:
                 self._do_update()
@@ -85,6 +86,7 @@ class MetricsUpdater:
     
     def _do_update(self):
         """Perform the actual metrics update."""
+        pass
         try:
             info = self.store.redis.ft(INDEX_NAME).info()
             # Handle both dict and object responses
@@ -99,6 +101,7 @@ class MetricsUpdater:
     
     def stop(self):
         """Stop the metrics updater gracefully."""
+        pass
         logger.debug("Stopping MetricsUpdater")
         self._stop_event.set()
         if self._thread.is_alive():
@@ -109,12 +112,12 @@ class MetricsUpdater:
 
 # Define retry decorator for transient failures
 redis_retry = retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=0.1, min=0.1, max=2),
-    retry=retry_if_exception_type((ConnectionError, TimeoutError)),
-    before_sleep=lambda retry_state: logger.warning(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=0.1, min=0.1, max=2),
+        retry=retry_if_exception_type((ConnectionError, TimeoutError)),
+        before_sleep=lambda retry_state: logger.warning(
         f"Retrying Redis operation (attempt {retry_state.attempt_number})"
-    )
+        )
 )
 
 
@@ -192,6 +195,7 @@ class RedisVectorStore(MemoryStorage):
     
     def _ensure_index(self):
         """Create HNSW index if not exists."""
+        pass
         try:
             # Check if index exists
             self.redis.ft(INDEX_NAME).info()
@@ -206,6 +210,7 @@ class RedisVectorStore(MemoryStorage):
     
     def _create_index(self):
         """Create the HNSW vector index."""
+        pass
         # Drop existing index if any (shouldn't happen but be safe)
         try:
             self.redis.ft(INDEX_NAME).dropindex(delete_documents=False)
@@ -253,7 +258,7 @@ class RedisVectorStore(MemoryStorage):
         content: Dict[str, Any],
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> bool:
+        ) -> bool:
         """
         Add a memory to the store with retry logic.
         
@@ -327,7 +332,7 @@ class RedisVectorStore(MemoryStorage):
         k: int = 10,
         context_filter: Optional[str] = None,
         score_threshold: float = 0.0
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
         """
         Search for similar vectors with retry logic.
         
@@ -434,6 +439,7 @@ class RedisVectorStore(MemoryStorage):
     
     def health_check(self) -> Dict[str, Any]:
         """Check Redis connection and index health."""
+        pass
         try:
             # Ping Redis
             self.redis.ping()
@@ -532,6 +538,7 @@ class RedisVectorStore(MemoryStorage):
     
     def close(self):
         """Clean up resources."""
+        pass
         try:
             # Stop metrics updater
             self.metrics_updater.stop()

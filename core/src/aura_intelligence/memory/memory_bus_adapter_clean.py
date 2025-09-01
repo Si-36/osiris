@@ -42,6 +42,7 @@ class MemoryBusAdapter:
         
     async def start(self) -> None:
         """Start listening to events."""
+        pass
         if self._running:
             return
             
@@ -56,6 +57,7 @@ class MemoryBusAdapter:
         
     async def stop(self) -> None:
         """Stop the adapter."""
+        pass
         self._running = False
         
     async def _handle_store(self, event: Event) -> None:
