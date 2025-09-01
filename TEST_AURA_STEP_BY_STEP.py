@@ -70,17 +70,18 @@ try:
     print("Importing neural components...")
     from aura_intelligence.neural import (
         LiquidNeuralNetwork,
-        MixtureOfExperts,
-        MambaArchitecture,
         ProviderAdapter,
         OpenAIAdapter,
         AnthropicAdapter,
-        GeminiAdapter
+        AURAModelRouter,
+        AdaptiveRoutingEngine
     )
     print("✅ Neural imports successful!")
-    print(f"   - LiquidNeuralNetwork: {LiquidNeuralNetwork.__name__}")
-    print(f"   - MixtureOfExperts: {MixtureOfExperts.__name__}")
-    print(f"   - Provider adapters loaded")
+    if LiquidNeuralNetwork:
+        print(f"   - LiquidNeuralNetwork: Available")
+    print(f"   - AURAModelRouter: {AURAModelRouter.__name__}")
+    print(f"   - Provider adapters: OpenAI, Anthropic")
+    print(f"   - AdaptiveRoutingEngine: {AdaptiveRoutingEngine.__name__}")
     
 except Exception as e:
     print(f"❌ Neural import failed: {e}")

@@ -24,9 +24,10 @@ from .neural import (
 # 2. Memory System - Topological Memory with Hardware Tiers
 from .memory.core.memory_api import (
     AURAMemorySystem,
-    MemoryConfig,
-    MemoryEntry,
-    QueryResult,
+    MemoryType,
+    MemoryQuery,
+    MemoryRecord,
+    RetrievalResult,
 )
 
 # 3. TDA System - Agent Topology Analysis
