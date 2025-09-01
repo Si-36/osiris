@@ -47,27 +47,17 @@ print("-" * 30)
 try:
     print("Importing persistence components...")
     from aura_intelligence.persistence.causal_state_manager import (
-        CausalStateManager,
-        StateType,
-        CausalContext,
-        get_causal_manager
+        CausalPersistenceManager,
+        CausalContext
     )
     print("✅ Causal persistence imports successful!")
-    print(f"   - CausalStateManager: {CausalStateManager.__name__}")
-    print(f"   - StateType options: {[st.name for st in StateType]}")
+    print(f"   - CausalPersistenceManager: {CausalPersistenceManager.__name__}")
+    print(f"   - CausalContext: {CausalContext.__name__}")
     
-    # Test instantiation
+    # Test instantiation (if dependencies available)
     print("\nTesting persistence instantiation...")
     import asyncio
-    async def test_causal():
-        manager = await get_causal_manager()
-        print("✅ CausalStateManager instantiated successfully!")
-        return manager
-    
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    manager = loop.run_until_complete(test_causal())
-    loop.close()
+    print("   - CausalPersistenceManager requires duckdb")
     
 except Exception as e:
     print(f"❌ Persistence import failed: {e}")

@@ -40,8 +40,7 @@ class StatePersistenceManager:
         asyncio.create_task(self._periodic_checkpoint())
         logger.info(f"State persistence initialized: {storage_path}")
     
-        async def save_state(self, state_type: StateType, component_id: str, state_data: Dict[str, Any]) -> bool:
-            pass
+    async def save_state(self, state_type: StateType, component_id: str, state_data: Dict[str, Any]) -> bool:
         try:
             state_id = f"{state_type.value}_{component_id}_{int(time.time())}"
             
@@ -67,31 +66,28 @@ class StatePersistenceManager:
             logger.error(f"Failed to save state for {component_id}: {e}")
             return False
     
-        async def load_state(self, state_type: StateType, component_id: str) -> Optional[Dict[str, Any]]:
-            pass
+    async def load_state(self, state_type: StateType, component_id: str) -> Optional[Dict[str, Any]]:
         try:
             cache_key = f"{state_type.value}_{component_id}"
             
-        if cache_key in self.state_cache:
-            return self.state_cache[cache_key].data
-            
-        file_path = os.path.join(self.storage_path, f"{cache_key}.pkl")
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as f:
-                snapshot = pickle.load(f)
+            if cache_key in self.state_cache:
+                return self.state_cache[cache_key].data
                 
-        if self._calculate_checksum(snapshot.data) == snapshot.checksum:
-            self.state_cache[cache_key] = snapshot
-        return snapshot.data
-            
-        return None
+            file_path = os.path.join(self.storage_path, f"{cache_key}.pkl")
+            if os.path.exists(file_path):
+                with open(file_path, 'rb') as f:
+                    snapshot = pickle.load(f)
+                    
+                if self._calculate_checksum(snapshot.data) == snapshot.checksum:
+                    self.state_cache[cache_key] = snapshot
+                    return snapshot.data
+                
+            return None
         except Exception as e:
-            pass
-        logger.error(f"Failed to load state for {component_id}: {e}")
-        return None
+            logger.error(f"Failed to load state for {component_id}: {e}")
+            return None
     
-        async def save_liquid_network_state(self, component_id: str, network_state: Dict[str, Any]) -> bool:
-            pass
+    async def save_liquid_network_state(self, component_id: str, network_state: Dict[str, Any]) -> bool:
         return await self.save_state(StateType.LIQUID_NETWORK, component_id, {
             'adaptations': network_state.get('adaptations', 0),
             'complexity_history': network_state.get('complexity_history', []),
@@ -99,12 +95,10 @@ class StatePersistenceManager:
             'tau_parameters': network_state.get('tau_parameters', [])
         })
     
-        async def load_liquid_network_state(self, component_id: str) -> Optional[Dict[str, Any]]:
-            pass
+    async def load_liquid_network_state(self, component_id: str) -> Optional[Dict[str, Any]]:
         return await self.load_state(StateType.LIQUID_NETWORK, component_id)
     
-        async def save_memory_tier_state(self, component_id: str, tier_state: Dict[str, Any]) -> bool:
-            pass
+    async def save_memory_tier_state(self, component_id: str, tier_state: Dict[str, Any]) -> bool:
         return await self.save_state(StateType.MEMORY_TIER, component_id, {
             'hot_storage': tier_state.get('hot_storage', {}),
             'warm_storage': tier_state.get('warm_storage', {}),
@@ -112,8 +106,7 @@ class StatePersistenceManager:
             'usage_stats': tier_state.get('usage_stats', {})
         })
     
-        async def create_full_checkpoint(self) -> str:
-            pass
+    async def create_full_checkpoint(self) -> str:
         checkpoint_id = f"checkpoint_{int(time.time())}"
         checkpoint_path = os.path.join(self.storage_path, f"{checkpoint_id}.checkpoint")
         
@@ -145,8 +138,7 @@ class StatePersistenceManager:
         logger.error(f"Failed to create checkpoint: {e}")
         return ""
     
-        async def _periodic_checkpoint(self):
-            pass
+    async def _periodic_checkpoint(self):
         while True:
             try:
                 await asyncio.sleep(self.checkpoint_interval)
@@ -156,8 +148,7 @@ class StatePersistenceManager:
                 logger.error(f"Periodic checkpoint failed: {e}")
                 await asyncio.sleep(self.checkpoint_interval * 2)
     
-        async def _cleanup_old_checkpoints(self):
-            pass
+    async def _cleanup_old_checkpoints(self):
         try:
             checkpoint_files = [f for f in os.listdir(self.storage_path) if f.endswith('.checkpoint')]
         checkpoint_files.sort(reverse=True)
