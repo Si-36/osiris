@@ -33,19 +33,23 @@ class TaskStatus(str, Enum):
     @classmethod
     def get_active_statuses(cls) -> List['TaskStatus']:
         """Get statuses that indicate active work."""
+        pass
         return [cls.PENDING, cls.IN_PROGRESS, cls.WAITING_FOR_INPUT, cls.WAITING_FOR_APPROVAL]
     
     @classmethod
     def get_terminal_statuses(cls) -> List['TaskStatus']:
         """Get statuses that indicate workflow completion."""
+        pass
         return [cls.COMPLETED, cls.FAILED, cls.CANCELLED, cls.TIMEOUT]
     
     def is_active(self) -> bool:
         """Check if this status indicates active work."""
+        pass
         return self in self.get_active_statuses()
     
     def is_terminal(self) -> bool:
         """Check if this status indicates completion."""
+        pass
         return self in self.get_terminal_statuses()
 
 
@@ -58,6 +62,7 @@ class Priority(str, Enum):
     
     def get_numeric_value(self) -> int:
         """Get numeric priority value for sorting."""
+        pass
         priority_values = {
             Priority.CRITICAL: 4,
             Priority.HIGH: 3,
@@ -99,6 +104,7 @@ class ConfidenceLevel(str, Enum):
     
     def get_min_score(self) -> float:
         """Get minimum score for this confidence level."""
+        pass
         score_ranges = {
             ConfidenceLevel.VERY_LOW: 0.0,
             ConfidenceLevel.LOW: 0.2,
@@ -128,6 +134,7 @@ class EvidenceType(str, Enum):
     
     def get_category(self) -> str:
         """Get the high-level category for this evidence type."""
+        pass
         categories = {
             EvidenceType.OBSERVATION: "direct",
             EvidenceType.METRIC: "quantitative",
@@ -251,10 +258,12 @@ class ActionResult(str, Enum):
     
     def is_successful(self) -> bool:
         """Check if this result indicates success."""
+        pass
         return self in [ActionResult.SUCCESS, ActionResult.PARTIAL_SUCCESS]
     
     def requires_retry(self) -> bool:
         """Check if this result indicates retry is needed."""
+        pass
         return self in [ActionResult.TIMEOUT, ActionResult.RETRY_NEEDED]
 
 
@@ -268,6 +277,7 @@ class RiskLevel(str, Enum):
     
     def get_numeric_value(self) -> int:
         """Get numeric risk value for comparison."""
+        pass
         risk_values = {
             RiskLevel.CRITICAL: 5,
             RiskLevel.HIGH: 4,
@@ -320,10 +330,12 @@ class SignatureAlgorithm(str, Enum):
     
     def is_post_quantum(self) -> bool:
         """Check if this is a post-quantum algorithm."""
+        pass
         return self in [SignatureAlgorithm.DILITHIUM2, SignatureAlgorithm.FALCON512]
     
     def get_key_size_bits(self) -> int:
         """Get typical key size in bits."""
+        pass
         key_sizes = {
             SignatureAlgorithm.HMAC_SHA256: 256,
             SignatureAlgorithm.RSA_PSS_SHA256: 2048,
@@ -358,6 +370,7 @@ class SecurityClassification(str, Enum):
     
     def get_numeric_level(self) -> int:
         """Get numeric classification level."""
+        pass
         levels = {
             SecurityClassification.PUBLIC: 0,
             SecurityClassification.INTERNAL: 1,
@@ -379,6 +392,7 @@ class RetentionPolicy(str, Enum):
     
     def get_retention_days(self) -> int:
         """Get retention period in days."""
+        pass
         retention_days = {
             RetentionPolicy.IMMEDIATE: 0,
             RetentionPolicy.SHORT_TERM: 30,
@@ -496,33 +510,33 @@ ACTION_CATEGORIES: Dict[ActionType, ActionCategory] = {
 
 
 def get_action_category(action_type: ActionType) -> ActionCategory:
-    """Get the category for an action type."""
-    return ACTION_CATEGORIES.get(action_type, ActionCategory.INFRASTRUCTURE)
+        """Get the category for an action type."""
+        return ACTION_CATEGORIES.get(action_type, ActionCategory.INFRASTRUCTURE)
 
 
 # Export all enums
 __all__ = [
     # Core workflow
-    'TaskStatus', 'Priority', 'Urgency', 'ConfidenceLevel',
+        'TaskStatus', 'Priority', 'Urgency', 'ConfidenceLevel',
     
     # Evidence
-    'EvidenceType', 'EvidenceQuality',
+        'EvidenceType', 'EvidenceQuality',
     
     # Actions
-    'ActionCategory', 'ActionType', 'ActionResult', 'RiskLevel',
+        'ActionCategory', 'ActionType', 'ActionResult', 'RiskLevel',
     
     # Decisions
-    'DecisionType', 'DecisionMethod',
+        'DecisionType', 'DecisionMethod',
     
     # Cryptography
-    'SignatureAlgorithm', 'HashAlgorithm',
+        'SignatureAlgorithm', 'HashAlgorithm',
     
     # Classification
-    'SecurityClassification', 'RetentionPolicy',
+        'SecurityClassification', 'RetentionPolicy',
     
     # Agents
-    'AgentRole', 'AgentCapability',
+        'AgentRole', 'AgentCapability',
     
     # Utilities
-    'ACTION_CATEGORIES', 'get_action_category'
+        'ACTION_CATEGORIES', 'get_action_category'
 ]

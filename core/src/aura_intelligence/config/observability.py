@@ -152,9 +152,11 @@ class ObservabilitySettings(BaseSettings):
     @property
     def metrics_url(self) -> str:
         """Get full metrics URL."""
+        pass
         return f"http://0.0.0.0:{self.metrics_port}{self.metrics_path}"
     
     @property
     def health_check_url(self) -> str:
         """Get full health check URL."""
+        pass
         return f"http://0.0.0.0:{self.health_check_port}{self.health_check_path}"

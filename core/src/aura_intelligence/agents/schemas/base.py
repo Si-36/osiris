@@ -2,6 +2,7 @@
 🏗️ Base Schema Components - Foundation Classes
 
 Core base models, utilities, and common functionality for all schemas:
+    pass
 - DateTime handling and serialization
 - Base model configurations
 - Common validators
@@ -67,6 +68,7 @@ class DateTimeField(datetime):
         Pydantic v2 schema customization method.
         Replaces the deprecated __modify_schema__ method.
         """
+        pass
         json_schema = handler(core_schema)
         json_schema.update({
             'type': 'string',
@@ -135,6 +137,7 @@ class VersionedSchema(ImmutableBaseModel):
     @validator('schema_version')
     def validate_schema_version(cls, v):
         """Validate schema version format."""
+        pass
         if not v or not isinstance(v, str):
             raise ValueError("Schema version must be a non-empty string")
         
@@ -153,14 +156,17 @@ class VersionedSchema(ImmutableBaseModel):
     
     def get_major_version(self) -> int:
         """Get major version number."""
+        pass
         return int(self.schema_version.split('.')[0])
     
     def get_minor_version(self) -> int:
         """Get minor version number."""
+        pass
         return int(self.schema_version.split('.')[1])
     
     def get_patch_version(self) -> int:
         """Get patch version number (0 if not specified)."""
+        pass
         parts = self.schema_version.split('.')
         return int(parts[2]) if len(parts) > 2 else 0
     
@@ -195,6 +201,7 @@ class GloballyIdentifiable(VersionedSchema):
     
     def to_global_id(self) -> str:
         """Generate globally unique identifier with full context."""
+        pass
         entity_id = getattr(self, 'entry_id', None) or getattr(self, 'action_id', None) or getattr(self, 'decision_id', None)
         if not entity_id:
             raise ValueError("Entity must have entry_id, action_id, or decision_id for global ID")
@@ -202,6 +209,7 @@ class GloballyIdentifiable(VersionedSchema):
     
     def get_context_prefix(self) -> str:
         """Get the workflow:task context prefix."""
+        pass
         return f"{self.workflow_id}:{self.task_id}"
 
 
@@ -209,81 +217,87 @@ class GloballyIdentifiable(VersionedSchema):
 # COMMON VALIDATORS
 # ============================================================================
 
-def validate_confidence_score(v: float) -> float:
-    """Validate confidence scores are between 0.0 and 1.0."""
-    if not isinstance(v, (int, float)):
+    def validate_confidence_score(v: float) -> float:
+        """Validate confidence scores are between 0.0 and 1.0."""
+        if not isinstance(v, (int, float)):
+            pass
         raise ValueError("Confidence score must be a number")
-    if not 0.0 <= v <= 1.0:
+        if not 0.0 <= v <= 1.0:
+            pass
         raise ValueError("Confidence score must be between 0.0 and 1.0")
-    return float(v)
+        return float(v)
 
 
-def validate_signature_format(v: str) -> str:
-    """Validate cryptographic signature format."""
-    if not v or not isinstance(v, str):
+    def validate_signature_format(v: str) -> str:
+        """Validate cryptographic signature format."""
+        if not v or not isinstance(v, str):
+            pass
         raise ValueError("Signature must be a non-empty string")
-    if len(v) < 32:
+        if len(v) < 32:
+            pass
         raise ValueError("Signature must be at least 32 characters")
-    return v
-
-
-def validate_non_empty_string(v: str) -> str:
-    """Validate string is non-empty."""
-    if not v or not isinstance(v, str) or not v.strip():
-        raise ValueError("Field must be a non-empty string")
-    return v.strip()
-
-
-def validate_uuid_format(v: str) -> str:
-    """Validate UUID format."""
-    try:
-        uuid.UUID(v)
         return v
-    except ValueError:
-        raise ValueError("Invalid UUID format")
+
+
+    def validate_non_empty_string(v: str) -> str:
+        """Validate string is non-empty."""
+        if not v or not isinstance(v, str) or not v.strip():
+            pass
+        raise ValueError("Field must be a non-empty string")
+        return v.strip()
+
+
+    def validate_uuid_format(v: str) -> str:
+        """Validate UUID format."""
+        try:
+            uuid.UUID(v)
+        except Exception:
+            raise ValueError(f"Invalid UUID format: {v}")
+        return v
 
 
 # ============================================================================
 # UTILITY FUNCTIONS
 # ============================================================================
 
-def generate_entity_id(prefix: str = "entity") -> str:
-    """Generate a unique entity ID with prefix."""
-    return f"{prefix}_{uuid.uuid4().hex}"
+    def generate_entity_id(prefix: str = "entity") -> str:
+        """Generate a unique entity ID with prefix."""
+        return f"{prefix}_{uuid.uuid4().hex}"
 
 
-def generate_correlation_id() -> str:
-    """Generate a correlation ID for tracing."""
-    return f"corr_{uuid.uuid4().hex}"
+    def generate_correlation_id() -> str:
+        """Generate a correlation ID for tracing."""
+        return f"corr_{uuid.uuid4().hex}"
 
 
-def generate_workflow_id(prefix: str = "wf") -> str:
-    """Generate a workflow ID."""
-    timestamp = int(utc_now().timestamp())
-    return f"{prefix}_{timestamp}_{uuid.uuid4().hex[:8]}"
+    def generate_workflow_id(prefix: str = "wf") -> str:
+        """Generate a workflow ID."""
+        timestamp = int(utc_now().timestamp())
+        return f"{prefix}_{timestamp}_{uuid.uuid4().hex[:8]}"
 
 
-def generate_task_id(prefix: str = "task") -> str:
-    """Generate a task ID."""
-    return f"{prefix}_{uuid.uuid4().hex[:12]}"
+    def generate_task_id(prefix: str = "task") -> str:
+        """Generate a task ID."""
+        return f"{prefix}_{uuid.uuid4().hex[:12]}"
 
 
-def calculate_age_seconds(timestamp: datetime) -> float:
-    """Calculate age in seconds from a timestamp."""
-    return (utc_now() - timestamp).total_seconds()
+    def calculate_age_seconds(timestamp: datetime) -> float:
+        """Calculate age in seconds from a timestamp."""
+        return (utc_now() - timestamp).total_seconds()
 
 
-def is_recent(timestamp: datetime, max_age_hours: int = 24) -> bool:
-    """Check if a timestamp is recent (within max_age_hours)."""
-    max_age_seconds = max_age_hours * 3600
-    return calculate_age_seconds(timestamp) <= max_age_seconds
+    def is_recent(timestamp: datetime, max_age_hours: int = 24) -> bool:
+        """Check if a timestamp is recent (within max_age_hours)."""
+        max_age_seconds = max_age_hours * 3600
+        return calculate_age_seconds(timestamp) <= max_age_seconds
 
 
-def truncate_string(text: str, max_length: int = 100, suffix: str = "...") -> str:
-    """Truncate string to max length with suffix."""
-    if len(text) <= max_length:
+    def truncate_string(text: str, max_length: int = 100, suffix: str = "...") -> str:
+        """Truncate string to max length with suffix."""
+        if len(text) <= max_length:
+            pass
         return text
-    return text[:max_length - len(suffix)] + suffix
+        return text[:max_length - len(suffix)] + suffix
 
 
 # ============================================================================
@@ -321,6 +335,7 @@ class MetadataSupport(VersionedSchema):
     @validator('classification')
     def validate_classification(cls, v):
         """Validate security classification."""
+        pass
         if v is not None:
             valid_classifications = ['public', 'internal', 'confidential', 'restricted']
             if v.lower() not in valid_classifications:
@@ -356,6 +371,7 @@ class TemporalSupport(VersionedSchema):
     and deadline management across all time-sensitive entities.
     
     Common temporal patterns:
+        pass
     - Creation and update tracking
     - Event vs collection time distinction  
     - Expiration and deadline management
@@ -405,32 +421,38 @@ class TemporalSupport(VersionedSchema):
     
     def is_expired(self) -> bool:
         """Check if the entity has expired."""
+        pass
         if not self.expiry_timestamp:
             return False
         return utc_now() > self.expiry_timestamp
     
     def is_past_deadline(self) -> bool:
         """Check if the entity is past its deadline."""
+        pass
         if not self.deadline:
             return False
         return utc_now() > self.deadline
     
     def get_age_seconds(self) -> float:
         """Get the age of this entity in seconds."""
+        pass
         return calculate_age_seconds(self.created_at)
     
     def get_time_since_update_seconds(self) -> float:
         """Get seconds since last update."""
+        pass
         return calculate_age_seconds(self.updated_at)
     
     def get_time_to_deadline_seconds(self) -> Optional[float]:
         """Get seconds until deadline (negative if past deadline)."""
+        pass
         if not self.deadline:
             return None
         return (self.deadline - utc_now()).total_seconds()
     
     def get_time_to_expiry_seconds(self) -> Optional[float]:
         """Get seconds until expiry (negative if expired)."""
+        pass
         if not self.expiry_timestamp:
             return None
         return (self.expiry_timestamp - utc_now()).total_seconds()
@@ -445,12 +467,14 @@ class TemporalSupport(VersionedSchema):
     
     def get_duration_seconds(self) -> Optional[float]:
         """Get duration in seconds (converted from milliseconds)."""
+        pass
         if self.duration_ms is None:
             return None
         return self.duration_ms / 1000.0
     
     def get_timeout_seconds(self) -> Optional[float]:
         """Get timeout in seconds (converted from milliseconds)."""
+        pass
         if self.timeout_ms is None:
             return None
         return self.timeout_ms / 1000.0
@@ -499,12 +523,14 @@ class QualityMetrics(GloballyIdentifiable, MetadataSupport):
     @validator('confidence_score', 'quality_score', 'reliability_score', 'source_credibility')
     def validate_metric_scores(cls, v):
         """Validate all metric scores are within valid range."""
+        pass
         if v is not None:
             return validate_confidence_score(v)
         return v
     
     def get_overall_quality(self) -> float:
         """Calculate overall quality score from available metrics."""
+        pass
         scores = [
             self.confidence_score,
             self.quality_score,
@@ -576,23 +602,23 @@ def create_migration_registry() -> Dict[str, MigrationProtocol]:
 # Export commonly used items
 __all__ = [
     # DateTime utilities
-    'utc_now', 'datetime_to_iso', 'iso_to_datetime', 'DateTimeField',
+        'utc_now', 'datetime_to_iso', 'iso_to_datetime', 'DateTimeField',
     
     # Base models
-    'ImmutableBaseModel', 'MutableBaseModel', 'VersionedSchema',
-    'GloballyIdentifiable', 'MetadataSupport', 'TemporalSupport', 'QualityMetrics',
+        'ImmutableBaseModel', 'MutableBaseModel', 'VersionedSchema',
+        'GloballyIdentifiable', 'MetadataSupport', 'TemporalSupport', 'QualityMetrics',
     
     # Validators
-    'validate_confidence_score', 'validate_signature_format',
-    'validate_non_empty_string', 'validate_uuid_format',
+        'validate_confidence_score', 'validate_signature_format',
+        'validate_non_empty_string', 'validate_uuid_format',
     
     # Utilities
-    'generate_entity_id', 'generate_correlation_id', 'generate_workflow_id',
-    'generate_task_id', 'calculate_age_seconds', 'is_recent', 'truncate_string',
+        'generate_entity_id', 'generate_correlation_id', 'generate_workflow_id',
+        'generate_task_id', 'calculate_age_seconds', 'is_recent', 'truncate_string',
     
     # Exceptions
-    'SchemaValidationError', 'SchemaVersionError',
+        'SchemaValidationError', 'SchemaVersionError',
     
     # Migration
-    'MigrationProtocol', 'create_migration_registry'
+        'MigrationProtocol', 'create_migration_registry'
 ]

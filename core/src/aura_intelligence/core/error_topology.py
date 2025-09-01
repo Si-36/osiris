@@ -374,11 +374,7 @@ class ErrorTopologyAnalyzer:
         except:
             return False
     
-    def predict_error_cascade(
-        self, 
-        initial_error: AuraError,
-        time_horizon: float = 60.0
-    ) -> List[Tuple[str, float, float]]:
+    def predict_error_cascade(self, initial_error: AuraError, time_horizon: float = 60.0) -> List[Tuple[str, float, float]]:
         """
         Predict error cascade propagation.
         
@@ -485,11 +481,7 @@ class ErrorTopologyAnalyzer:
         
         return criticality_scores
     
-    def optimize_recovery_strategy(
-        self, 
-        error: AuraError,
-        available_resources: Dict[str, float]
-    ) -> RecoveryStrategy:
+    def optimize_recovery_strategy( self, error: AuraError, available_resources: Dict[str, float] ) -> RecoveryStrategy:
         """
         Optimize recovery strategy based on topology analysis.
         
@@ -558,7 +550,7 @@ class ErrorTopologyAnalyzer:
     
     def _compute_graph_hash(self) -> str:
         """Compute hash of the current graph state."""
-        # Simple hash based on nodes and edges
+                # Simple hash based on nodes and edges
         nodes_hash = hash(tuple(sorted(self.error_graph.nodes())))
         edges_hash = hash(tuple(sorted(self.error_graph.edges())))
         return f"{nodes_hash}_{edges_hash}"
@@ -617,11 +609,7 @@ class PersistentHomologyComputer:
     def __init__(self):
         self.filtration_cache: Dict[str, List[Tuple[float, int]]] = {}
     
-    def compute_persistent_homology(
-        self, 
-        error_graph: nx.DiGraph,
-        max_dimension: int = 2
-    ) -> Dict[str, Any]:
+    def compute_persistent_homology( self, error_graph: nx.DiGraph, max_dimension: int = 2 ) -> Dict[str, Any]:
         """
         Compute persistent homology of the error graph.
         
@@ -712,11 +700,7 @@ class PersistentHomologyComputer:
         
         return filtration
     
-    def _compute_persistence_diagrams(
-        self, 
-        filtration: List[Tuple[float, List[Tuple]]], 
-        max_dimension: int
-    ) -> Dict[int, List[Tuple[float, float]]]:
+    def _compute_persistence_diagrams( self, filtration: List[Tuple[float, List[Tuple]]], max_dimension: int ) -> Dict[int, List[Tuple[float, float]]]:
         """Compute persistence diagrams (simplified implementation)."""
         persistence_diagrams = {dim: [] for dim in range(max_dimension + 1)}
         
@@ -825,4 +809,4 @@ def analyze_error_topology(errors: List[AuraError]) -> Dict[str, Any]:
         'persistent_homology': homology_result,
         'critical_components': analyzer.compute_critical_components(),
         'propagation_patterns': analyzer._get_dominant_patterns()
-    }
+        }

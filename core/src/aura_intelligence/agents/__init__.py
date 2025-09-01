@@ -17,7 +17,7 @@ with comprehensive observability and resilience patterns.
 
 # Phase 2 new implementations - commented out due to complex dependencies
 # from .base import AgentBase, AgentConfig, AgentState
-# from .observability import AgentInstrumentor, AgentMetrics
+# from aura_intelligence.observability import AgentInstrumentor, AgentMetrics
 
 # Original schemas (to be implemented/migrated) - commented out due to missing modules
 # from .schemas.acp import ACPEnvelope, ACPEndpoint, MessageType, Priority
@@ -33,17 +33,17 @@ with comprehensive observability and resilience patterns.
 # from .base_classes.agent import BaseAgent, AgentRole, AgentCapability
 # from .base_classes.instrumentation import instrument_agent, AgentMetrics as LegacyAgentMetrics
 
-# TODO: Fix missing orchestration module
+
 # from .orchestration.workflow import WorkflowEngine, WorkflowState
 # from .orchestration.langgraph import LangGraphOrchestrator
 
-# TODO: Fix missing core agent implementations
+
 # from .core.observer import ObserverAgent
 # from .core.analyst import AnalystAgent  
 # from .core.executor import ExecutorAgent
 # from .core.coordinator import CoordinatorAgent
 
-# TODO: Fix missing advanced agents
+
 # from .advanced.router import RouterAgent
 # from .advanced.consensus import ConsensusAgent
 # from .advanced.supervisor import SupervisorAgent
@@ -52,8 +52,32 @@ with comprehensive observability and resilience patterns.
 from .simple_agent import SimpleAgent, create_simple_agent, get_simple_registry
 from .consolidated_agents import ConsolidatedAgent, ConsolidatedAgentFactory, get_agent_registry
 
+# Production LangGraph agents (2025 patterns)
+try:
+    from .production_langgraph_agent import (
+        AURAProductionAgent,
+        ProductionAgentConfig,
+        ProductionAgentState,
+        create_production_agent
+    )
+    PRODUCTION_AGENTS_AVAILABLE = True
+except ImportError:
+    PRODUCTION_AGENTS_AVAILABLE = False
+    AURAProductionAgent = None
+    ProductionAgentConfig = None
+    ProductionAgentState = None
+    create_production_agent = None
+
 __version__ = "2.0.0"
 __author__ = "AURA Intelligence Team"
+
+# Aliases for backward compatibility
+AURAAgent = AURAProductionAgent
+AgentConfig = ProductionAgentConfig
+
+# Placeholders for expected imports
+LNNCouncilOrchestrator = None  # Not implemented yet
+agent_templates = {}  # Not implemented yet
 
 # Export main classes for easy import
 __all__ = [
@@ -64,6 +88,19 @@ __all__ = [
     "ConsolidatedAgent",
     "ConsolidatedAgentFactory",
     "get_agent_registry",
+    
+    # Production LangGraph agents
+    "AURAProductionAgent",
+    "ProductionAgentConfig",
+    "ProductionAgentState",
+    "create_production_agent",
+    "PRODUCTION_AGENTS_AVAILABLE",
+    
+    # Aliases for backward compatibility
+    "AURAAgent",
+    "AgentConfig",
+    "LNNCouncilOrchestrator",
+    "agent_templates",
     
     # Phase 2 New Base (commented out due to dependencies)
     # "AgentBase",

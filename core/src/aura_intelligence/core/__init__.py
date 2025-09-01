@@ -46,7 +46,7 @@ from .self_healing import (
     create_chaos_experiment,
     get_self_healing_handler
 )
-from .config import (
+from ..config import (
     AuraConfig,
     ConfigurationManager,
     ConfigLoader,

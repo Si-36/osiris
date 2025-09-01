@@ -39,7 +39,7 @@ class DPOTrainer:
     def create_preference_pairs(
         self, 
         action_records: List[ActionRecord]
-    ) -> List[Tuple[torch.Tensor, torch.Tensor, float]]:
+        ) -> List[Tuple[torch.Tensor, torch.Tensor, float]]:
         """Create preference pairs from action records"""
         
         pairs = []
@@ -90,7 +90,7 @@ class DPOTrainer:
         rejected: torch.Tensor,
         preference_strength: float,
         beta: float = 0.1
-    ) -> torch.Tensor:
+        ) -> torch.Tensor:
         """DPO loss function"""
         
         # Get policy logits

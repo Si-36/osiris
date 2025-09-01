@@ -200,8 +200,7 @@ class UnifiedComponent(ABC):
         self.metrics.status = self.status
         return self.metrics
     
-    async def emit_event(self, event_type: str, data: Dict[str, Any], 
-                        priority: Priority = Priority.NORMAL) -> None:
+    async def emit_event(self, event_type: str, data: Dict[str, Any], priority: Priority = Priority.NORMAL) -> None:
         """Emit a system event."""
         event = SystemEvent(
             event_type=event_type,
@@ -219,7 +218,7 @@ class UnifiedComponent(ABC):
                 else:
                     handler(event)
             except Exception as e:
-                print(f"Event handler error: {e}")
+                    print(f"Event handler error: {e}")
     
     def subscribe_to_events(self, event_type: str, handler: Callable) -> None:
         """Subscribe to events of a specific type."""
@@ -241,7 +240,7 @@ class UnifiedComponent(ABC):
                 else:
                     callback(metrics)
             except Exception as e:
-                print(f"Health callback error: {e}")
+                    print(f"Health callback error: {e}")
     
     # ========================================================================
     # UTILITY METHODS (Implemented)
@@ -295,7 +294,6 @@ class AgentComponent(UnifiedComponent):
     @abstractmethod
     def get_agent_type(self) -> str:
         """Get the type of agent (council, bio, etc.)."""
-        pass
 
 class MemoryComponent(UnifiedComponent):
     """Unified interface for all memory systems."""
@@ -318,7 +316,6 @@ class MemoryComponent(UnifiedComponent):
     @abstractmethod
     async def consolidate(self) -> Dict[str, Any]:
         """Consolidate memory (cleanup, optimization, etc.)."""
-        pass
 
 class NeuralComponent(UnifiedComponent):
     """Unified interface for all neural network systems."""
@@ -341,7 +338,6 @@ class NeuralComponent(UnifiedComponent):
     @abstractmethod
     async def load_model(self, path: str) -> bool:
         """Load model from disk."""
-        pass
 
 class OrchestrationComponent(UnifiedComponent):
     """Unified interface for orchestration systems."""
@@ -359,7 +355,6 @@ class OrchestrationComponent(UnifiedComponent):
     @abstractmethod
     async def cancel_workflow(self, workflow_id: str) -> bool:
         """Cancel a running workflow."""
-        pass
 
 class ObservabilityComponent(UnifiedComponent):
     """Unified interface for observability systems."""
@@ -437,7 +432,7 @@ class ComponentRegistry:
                 metrics = await component.health_check()
                 results[component_id] = metrics
             except Exception as e:
-                # Create error metrics
+                    # Create error metrics
                 results[component_id] = ComponentMetrics(
                     component_id=component_id,
                     status=ComponentStatus.ERROR,

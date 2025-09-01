@@ -144,6 +144,7 @@ class ACPEnvelope(BaseModel):
     
     def is_expired(self) -> bool:
         """Check if the message has expired."""
+        pass
         if not self.expires_at:
             return False
         
@@ -152,10 +153,12 @@ class ACPEnvelope(BaseModel):
     
     def should_retry(self) -> bool:
         """Check if the message should be retried."""
+        pass
         return self.retry_count < self.max_retries
     
     def increment_retry(self) -> 'ACPEnvelope':
         """Create a new envelope with incremented retry count."""
+        pass
         return self.copy(update={
             'retry_count': self.retry_count + 1,
             'timestamp_utc': datetime.now(timezone.utc).isoformat()
@@ -163,6 +166,7 @@ class ACPEnvelope(BaseModel):
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
+        pass
         return self.dict()
     
     @classmethod
@@ -185,6 +189,7 @@ class ACPResponse(BaseModel):
     
     def to_payload(self) -> Dict[str, Any]:
         """Convert to payload format for ACP envelope."""
+        pass
         return self.dict(exclude_none=True)
 
 
@@ -198,6 +203,7 @@ class ACPError(Exception):
     
     def to_response(self) -> ACPResponse:
         """Convert to ACP response format."""
+        pass
         return ACPResponse(
             success=False,
             error=str(self),

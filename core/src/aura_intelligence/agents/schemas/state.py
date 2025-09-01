@@ -242,6 +242,7 @@ class AgentState(ImmutableBaseModel, TraceContextMixin):
 
     def _get_canonical_state(self) -> str:
         """Get canonical string representation of state for signing."""
+        pass
         try:
             from .base import datetime_to_iso
         except ImportError:
@@ -258,7 +259,7 @@ class AgentState(ImmutableBaseModel, TraceContextMixin):
         modifier_agent_id: str,
         private_key: str,
         traceparent: Optional[str] = None
-    ) -> 'AgentState':
+        ) -> 'AgentState':
         """Create new state with additional evidence (pure function)."""
         new_dossier = self.context_dossier + [evidence]
         new_confidence = self._calculate_confidence(new_dossier)
@@ -291,7 +292,7 @@ class AgentState(ImmutableBaseModel, TraceContextMixin):
         modifier_agent_id: str,
         private_key: str,
         traceparent: Optional[str] = None
-    ) -> 'AgentState':
+        ) -> 'AgentState':
         """Create new state with additional action (pure function)."""
         new_actions = self.action_log + [action]
         new_version = self.state_version + 1
@@ -332,7 +333,7 @@ class AgentState(ImmutableBaseModel, TraceContextMixin):
         private_key: str,
         reason: Optional[str] = None,
         traceparent: Optional[str] = None
-    ) -> 'AgentState':
+        ) -> 'AgentState':
         """Create new state with updated status (pure function)."""
         new_version = self.state_version + 1
         current_time = utc_now()
@@ -384,6 +385,7 @@ class AgentState(ImmutableBaseModel, TraceContextMixin):
 
     def to_global_id(self) -> str:
         """Generate globally unique identifier."""
+        pass
         return f"{self.workflow_id}:{self.task_id}"
 
     def __str__(self) -> str:
@@ -404,6 +406,7 @@ class EvidenceContent:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
+        pass
         return {
             "type": self.type,
             "data": self.data,
@@ -428,6 +431,7 @@ class ActionIntent:
         
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
+        pass
         return {
             "action": self.action,
             "confidence": self.confidence,
@@ -448,6 +452,7 @@ class DecisionOption:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
+        pass
         return {
             "action": self.action,
             "confidence": self.confidence,
@@ -484,6 +489,7 @@ class DecisionCriterion:
             
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
+        pass
         return {
             "name": self.name,
             "weight": self.weight,
@@ -522,28 +528,28 @@ class ActionCategory:
     CORRECTIVE = "corrective"
 
 
-def get_action_category(action_type: str) -> str:
-    """Get the category for a given action type."""
-    category_mapping = {
+    def get_action_category(action_type: str) -> str:
+        """Get the category for a given action type."""
+        category_mapping = {
         ActionType.MONITOR: ActionCategory.PASSIVE,
         ActionType.INVESTIGATE: ActionCategory.ACTIVE,
         ActionType.ESCALATE: ActionCategory.REACTIVE,
         ActionType.EXECUTE: ActionCategory.PROACTIVE,
         ActionType.REPORT: ActionCategory.PASSIVE,
         ActionType.WAIT: ActionCategory.PASSIVE
-    }
-    return category_mapping.get(action_type, ActionCategory.PASSIVE)
+        }
+        return category_mapping.get(action_type, ActionCategory.PASSIVE)
 
 
 # Export public interface
 __all__ = [
-    'AgentState',
-    'EvidenceContent',
-    'ActionIntent',
-    'DecisionOption',
-    'DecisionCriterion',
-    'EvidenceType',
-    'ActionType',
-    'ActionCategory',
-    'get_action_category'
+        'AgentState',
+        'EvidenceContent',
+        'ActionIntent',
+        'DecisionOption',
+        'DecisionCriterion',
+        'EvidenceType',
+        'ActionType',
+        'ActionCategory',
+        'get_action_category'
 ]

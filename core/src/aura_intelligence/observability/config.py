@@ -85,6 +85,7 @@ class ObservabilityConfig:
     
     def __post_init__(self):
         """Post-initialization validation and setup."""
+        pass
         
         # Ensure organism_id is set in headers
         if self.organism_id and "organism-id" not in self.otel_headers:
@@ -96,6 +97,7 @@ class ObservabilityConfig:
     
     def _validate_production_config(self):
         """Validate configuration for production deployment."""
+        pass
         
         critical_configs = []
         
@@ -118,6 +120,7 @@ class ObservabilityConfig:
     
     def get_resource_attributes(self) -> Dict[str, str]:
         """Get OpenTelemetry resource attributes."""
+        pass
         
         return {
             "service.name": self.otel_service_name,
@@ -133,6 +136,7 @@ class ObservabilityConfig:
     
     def get_langsmith_tags(self) -> List[str]:
         """Get LangSmith tags for trace categorization."""
+        pass
         
         return [
             f"generation:{self.organism_generation}",
@@ -165,6 +169,7 @@ class ObservabilityConfig:
     
     def to_dict(self) -> Dict[str, any]:
         """Convert configuration to dictionary for serialization."""
+        pass
         
         # Exclude sensitive information
         sensitive_fields = {
@@ -183,23 +188,23 @@ default_config = ObservabilityConfig()
 
 
 def create_config(**overrides) -> ObservabilityConfig:
-    """
-    Create observability configuration with overrides.
+        """
+        Create observability configuration with overrides.
     
-    Args:
+        Args:
         **overrides: Configuration overrides
         
-    Returns:
+        Returns:
         ObservabilityConfig: Configured instance
-    """
+        """
     
-    return ObservabilityConfig(**overrides)
+        return ObservabilityConfig(**overrides)
 
 
-def create_development_config() -> ObservabilityConfig:
-    """Create configuration optimized for development."""
+    def create_development_config() -> ObservabilityConfig:
+        """Create configuration optimized for development."""
     
-    return ObservabilityConfig(
+        return ObservabilityConfig(
         deployment_environment="development",
         log_level="DEBUG",
         prometheus_enable_multiprocess=False,
@@ -207,13 +212,13 @@ def create_development_config() -> ObservabilityConfig:
         otel_exporter_endpoint="http://localhost:4317",
         langsmith_enable_streaming=False,
         enable_cryptographic_audit=False
-    )
+        )
 
 
-def create_production_config() -> ObservabilityConfig:
-    """Create configuration optimized for production."""
+    def create_production_config() -> ObservabilityConfig:
+        """Create configuration optimized for production."""
     
-    return ObservabilityConfig(
+        return ObservabilityConfig(
         deployment_environment="production",
         log_level="INFO",
         prometheus_enable_multiprocess=True,
@@ -221,4 +226,4 @@ def create_production_config() -> ObservabilityConfig:
         langsmith_enable_streaming=True,
         enable_cryptographic_audit=True,
         enable_auto_recovery=True
-    )
+        )

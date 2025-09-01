@@ -72,16 +72,16 @@ class StatePersistenceManager:
             
             if cache_key in self.state_cache:
                 return self.state_cache[cache_key].data
-            
+                
             file_path = os.path.join(self.storage_path, f"{cache_key}.pkl")
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as f:
                     snapshot = pickle.load(f)
-                
+                    
                 if self._calculate_checksum(snapshot.data) == snapshot.checksum:
                     self.state_cache[cache_key] = snapshot
                     return snapshot.data
-            
+                
             return None
         except Exception as e:
             logger.error(f"Failed to load state for {component_id}: {e}")
@@ -121,14 +121,14 @@ class StatePersistenceManager:
                     'data': snapshot.data,
                     'checksum': snapshot.checksum
                 }
-            
+                
             with open(checkpoint_path, 'wb') as f:
                 pickle.dump({
                     'checkpoint_id': checkpoint_id,
                     'timestamp': time.time(),
                     'states': all_states
                 }, f)
-            
+                
             await self._cleanup_old_checkpoints()
             logger.info(f"Full checkpoint created: {checkpoint_id}")
             return checkpoint_id
@@ -168,18 +168,20 @@ class StatePersistenceManager:
             checkpoint_files = [f for f in os.listdir(self.storage_path) if f.endswith('.checkpoint')]
         except:
             pass
+        pass
         
         return {
-            'cached_states': len(self.state_cache),
-            'storage_path': self.storage_path,
-            'available_checkpoints': len(checkpoint_files),
-            'latest_checkpoint': max(checkpoint_files) if checkpoint_files else None
+        'cached_states': len(self.state_cache),
+        'storage_path': self.storage_path,
+        'available_checkpoints': len(checkpoint_files),
+        'latest_checkpoint': max(checkpoint_files) if checkpoint_files else None
         }
 
-_state_manager = None
+        _state_manager = None
 
-def get_state_manager():
-    global _state_manager
-    if _state_manager is None:
+    def get_state_manager():
+        global _state_manager
+        if _state_manager is None:
+            pass
         _state_manager = StatePersistenceManager()
-    return _state_manager
+        return _state_manager

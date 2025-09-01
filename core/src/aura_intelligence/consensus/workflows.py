@@ -14,7 +14,7 @@ import structlog
 from temporalio import workflow
 from temporalio.common import RetryPolicy
 
-from .types import (
+from .consensus_types import (
     ConsensusRequest,
     ConsensusResult,
     DecisionType,
@@ -164,6 +164,7 @@ class ConsensusWorkflow:
     
     def _calculate_duration_ms(self, start_time) -> float:
         """Calculate duration in milliseconds."""
+        pass
         duration = workflow.now() - start_time
         return duration.total_seconds() * 1000
 

@@ -40,6 +40,7 @@ class WorkflowCheckpointManager:
     
     def _initialize_database(self) -> None:
         """Initialize the checkpoint database."""
+        pass
         
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -57,7 +58,7 @@ class WorkflowCheckpointManager:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         UNIQUE(workflow_id, checkpoint_id)
                     )
-                """)
+        """)
                 
                 # Create workflow summary table
                 cursor.execute("""
@@ -75,7 +76,7 @@ class WorkflowCheckpointManager:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+        """)
                 
                 # Create performance metrics table
                 cursor.execute("""
@@ -89,7 +90,7 @@ class WorkflowCheckpointManager:
                         error_message TEXT,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+        """)
                 
                 # Create indexes for performance
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_workflow_id ON workflow_checkpoints(workflow_id)")
@@ -104,8 +105,8 @@ class WorkflowCheckpointManager:
             logger.error(f"❌ Database initialization failed: {e}")
             raise
     
-    async def save_checkpoint(self, workflow_id: str, checkpoint_id: str, 
-                            node_name: str, state_data: Any, 
+    async def save_checkpoint(self, workflow_id: str, checkpoint_id: str,
+                            node_name: str, state_data: Any,
                             metadata: Optional[Dict[str, Any]] = None) -> None:
         """Save a workflow checkpoint."""
         
@@ -121,7 +122,7 @@ class WorkflowCheckpointManager:
                     INSERT OR REPLACE INTO workflow_checkpoints 
                     (workflow_id, checkpoint_id, node_name, state_data, metadata)
                     VALUES (?, ?, ?, ?, ?)
-                """, (workflow_id, checkpoint_id, node_name, serialized_state, serialized_metadata))
+                        """, (workflow_id, checkpoint_id, node_name, serialized_state, serialized_metadata))
                 
                 conn.commit()
                 
@@ -139,10 +140,10 @@ class WorkflowCheckpointManager:
                 cursor = conn.cursor()
                 
                 cursor.execute("""
-                    SELECT node_name, state_data, metadata, created_at
-                    FROM workflow_checkpoints
-                    WHERE workflow_id = ? AND checkpoint_id = ?
-                """, (workflow_id, checkpoint_id))
+        SELECT node_name, state_data, metadata, created_at
+        FROM workflow_checkpoints
+        WHERE workflow_id = ? AND checkpoint_id = ?
+                        """, (workflow_id, checkpoint_id))
                 
                 result = cursor.fetchone()
                 
@@ -176,7 +177,7 @@ class WorkflowCheckpointManager:
                     FROM workflow_checkpoints
                     WHERE workflow_id = ?
                     ORDER BY created_at ASC
-                """, (workflow_id,))
+                        """, (workflow_id,))
                 
                 results = cursor.fetchall()
                 
@@ -202,22 +203,22 @@ class WorkflowCheckpointManager:
                 cursor = conn.cursor()
                 
                 cursor.execute("""
-                    INSERT OR REPLACE INTO workflow_summary
-                    (workflow_id, status, start_time, end_time, total_nodes, 
-                     evidence_count, final_risk_score, success, error_message, metadata)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR REPLACE INTO workflow_summary
+        (workflow_id, status, start_time, end_time, total_nodes,
+        evidence_count, final_risk_score, success, error_message, metadata)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
-                    workflow_id,
-                    summary.get("status", "unknown"),
-                    summary.get("start_time"),
-                    summary.get("end_time"),
-                    summary.get("total_nodes", 0),
-                    summary.get("evidence_count", 0),
-                    summary.get("final_risk_score"),
-                    summary.get("success", False),
-                    summary.get("error_message"),
-                    json.dumps(summary.get("metadata", {}))
-                ))
+        workflow_id,
+        summary.get("status", "unknown"),
+        summary.get("start_time"),
+        summary.get("end_time"),
+        summary.get("total_nodes", 0),
+        summary.get("evidence_count", 0),
+        summary.get("final_risk_score"),
+        summary.get("success", False),
+        summary.get("error_message"),
+        json.dumps(summary.get("metadata", {}))
+        ))
                 
                 conn.commit()
                 
@@ -239,7 +240,7 @@ class WorkflowCheckpointManager:
                            created_at, updated_at
                     FROM workflow_summary
                     WHERE workflow_id = ?
-                """, (workflow_id,))
+                        """, (workflow_id,))
                 
                 result = cursor.fetchone()
                 
@@ -270,7 +271,7 @@ class WorkflowCheckpointManager:
             return None
     
     async def record_node_metrics(self, workflow_id: str, node_name: str,
-                                execution_time_ms: int, memory_usage_mb: float,
+        execution_time_ms: int, memory_usage_mb: float,
                                 success: bool, error_message: Optional[str] = None) -> None:
         """Record performance metrics for a node execution."""
         
@@ -300,29 +301,29 @@ class WorkflowCheckpointManager:
                 
                 # Get workflow statistics
                 cursor.execute("""
-                    SELECT 
-                        COUNT(*) as total_workflows,
-                        SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_workflows,
-                        AVG(evidence_count) as avg_evidence_count,
-                        AVG(final_risk_score) as avg_risk_score
-                    FROM workflow_summary
-                    WHERE created_at >= datetime('now', '-{} days')
-                """.format(days))
+        SELECT
+        COUNT(*) as total_workflows,
+        SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_workflows,
+        AVG(evidence_count) as avg_evidence_count,
+        AVG(final_risk_score) as avg_risk_score
+        FROM workflow_summary
+        WHERE created_at >= datetime('now', '-{} days')
+        """.format(days))
                 
                 workflow_stats = cursor.fetchone()
                 
                 # Get node performance statistics
                 cursor.execute("""
-                    SELECT 
-                        node_name,
-                        COUNT(*) as executions,
-                        AVG(execution_time_ms) as avg_execution_time,
-                        AVG(memory_usage_mb) as avg_memory_usage,
-                        SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_executions
-                    FROM workflow_metrics
-                    WHERE timestamp >= datetime('now', '-{} days')
-                    GROUP BY node_name
-                """.format(days))
+                SELECT
+                    node_name,
+                    COUNT(*) as executions,
+                    AVG(execution_time_ms) as avg_execution_time,
+                    AVG(memory_usage_mb) as avg_memory_usage,
+                    SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_executions
+                FROM workflow_metrics
+                WHERE timestamp >= datetime('now', '-{} days')
+                GROUP BY node_name
+        """.format(days))
                 
                 node_stats = cursor.fetchall()
                 
@@ -356,6 +357,7 @@ class WorkflowCheckpointManager:
     
     async def cleanup_old_checkpoints(self) -> int:
         """Clean up old checkpoints based on retention policy."""
+        pass
         
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -373,7 +375,7 @@ class WorkflowCheckpointManager:
                 cursor.execute("""
                     DELETE FROM workflow_summary
                     WHERE created_at < datetime('now', '-{} days')
-                """.format(self.retention_days))
+        """.format(self.retention_days))
                 
                 deleted_summaries = cursor.rowcount
                 
@@ -381,7 +383,7 @@ class WorkflowCheckpointManager:
                 cursor.execute("""
                     DELETE FROM workflow_metrics
                     WHERE timestamp < datetime('now', '-{} days')
-                """.format(self.retention_days))
+        """.format(self.retention_days))
                 
                 deleted_metrics = cursor.rowcount
                 

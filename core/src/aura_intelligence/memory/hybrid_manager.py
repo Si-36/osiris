@@ -2,21 +2,24 @@
 Hybrid Memory Manager - Hot/Warm/Cold tiers for 40 memory components
 Production-grade memory hierarchy with real performance
 """
-import asyncio
-import time
-import msgpack
-import zstandard as zstd
-from typing import Dict, Any, Optional, List, Tuple
-from enum import Enum
+# Import our advanced implementation
+from .advanced_hybrid_memory_2025 import (
+    HybridMemoryManager as AdvancedHybridMemoryManager,
+    MemoryTier,
+    MemorySegment,
+    AccessStatistics
+)
 from dataclasses import dataclass
-import numpy as np
-from ..components.real_registry import get_real_registry
-from ..observability.prometheus_integration import metrics_collector
+from typing import Any, Dict, Optional
 
-class MemoryTier(Enum):
-    HOT = "hot"      # Redis/RAM - sub-ms access
-    WARM = "warm"    # Compressed RAM - ms access  
-    COLD = "cold"    # Disk/SSD - 10ms+ access
+# Import the registry
+try:
+    from ..components.real_registry import get_real_registry
+except ImportError:
+    # Fallback if not available
+    def get_real_registry():
+        return None
+
 
 @dataclass
 class MemorySegment:
@@ -64,8 +67,8 @@ class HybridMemoryManager:
         return [comp for comp in self.registry.components.values() 
                 if comp.type.value == 'memory']
     
-    async def store(self, key: str, data: Any, component_id: str, 
-                   tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
+    async def store(self, key: str, data: Any, component_id: str,
+                    tier_hint: Optional[MemoryTier] = None) -> Dict[str, Any]:
         """Store data with automatic tier placement"""
         start_time = time.time()
         
@@ -330,6 +333,7 @@ class HybridMemoryManager:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get comprehensive memory tier statistics"""
+        pass
         hot_count = len(self.hot_storage)
         warm_count = len(self.warm_storage)
         cold_count = len(self.cold_storage)

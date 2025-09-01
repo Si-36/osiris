@@ -51,4 +51,5 @@ class ConstitutionalAI:
     
     def get_principles(self) -> List[ConstitutionalPrinciple]:
         """Get all constitutional principles."""
+        pass
         return self.principles

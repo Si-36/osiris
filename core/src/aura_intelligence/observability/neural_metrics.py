@@ -29,22 +29,26 @@ class NeuralMetrics:
             
     def record_error(self):
         """Record an error."""
+        pass
         self.error_count += 1
         
     def get_average_latency(self) -> float:
         """Get average inference latency."""
+        pass
         if not self.latencies:
             return 0.0
         return sum(self.latencies) / len(self.latencies)
         
     def get_average_accuracy(self) -> float:
         """Get average accuracy."""
+        pass
         if not self.accuracy_scores:
             return 0.0
         return sum(self.accuracy_scores) / len(self.accuracy_scores)
         
     def get_error_rate(self) -> float:
         """Get error rate."""
+        pass
         total = self.inference_count + self.error_count
         if total == 0:
             return 0.0
@@ -52,6 +56,7 @@ class NeuralMetrics:
         
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
+        pass
         return {
             "inference_count": self.inference_count,
             "total_inference_time": self.total_inference_time,
@@ -63,6 +68,7 @@ class NeuralMetrics:
         
     def reset(self):
         """Reset all metrics."""
+        pass
         self.inference_count = 0
         self.total_inference_time = 0.0
         self.error_count = 0

@@ -7,7 +7,7 @@ class AntColonyDetection:
     """Collective error detection using 209+ components as swarm agents"""
     
     def __init__(self, component_registry=None, coral_system=None, tda_adapter=None,
-                 max_ants_per_round: int = 32, round_timeout_s: float = 0.25):
+        max_ants_per_round: int = 32, round_timeout_s: float = 0.25):
         self.registry = component_registry or self._get_registry()
         self.coral = coral_system or self._get_coral()
         self.tda = tda_adapter or self._get_tda_adapter()
@@ -30,19 +30,22 @@ class AntColonyDetection:
         try:
             from ..components.real_registry import get_real_registry
             return get_real_registry()
-        except: return None
+        except: 
+            return None
 
     def _get_coral(self):
         try:
             from ..coral.best_coral import CoRaLSystem
             return CoRaLSystem()
-        except: return None
+        except: 
+            return None
 
     def _get_tda_adapter(self):
         try:
             from ..tda.unified_engine_2025 import UnifiedTDAEngine
             return UnifiedTDAEngine()
-        except: return None
+        except: 
+            return None
 
     def _signature_key(self, result: Any) -> str:
         """Build stable error signature from response"""
@@ -64,12 +67,13 @@ class AntColonyDetection:
     def _is_anomaly(self, result: Any) -> bool:
         if isinstance(result, dict):
             if result.get("status") == "error": return True
-            if float(result.get("confidence", 1.0)) < 0.5: return True
-            if float(result.get("tda_anomaly", 0.0)) > 0.7: return True
+        if float(result.get("confidence", 1.0)) < 0.5: return True
+        if float(result.get("tda_anomaly", 0.0)) > 0.7: return True
         return False
 
     def _select_components(self) -> List[str]:
         """Select bounded set of components with priority routing"""
+        pass
         if not (self.registry and hasattr(self.registry, "components")):
             return [f"component_{i}" for i in range(self.max_ants_per_round)]
 
@@ -96,22 +100,22 @@ class AntColonyDetection:
         random.shuffle(selected)
         return selected
 
-    async def detect_errors(self, test_data: Any) -> Dict[str, Any]:
+        async def detect_errors(self, test_data: Any) -> Dict[str, Any]:
         """Run bounded swarm detection round"""
         components = self._select_components()
         if not components:
             return {"errors_detected": 0, "error_components": [], "healthy_components": 0}
 
         async def _probe(comp_id: str):
-            try:
-                async with self._semaphore:
-                    ctx = {"mode": "probe", "swarm_check": True}
-                    if self.registry and hasattr(self.registry, "process_data"):
-                        return comp_id, await self.registry.process_data(comp_id, test_data, context=ctx)
-                    await asyncio.sleep(0.001)
-                    return comp_id, {"processed": True, "component": comp_id, "confidence": 0.9}
-            except Exception as e:
-                return comp_id, {"status": "error", "error_type": type(e).__name__, "component": comp_id}
+        try:
+            async with self._semaphore:
+        ctx = {"mode": "probe", "swarm_check": True}
+        if self.registry and hasattr(self.registry, "process_data"):
+            return comp_id, await self.registry.process_data(comp_id, test_data, context=ctx)
+        await asyncio.sleep(0.001)
+        return comp_id, {"processed": True, "component": comp_id, "confidence": 0.9}
+        except Exception as e:
+        return comp_id, {"status": "error", "error_type": type(e).__name__, "component": comp_id}
 
         # Execute with timeout
         tasks = [asyncio.create_task(_probe(cid)) for cid in components]
@@ -122,34 +126,34 @@ class AntColonyDetection:
 
         errors, healthy = {}, {}
         for d in done:
-            try:
-                comp_id, result = d.result()
-            except Exception as e:
-                comp_id, result = "unknown", {"status": "error", "error_type": type(e).__name__}
+        try:
+            comp_id, result = d.result()
+        except Exception as e:
+        comp_id, result = "unknown", {"status": "error", "error_type": type(e).__name__}
 
-            anomaly = self._is_anomaly(result)
-            # Update component health EMA
-            self.comp_health[comp_id] = self.alpha * (0.0 if anomaly else 1.0) + (1-self.alpha) * self.comp_health[comp_id]
+        anomaly = self._is_anomaly(result)
+        # Update component health EMA
+        self.comp_health[comp_id] = self.alpha * (0.0 if anomaly else 1.0) + (1-self.alpha) * self.comp_health[comp_id]
 
-            if anomaly:
-                sig = self._signature_key(result)
-                self.pheromone_trails[sig] = self.pheromone_trails[sig] * self.pheromone_decay + self.pheromone_boost
-                errors[comp_id] = result
-                self.anomaly_queue.appendleft(comp_id)
-            else:
-                healthy[comp_id] = result
+        if anomaly:
+            sig = self._signature_key(result)
+        self.pheromone_trails[sig] = self.pheromone_trails[sig] * self.pheromone_decay + self.pheromone_boost
+        errors[comp_id] = result
+        self.anomaly_queue.appendleft(comp_id)
+        else:
+        healthy[comp_id] = result
 
         # Global pheromone decay
         for k in list(self.pheromone_trails.keys()):
-            self.pheromone_trails[k] *= self.pheromone_decay
-            if self.pheromone_trails[k] < 0.01:
-                del self.pheromone_trails[k]
+        self.pheromone_trails[k] *= self.pheromone_decay
+        if self.pheromone_trails[k] < 0.01:
+            del self.pheromone_trails[k]
 
         return {
-            "errors_detected": len(errors),
-            "error_components": list(errors.keys()),
-            "healthy_components": len(healthy),
-            "detection_rate": len(errors) / len(components) if components else 0.0
+        "errors_detected": len(errors),
+        "error_components": list(errors.keys()),
+        "healthy_components": len(healthy),
+        "detection_rate": len(errors) / len(components) if components else 0.0
         }
 
     def get_swarm_status(self) -> Dict[str, Any]:

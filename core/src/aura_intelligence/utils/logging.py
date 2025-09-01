@@ -165,17 +165,17 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(log_data)
 
 
-def get_logger(name: str) -> structlog.BoundLogger:
-    """
-    Get a structured logger instance.
+    def get_logger(name: str) -> structlog.BoundLogger:
+        """
+        Get a structured logger instance.
     
-    Args:
+        Args:
         name: Logger name (usually __name__)
     
-    Returns:
+        Returns:
         Structured logger instance
-    """
-    return structlog.get_logger(name)
+        """
+        return structlog.get_logger(name)
 
 
 class LogContext:
@@ -200,9 +200,9 @@ class LogContext:
 def log_with_context(logger: structlog.BoundLogger, **context: Any) -> LogContext:
     """
     Create a context manager for temporary log context.
-    
+
     Example:
-        with log_with_context(logger, request_id="123", user_id="456"):
-            logger.info("Processing request")  # Will include request_id and user_id
+    with log_with_context(logger, request_id="123", user_id="456"):
+        logger.info("Processing request")  # Will include request_id and user_id
     """
     return LogContext(logger, **context)

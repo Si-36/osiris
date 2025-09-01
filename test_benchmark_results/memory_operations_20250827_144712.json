@@ -1,0 +1,18 @@
+{
+  "name": "memory_operations",
+  "runs": 10,
+  "mean_duration_ms": 2.3407556996971834,
+  "std_duration_ms": 0.10498098619459104,
+  "min_duration_ms": 2.2335929970722646,
+  "max_duration_ms": 2.5841070018941537,
+  "mean_memory_mb": 6.4637,
+  "mean_throughput": 2745.8411721990515,
+  "latency_distribution": {
+    "p50": 2.076776549438364,
+    "p95": 2.538282449313556,
+    "p99": 2.769035399251152
+  },
+  "success_rate": 1.0,
+  "metadata": {},
+  "timestamp": "2025-08-27T14:47:12.993956"
+}

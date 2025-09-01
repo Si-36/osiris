@@ -97,11 +97,11 @@ class EventSchema(BaseModel):
     
     @validator('partition_key', always=True)
     def set_partition_key(cls, v, values):
-        """Set partition key if not provided."""
-        if v is None:
-            # Use source_id as default partition key for ordering
-            return values.get('source_id', str(uuid.uuid4()))
-        return v
+            """Set partition key if not provided."""
+            if v is None:
+                # Use source_id as default partition key for ordering
+                return values.get('source_id', str(uuid.uuid4()))
+            return v
     
     def to_avro_schema(self) -> Dict[str, Any]:
         """Convert to Avro schema definition."""
@@ -126,14 +126,15 @@ class EventSchema(BaseModel):
                 {"name": "headers", "type": {"type": "map", "values": "string"}},
                 {"name": "data", "type": "string"}  # JSON encoded
             ]
-        }
+            }
     
-    def to_kafka_record(self) -> Dict[str, Any]:
-        """Convert to Kafka record format."""
+        def to_kafka_record(self) -> Dict[str, Any]:
+            """Convert to Kafka record format."""
+            pass
         # Use model_dump with JSON serialization mode to handle datetime objects
-        value_dict = self.model_dump(mode='json')
+            value_dict = self.model_dump(mode='json')
         
-        return {
+            return {
             "key": self.partition_key,
             "value": value_dict,
             "headers": [
@@ -144,7 +145,7 @@ class EventSchema(BaseModel):
             ] + [
                 (k, v.encode()) for k, v in self.headers.items()
             ]
-        }
+            }
 
 
 class AgentEvent(EventSchema):
@@ -180,7 +181,7 @@ class AgentEvent(EventSchema):
         agent_version: str,
         input_data: Dict[str, Any],
         **kwargs
-    ) -> "AgentEvent":
+        ) -> "AgentEvent":
         """Create agent started event."""
         return cls(
             event_type=EventType.AGENT_STARTED,
@@ -204,7 +205,7 @@ class AgentEvent(EventSchema):
         duration_ms: float,
         tokens_used: Optional[Dict[str, int]] = None,
         **kwargs
-    ) -> "AgentEvent":
+        ) -> "AgentEvent":
         """Create agent completed event."""
         return cls(
             event_type=EventType.AGENT_COMPLETED,
@@ -231,7 +232,7 @@ class AgentEvent(EventSchema):
         confidence: float,
         alternatives: Optional[List[Dict[str, Any]]] = None,
         **kwargs
-    ) -> "AgentEvent":
+        ) -> "AgentEvent":
         """Create agent decision event."""
         return cls(
             event_type=EventType.AGENT_DECISION_MADE,
@@ -283,7 +284,7 @@ class WorkflowEvent(EventSchema):
         run_id: str,
         input_data: Dict[str, Any],
         **kwargs
-    ) -> "WorkflowEvent":
+        ) -> "WorkflowEvent":
         """Create workflow started event."""
         return cls(
             event_type=EventType.WORKFLOW_STARTED,
@@ -309,7 +310,7 @@ class WorkflowEvent(EventSchema):
         step_output: Dict[str, Any],
         duration_ms: float,
         **kwargs
-    ) -> "WorkflowEvent":
+        ) -> "WorkflowEvent":
         """Create workflow step completed event."""
         return cls(
             event_type=EventType.WORKFLOW_STEP_COMPLETED,
@@ -355,7 +356,7 @@ class SystemEvent(EventSchema):
         status: str,
         checks: Dict[str, Any],
         **kwargs
-    ) -> "SystemEvent":
+        ) -> "SystemEvent":
         """Create system health check event."""
         return cls(
             event_type=EventType.SYSTEM_HEALTH_CHECK,
@@ -380,7 +381,7 @@ class SystemEvent(EventSchema):
         severity: str = "warning",
         details: Optional[Dict[str, Any]] = None,
         **kwargs
-    ) -> "SystemEvent":
+        ) -> "SystemEvent":
         """Create system alert event."""
         return cls(
             event_type=EventType.SYSTEM_ALERT,
@@ -419,11 +420,11 @@ class ConsensusDecisionEvent(EventSchema):
 
 # Schema registry for managing event schemas
 SCHEMA_REGISTRY = {
-    "EventSchema": EventSchema,
-    "AgentEvent": AgentEvent,
-    "WorkflowEvent": WorkflowEvent,
-    "SystemEvent": SystemEvent,
-    "ConsensusDecisionEvent": ConsensusDecisionEvent
+        "EventSchema": EventSchema,
+        "AgentEvent": AgentEvent,
+        "WorkflowEvent": WorkflowEvent,
+        "SystemEvent": SystemEvent,
+        "ConsensusDecisionEvent": ConsensusDecisionEvent
 }
 
 
