@@ -21,6 +21,14 @@ from .neural import (
     CacheManager,
 )
 
+# 1.5. MoE System - Mixture of Experts
+from .moe import (
+    SwitchTransformerMoE,
+    ProductionSwitchMoE,
+    SwitchMoEWithLNN,
+    create_production_switch_moe,
+)
+
 # 2. Memory System - Topological Memory with Hardware Tiers
 from .memory.core.memory_api import (
     AURAMemorySystem,

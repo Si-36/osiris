@@ -76,9 +76,16 @@ try:
         AURAModelRouter,
         AdaptiveRoutingEngine
     )
+    
+    # Import MoE from the main module
+    from aura_intelligence import (
+        SwitchTransformerMoE,
+        ProductionSwitchMoE
+    )
     print("✅ Neural imports successful!")
     if LiquidNeuralNetwork:
         print(f"   - LiquidNeuralNetwork: Available")
+    print(f"   - MoE: {SwitchTransformerMoE.__name__}, {ProductionSwitchMoE.__name__}")
     print(f"   - AURAModelRouter: {AURAModelRouter.__name__}")
     print(f"   - Provider adapters: OpenAI, Anthropic")
     print(f"   - AdaptiveRoutingEngine: {AdaptiveRoutingEngine.__name__}")
