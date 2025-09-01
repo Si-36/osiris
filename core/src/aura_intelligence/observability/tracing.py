@@ -211,14 +211,14 @@ class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampl
 
 
 class OpenTelemetryManager:
-"""
-Manages OpenTelemetry configuration and instrumentation
-"""
+    """
+    Manages OpenTelemetry configuration and instrumentation
+    """
 
-def __init__(self, config: ObservabilityConfig):
-self.config = config
-self.tracer_provider: Optional[TracerProvider] = None
-self.sampler: Optional[AdaptiveSampler] = None
+    def __init__(self, config: ObservabilityConfig):
+        self.config = config
+        self.tracer_provider: Optional[TracerProvider] = None
+        self.sampler: Optional[AdaptiveSampler] = None
 
     def initialize(self):
         """Initialize OpenTelemetry with OTLP exporter"""
@@ -452,27 +452,27 @@ return decorator
 
 
 class TracingContext:
-"""Simple context manager for tracing."""
+    """Simple context manager for tracing."""
 
-def __init__(self, service: str, operation: str):
-self.service = service
-self.operation = operation
-self.span = None
+    def __init__(self, service: str, operation: str):
+        self.service = service
+        self.operation = operation
+        self.span = None
 
-async def __aenter__(self):
-tracer = get_tracer()
-self.span = tracer.start_span(f"{self.service}.{self.operation}")
-return self
+    async def __aenter__(self):
+        tracer = get_tracer()
+        self.span = tracer.start_span(f"{self.service}.{self.operation}")
+        return self
 
-async def __aexit__(self, exc_type, exc_val, exc_tb):
-if self.span:
-self.span.end()
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.span:
+            self.span.end()
 
-def __enter__(self):
-tracer = get_tracer()
-self.span = tracer.start_span(f"{self.service}.{self.operation}")
-return self
+    def __enter__(self):
+        tracer = get_tracer()
+        self.span = tracer.start_span(f"{self.service}.{self.operation}")
+        return self
 
-def __exit__(self, exc_type, exc_val, exc_tb):
-if self.span:
-self.span.end()
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.span:
+            self.span.end()
