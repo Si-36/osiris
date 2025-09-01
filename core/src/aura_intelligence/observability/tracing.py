@@ -391,63 +391,63 @@ _manager: Optional[OpenTelemetryManager] = None
 
 
 def initialize_tracing(config: ObservabilityConfig):
-"""Initialize global tracing"""
-global _manager
-_manager = OpenTelemetryManager(config)
-_manager.initialize()
-return _manager
+    """Initialize global tracing"""
+    global _manager
+    _manager = OpenTelemetryManager(config)
+    _manager.initialize()
+    return _manager
 
 
 def get_tracer(name: str = None) -> trace.Tracer:
-"""Get a tracer instance"""
-if _manager:
-return _manager.get_tracer(name)
-# Return default tracer if not initialized
-return trace.get_tracer(name or "aura_intelligence")
+    """Get a tracer instance"""
+    if _manager:
+        return _manager.get_tracer(name)
+    # Return default tracer if not initialized
+    return trace.get_tracer(name or "aura_intelligence")
 
 
 def trace_operation(operation_name: str, **kwargs):
-"""Decorator for tracing operations"""
-def decorator(func):
-@wraps(func)
-async def async_wrapper(*args, **kwargs):
-tracer = get_tracer()
-with tracer.start_as_current_span(operation_name) as span:
-return await func(*args, **kwargs)
+    """Decorator for tracing operations"""
+    def decorator(func):
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            tracer = get_tracer()
+            with tracer.start_as_current_span(operation_name) as span:
+                return await func(*args, **kwargs)
 
-@wraps(func)
-def sync_wrapper(*args, **kwargs):
-tracer = get_tracer()
-with tracer.start_as_current_span(operation_name) as span:
-return func(*args, **kwargs)
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            tracer = get_tracer()
+            with tracer.start_as_current_span(operation_name) as span:
+                return func(*args, **kwargs)
 
-if asyncio.iscoroutinefunction(func):
-return async_wrapper
-else:
-return sync_wrapper
-return decorator
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        else:
+            return sync_wrapper
+    return decorator
 
 
 def trace_span(name: str, **kwargs):
-"""Decorator for tracing function execution."""
-def decorator(func):
-@wraps(func)
-async def async_wrapper(*args, **kwargs):
-tracer = get_tracer()
-async with tracer.start_as_current_span(name) as span:
-return await func(*args, **kwargs)
+    """Decorator for tracing function execution."""
+    def decorator(func):
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            tracer = get_tracer()
+            async with tracer.start_as_current_span(name) as span:
+                return await func(*args, **kwargs)
 
-@wraps(func)
-def sync_wrapper(*args, **kwargs):
-tracer = get_tracer()
-with tracer.start_as_current_span(name):
-return func(*args, **kwargs)
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            tracer = get_tracer()
+            with tracer.start_as_current_span(name):
+                return func(*args, **kwargs)
 
-if asyncio.iscoroutinefunction(func):
-return async_wrapper
-else:
-return sync_wrapper
-return decorator
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        else:
+            return sync_wrapper
+    return decorator
 
 
 class TracingContext:
