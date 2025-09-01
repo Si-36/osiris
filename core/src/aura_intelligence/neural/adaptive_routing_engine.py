@@ -10,10 +10,16 @@ Key Features:
 """
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from typing import Dict, Any, List, Optional, Tuple
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    torch = None
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from collections import deque
@@ -108,7 +114,7 @@ class RoutingState:
         return torch.tensor(features, dtype=torch.float32)
 
 
-class LiquidRoutingCell(nn.Module):
+class LiquidRoutingCell(nn.Module if TORCH_AVAILABLE else object):
     """
     Liquid-inspired routing cell with continuous dynamics
     Adapts the LNN ODE concept to routing decisions
@@ -153,7 +159,7 @@ class LiquidRoutingCell(nn.Module):
         return scores, h_new
 
 
-class AdaptiveLNNRouter(nn.Module):
+class AdaptiveLNNRouter(nn.Module if TORCH_AVAILABLE else object):
     """
     Main adaptive routing network inspired by Liquid Neural Networks
     Learns optimal routing policies from experience
