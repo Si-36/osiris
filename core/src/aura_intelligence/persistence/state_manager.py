@@ -112,31 +112,29 @@ class StatePersistenceManager:
         
         try:
             all_states = {}
-        for cache_key, snapshot in self.state_cache.items():
-            pass
-        all_states[cache_key] = {
-        'state_id': snapshot.state_id,
-        'state_type': snapshot.state_type,
-        'component_id': snapshot.component_id,
-        'timestamp': snapshot.timestamp,
-        'data': snapshot.data,
-        'checksum': snapshot.checksum
-        }
-            
-        with open(checkpoint_path, 'wb') as f:
-            pickle.dump({
-        'checkpoint_id': checkpoint_id,
-        'timestamp': time.time(),
-        'states': all_states
-        }, f)
-            
-        await self._cleanup_old_checkpoints()
-        logger.info(f"Full checkpoint created: {checkpoint_id}")
-        return checkpoint_id
+            for cache_key, snapshot in self.state_cache.items():
+                all_states[cache_key] = {
+                    'state_id': snapshot.state_id,
+                    'state_type': snapshot.state_type,
+                    'component_id': snapshot.component_id,
+                    'timestamp': snapshot.timestamp,
+                    'data': snapshot.data,
+                    'checksum': snapshot.checksum
+                }
+                
+            with open(checkpoint_path, 'wb') as f:
+                pickle.dump({
+                    'checkpoint_id': checkpoint_id,
+                    'timestamp': time.time(),
+                    'states': all_states
+                }, f)
+                
+            await self._cleanup_old_checkpoints()
+            logger.info(f"Full checkpoint created: {checkpoint_id}")
+            return checkpoint_id
         except Exception as e:
-            pass
-        logger.error(f"Failed to create checkpoint: {e}")
-        return ""
+            logger.error(f"Failed to create checkpoint: {e}")
+            return ""
     
     async def _periodic_checkpoint(self):
         while True:
