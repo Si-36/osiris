@@ -222,10 +222,8 @@ class AdaptiveCheckpointCoalescer:
             except Exception as e:
                 logger.error(f"Error in coalescing loop: {e}")
     
-        async def _flush_old_checkpoints(self):
-            pass
+    async def _flush_old_checkpoints(self):
         """Flush checkpoints that have aged out"""
-        pass
         now = datetime.now()
         keys_to_flush = []
         
@@ -243,8 +241,7 @@ class AdaptiveCheckpointCoalescer:
                 self._flush_key(key) for key in keys_to_flush
             ])
     
-        async def _flush_key(self, key: str):
-            pass
+    async def _flush_key(self, key: str):
         """Flush all pending checkpoints for a key"""
         pending = self.pending_checkpoints[key]
         if not pending:
@@ -353,12 +350,11 @@ class AdaptiveCheckpointCoalescer:
             # Default: return the latest state
             return states[-1]
     
-        async def _write_checkpoint(
+    async def _write_checkpoint(
         self, 
         key: str, 
         checkpoints: List[Tuple[Any, CheckpointMetadata]]
-        ):
-            pass
+    ):
         """Write checkpoints to backend"""
         if not self.backend:
             logger.warning("No backend configured, skipping write")
@@ -444,10 +440,8 @@ class AdaptiveCheckpointCoalescer:
                     total_coalesced / self.stats["total_writes_performed"]
                 )
     
-        async def _flush_all_pending(self):
-            pass
+    async def _flush_all_pending(self):
         """Flush all pending checkpoints"""
-        pass
         keys = list(self.pending_checkpoints.keys())
         await asyncio.gather(*[
             self._flush_key(key) for key in keys
@@ -455,7 +449,6 @@ class AdaptiveCheckpointCoalescer:
     
     def get_stats(self) -> Dict[str, Any]:
         """Get coalescing statistics"""
-        pass
         stats = self.stats.copy()
         
         # Calculate write reduction
