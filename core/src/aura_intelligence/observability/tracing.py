@@ -139,75 +139,75 @@ if not OPENTELEMETRY_AVAILABLE:
 
 
 class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampler):
-"""
-Adaptive sampler that adjusts sampling rate based on error rate
-and performance characteristics.
-"""
+    """
+    Adaptive sampler that adjusts sampling rate based on error rate
+    and performance characteristics.
+    """
 
-def __init__(self, base_rate: float = 0.1):
-self.base_rate = base_rate
-self.error_rate = 0.0
-self.sample_count = 0
-self.error_count = 0
+    def __init__(self, base_rate: float = 0.1):
+        self.base_rate = base_rate
+        self.error_rate = 0.0
+        self.sample_count = 0
+        self.error_count = 0
 
-def should_sample(
-self,
-parent_context,
-trace_id,
-name,
-kind=None,
-attributes=None,
-links=None
-) -> sampling.SamplingResult:
-# Always sample if parent was sampled
-if parent_context and parent_context.is_valid:
-parent_span_context = trace.get_current_span(parent_context).get_span_context()
-if parent_span_context.is_valid and parent_span_context.trace_flags.sampled:
-return sampling.SamplingResult(
-sampling.Decision.RECORD_AND_SAMPLE,
-attributes={"sampling.reason": "parent_sampled"}
-)
+    def should_sample(
+        self,
+        parent_context,
+        trace_id,
+        name,
+        kind=None,
+        attributes=None,
+        links=None
+    ) -> sampling.SamplingResult:
+        # Always sample if parent was sampled
+        if parent_context and parent_context.is_valid:
+            parent_span_context = trace.get_current_span(parent_context).get_span_context()
+            if parent_span_context.is_valid and parent_span_context.trace_flags.sampled:
+                return sampling.SamplingResult(
+                    sampling.Decision.RECORD_AND_SAMPLE,
+                    attributes={"sampling.reason": "parent_sampled"}
+                )
 
-# Increase sampling for errors
-if attributes and attributes.get("error", False):
-return sampling.SamplingResult(
-sampling.Decision.RECORD_AND_SAMPLE,
-attributes={"sampling.reason": "error_detected"}
-)
+        # Increase sampling for errors
+        if attributes and attributes.get("error", False):
+            return sampling.SamplingResult(
+                sampling.Decision.RECORD_AND_SAMPLE,
+                attributes={"sampling.reason": "error_detected"}
+            )
 
-# Adaptive sampling based on error rate
-if self.error_rate > 0.05:  # If error rate > 5%, sample more
-adjusted_rate = min(1.0, self.base_rate * (1 + self.error_rate * 10))
-else:
-adjusted_rate = self.base_rate
+        # Adaptive sampling based on error rate
+        if self.error_rate > 0.05:  # If error rate > 5%, sample more
+            adjusted_rate = min(1.0, self.base_rate * (1 + self.error_rate * 10))
+        else:
+            adjusted_rate = self.base_rate
 
-# Sample based on trace ID
-if (trace_id & 0xffffffff) / 0xffffffff < adjusted_rate:
-return sampling.SamplingResult(
-sampling.Decision.RECORD_AND_SAMPLE,
-attributes={"sampling.rate": adjusted_rate}
-)
-else:
-return sampling.SamplingResult(
-sampling.Decision.DROP
-)
+        # Sample based on trace ID
+        if (trace_id & 0xffffffff) / 0xffffffff < adjusted_rate:
+            return sampling.SamplingResult(
+                sampling.Decision.RECORD_AND_SAMPLE,
+                attributes={"sampling.rate": adjusted_rate}
+            )
+        else:
+            return sampling.SamplingResult(
+                sampling.Decision.DROP
+            )
 
-def update_error_rate(self, is_error: bool):
-"""Update error rate for adaptive sampling"""
-self.sample_count += 1
-if is_error:
-self.error_count += 1
+    def update_error_rate(self, is_error: bool):
+        """Update error rate for adaptive sampling"""
+        self.sample_count += 1
+        if is_error:
+            self.error_count += 1
 
-# Update error rate with exponential moving average
-if self.sample_count > 100:
-self.error_rate = self.error_count / self.sample_count
-# Reset counters periodically
-if self.sample_count > 10000:
-self.sample_count = 100
-self.error_count = int(self.error_rate * 100)
+        # Update error rate with exponential moving average
+        if self.sample_count > 100:
+            self.error_rate = self.error_count / self.sample_count
+            # Reset counters periodically
+            if self.sample_count > 10000:
+                self.sample_count = 100
+                self.error_count = int(self.error_rate * 100)
 
-def get_description(self) -> str:
-return f"AdaptiveSampler(base_rate={self.base_rate}, current_error_rate={self.error_rate:.2%})"
+    def get_description(self) -> str:
+        return f"AdaptiveSampler(base_rate={self.base_rate}, current_error_rate={self.error_rate:.2%})"
 
 
 class OpenTelemetryManager:
