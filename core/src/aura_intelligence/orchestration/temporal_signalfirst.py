@@ -399,16 +399,14 @@ class SignalFirstRouter:
         except Exception as e:
             logger.error(f"Failed to send signal {metadata.signal_id}: {e}")
     
-        async def _temporal_send_signal(
+    async def _temporal_send_signal(
         self, 
         workflow_id: str, 
         signal_name: str, 
         signal_data: Any
-        ):
-            pass
+    ):
         """Send signal to Temporal workflow (placeholder)"""
         # In real implementation:
-            pass
         # await client.get_workflow_handle(workflow_id).signal(signal_name, signal_data)
         
         # Simulate network latency
