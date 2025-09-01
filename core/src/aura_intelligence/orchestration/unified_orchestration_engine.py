@@ -20,15 +20,31 @@ from datetime import datetime, timedelta
 from enum import Enum
 import structlog
 
-# LangGraph imports
-from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.postgres import PostgresSaver
-from langgraph.store.postgres import PostgresStore
-from langchain_core.messages import BaseMessage
+# LangGraph imports (optional)
+try:
+    from langgraph.graph import StateGraph, END
+    from langgraph.checkpoint.postgres import PostgresSaver
+    from langgraph.store.postgres import PostgresStore
+    from langchain_core.messages import BaseMessage
+    LANGGRAPH_AVAILABLE = True
+except ImportError:
+    LANGGRAPH_AVAILABLE = False
+    StateGraph = None
+    END = None
+    PostgresSaver = None
+    PostgresStore = None
+    BaseMessage = None
 
-# Temporal imports
-from temporalio import workflow, activity
-from temporalio.client import Client as TemporalClient
+# Temporal imports (optional)
+try:
+    from temporalio import workflow, activity
+    from temporalio.client import Client as TemporalClient
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    TEMPORAL_AVAILABLE = False
+    workflow = None
+    activity = None
+    TemporalClient = None
 
 # Internal imports
 from .temporal_signalfirst import SignalFirstOrchestrator, SignalPriority
@@ -122,6 +138,12 @@ class UnifiedOrchestrationEngine:
     def __init__(self, config: Optional[OrchestrationConfig] = None):
         self.config = config or OrchestrationConfig()
         
+        # Warn if dependencies are missing
+        if not LANGGRAPH_AVAILABLE:
+            logger.warning("LangGraph not available - orchestration features will be limited")
+        if not TEMPORAL_AVAILABLE:
+            logger.warning("Temporal not available - workflow features will be limited")
+        
         # Core components
         self.postgres_saver: Optional[PostgresSaver] = None
         self.postgres_store: Optional[PostgresStore] = None
@@ -211,6 +233,10 @@ class UnifiedOrchestrationEngine:
     
     async def _setup_postgres_persistence(self):
         """Setup PostgreSQL for LangGraph persistence"""
+        if not LANGGRAPH_AVAILABLE:
+            logger.warning("LangGraph not available, skipping PostgreSQL persistence setup")
+            return
+            
         # Create PostgresSaver for checkpoints
         self.postgres_saver = PostgresSaver.from_conn_string(
             self.config.postgres_url
