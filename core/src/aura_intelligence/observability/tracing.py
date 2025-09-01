@@ -364,27 +364,26 @@ class OpenTelemetryManager:
         from opentelemetry import baggage
         return baggage.set_baggage(key, value)
 
-def get_baggage(self, key: str) -> Optional[str]:
-"""Get baggage item from context"""
-from opentelemetry import baggage
-return baggage.get_baggage(key)
+    def get_baggage(self, key: str) -> Optional[str]:
+        """Get baggage item from context"""
+        from opentelemetry import baggage
+        return baggage.get_baggage(key)
 
-def inject_context(self, carrier: Dict[str, str]):
-"""Inject trace context into carrier for propagation"""
-from opentelemetry.propagate import inject
-inject(carrier)
+    def inject_context(self, carrier: Dict[str, str]):
+        """Inject trace context into carrier for propagation"""
+        from opentelemetry.propagate import inject
+        inject(carrier)
 
-def extract_context(self, carrier: Dict[str, str]):
-"""Extract trace context from carrier"""
-from opentelemetry.propagate import extract
-return extract(carrier)
+    def extract_context(self, carrier: Dict[str, str]):
+        """Extract trace context from carrier"""
+        from opentelemetry.propagate import extract
+        return extract(carrier)
 
-def shutdown(self):
-"""Shutdown tracing and flush remaining spans"""
-pass
-if self.tracer_provider:
-self.tracer_provider.shutdown()
-logger.info("OpenTelemetry shutdown complete")
+    def shutdown(self):
+        """Shutdown tracing and flush remaining spans"""
+        if self.tracer_provider:
+            self.tracer_provider.shutdown()
+            logger.info("OpenTelemetry shutdown complete")
 
 
 # Convenience functions
