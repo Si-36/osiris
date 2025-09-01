@@ -131,104 +131,11 @@ if not OPENTELEMETRY_AVAILABLE:
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-"""REAL processing implementation"""
-import time
-import numpy as np
+            return None
 
-start_time = time.time()
-
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
-
-# Process data
-processed_data = self._process_data(data)
-
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
-
-return result
-
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
-
-start_time = time.time()
-
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
-
-# Process data
-processed_data = self._process_data(data)
-
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
-
-return result
-
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
-
-start_time = time.time()
-
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
-
-# Process data
-processed_data = self._process_data(data)
-
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
-
-return result
-
-def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-"""REAL processing implementation"""
-import time
-import numpy as np
-
-start_time = time.time()
-
-# Validate input
-if not data:
-return {'error': 'No input data provided', 'status': 'failed'}
-
-# Process data
-processed_data = self._process_data(data)
-
-# Generate result
-result = {
-'status': 'success',
-'processed_count': len(processed_data),
-'processing_time': time.time() - start_time,
-'data': processed_data
-}
-
-return result
-
-# Set fallback base classes
-sampling = type('sampling', (), {'Sampler': MockSampler})()
-trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
+    # Set fallback base classes
+    sampling = type('sampling', (), {'Sampler': MockSampler})()
+    trace = type('trace', (), {'get_tracer': lambda *args: type('tracer', (), {'start_span': lambda *args, **kwargs: MockSpan()})()})()
 
 
 class AdaptiveSampler(sampling.Sampler if OPENTELEMETRY_AVAILABLE else MockSampler):
@@ -400,62 +307,62 @@ self.sampler: Optional[AdaptiveSampler] = None
             name = self.config.service_name
         return trace.get_tracer(name)
 
-@contextmanager
-def trace_operation(
-self,
-operation_name: str,
-attributes: Optional[Dict[str, Any]] = None,
-kind: trace.SpanKind = trace.SpanKind.INTERNAL
-):
-"""
-Context manager for tracing operations
+    @contextmanager
+    def trace_operation(
+        self,
+        operation_name: str,
+        attributes: Optional[Dict[str, Any]] = None,
+        kind: trace.SpanKind = trace.SpanKind.INTERNAL
+    ):
+        """
+        Context manager for tracing operations
 
-Usage:
-with tracer.trace_operation("process_data", {"data.size": 1024}):
-# Your code here
-pass
-"""
-tracer = self.get_tracer()
+        Usage:
+        with tracer.trace_operation("process_data", {"data.size": 1024}):
+            # Your code here
+            pass
+        """
+        tracer = self.get_tracer()
 
-with tracer.start_as_current_span(
-operation_name,
-kind=kind,
-attributes=attributes or {}
-) as span:
-try:
-yield span
-except Exception as e:
-span.set_status(Status(StatusCode.ERROR, str(e)))
-span.record_exception(e)
-if self.sampler and isinstance(self.sampler, AdaptiveSampler):
-self.sampler.update_error_rate(True)
-raise
-else:
-if self.sampler and isinstance(self.sampler, AdaptiveSampler):
-self.sampler.update_error_rate(False)
+        with tracer.start_as_current_span(
+            operation_name,
+            kind=kind,
+            attributes=attributes or {}
+        ) as span:
+            try:
+                yield span
+            except Exception as e:
+                span.set_status(Status(StatusCode.ERROR, str(e)))
+                span.record_exception(e)
+                if self.sampler and isinstance(self.sampler, AdaptiveSampler):
+                    self.sampler.update_error_rate(True)
+                raise
+            else:
+                if self.sampler and isinstance(self.sampler, AdaptiveSampler):
+                    self.sampler.update_error_rate(False)
 
-def record_metric(
-self,
-span: trace.Span,
-metric_name: str,
-value: float,
-unit: str = None
-):
-"""Record a metric as a span event"""
-event_attributes = {
-"metric.name": metric_name,
-"metric.value": value
-}
-if unit:
-event_attributes["metric.unit"] = unit
+    def record_metric(
+        self,
+        span: trace.Span,
+        metric_name: str,
+        value: float,
+        unit: str = None
+    ):
+        """Record a metric as a span event"""
+        event_attributes = {
+            "metric.name": metric_name,
+            "metric.value": value
+        }
+        if unit:
+            event_attributes["metric.unit"] = unit
 
-span.add_event("metric.recorded", attributes=event_attributes)
+        span.add_event("metric.recorded", attributes=event_attributes)
 
-def add_baggage(self, key: str, value: str):
-"""Add baggage item to context"""
-# Baggage propagation for cross-service context
-from opentelemetry import baggage
-return baggage.set_baggage(key, value)
+    def add_baggage(self, key: str, value: str):
+        """Add baggage item to context"""
+        # Baggage propagation for cross-service context
+        from opentelemetry import baggage
+        return baggage.set_baggage(key, value)
 
 def get_baggage(self, key: str) -> Optional[str]:
 """Get baggage item from context"""
