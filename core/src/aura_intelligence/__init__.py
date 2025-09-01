@@ -42,8 +42,10 @@ from .memory.core.memory_api import (
 from .tda import (
     AgentTopologyAnalyzer,
     RealtimeTopologyMonitor,
-    TopologyAlgorithms,
     WorkflowFeatures,
+    compute_persistence,
+    diagram_entropy,
+    diagram_distance,
 )
 
 # 4. Orchestration - LangGraph-based Orchestration
@@ -158,7 +160,9 @@ __all__ = [
     # TDA System
     "AgentTopologyAnalyzer",
     "RealtimeTopologyMonitor",
-    "TopologyAlgorithms",
+    "compute_persistence",
+    "diagram_entropy", 
+    "diagram_distance",
     "WorkflowFeatures",
     
     # Orchestration
