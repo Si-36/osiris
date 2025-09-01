@@ -156,16 +156,16 @@ class TenantUsage:
     """Usage tracking for a tenant"""
     tenant_id: str
     
-    # Current period usage
+    # Time periods (required fields first)
     hour_start: datetime
+    day_start: datetime
+    month_start: datetime
+    
+    # Current period usage (fields with defaults)
     hour_cost: float = 0.0
     hour_requests: int = 0
-    
-    day_start: datetime
     day_cost: float = 0.0
     day_requests: int = 0
-    
-    month_start: datetime
     month_cost: float = 0.0
     month_requests: int = 0
     
