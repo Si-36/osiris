@@ -488,12 +488,11 @@ class AdaptiveCheckpointCoalescer:
 
 
 # Factory function
-    def create_adaptive_checkpoint_coalescer(**kwargs) -> AdaptiveCheckpointCoalescer:
-        """Create adaptive checkpoint coalescer with feature flag support"""
-        from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
+def create_adaptive_checkpoint_coalescer(**kwargs) -> "AdaptiveCheckpointCoalescer":
+    """Create adaptive checkpoint coalescer with feature flag support"""
+    from ..orchestration.feature_flags import is_feature_enabled, FeatureFlag
     
-        if not is_feature_enabled(FeatureFlag.ADAPTIVE_CHECKPOINT_ENABLED):
-            pass
+    if not is_feature_enabled(FeatureFlag.ADAPTIVE_CHECKPOINT_ENABLED):
         raise RuntimeError("Adaptive checkpoint coalescing is not enabled. Enable with feature flag.")
     
-        return AdaptiveCheckpointCoalescer(**kwargs)
+    return AdaptiveCheckpointCoalescer(**kwargs)
