@@ -17,9 +17,17 @@ from enum import Enum
 from collections import defaultdict
 import heapq
 
-from temporalio import workflow, activity
-from temporalio.client import Client
-from temporalio.worker import Worker
+try:
+    from temporalio import workflow, activity
+    from temporalio.client import Client
+    from temporalio.worker import Worker
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    TEMPORAL_AVAILABLE = False
+    workflow = None
+    activity = None
+    Client = None
+    Worker = None
 
 logger = logging.getLogger(__name__)
 
@@ -445,6 +453,9 @@ class SignalFirstRouter:
 def signalfirst_workflow(cls):
     """Decorator to enable SignalFirst for a Temporal workflow"""
     
+    if not TEMPORAL_AVAILABLE:
+        return cls
+        
     original_init = cls.__init__
     
     def new_init(self, *args, **kwargs):
@@ -459,8 +470,9 @@ def signalfirst_workflow(cls):
     
     async def signal_with_router(self, signal_name: str, signal_data: Any):
         # Route through SignalFirst
+        workflow_id = workflow.info().workflow_id if TEMPORAL_AVAILABLE else "non-temporal"
         await self._signal_router.route_signal(
-            workflow_id=workflow.info().workflow_id,
+            workflow_id=workflow_id,
             signal_type=signal_name,
             signal_data=signal_data
         )
@@ -471,7 +483,7 @@ def signalfirst_workflow(cls):
     
     cls.signal = signal_with_router
     
-    return workflow.defn(cls)
+    return workflow.defn(cls) if TEMPORAL_AVAILABLE else cls
 
 
 # Example workflow using SignalFirst
@@ -483,12 +495,15 @@ class OptimizedWorkflow:
         self.state = {}
         self.signals_processed = 0
     
-    @workflow.run
+    @workflow.run if TEMPORAL_AVAILABLE else lambda f: f
     async def run(self):
         """Main workflow logic"""
         while True:
             # Process signals efficiently
-            await workflow.wait_condition(lambda: self.signals_processed > 0)
+            if TEMPORAL_AVAILABLE:
+                await workflow.wait_condition(lambda: self.signals_processed > 0)
+            else:
+                await asyncio.sleep(0.1)  # Fallback for non-temporal
             
             # Do work based on signals
             logger.info(f"Processed {self.signals_processed} signals")
@@ -496,7 +511,7 @@ class OptimizedWorkflow:
             # Reset counter
             self.signals_processed = 0
     
-    @workflow.signal
+    @workflow.signal if TEMPORAL_AVAILABLE else lambda f: f
     async def process_signal(self, data: Dict[str, Any]):
         """Handle incoming signals"""
         self.signals_processed += 1
