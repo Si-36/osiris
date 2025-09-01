@@ -710,13 +710,12 @@ class RealLNNComponent(RealComponent):
         if isinstance(data, dict) and 'values' in data:
             values = torch.tensor(data['values'], dtype=torch.float32)
             if values.dim() == 1:
-                    pass
                 values = values.unsqueeze(0)
             
             # Dynamic sizing for different input dimensions
-                input_size = values.shape[-1]
+            input_size = values.shape[-1]
             
-                if hasattr(self, 'lnn'):
+            if hasattr(self, 'lnn'):
                     pass
                 # Real ncps implementation with dynamic sizing
                 if input_size != 10:
