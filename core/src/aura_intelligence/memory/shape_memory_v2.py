@@ -57,6 +57,7 @@ class ShapeMemoryV2Config:
     knn_backend: str = "auto"  # auto, faiss_gpu, faiss_cpu, annoy
     
     # Storage settings
+    storage_mode: str = "full"  # "full", "memory_only"
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_user: str = "neo4j"
     neo4j_password: str = "password"
@@ -139,13 +140,21 @@ class ShapeAwareMemoryV2:
         )
         self._knn_index = HybridKNNIndex(self.config.embedding_dim, knn_config)
         
-        # Initialize storage backends
-        self._driver = AsyncGraphDatabase.driver(
-            self.config.neo4j_uri,
-            auth=(self.config.neo4j_user, self.config.neo4j_password)
-        )
-        
-        self._redis = await redis.from_url(self.config.redis_url)
+        # Initialize storage backends based on mode
+        if self.config.storage_mode == "memory_only":
+            # Use in-memory storage for testing/development
+            self._driver = None
+            self._redis = None
+            self._memory_store = {}  # In-memory storage
+            print("📝 ShapeMemoryV2: Running in memory-only mode (no Redis/Neo4j)")
+        else:
+            # Full mode with real databases
+            self._driver = AsyncGraphDatabase.driver(
+                self.config.neo4j_uri,
+                auth=(self.config.neo4j_user, self.config.neo4j_password)
+            )
+            self._redis = await redis.from_url(self.config.redis_url)
+            self._memory_store = None
         
         # Initialize Event Bus
         if self.config.event_bus_enabled:
@@ -364,25 +373,38 @@ class ShapeAwareMemoryV2:
         return anomaly_patterns
     
     async def _store_hot_tier(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
-        """Store memory in hot tier (Redis)."""
-        key = f"shape_v2:hot:{memory.memory_id}"
-        
-        # Prepare data
-        data = {
-        "content": json.dumps(memory.content),
-        "signature": json.dumps(memory.signature.to_dict()),
-        "embedding": embedding.tobytes(),
-        "context_type": memory.context_type,
-        "metadata": json.dumps(memory.metadata),
-        "created_at": memory.created_at.isoformat()
-        }
-        
-        # Store with TTL
-        await self._redis.hset(key, mapping=data)
-        await self._redis.expire(key, self._tiers[0].ttl_hours * 3600)
+        """Store memory in hot tier (Redis or memory)."""
+        if self.config.storage_mode == "memory_only":
+            # Store in memory
+            self._memory_store[memory.memory_id] = {
+                "memory": memory,
+                "embedding": embedding,
+                "created_at": time.time()
+            }
+        else:
+            # Store in Redis
+            key = f"shape_v2:hot:{memory.memory_id}"
+            
+            # Prepare data
+            data = {
+            "content": json.dumps(memory.content),
+            "signature": json.dumps(memory.signature.to_dict()),
+            "embedding": embedding.tobytes(),
+            "context_type": memory.context_type,
+            "metadata": json.dumps(memory.metadata),
+            "created_at": memory.created_at.isoformat()
+            }
+            
+            # Store with TTL
+            await self._redis.hset(key, mapping=data)
+            await self._redis.expire(key, self._tiers[0].ttl_hours * 3600)
     
     async def _persist_to_neo4j(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
         """Persist memory to Neo4j (warm tier)."""
+        if self.config.storage_mode == "memory_only":
+            # Skip Neo4j in memory-only mode
+            return
+        
         try:
             async with self._driver.session() as session:
                 # Compress content if large
