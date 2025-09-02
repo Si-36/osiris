@@ -663,3 +663,72 @@ class ByzantineConsensus:
         """Get consensus status."""
         pass
         return await self.core.get_status()
+
+
+class TopologicalByzantineConsensus:
+    """Topological Byzantine consensus for gossip routing."""
+    
+    def __init__(self):
+        """Initialize without config for gossip router compatibility."""
+        self.last_consensus = None
+    
+    async def reach_consensus(self, votes: List[Dict[str, Any]], min_participation: float = 0.67) -> Dict[str, Any]:
+        """
+        Reach consensus on votes from multiple agents.
+        
+        Args:
+            votes: List of vote dictionaries with 'agent_id', 'value', and 'weight'
+            min_participation: Minimum participation ratio required
+        
+        Returns:
+            Consensus result with 'consensus_value' and 'confidence'
+        """
+        if not votes:
+            return {
+                'consensus_value': None,
+                'confidence': 0.0
+            }
+        
+        # Count votes by value
+        vote_counts = {}
+        total_weight = 0.0
+        
+        for vote in votes:
+            value = vote.get('value')
+            weight = vote.get('weight', 1.0)
+            
+            if value not in vote_counts:
+                vote_counts[value] = 0.0
+            vote_counts[value] += weight
+            total_weight += weight
+        
+        # Find majority value
+        if total_weight == 0:
+            return {
+                'consensus_value': None,
+                'confidence': 0.0
+            }
+        
+        # Check participation
+        participation = len(votes) / max(len(votes), 3)  # Assume at least 3 agents expected
+        if participation < min_participation:
+            return {
+                'consensus_value': None,
+                'confidence': participation
+            }
+        
+        # Get value with most votes
+        consensus_value = max(vote_counts.items(), key=lambda x: x[1])[0]
+        confidence = vote_counts[consensus_value] / total_weight
+        
+        self.last_consensus = {
+            'consensus_value': consensus_value,
+            'confidence': confidence,
+            'participation': participation,
+            'vote_counts': vote_counts
+        }
+        
+        return {
+            'consensus_value': consensus_value,
+            'confidence': confidence
+        }

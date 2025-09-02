@@ -136,31 +136,25 @@ def with_retry(
             last_error: Optional[Exception] = None
             
             while True:
-                pass
-            try:
-                pass
-            return func(*args, **kwargs)
-            except exceptions as e:
-                pass
-            last_error = e
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    last_error = e
                     
-            if not strategy.should_retry(attempt, e):
-                pass
-            raise
+                    if not strategy.should_retry(attempt, e):
+                        raise
                     
-            if on_retry:
-                pass
-            on_retry(attempt, e)
+                    if on_retry:
+                        on_retry(attempt, e)
                     
-            delay = strategy.get_delay(attempt)
-            time.sleep(delay)
-            attempt += 1
+                    delay = strategy.get_delay(attempt)
+                    time.sleep(delay)
+                    attempt += 1
         
-            # Return appropriate wrapper
-            import asyncio
-            if asyncio.iscoroutinefunction(func):
-                pass
+        # Return appropriate wrapper
+        import asyncio
+        if asyncio.iscoroutinefunction(func):
             return async_wrapper  # type: ignore
-            return sync_wrapper  # type: ignore
+        return sync_wrapper  # type: ignore
     
-            return decorator
+    return decorator

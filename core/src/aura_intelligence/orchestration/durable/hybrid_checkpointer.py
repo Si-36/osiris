@@ -550,22 +550,22 @@ class HybridCheckpointManager:
         """Recover conversation state from LangGraph checkpoint"""
         try:
             # Mock recovery - actual implementation would use checkpointer's get method
-        await asyncio.sleep(0.1)  # Simulate recovery time
+            await asyncio.sleep(0.1)  # Simulate recovery time
             
-        return {
-        "type": "conversation",
-        "checkpoint_id": conversation_checkpoint_id,
-        "status": "recovered",
-        "state": {"conversation": "recovered_state"}
-        }
+            return {
+                "type": "conversation",
+                "checkpoint_id": conversation_checkpoint_id,
+                "status": "recovered",
+                "state": {"conversation": "recovered_state"}
+            }
             
         except Exception as e:
-        return {
-        "type": "conversation",
-        "checkpoint_id": conversation_checkpoint_id,
-        "status": "failed",
-        "error": str(e)
-        }
+            return {
+                "type": "conversation",
+                "checkpoint_id": conversation_checkpoint_id,
+                "status": "failed",
+                "error": str(e)
+            }
     
     async def _recover_workflow_state(self, workflow_checkpoint_id: str) -> Dict[str, Any]:
         """Recover workflow state from Temporal.io checkpoint"""
