@@ -252,13 +252,10 @@ class CompositeLoader:
         result = base.copy()
         
         for key, value in update.items():
-            pass
-        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-            pass
-        result[key] = self._deep_merge(result[key], value)
-        else:
-            pass
-        result[key] = value
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = self._deep_merge(result[key], value)
+            else:
+                result[key] = value
         
         return result
 
