@@ -234,8 +234,8 @@ class FeatureFlagManager:
     async def close(self) -> None:
         """Cleanup resources"""
         if self._refresh_task:
-        self._refresh_task.cancel()
-        try:
-        await self._refresh_task
-        except asyncio.CancelledError:
-        pass
+            self._refresh_task.cancel()
+            try:
+                await self._refresh_task
+            except asyncio.CancelledError:
+                pass

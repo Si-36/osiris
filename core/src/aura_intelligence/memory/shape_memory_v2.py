@@ -118,10 +118,8 @@ class ShapeAwareMemoryV2:
         self._total_memories = 0
         self._initialized = False
     
-        async def initialize(self) -> None:
-            pass
+    async def initialize(self) -> None:
         """Initialize all components."""
-        pass
         if self._initialized:
             return
         
@@ -689,10 +687,8 @@ class ShapeAwareMemoryV2:
         
         metrics_collector.shape_memory_v2_tiering.inc()
     
-        async def cleanup(self) -> None:
-            pass
+    async def cleanup(self) -> None:
         """Clean up resources."""
-        pass
         if self._driver:
             await self._driver.close()
         if self._redis:
@@ -805,5 +801,5 @@ async def demo_shape_memory_v2():
         await memory_system.cleanup()
 
 
-        if __name__ == "__main__":
-        asyncio.run(demo_shape_memory_v2())
+if __name__ == "__main__":
+    asyncio.run(demo_shape_memory_v2())
