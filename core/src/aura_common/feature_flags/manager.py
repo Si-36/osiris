@@ -181,8 +181,7 @@ class FeatureFlagManager:
             
         return False
         
-        async def _load_flags(self) -> None:
-            pass
+    async def _load_flags(self) -> None:
         """Load flags from Redis or config"""
         if self.redis_client:
             try:
