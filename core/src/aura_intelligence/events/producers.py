@@ -16,12 +16,28 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 
-from aiokafka import AIOKafkaProducer
-from aiokafka.errors import KafkaError, KafkaTimeoutError
-from confluent_kafka import SerializingProducer
-from confluent_kafka.serialization import StringSerializer
-from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
+try:
+    from aiokafka import AIOKafkaProducer
+    from aiokafka.errors import KafkaError, KafkaTimeoutError
+    AIOKAFKA_AVAILABLE = True
+except ImportError:
+    AIOKAFKA_AVAILABLE = False
+    AIOKafkaProducer = None
+    KafkaError = Exception
+    KafkaTimeoutError = Exception
+
+try:
+    from confluent_kafka import SerializingProducer
+    from confluent_kafka.serialization import StringSerializer
+    from confluent_kafka.schema_registry import SchemaRegistryClient
+    from confluent_kafka.schema_registry.avro import AvroSerializer
+    CONFLUENT_KAFKA_AVAILABLE = True
+except ImportError:
+    CONFLUENT_KAFKA_AVAILABLE = False
+    SerializingProducer = None
+    StringSerializer = None
+    SchemaRegistryClient = None
+    AvroSerializer = None
 import structlog
 from opentelemetry import trace, metrics
 from opentelemetry.trace import Status, StatusCode
@@ -132,9 +148,20 @@ class EventProducer:
         self.producer: Optional[AIOKafkaProducer] = None
         self._started = False
         
+        if not AIOKAFKA_AVAILABLE:
+            logger.warning("AIOKafka not available. EventProducer will run in mock mode.")
+            self._mock_mode = True
+        else:
+            self._mock_mode = False
+        
     async def start(self):
         """Start the producer."""
         if self._started:
+            return
+            
+        if self._mock_mode:
+            logger.info(f"Starting event producer in MOCK mode: {self.config.client_id}")
+            self._started = True
             return
             
         logger.info(f"Starting event producer: {self.config.client_id}")

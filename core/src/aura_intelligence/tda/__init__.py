@@ -33,6 +33,12 @@ from .algorithms import (
     validate_point_cloud
 )
 
+# Import TDAProcessor for compatibility
+from .legacy.persistence_simple import TDAProcessor
+
+# Import TopologicalSignature
+from .enhanced_topology import TopologicalSignature
+
 from .realtime_monitor import (
     RealtimeTopologyMonitor,
     SystemEvent,
@@ -156,6 +162,10 @@ __all__ = [
     "TopologicalAnomaly",
     "HealthStatus",
     "PersistenceDiagram",
+    "TopologicalSignature",
+    
+    # Legacy compatibility
+    "TDAProcessor",
     
     # Algorithms
     "compute_persistence",

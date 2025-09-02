@@ -145,6 +145,12 @@ except ImportError:
     LiquidLayer = None
     LNNConfig = None
 
+# Mamba components
+try:
+    from .mamba2_integration import Mamba2Block as MambaModel
+except ImportError:
+    MambaModel = None
+
 __all__ = [
     # Provider system
     'ProviderType',
@@ -227,5 +233,14 @@ __all__ = [
     
     # Legacy support
     'LiquidNeuralNetwork',
-    '_lnn_available'
+    '_lnn_available',
+    
+    # Mamba
+    'MambaModel',
+    
+    # Alias for model router
+    'AURAModelRouter'
 ]
+
+# Import AURAModelRouter
+from .model_router import AURAModelRouter

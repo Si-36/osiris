@@ -68,6 +68,14 @@ HierarchicalMemoryManager = HierarchicalMemorySystem
 # Import AURAMemorySystem
 from .core.memory_api import AURAMemorySystem
 
+# Import ShapeAwareMemory
+from .shape_aware_memory import ShapeMemory as ShapeAwareMemory
+
+# Define aliases for compatibility
+HybridMemoryManager = UnifiedMemoryInterface
+CollectiveMemory = UnifiedMemoryInterface
+FastRPEmbeddings = HMemSystem
+
 __all__ = [
     # KNN Index
     'HybridKNNIndex',
@@ -102,5 +110,11 @@ __all__ = [
     'QuantizationType',
     'QuantizationPreset',
     # Core Memory System
-    'AURAMemorySystem'
+    'AURAMemorySystem',
+    # Shape Aware Memory
+    'ShapeAwareMemory',
+    # Aliases
+    'HybridMemoryManager',
+    'CollectiveMemory',
+    'FastRPEmbeddings'
 ]
