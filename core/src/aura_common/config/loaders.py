@@ -309,15 +309,14 @@ class RemoteConfigLoader:
         return self._cache.copy()
         
         try:
-            pass
-        response = requests.get(
-        self.url,
-        headers=self.headers,
-        timeout=self.timeout
-        )
-        response.raise_for_status()
+            response = requests.get(
+                self.url,
+                headers=self.headers,
+                timeout=self.timeout
+            )
+            response.raise_for_status()
             
-        # Parse response
+            # Parse response
         config = response.json()
             
         # Update cache
