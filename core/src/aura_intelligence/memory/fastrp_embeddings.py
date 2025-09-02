@@ -78,7 +78,7 @@ class FastRPEmbedder:
         self._projection_matrix = self._projection_matrix / np.sqrt(n_features * density)
         
         self._initialized = True
-        metrics_collector.fastrp_initialized.inc()
+        # metrics_collector.fastrp_initialized.inc()  # TODO: Add metric
     
     def embed_persistence_diagram(
         self,
@@ -121,14 +121,21 @@ class FastRPEmbedder:
                     embedding = embedding / norm
         
         # Final normalization
+        # Replace any NaN or Inf values with 0
+        embedding = np.nan_to_num(embedding, nan=0.0, posinf=1.0, neginf=-1.0)
+        
         if self.config.normalization == "l2":
-            embedding = normalize(embedding.reshape(1, -1), norm='l2')[0]
+            norm = np.linalg.norm(embedding)
+            if norm > 0:
+                embedding = embedding / norm
         elif self.config.normalization == "l1":
-            embedding = normalize(embedding.reshape(1, -1), norm='l1')[0]
+            norm = np.sum(np.abs(embedding))
+            if norm > 0:
+                embedding = embedding / norm
         
         # Record metrics
         embedding_time = (time.time() - start_time) * 1000
-        metrics_collector.fastrp_embedding_time.observe(embedding_time)
+        # metrics_collector.fastrp_embedding_time.observe(embedding_time)  # TODO: Add metric
         
         return embedding
     
@@ -214,7 +221,12 @@ class FastRPEmbedder:
         # 3. Persistence entropy (1 feature)
         if len(persistences) > 0 and np.sum(persistences) > 0:
             probs = persistences / np.sum(persistences)
-            entropy = -np.sum(probs * np.log(probs + 1e-10))
+            # Avoid log(0) by filtering out zero probabilities
+            probs = probs[probs > 0]
+            if len(probs) > 0:
+                entropy = -np.sum(probs * np.log(probs))
+            else:
+                entropy = 0.0
             features.append(entropy)
         else:
             features.append(0.0)
