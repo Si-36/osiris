@@ -426,21 +426,18 @@ class ShapeAwareMemoryV2:
             metrics_collector.shape_memory_v2_errors.labels(operation="persist").inc()
     
     async def _fetch_memories(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
-            pass
         """Fetch memories from appropriate tiers."""
         memories = []
         
         # Batch fetch for efficiency
         for batch_start in range(0, len(memory_ids), self.config.batch_size):
-            pass
-        batch_ids = memory_ids[batch_start:batch_start + self.config.batch_size]
-        batch_memories = await self._fetch_batch(batch_ids)
-        memories.extend(batch_memories)
+            batch_ids = memory_ids[batch_start:batch_start + self.config.batch_size]
+            batch_memories = await self._fetch_batch(batch_ids)
+            memories.extend(batch_memories)
         
         return memories
     
     async def _fetch_batch(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
-            pass
         """Fetch a batch of memories."""
         memories = [None] * len(memory_ids)
         id_to_index = {mid: i for i, mid in enumerate(memory_ids)}
@@ -473,7 +470,6 @@ class ShapeAwareMemoryV2:
         return memories
     
     async def _fetch_from_redis(self, memory_ids: List[str]) -> Dict[str, Optional[ShapeMemory]]:
-            pass
         """Fetch memories from Redis."""
         results = {}
         
@@ -566,7 +562,6 @@ class ShapeAwareMemoryV2:
         return results
     
     async def _update_access(self, memory: ShapeMemory) -> None:
-            pass
         """Update memory access statistics."""
         memory.update_access()
         
