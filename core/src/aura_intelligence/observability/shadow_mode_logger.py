@@ -274,34 +274,34 @@ class ShadowModeLogger:
         async with aiosqlite.connect(self.db_path) as db:
             # Get the entry we just updated
             async with db.execute("""
-        SELECT predicted_success_probability, actual_outcome, risk_score
-        FROM shadow_logs
-        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
-        ORDER BY timestamp DESC LIMIT 1
-        """, (workflow_id,)) as cursor:
-        row = await cursor.fetchone()
+                SELECT predicted_success_probability, actual_outcome, risk_score
+                FROM shadow_logs
+                WHERE workflow_id = ? AND actual_outcome IS NOT NULL
+                ORDER BY timestamp DESC LIMIT 1
+                """, (workflow_id,)) as cursor:
+                row = await cursor.fetchone()
                 
-        if row:
-            predicted_prob, actual_outcome, risk_score = row
+                if row:
+                    predicted_prob, actual_outcome, risk_score = row
                     
-        # Calculate prediction accuracy (1.0 if correct, 0.0 if wrong)
-        actual_success = 1.0 if actual_outcome == "success" else 0.0
-        prediction_accuracy = 1.0 - abs(predicted_prob - actual_success)
+                    # Calculate prediction accuracy (1.0 if correct, 0.0 if wrong)
+                    actual_success = 1.0 if actual_outcome == "success" else 0.0
+                    prediction_accuracy = 1.0 - abs(predicted_prob - actual_success)
                     
-        # Calculate risk assessment accuracy
-        actual_risk = 1.0 - actual_success  # High risk if failed
-        risk_assessment_accuracy = 1.0 - abs(risk_score - actual_risk)
+                    # Calculate risk assessment accuracy
+                    actual_risk = 1.0 - actual_success  # High risk if failed
+                    risk_assessment_accuracy = 1.0 - abs(risk_score - actual_risk)
                     
-        # Update the entry with calculated metrics
-        await db.execute("""
-        UPDATE shadow_logs
-        SET prediction_accuracy = ?,
-        risk_assessment_accuracy = ?
-        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
-        ORDER BY timestamp DESC LIMIT 1
-        """, (prediction_accuracy, risk_assessment_accuracy, workflow_id))
+                    # Update the entry with calculated metrics
+                    await db.execute("""
+                        UPDATE shadow_logs
+                        SET prediction_accuracy = ?,
+                        risk_assessment_accuracy = ?
+                        WHERE workflow_id = ? AND actual_outcome IS NOT NULL
+                        ORDER BY timestamp DESC LIMIT 1
+                    """, (prediction_accuracy, risk_assessment_accuracy, workflow_id))
                     
-        await db.commit()
+                    await db.commit()
     
     async def get_accuracy_metrics(self, days: int = 7) -> Dict[str, Any]:
         """
@@ -317,7 +317,7 @@ class ShadowModeLogger:
         
         async with aiosqlite.connect(self.db_path) as db:
             # Overall accuracy
-        async with db.execute("""
+            async with db.execute("""
                 SELECT 
                     AVG(prediction_accuracy) as avg_prediction_accuracy,
                     AVG(risk_assessment_accuracy) as avg_risk_accuracy,

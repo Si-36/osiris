@@ -134,16 +134,16 @@ class HybridCheckpointManager:
         if self.config.postgres_url and PostgresSaver:
             try:
                 return PostgresSaver.from_conn_string(
-        self.config.postgres_url,
-        pool_size=20
-        )
-        except Exception as e:
-        print(f"Warning: Failed to initialize PostgresSaver: {e}")
-        return MemorySaver() if MemorySaver else None
+                    self.config.postgres_url,
+                    pool_size=20
+                )
+            except Exception as e:
+                print(f"Warning: Failed to initialize PostgresSaver: {e}")
+                return MemorySaver() if MemorySaver else None
         else:
-        return MemorySaver() if MemorySaver else None
+            return MemorySaver() if MemorySaver else None
     
-        async def initialize_temporal_client(self):
+    async def initialize_temporal_client(self):
             """Initialize Temporal.io client"""
         pass
         if TEMPORAL_AVAILABLE and temporalio:
@@ -154,7 +154,7 @@ class HybridCheckpointManager:
             except Exception as e:
                 print(f"Warning: Failed to initialize Temporal client: {e}")
     
-        async def create_hybrid_checkpoint(
+    async def create_hybrid_checkpoint(
         self,
         workflow_id: str,
         conversation_state: Optional[Dict[str, Any]] = None,
@@ -268,7 +268,7 @@ class HybridCheckpointManager:
             
             return error_result
     
-        async def _create_conversation_checkpoint(
+    async def _create_conversation_checkpoint(
         self,
         workflow_id: str,
         conversation_state: Dict[str, Any],
@@ -309,7 +309,7 @@ class HybridCheckpointManager:
             print(f"Warning: Failed to create conversation checkpoint: {e}")
             raise
     
-        async def _create_workflow_checkpoint(
+    async def _create_workflow_checkpoint(
         self,
         workflow_id: str,
         workflow_state: Dict[str, Any],
@@ -342,7 +342,7 @@ class HybridCheckpointManager:
             print(f"Warning: Failed to create workflow checkpoint: {e}")
             raise
     
-        async def recover_from_hybrid_checkpoint(
+    async def recover_from_hybrid_checkpoint(
         self,
         checkpoint_id: str,
         recovery_mode: Optional[RecoveryMode] = None,
@@ -441,7 +441,7 @@ class HybridCheckpointManager:
         # Default to parallel recovery for balanced scenarios
         return RecoveryMode.PARALLEL_RECOVERY
     
-        async def _execute_recovery(
+    async def _execute_recovery(
         self,
         checkpoint_info: HybridCheckpointResult,
         recovery_mode: RecoveryMode,
@@ -459,7 +459,7 @@ class HybridCheckpointManager:
             # Default to parallel recovery
             return await self._parallel_recovery(checkpoint_info, tda_context)
     
-        async def _parallel_recovery(
+    async def _parallel_recovery(
         self,
         checkpoint_info: HybridCheckpointResult,
         tda_context: Optional[TDAContext]
@@ -497,7 +497,7 @@ class HybridCheckpointManager:
                 "message": "No recoverable state found"
             }
     
-        async def _conversation_first_recovery(
+    async def _conversation_first_recovery(
         self,
         checkpoint_info: HybridCheckpointResult,
         tda_context: Optional[TDAContext]
@@ -522,7 +522,7 @@ class HybridCheckpointManager:
             "recovery_mode": "conversation_first"
         }
     
-        async def _workflow_first_recovery(
+    async def _workflow_first_recovery(
         self,
         checkpoint_info: HybridCheckpointResult,
         tda_context: Optional[TDAContext]
@@ -547,7 +547,7 @@ class HybridCheckpointManager:
             "recovery_mode": "workflow_first"
         }
     
-        async def _recover_conversation_state(self, conversation_checkpoint_id: str) -> Dict[str, Any]:
+    async def _recover_conversation_state(self, conversation_checkpoint_id: str) -> Dict[str, Any]:
         """Recover conversation state from LangGraph checkpoint"""
         try:
             # Mock recovery - actual implementation would use checkpointer's get method
@@ -568,7 +568,7 @@ class HybridCheckpointManager:
         "error": str(e)
         }
     
-        async def _recover_workflow_state(self, workflow_checkpoint_id: str) -> Dict[str, Any]:
+    async def _recover_workflow_state(self, workflow_checkpoint_id: str) -> Dict[str, Any]:
         """Recover workflow state from Temporal.io checkpoint"""
         try:
             # Mock recovery - actual implementation would interact with Temporal.io

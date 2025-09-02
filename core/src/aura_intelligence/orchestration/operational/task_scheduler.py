@@ -18,7 +18,11 @@ import psutil
 
 # AURA imports
 from ...components.registry import get_registry
-from ...observability.prometheus_client import MetricsCollector
+try:
+    from ...observability.prometheus_integration import MetricsCollector
+except ImportError:
+    # Fallback if MetricsCollector is not available
+    MetricsCollector = None
 
 import logging
 logger = logging.getLogger(__name__)
