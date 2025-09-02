@@ -35,7 +35,7 @@ except ImportError:
             return func
 
 # AURA imports
-from ...tda.persistence import TDAProcessor
+from ...tda.legacy.persistence_simple import TDAProcessor
 from ...inference.active_inference_lite import ActiveInferenceLite
 from ...coral.coral_2025 import CoRaL2025System
 from ...dpo.dpo_2025_advanced import AURAAdvancedDPO

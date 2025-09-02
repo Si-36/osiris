@@ -27,10 +27,8 @@ class GossipMessage:
     """Gossip protocol message"""
     message_id: str
     source_agent: str
-    timestamp: float = field(default_factory=time.time)
-    
-    # Message content
     message_type: str  # state_update, consensus_request, heartbeat
+    timestamp: float = field(default_factory=time.time)
     payload: Dict[str, Any] = field(default_factory=dict)
     
     # Gossip metadata

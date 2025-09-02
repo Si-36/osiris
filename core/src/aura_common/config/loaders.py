@@ -68,22 +68,17 @@ class EnvConfigLoader:
         """Convert string value to appropriate type."""
         # Boolean
         if value.lower() in ('true', 'yes', '1', 'on'):
-            pass
-        return True
+            return True
         if value.lower() in ('false', 'no', '0', 'off'):
-            pass
-        return False
+            return False
         
         # Number
         try:
-            pass
-        if '.' in value:
-            pass
-        return float(value)
-        return int(value)
+            if '.' in value:
+                return float(value)
+            return int(value)
         except ValueError:
             pass
-        pass
         
         # JSON
         if value.startswith('{') or value.startswith('['):
