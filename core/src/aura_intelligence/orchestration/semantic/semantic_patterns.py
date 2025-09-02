@@ -57,7 +57,6 @@ class SemanticPatternMatcher:
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext] = None
         ) -> SemanticAnalysis:
-            pass
         """
         Comprehensive semantic pattern analysis with TDA correlation
         """
@@ -98,7 +97,6 @@ class SemanticPatternMatcher:
         )
     
         async def _calculate_complexity_score(self, input_data: Dict[str, Any]) -> float:
-            pass
         """
         Calculate semantic complexity using weighted factors
         """
@@ -136,7 +134,6 @@ class SemanticPatternMatcher:
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
         ) -> UrgencyLevel:
-            pass
         """
         Determine urgency level with TDA anomaly amplification
         """
@@ -156,7 +153,6 @@ class SemanticPatternMatcher:
                     base_urgency = "high"
             except (ValueError, TypeError):
                 pass
-        pass
         
         # TDA anomaly amplification
         if tda_context:
@@ -180,7 +176,6 @@ class SemanticPatternMatcher:
         urgency_level: UrgencyLevel,
         tda_context: Optional[TDAContext]
         ) -> OrchestrationStrategy:
-            pass
         """
         Select optimal coordination pattern based on analysis
         """
@@ -210,7 +205,6 @@ class SemanticPatternMatcher:
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
         ) -> List[str]:
-            pass
         """
         Suggest optimal agents based on semantic analysis and TDA context
         """
@@ -251,12 +245,11 @@ class SemanticPatternMatcher:
         amplification_factor = 1 + (tda_context.pattern_confidence * 0.3)
         return complexity_score * amplification_factor
     
-        def _escalate_urgency_with_tda(
+    def _escalate_urgency_with_tda(
         self, 
         urgency_level: UrgencyLevel, 
         tda_context: TDAContext
         ) -> UrgencyLevel:
-            pass
         """
         Escalate urgency based on TDA anomaly severity
         """
@@ -280,7 +273,6 @@ class SemanticPatternMatcher:
         urgency_level: UrgencyLevel,
         tda_context: Optional[TDAContext]
         ) -> float:
-            pass
         """
         Calculate confidence in the semantic analysis
         """
@@ -305,7 +297,6 @@ class SemanticPatternMatcher:
         self, 
         analysis: SemanticAnalysis
         ) -> Dict[str, Any]:
-            pass
         """
         Get detailed insights about the semantic patterns
         """
@@ -344,13 +335,10 @@ class SemanticPatternMatcher:
         if pattern == OrchestrationStrategy.PARALLEL:
             return f"High complexity ({complexity:.2f}) or critical urgency ({urgency.value}) requires parallel execution"
         elif pattern == OrchestrationStrategy.HIERARCHICAL:
-            pass
-        return f"High complexity ({complexity:.2f}) with moderate urgency benefits from hierarchical coordination"
+            return f"High complexity ({complexity:.2f}) with moderate urgency benefits from hierarchical coordination"
         elif pattern == OrchestrationStrategy.CONSENSUS:
-            pass
-        return f"Medium complexity ({complexity:.2f}) requires consensus for optimal results"
+            return f"Medium complexity ({complexity:.2f}) requires consensus for optimal results"
         elif pattern == OrchestrationStrategy.SEQUENTIAL:
-            pass
-        return f"Low complexity ({complexity:.2f}) with critical urgency ({urgency.value}) needs fast sequential execution"
+            return f"Low complexity ({complexity:.2f}) with critical urgency ({urgency.value}) needs fast sequential execution"
         else:
         return f"Event-driven pattern selected for flexible coordination"
