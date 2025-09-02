@@ -47,24 +47,22 @@ class TopologicalSignature:
         # Wasserstein distance for persistence diagrams
         if self.persistence_diagram.size > 0 and other.persistence_diagram.size > 0:
             # Ensure diagrams have same shape
-        min_points = min(len(self.persistence_diagram), len(other.persistence_diagram))
-        pd1 = self.persistence_diagram[:min_points]
-        pd2 = other.persistence_diagram[:min_points]
+            min_points = min(len(self.persistence_diagram), len(other.persistence_diagram))
+            pd1 = self.persistence_diagram[:min_points]
+            pd2 = other.persistence_diagram[:min_points]
             
-        # Calculate Wasserstein distance
-        if pd1.ndim == 2 and pd2.ndim == 2:
-            birth1, death1 = pd1[:, 0], pd1[:, 1]
-        birth2, death2 = pd2[:, 0], pd2[:, 1]
+            # Calculate Wasserstein distance
+            if pd1.ndim == 2 and pd2.ndim == 2:
+                birth1, death1 = pd1[:, 0], pd1[:, 1]
+                birth2, death2 = pd2[:, 0], pd2[:, 1]
                 
-        birth_dist = wasserstein_distance(birth1, birth2)
-        death_dist = wasserstein_distance(death1, death2)
-        persistence_dist = (birth_dist + death_dist) / 2
+                birth_dist = wasserstein_distance(birth1, birth2)
+                death_dist = wasserstein_distance(death1, death2)
+                persistence_dist = (birth_dist + death_dist) / 2
+            else:
+                persistence_dist = 0.0
         else:
-            pass
-        persistence_dist = 0.0
-        else:
-            pass
-        persistence_dist = 0.0
+            persistence_dist = 0.0
         
         # Weighted combination
         return 0.3 * betti_dist + 0.7 * persistence_dist
