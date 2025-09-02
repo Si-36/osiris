@@ -406,13 +406,13 @@ async def benchmark_fastrp():
     # Compare with Wasserstein distance (sample)
         start_time = time.time()
         for i in range(min(10, n_queries)):  # Only 10 samples due to slow computation
-        idx1, idx2 = np.random.randint(n_samples, size=2)
-        pd1, pd2 = persistence_diagrams[idx1], persistence_diagrams[idx2]
-        
-        if pd1.size > 0 and pd2.size > 0:
-            pers1 = pd1[:, 1] - pd1[:, 0]
-            pers2 = pd2[:, 1] - pd2[:, 0]
-            dist = wasserstein_distance(pers1, pers2)
+            idx1, idx2 = np.random.randint(n_samples, size=2)
+            pd1, pd2 = persistence_diagrams[idx1], persistence_diagrams[idx2]
+            
+            if pd1.size > 0 and pd2.size > 0:
+                pers1 = pd1[:, 1] - pd1[:, 0]
+                pers2 = pd2[:, 1] - pd2[:, 0]
+                dist = wasserstein_distance(pers1, pers2)
         wass_time = time.time() - start_time
     
         print(f"\nWasserstein distance time for 10 comparisons: {wass_time:.3f}s")
