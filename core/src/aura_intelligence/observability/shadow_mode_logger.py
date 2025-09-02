@@ -80,7 +80,7 @@ class ShadowModeEntry:
             data['outcome_timestamp'] = self.outcome_timestamp.isoformat()
         return data
     
-        @classmethod
+    @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ShadowModeEntry':
         """Create from dictionary (for loading from storage)."""
         # Convert ISO strings back to datetime objects
@@ -121,11 +121,10 @@ class ShadowModeLogger:
         await self._create_database_schema()
         logger.info("🌙 Shadow Mode Logger initialized")
     
-        async def _create_database_schema(self):
-            """Create SQLite database schema for shadow mode logs."""
-        pass
+    async def _create_database_schema(self):
+        """Create SQLite database schema for shadow mode logs."""
         async with aiosqlite.connect(self.db_path) as db:
-        await db.execute("""
+            await db.execute("""
                 CREATE TABLE IF NOT EXISTS shadow_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     workflow_id TEXT NOT NULL,
@@ -177,8 +176,8 @@ class ShadowModeLogger:
 
         try:
             # Store in SQLite for fast queries
-        async with aiosqlite.connect(self.db_path) as db:
-        cursor = await db.execute("""
+            async with aiosqlite.connect(self.db_path) as db:
+                cursor = await db.execute("""
         INSERT INTO shadow_logs (
         workflow_id, thread_id, timestamp,
         predicted_success_probability, prediction_confidence_score,
@@ -198,24 +197,24 @@ class ShadowModeLogger:
         json.dumps(entry.to_dict())
         ))
                 
-        entry_id = cursor.lastrowid
-        await db.commit()
+                entry_id = cursor.lastrowid
+                await db.commit()
             
-        # Also backup to JSON for data science analysis
-        backup_file = self.json_backup_dir / f"shadow_log_{datetime.now().strftime('%Y%m%d')}.jsonl"
-        async with aiofiles.open(backup_file, 'a') as f:
-        await f.write(json.dumps(entry.to_dict()) + '\n')
+            # Also backup to JSON for data science analysis
+            backup_file = self.json_backup_dir / f"shadow_log_{datetime.now().strftime('%Y%m%d')}.jsonl"
+            async with aiofiles.open(backup_file, 'a') as f:
+                await f.write(json.dumps(entry.to_dict()) + '\n')
             
-        self.entries_logged += 1
+            self.entries_logged += 1
             
-        logger.debug(f"🌙 Logged shadow mode prediction: {entry.workflow_id} -> {entry.routing_decision}")
-        return str(entry_id)
+            logger.debug(f"🌙 Logged shadow mode prediction: {entry.workflow_id} -> {entry.routing_decision}")
+            return str(entry_id)
             
         except Exception as e:
-        logger.error(f"❌ Failed to log shadow mode prediction: {e}")
-        raise
+            logger.error(f"❌ Failed to log shadow mode prediction: {e}")
+            raise
     
-        async def record_outcome(self,
+    async def record_outcome(self,
         workflow_id: str,
                            actual_outcome: str,
                            execution_time: Optional[float] = None,
@@ -241,7 +240,7 @@ class ShadowModeLogger:
             
             async with aiosqlite.connect(self.db_path) as db:
                 # Update the most recent entry for this workflow
-        await db.execute("""
+                await db.execute("""
                     UPDATE shadow_logs 
                     SET actual_outcome = ?,
                         actual_execution_time = ?,
@@ -273,8 +272,8 @@ class ShadowModeLogger:
     async def _calculate_accuracy_metrics(self, workflow_id: str):
         """Calculate prediction accuracy metrics for a completed entry."""
         async with aiosqlite.connect(self.db_path) as db:
-        # Get the entry we just updated
-        async with db.execute("""
+            # Get the entry we just updated
+            async with db.execute("""
         SELECT predicted_success_probability, actual_outcome, risk_score
         FROM shadow_logs
         WHERE workflow_id = ? AND actual_outcome IS NOT NULL
@@ -304,7 +303,7 @@ class ShadowModeLogger:
                     
         await db.commit()
     
-        async def get_accuracy_metrics(self, days: int = 7) -> Dict[str, Any]:
+    async def get_accuracy_metrics(self, days: int = 7) -> Dict[str, Any]:
         """
         Get accuracy metrics for the governance dashboard.
         

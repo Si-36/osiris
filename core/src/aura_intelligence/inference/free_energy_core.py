@@ -18,9 +18,10 @@ import asyncio
 
 # AURA imports
 try:
-    from ..tda.persistence import TDAProcessor
+    from ..tda.persistence_integration import TDAProcessor
 except ImportError:
-    from ..tda.persistence_simple import TDAProcessor
+    # Fallback if TDAProcessor is not available
+    TDAProcessor = None
 from ..memory import HierarchicalMemoryManager
 from ..components.registry import get_registry
 
