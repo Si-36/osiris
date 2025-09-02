@@ -93,7 +93,8 @@ class ImmutableBaseModel(BaseModel):
     
     class Config:
         # Enforce immutability - objects cannot be modified after creation
-        allow_mutation = False
+        # In Pydantic v2, use frozen=True instead of allow_mutation=False
+        frozen = True
         # Validate assignments to catch mutation attempts
         validate_assignment = True
         # Use enum values for serialization
@@ -111,7 +112,8 @@ class MutableBaseModel(BaseModel):
     
     class Config:
         # Allow mutation for builders and factories
-        allow_mutation = True
+        # In Pydantic v2, frozen=False is the default (allows mutation)
+        frozen = False
         validate_assignment = True
         use_enum_values = True
         arbitrary_types_allowed = True
@@ -345,7 +347,7 @@ class MetadataSupport(VersionedSchema):
     
     def add_tag(self, tag: str) -> None:
         """Add a tag (only for mutable instances)."""
-        if hasattr(self, '__config__') and not self.__config__.allow_mutation:
+        if hasattr(self, '__config__') and getattr(self.__config__, 'frozen', False):
             raise ValueError("Cannot modify immutable instance")
         if tag not in self.tags:
             self.tags.append(tag)

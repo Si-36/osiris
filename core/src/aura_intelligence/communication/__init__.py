@@ -88,12 +88,14 @@ try:
     from .unified_communication import UnifiedCommunication, TraceContext
     from .nats_a2a import NATSA2ASystem
     from .neural_mesh import NeuralMesh
+    from .enhanced_neural_mesh import EnhancedNeuralMesh
     
     __all__.extend([
         'UnifiedCommunication',
         'TraceContext',
         'NATSA2ASystem',
-        'NeuralMesh'
+        'NeuralMesh',
+        'EnhancedNeuralMesh'
     ])
 except ImportError as e:
     import warnings

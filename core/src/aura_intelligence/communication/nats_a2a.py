@@ -20,9 +20,32 @@ from typing import Dict, Any, List, Optional, Callable, AsyncIterator
 from dataclasses import dataclass, field
 from enum import Enum
 
-import nats
-from nats.js import JetStreamContext
-from nats.js.api import StreamConfig, ConsumerConfig, DeliverPolicy, AckPolicy
+try:
+    import nats
+    from nats.js import JetStreamContext
+    from nats.js.api import StreamConfig, ConsumerConfig, DeliverPolicy, AckPolicy
+    
+    # Handle different NATS versions
+    try:
+        from nats.js import JetStreamSubscription
+    except ImportError:
+        # In newer versions, use the subscription type from nats.aio
+        try:
+            from nats.aio.subscription import Subscription as JetStreamSubscription
+        except ImportError:
+            # Fallback to Any type if neither works
+            from typing import Any as JetStreamSubscription
+    
+    NATS_AVAILABLE = True
+except ImportError:
+    NATS_AVAILABLE = False
+    nats = None
+    JetStreamContext = None
+    StreamConfig = None
+    ConsumerConfig = None
+    DeliverPolicy = None
+    AckPolicy = None
+    JetStreamSubscription = Any
 from opentelemetry import trace
 
 tracer = trace.get_tracer(__name__)
@@ -109,6 +132,13 @@ class NATSA2ASystem:
         self.max_msg_size = max_msg_size
         self.stream_retention_hours = stream_retention_hours
         
+        if not NATS_AVAILABLE:
+            import logging
+            logging.warning("NATS not available. NATSA2ASystem will run in mock mode.")
+            self._mock_mode = True
+        else:
+            self._mock_mode = False
+        
         # NATS connections
         self.nc: Optional[nats.NATS] = None
         self.js: Optional[JetStreamContext] = None
@@ -133,6 +163,11 @@ class NATSA2ASystem:
     async def start(self) -> None:
         """Start the NATS A2A communication system"""
         if self._running:
+            return
+        
+        if self._mock_mode:
+            print(f"Starting NATSA2ASystem in MOCK mode for agent {self.agent_id}")
+            self._running = True
             return
         
         try:
@@ -379,7 +414,7 @@ class NATSA2ASystem:
     
     async def _process_messages(
         self,
-        subscription: nats.js.JetStreamSubscription,
+        subscription: JetStreamSubscription,
         priority: MessagePriority
     ) -> None:
         """Process messages from a subscription"""

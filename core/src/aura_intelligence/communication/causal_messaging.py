@@ -28,6 +28,9 @@ except ImportError:
 
 logger = structlog.get_logger(__name__)
 
+# Define TraceContext type if not available
+TraceContext = Dict[str, Any]
+
 
 # ==================== Causal Structures ====================
 
