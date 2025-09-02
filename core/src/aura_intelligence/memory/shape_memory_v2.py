@@ -495,40 +495,35 @@ class ShapeAwareMemoryV2:
         responses = await pipe.execute()
         
         for mid, data in zip(memory_ids, responses):
-            pass
-        if data:
-            try:
-                # Reconstruct memory
-        signature_data = json.loads(data[b"signature"])
-        signature = TopologicalSignature.from_dict(signature_data)
+            if data:
+                try:
+                    # Reconstruct memory
+                    signature_data = json.loads(data[b"signature"])
+                    signature = TopologicalSignature.from_dict(signature_data)
                     
-        memory = ShapeMemory(
-        memory_id=mid,
-        content=json.loads(data[b"content"]),
-        signature=signature,
-        context_type=data[b"context_type"].decode(),
-        metadata=json.loads(data.get(b"metadata", b"{}")),
-        created_at=datetime.fromisoformat(data[b"created_at"].decode())
-        )
-        results[mid] = memory
-        except Exception as e:
-            pass
-        print(f"Error parsing Redis memory {mid}: {e}")
-        results[mid] = None
-        else:
-            pass
-        results[mid] = None
+                    memory = ShapeMemory(
+                        memory_id=mid,
+                        content=json.loads(data[b"content"]),
+                        signature=signature,
+                        context_type=data[b"context_type"].decode(),
+                        metadata=json.loads(data.get(b"metadata", b"{}")),
+                        created_at=datetime.fromisoformat(data[b"created_at"].decode())
+                    )
+                    results[mid] = memory
+                except Exception as e:
+                    print(f"Error parsing Redis memory {mid}: {e}")
+                    results[mid] = None
+            else:
+                results[mid] = None
         
         return results
     
-        async def _fetch_from_neo4j(self, memory_ids: List[str]) -> Dict[str, Optional[ShapeMemory]]:
-            pass
+    async def _fetch_from_neo4j(self, memory_ids: List[str]) -> Dict[str, Optional[ShapeMemory]]:
         """Fetch memories from Neo4j."""
         results = {}
         
         async with self._driver.session() as session:
-            pass
-        query_result = await session.run("""
+            query_result = await session.run("""
                 MATCH (m:ShapeMemoryV2)
                 WHERE m.memory_id IN $memory_ids
                 RETURN m

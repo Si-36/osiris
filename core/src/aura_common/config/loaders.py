@@ -26,7 +26,6 @@ class EnvConfigLoader:
     Load configuration from environment variables.
     
     Features:
-        pass
     - Prefix-based filtering
     - Nested key support (AURA_TDA_ENGINE -> tda.engine)
     - Type conversion
@@ -37,13 +36,11 @@ class EnvConfigLoader:
         Initialize environment loader.
         
         Args:
-            pass
-        prefix: Environment variable prefix
+            prefix: Environment variable prefix
         """
         self.prefix = prefix
     
-        def load(self) -> Dict[str, Any]:
-            pass
+    def load(self) -> Dict[str, Any]:
         """Load configuration from environment."""
         config = {}
         
