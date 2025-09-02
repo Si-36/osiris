@@ -7,8 +7,16 @@ from typing import Dict, Any, List, Annotated, Sequence, Optional
 from typing_extensions import TypedDict
 from datetime import datetime, timezone
 
-from langgraph.graph.message import add_messages
-from langchain_core.messages import BaseMessage
+try:
+    from langgraph.graph.message import add_messages
+    from langchain_core.messages import BaseMessage
+    LANGGRAPH_AVAILABLE = True
+except ImportError:
+    # Fallback when LangGraph/LangChain not available
+    LANGGRAPH_AVAILABLE = False
+    add_messages = lambda x: x  # Simple passthrough
+    BaseMessage = dict  # Use dict as fallback
+    
 from pydantic import BaseModel, Field
 
 from aura_intelligence.core.config import AuraConfig as AURASettings

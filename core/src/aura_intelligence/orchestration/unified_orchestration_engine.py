@@ -37,7 +37,10 @@ except ImportError:
     POSTGRES_CHECKPOINT_AVAILABLE = False
     logger.warning("langgraph-checkpoint-postgres not installed, using memory checkpointer")
     
-from langchain_core.messages import BaseMessage
+try:
+    from langchain_core.messages import BaseMessage
+except ImportError:
+    BaseMessage = dict  # Fallback when LangChain not available
 
 # Temporal imports
 from temporalio import workflow, activity

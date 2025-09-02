@@ -77,13 +77,13 @@ from .core.self_healing_engine import (
 from .core.executive_controller import (
     ExecutiveController,
     ConsciousnessLevel,
-    ConsciousnessState,
 )
+from .core.consciousness import ConsciousnessState
 
 # 7. Infrastructure - Event Mesh & Guardrails
 from .infrastructure import (
     UnifiedEventMesh,
-    EnhancedGuardrails,
+    EnhancedEnterpriseGuardrails as EnhancedGuardrails,
     MultiProviderClient,
 )
 

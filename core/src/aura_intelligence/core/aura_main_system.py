@@ -29,7 +29,7 @@ from ..neural.model_router import AURAModelRouter
 from ..tda.agent_topology import AgentTopologyAnalyzer
 from ..swarm_intelligence.swarm_coordinator import SwarmCoordinator
 from ..orchestration.unified_orchestration_engine import UnifiedOrchestrationEngine
-from ..agents.agent_core import AURAAgent
+from ..agents.agent_core import AURAAgentCore as AURAAgent
 from ..agents.lnn_council import LNNCouncilOrchestrator
 
 # Import extracted CORE components

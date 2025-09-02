@@ -35,6 +35,14 @@ try:
 except ImportError:
     LANGGRAPH_AVAILABLE = False
     StateGraph = None
+    BaseMessage = dict  # Fallback type
+    HumanMessage = dict
+    AIMessage = dict
+    SystemMessage = dict
+    BaseTool = object
+    add_messages = lambda x: x
+    ToolNode = None
+    PostgresSaver = None
     print("Warning: LangGraph not available. Using mock implementation.")
 
 # AURA component imports

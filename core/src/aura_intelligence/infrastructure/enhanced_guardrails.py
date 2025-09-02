@@ -19,7 +19,7 @@ import asyncio
 import time
 import json
 import hashlib
-from typing import Dict, Any, Optional, Callable, Union, AsyncIterator
+from typing import Dict, Any, Optional, Callable, Union, AsyncIterator, List
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from functools import wraps
