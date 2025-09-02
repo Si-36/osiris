@@ -31,7 +31,7 @@ from ..tda.models import TDAResult, BettiNumbers
 from ..observability.metrics import metrics_collector
 from ..orchestration.bus_protocol import EventBus, Event
 from .fastrp_embeddings import FastRPEmbedder, FastRPConfig
-from .knn_index import HybridKNNIndex, KNNConfig
+from .knn_index import KNNIndex as HybridKNNIndex, KNNConfig
 from .shape_aware_memory import TopologicalSignature, ShapeMemory
 
 
