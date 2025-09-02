@@ -67,8 +67,7 @@ class FeatureFlagManager:
         self._refresh_task: Optional[asyncio.Task] = None
         self._callbacks: List[Callable] = []
         
-        async def initialize(self) -> None:
-            pass
+    async def initialize(self) -> None:
         """Initialize and start refresh loop"""
         await self._load_flags()
         self._refresh_task = asyncio.create_task(self._refresh_loop())

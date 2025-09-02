@@ -167,13 +167,13 @@ class ShapeAwareMemoryV2:
         self._initialized = True
         metrics_collector.shape_memory_v2_initialized.inc()
     
-        async def store(
+    async def store(
         self,
         content: Dict[str, Any],
         tda_result: TDAResult,
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-        ) -> ShapeMemory:
+    ) -> ShapeMemory:
         """
         Store a memory with ultra-fast indexing.
         
@@ -246,13 +246,13 @@ class ShapeAwareMemoryV2:
         
         return memory
     
-        async def retrieve(
+    async def retrieve(
         self,
         query_signature: TopologicalSignature,
         k: int = 10,
         context_filter: Optional[str] = None,
         time_filter: Optional[timedelta] = None
-        ) -> List[ShapeMemory]:
+    ) -> List[ShapeMemory]:
         """
         Ultra-fast memory retrieval using k-NN search.
         
