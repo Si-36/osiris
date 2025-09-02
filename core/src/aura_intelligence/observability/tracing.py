@@ -191,6 +191,7 @@ if not OPENTELEMETRY_AVAILABLE:
     trace = type('trace', (), {
         'get_tracer': lambda *args: MockTracer(),
         'Tracer': MockTracer,
+        'Span': MockSpan,
         'SpanKind': MockSpanKind,
         'get_current_span': lambda *args: MockSpan()
     })()
@@ -404,7 +405,7 @@ class OpenTelemetryManager:
 
     def record_metric(
         self,
-        span: trace.Span,
+        span,
         metric_name: str,
         value: float,
         unit: str = None
