@@ -148,46 +148,38 @@ class FeatureFlagManager:
     def _evaluate_flag(self, flag: FeatureFlag, context: Dict[str, Any]) -> bool:
         """Evaluate flag based on strategy"""
         if flag.strategy == RolloutStrategy.ALL_USERS:
-            pass
-        return True
+            return True
             
         elif flag.strategy == RolloutStrategy.PERCENTAGE:
-            pass
-        user_id = context.get("user_id", "anonymous")
-        hash_value = int(hashlib.md5(f"{flag.name}:{user_id}".encode()).hexdigest(), 16)
-        return (hash_value % 100) < (flag.percentage * 100)
+            user_id = context.get("user_id", "anonymous")
+            hash_value = int(hashlib.md5(f"{flag.name}:{user_id}".encode()).hexdigest(), 16)
+            return (hash_value % 100) < (flag.percentage * 100)
             
         elif flag.strategy == RolloutStrategy.USER_LIST:
-            pass
-        user_id = context.get("user_id")
-        return user_id in flag.user_list if user_id else False
+            user_id = context.get("user_id")
+            return user_id in flag.user_list if user_id else False
             
         elif flag.strategy == RolloutStrategy.ATTRIBUTE_MATCH:
-            pass
-        for attr, expected in flag.attributes.items():
-            pass
-        if context.get(attr) != expected:
-            pass
-        return False
-        return True
+            for attr, expected in flag.attributes.items():
+                if context.get(attr) != expected:
+                    return False
+            return True
             
         elif flag.strategy == RolloutStrategy.GRADUAL:
-            pass
-        # Gradual rollout based on time
-        if not flag.start_date:
-            pass
-        return True
-        days_active = (datetime.now(timezone.utc) - flag.start_date).days
-        target_percentage = min(days_active * 10, 100)  # 10% per day
-        return self._evaluate_flag(
-        FeatureFlag(
-        name=flag.name,
-        enabled=True,
-        strategy=RolloutStrategy.PERCENTAGE,
-        percentage=target_percentage / 100
-        ),
-        context
-        )
+            # Gradual rollout based on time
+            if not flag.start_date:
+                return True
+            days_active = (datetime.now(timezone.utc) - flag.start_date).days
+            target_percentage = min(days_active * 10, 100)  # 10% per day
+            return self._evaluate_flag(
+                FeatureFlag(
+                    name=flag.name,
+                    enabled=True,
+                    strategy=RolloutStrategy.PERCENTAGE,
+                    percentage=target_percentage / 100
+                ),
+                context
+            )
             
         return False
         
