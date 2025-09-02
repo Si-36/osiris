@@ -103,16 +103,15 @@ def with_retry(
         )
         async def fetch_data():
             return await api.get_data()
-            ```
-            """
-            if strategy is None:
-                strategy = ExponentialBackoff()
+        ```
+    """
+    if strategy is None:
+        strategy = ExponentialBackoff()
     
-            def decorator(func: Callable[..., T]) -> Callable[..., T]:
-                @wraps(func)
-            async def async_wrapper(*args: Any, **kwargs: Any) -> T:
-                pass
-        attempt = 0
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> T:
+            attempt = 0
             last_error: Optional[Exception] = None
             
             while True:

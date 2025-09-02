@@ -333,7 +333,7 @@ class HybridCheckpointManager:
                 await workflow_handle.signal("checkpoint_signal", checkpoint_data)
             except Exception:
                 # Workflow might not be running, store checkpoint for later recovery
-        pass
+                pass
             
             return checkpoint_id
             
