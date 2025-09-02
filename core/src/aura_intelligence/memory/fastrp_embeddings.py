@@ -85,7 +85,6 @@ class FastRPEmbedder:
         persistence_diagram: np.ndarray,
         betti_numbers: BettiNumbers
         ) -> np.ndarray:
-            pass
         """
         Convert persistence diagram to embedding vector.
         
@@ -138,7 +137,6 @@ class FastRPEmbedder:
         persistence_diagrams: List[np.ndarray],
         betti_numbers_list: List[BettiNumbers]
         ) -> np.ndarray:
-            pass
         """
         Embed multiple persistence diagrams efficiently.
         
@@ -174,12 +172,10 @@ class FastRPEmbedder:
         persistence_diagram: np.ndarray,
         betti_numbers: BettiNumbers
         ) -> np.ndarray:
-            pass
         """
         Extract feature vector from persistence diagram.
         
         Features include:
-            pass
         - Persistence statistics (min, max, mean, std)
         - Betti numbers
         - Persistence entropy
