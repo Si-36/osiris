@@ -513,3 +513,7 @@ class CircuitBreakerManager:
             for breaker_id, breaker in self.breakers.items()
             if breaker.state == CircuitState.OPEN
         ]
+
+
+# Alias for compatibility
+AdaptiveCircuitBreaker = CognitiveCircuitBreaker
