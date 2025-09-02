@@ -39,7 +39,7 @@ except ImportError:
 # AURA imports
 from ..agents.base import AgentBase, AgentConfig, AgentState as BaseAgentState
 from ..memory import HierarchicalMemoryManager
-from ..graph.knowledge_graph import EnhancedKnowledgeGraph
+from ..graph.advanced_graph_system import KnowledgeGraph as EnhancedKnowledgeGraph
 from ..events.producers import EventProducer
 from ..observability import create_tracer
 from ..resilience import resilient, ResilienceLevel
@@ -293,7 +293,7 @@ Your responses should be precise, actionable, and leverage available tools when 
             
         return memory_str
         
-    @resilient(level=ResilienceLevel.CRITICAL, max_retries=3)
+    @resilient(criticality=ResilienceLevel.CRITICAL, max_retries=3)
     async def execute(
         self,
         task: str,
