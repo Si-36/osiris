@@ -48,11 +48,9 @@ class FeatureFlag:
         """Check if flag is within active date range"""
         now = datetime.now(timezone.utc)
         if self.start_date and now < self.start_date:
-            pass
-        return False
+            return False
         if self.end_date and now > self.end_date:
-            pass
-        return False
+            return False
         return True
 
 
@@ -77,23 +75,20 @@ class FeatureFlagManager:
         """Evaluate if feature flag is enabled for given context"""
         # Check overrides first
         if flag_name in self.overrides:
-            pass
-        result = self.overrides[flag_name]
-        FLAG_EVALUATIONS.labels(flag=flag_name, result=str(result)).inc()
-        return result
+            result = self.overrides[flag_name]
+            FLAG_EVALUATIONS.labels(flag=flag_name, result=str(result)).inc()
+            return result
             
         flag = self.flags.get(flag_name)
         if not flag or not flag.enabled or not flag.is_active():
-            pass
-        FLAG_EVALUATIONS.labels(flag=flag_name, result="false").inc()
-        return False
+            FLAG_EVALUATIONS.labels(flag=flag_name, result="false").inc()
+            return False
             
         result = self._evaluate_flag(flag, context or {})
         FLAG_EVALUATIONS.labels(flag=flag_name, result=str(result)).inc()
         return result
         
-        def get_variant(self, flag_name: str, context: Optional[Dict[str, Any]] = None) -> str:
-            pass
+    def get_variant(self, flag_name: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Get A/B test variant for user"""
         flag = self.flags.get(flag_name)
         if not flag or not flag.enabled or not flag.variants:
@@ -118,8 +113,7 @@ class FeatureFlagManager:
         self.overrides[flag_name] = value
         logger.info("Flag override added", flag=flag_name, value=value)
         
-        def remove_override(self, flag_name: str) -> None:
-            pass
+    def remove_override(self, flag_name: str) -> None:
         """Remove override"""
         self.overrides.pop(flag_name, None)
         

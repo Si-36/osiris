@@ -330,13 +330,12 @@ class ShapeAwareMemoryV2:
         
         return result
     
-        async def find_anomalies(
+    async def find_anomalies(
         self,
         anomaly_signature: TopologicalSignature,
         similarity_threshold: float = 0.8,
         time_window: timedelta = timedelta(days=7)
         ) -> List[Tuple[ShapeMemory, float]]:
-            pass
         """Find similar anomaly patterns in recent history."""
         # Retrieve similar memories filtered by anomaly context
         try:
@@ -359,8 +358,7 @@ class ShapeAwareMemoryV2:
         
         return anomaly_patterns
     
-        async def _store_hot_tier(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
-            pass
+    async def _store_hot_tier(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
         """Store memory in hot tier (Redis)."""
         key = f"shape_v2:hot:{memory.memory_id}"
         
@@ -378,8 +376,7 @@ class ShapeAwareMemoryV2:
         await self._redis.hset(key, mapping=data)
         await self._redis.expire(key, self._tiers[0].ttl_hours * 3600)
     
-        async def _persist_to_neo4j(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
-            pass
+    async def _persist_to_neo4j(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
         """Persist memory to Neo4j (warm tier)."""
         try:
             async with self._driver.session() as session:
@@ -428,7 +425,7 @@ class ShapeAwareMemoryV2:
             print(f"Error persisting to Neo4j: {e}")
             metrics_collector.shape_memory_v2_errors.labels(operation="persist").inc()
     
-        async def _fetch_memories(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
+    async def _fetch_memories(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
             pass
         """Fetch memories from appropriate tiers."""
         memories = []
@@ -442,7 +439,7 @@ class ShapeAwareMemoryV2:
         
         return memories
     
-        async def _fetch_batch(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
+    async def _fetch_batch(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
             pass
         """Fetch a batch of memories."""
         memories = [None] * len(memory_ids)
@@ -475,7 +472,7 @@ class ShapeAwareMemoryV2:
         
         return memories
     
-        async def _fetch_from_redis(self, memory_ids: List[str]) -> Dict[str, Optional[ShapeMemory]]:
+    async def _fetch_from_redis(self, memory_ids: List[str]) -> Dict[str, Optional[ShapeMemory]]:
             pass
         """Fetch memories from Redis."""
         results = {}
@@ -568,7 +565,7 @@ class ShapeAwareMemoryV2:
         
         return results
     
-        async def _update_access(self, memory: ShapeMemory) -> None:
+    async def _update_access(self, memory: ShapeMemory) -> None:
             pass
         """Update memory access statistics."""
         memory.update_access()
