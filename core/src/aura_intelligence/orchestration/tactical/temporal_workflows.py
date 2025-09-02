@@ -37,7 +37,7 @@ except ImportError:
 # AURA imports
 from ...tda.legacy.persistence_simple import TDAProcessor
 from ...inference.active_inference_lite import ActiveInferenceLite
-from ...coral.coral_2025 import CoRaL2025System
+from ...coral.enhanced_best_coral import IntegratedCoRaLSystem as CoRaL2025System
 from ...dpo.dpo_2025_advanced import AURAAdvancedDPO
 from ...agents.production_langgraph_agent import AURAProductionAgent
 

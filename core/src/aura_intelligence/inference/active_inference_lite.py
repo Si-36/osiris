@@ -34,7 +34,7 @@ except ImportError:
     MEMORY_AVAILABLE = False
 
 try:
-    from ..coral.coral_2025 import CoRaL2025System
+    from ..coral.enhanced_best_coral import IntegratedCoRaLSystem as CoRaL2025System
     CORAL_AVAILABLE = True
 except ImportError:
     CORAL_AVAILABLE = False
