@@ -14,7 +14,7 @@ import operator
 
 # AURA imports
 from ...components.registry import get_registry
-from ...observability.prometheus_client import MetricsCollector
+from ...observability.metrics import MetricsCollector
 
 import logging
 logger = logging.getLogger(__name__)

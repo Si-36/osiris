@@ -17,7 +17,7 @@ import numpy as np
 
 # AURA imports  
 from .pipeline_registry import Pipeline, PipelineRegistry
-from ...observability.prometheus_client import MetricsCollector
+from ...observability.metrics import MetricsCollector
 
 import logging
 logger = logging.getLogger(__name__)

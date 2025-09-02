@@ -65,6 +65,9 @@ MemoryManager = HybridMemoryManager
 from .advanced_memory_system import HierarchicalMemorySystem
 HierarchicalMemoryManager = HierarchicalMemorySystem
 
+# Import AURAMemorySystem
+from .core.memory_api import AURAMemorySystem
+
 __all__ = [
     # KNN Index
     'HybridKNNIndex',
@@ -97,5 +100,7 @@ __all__ = [
     'QdrantMultitenantManager',
     'QdrantCollectionConfig',
     'QuantizationType',
-    'QuantizationPreset'
+    'QuantizationPreset',
+    # Core Memory System
+    'AURAMemorySystem'
 ]
