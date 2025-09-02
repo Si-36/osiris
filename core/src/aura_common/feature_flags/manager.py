@@ -127,8 +127,7 @@ class FeatureFlagManager:
         """Register callback for flag changes"""
         self._callbacks.append(callback)
         
-        async def refresh_flags(self) -> None:
-            pass
+    async def refresh_flags(self) -> None:
         """Manually refresh flags from storage"""
         try:
             await self._load_flags()
