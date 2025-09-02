@@ -599,86 +599,76 @@ class ShapeAwareMemoryV2:
             oldest_id = self._cache_order.popleft()
             del self._memory_cache[oldest_id]
     
-        async def _handle_memory_event(self, event: Event) -> None:
-            pass
+    async def _handle_memory_event(self, event: Event) -> None:
         """Handle memory events from Event Bus."""
         if event.topic.endswith(":invalidate"):
             # Invalidate cache
-        memory_id = event.data.get("memory_id")
-        if memory_id and memory_id in self._memory_cache:
-            del self._memory_cache[memory_id]
+            memory_id = event.data.get("memory_id")
+            if memory_id and memory_id in self._memory_cache:
+                del self._memory_cache[memory_id]
         
         elif event.topic.endswith(":update_embedding"):
-            pass
-        # Update k-NN index
-        memory_id = event.data.get("memory_id")
-        embedding = np.array(event.data.get("embedding"))
-        if memory_id and embedding is not None:
-            await self._knn_index.add(embedding.reshape(1, -1), [memory_id])
+            # Update k-NN index
+            memory_id = event.data.get("memory_id")
+            embedding = np.array(event.data.get("embedding"))
+            if memory_id and embedding is not None:
+                await self._knn_index.add(embedding.reshape(1, -1), [memory_id])
     
-        async def _create_indices(self) -> None:
-            pass
+    async def _create_indices(self) -> None:
         """Create database indices."""
-        pass
         async with self._driver.session() as session:
             # Memory ID index
-        await session.run("""
+            await session.run("""
                 CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemoryV2) ON (m.memory_id)
-        """)
+            """)
             
             # Betti numbers index for fallback search
-        await session.run("""
+            await session.run("""
                 CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemoryV2) ON (m.betti_0, m.betti_1, m.betti_2)
-        """)
+            """)
             
             # Context type index
-        await session.run("""
+            await session.run("""
                 CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemoryV2) ON (m.context_type)
-        """)
+            """)
             
             # Created at index for time-based queries
-        await session.run("""
+            await session.run("""
                 CREATE INDEX IF NOT EXISTS FOR (m:ShapeMemoryV2) ON (m.created_at)
-        """)
+            """)
     
-        async def _rebuild_index(self) -> None:
-            pass
+    async def _rebuild_index(self) -> None:
         """Rebuild k-NN index from stored memories."""
-        pass
         print("Rebuilding k-NN index...")
         
         async with self._driver.session() as session:
-            pass
-        # Get all memories with embeddings
-        result = await session.run("""
-        MATCH (m:ShapeMemoryV2)
-        WHERE m.embedding IS NOT NULL
-        RETURN m.memory_id as memory_id, m.embedding as embedding
-        ORDER BY m.created_at DESC
-        LIMIT 1000000
-        """)
+            # Get all memories with embeddings
+            result = await session.run("""
+                MATCH (m:ShapeMemoryV2)
+                WHERE m.embedding IS NOT NULL
+                RETURN m.memory_id as memory_id, m.embedding as embedding
+                ORDER BY m.created_at DESC
+                LIMIT 1000000
+            """)
             
-        records = await result.data()
+            records = await result.data()
             
         if records:
             # Batch add to index
-        batch_size = 10000
-        for i in range(0, len(records), batch_size):
-            pass
-        batch = records[i:i + batch_size]
+            batch_size = 10000
+            for i in range(0, len(records), batch_size):
+                batch = records[i:i + batch_size]
                     
-        memory_ids = [r["memory_id"] for r in batch]
-        embeddings = np.array([r["embedding"] for r in batch])
+                memory_ids = [r["memory_id"] for r in batch]
+                embeddings = np.array([r["embedding"] for r in batch])
                     
-        await self._knn_index.add(embeddings, memory_ids)
+                await self._knn_index.add(embeddings, memory_ids)
                 
-        print(f"Rebuilt index with {len(records)} memories")
-        self._total_memories = len(records)
+            print(f"Rebuilt index with {len(records)} memories")
+            self._total_memories = len(records)
     
-        async def tier_memories(self) -> None:
-            pass
+    async def tier_memories(self) -> None:
         """Move memories between tiers based on age."""
-        pass
         # This would be called periodically by a background task
         now = datetime.now(timezone.utc)
         

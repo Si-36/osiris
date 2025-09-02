@@ -225,7 +225,7 @@ class FeatureFlagManager:
         )
         }
         
-        async def _refresh_loop(self) -> None:
+    async def _refresh_loop(self) -> None:
         """Periodic refresh of flags"""
         while True:
             await asyncio.sleep(self.refresh_interval)
