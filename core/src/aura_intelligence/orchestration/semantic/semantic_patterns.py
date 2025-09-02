@@ -52,7 +52,7 @@ class SemanticPatternMatcher:
         "consensus_required": 0.1
         }
     
-        async def analyze_semantic_patterns(
+    async def analyze_semantic_patterns(
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext] = None
@@ -96,7 +96,7 @@ class SemanticPatternMatcher:
             tda_correlation=tda_context
         )
     
-        async def _calculate_complexity_score(self, input_data: Dict[str, Any]) -> float:
+    async def _calculate_complexity_score(self, input_data: Dict[str, Any]) -> float:
         """
         Calculate semantic complexity using weighted factors
         """
@@ -129,7 +129,7 @@ class SemanticPatternMatcher:
         
         return complexity_score
     
-        async def _determine_urgency_level(
+    async def _determine_urgency_level(
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
@@ -170,7 +170,7 @@ class SemanticPatternMatcher:
         
         return UrgencyLevel(base_urgency)
     
-        async def _select_coordination_pattern(
+    async def _select_coordination_pattern(
         self,
         complexity_score: float,
         urgency_level: UrgencyLevel,
@@ -200,7 +200,7 @@ class SemanticPatternMatcher:
             else:
                 return OrchestrationStrategy.EVENT_DRIVEN
     
-        async def _suggest_optimal_agents(
+    async def _suggest_optimal_agents(
         self,
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
@@ -293,7 +293,7 @@ class SemanticPatternMatcher:
         
         return min(base_confidence, 0.95)  # Cap at 95%
     
-        async def get_pattern_insights(
+    async def get_pattern_insights(
         self, 
         analysis: SemanticAnalysis
         ) -> Dict[str, Any]:
@@ -341,4 +341,4 @@ class SemanticPatternMatcher:
         elif pattern == OrchestrationStrategy.SEQUENTIAL:
             return f"Low complexity ({complexity:.2f}) with critical urgency ({urgency.value}) needs fast sequential execution"
         else:
-        return f"Event-driven pattern selected for flexible coordination"
+            return f"Event-driven pattern selected for flexible coordination"
