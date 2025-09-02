@@ -18,9 +18,11 @@ import numpy as np
 from typing import Dict, Any, List, Optional, Tuple, Set
 from dataclasses import dataclass, field
 from collections import defaultdict, deque
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from enum import Enum
 import structlog
 import json
+import hashlib
 
 # Import from TDA module
 from ...tda import WorkflowFeatures
@@ -29,6 +31,18 @@ from ...tda import WorkflowFeatures
 from .topology_adapter import MemoryTopologySignature
 
 logger = structlog.get_logger(__name__)
+
+
+# ==================== Outcome Types ====================
+
+class OutcomeType(Enum):
+    """Types of outcomes we track"""
+    SUCCESS = "success"
+    FAILURE = "failure"
+    PARTIAL = "partial"
+    TIMEOUT = "timeout"
+    ERROR = "error"
+    CANCELLED = "cancelled"
 
 
 # ==================== Core Types ====================
@@ -242,52 +256,95 @@ class CausalPatternTracker:
     # ==================== Causal Analysis ====================
     
     async def analyze_patterns(self,
-                             current_patterns: List[MemoryTopologySignature]) -> Dict[str, Any]:
+                             current_patterns: List[MemoryTopologySignature]) -> CausalAnalysis:
         """
         Analyze current patterns for causal relationships
         
         Returns predictions and recommendations
         """
         if not current_patterns:
-            return {"chains": [], "failure_probability": 0.0}
+            return CausalAnalysis(
+                failure_probability=0.0,
+                confidence=0.0,
+                predicted_outcome="unknown",
+                causal_chains=[],
+                risk_factors=[]
+            )
         
-        # Find matching historical patterns
+        # Find matching patterns
         matching_patterns = []
-        for current in current_patterns:
-            pattern_id = self._generate_pattern_id(current)
+        for topology in current_patterns:
+            pattern_id = self._generate_pattern_id(topology)
             if pattern_id in self.patterns:
                 matching_patterns.append(self.patterns[pattern_id])
         
         if not matching_patterns:
-            return {"chains": [], "failure_probability": 0.0}
+            return CausalAnalysis(
+                failure_probability=0.0,
+                confidence=0.0,
+                predicted_outcome="unknown",
+                causal_chains=[],
+                risk_factors=[]
+            )
         
-        # Calculate aggregate failure probability
-        total_weight = sum(p.confidence_score * p.total_occurrences for p in matching_patterns)
+        # Calculate weighted failure probability
+        total_weight = 0.0
+        weighted_failure_prob = 0.0
+        
+        for pattern in matching_patterns:
+            weight = pattern.confidence_score * pattern.total_occurrences
+            total_weight += weight
+            weighted_failure_prob += pattern.failure_probability * weight
+        
         if total_weight > 0:
-            weighted_failure_prob = sum(
-                p.failure_probability * p.confidence_score * p.total_occurrences 
-                for p in matching_patterns
-            ) / total_weight
+            failure_probability = weighted_failure_prob / total_weight
         else:
-            weighted_failure_prob = 0.0
+            failure_probability = 0.0
         
-        # Find relevant causal chains
-        relevant_chains = self._find_relevant_chains(matching_patterns)
+        # Find causal chains
+        causal_chains = []
+        for workflow_id, chain_data in self.chains.items():
+            # Check if any matching pattern is in this chain
+            chain_pattern_ids = [p.pattern_id for p in chain_data.patterns]
+            if any(p.pattern_id in chain_pattern_ids for p in matching_patterns):
+                causal_chains.append(chain_data)
         
-        # Generate analysis
+        # Identify risk factors
+        risk_factors = []
+        for pattern in matching_patterns:
+            if pattern.failure_probability > 0.5:
+                risk_factors.append({
+                    "pattern_id": pattern.pattern_id,
+                    "failure_rate": pattern.failure_probability,
+                    "confidence": pattern.confidence_score,
+                    "last_seen": pattern.last_seen
+                })
+        
+        # Determine predicted outcome
+        if failure_probability > 0.7:
+            predicted_outcome = "failure"
+        elif failure_probability < 0.3:
+            predicted_outcome = "success"
+        else:
+            predicted_outcome = "uncertain"
+        
+        # Create CausalAnalysis with proper fields
         analysis = CausalAnalysis(
-            primary_causes=matching_patterns[:3],  # Top 3
-            causal_chains=relevant_chains[:5],     # Top 5 chains
-            likely_outcome="failure" if weighted_failure_prob > 0.5 else "success",
-            outcome_probability=weighted_failure_prob,
-            time_to_outcome=self._estimate_time_to_outcome(matching_patterns),
-            preventive_actions=self._generate_preventive_actions(matching_patterns, relevant_chains),
-            risk_factors=self._identify_risk_factors(matching_patterns)
+            primary_causes=matching_patterns[:3],  # Top 3 patterns
+            causal_chains=causal_chains[:5],  # Top 5 chains
+            likely_outcome=predicted_outcome,
+            outcome_probability=failure_probability if predicted_outcome == "failure" else 1-failure_probability,
+            time_to_outcome=300.0,  # Default 5 minutes
+            preventive_actions=[],
+            risk_factors=risk_factors
         )
         
-        self.stats["predictions_made"] += 1
+        # Add extra fields for compatibility
+        analysis.failure_probability = failure_probability
+        analysis.confidence = np.mean([p.confidence_score for p in matching_patterns]) if matching_patterns else 0.0
+        analysis.predicted_outcome = predicted_outcome
         
-        return analysis.to_dict()
+        return analysis
     
     async def predict_outcome(self,
                             topology: MemoryTopologySignature,
@@ -421,13 +478,11 @@ class CausalPatternTracker:
         features = topology.workflow_features
         key = f"{features.num_agents}:{features.num_edges}:{features.has_cycles}:{len(features.bottleneck_agents)}"
         
-        import hashlib
         return hashlib.md5(key.encode()).hexdigest()[:12]
     
     def _generate_chain_id(self, pattern_ids: List[str], outcome: str) -> str:
         """Generate ID for causal chain"""
         chain_str = "->".join(pattern_ids) + f"->{outcome}"
-        import hashlib
         return hashlib.md5(chain_str.encode()).hexdigest()[:12]
     
     def _calculate_confidence(self, pattern: CausalPattern) -> float:
