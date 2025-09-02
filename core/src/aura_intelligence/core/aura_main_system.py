@@ -229,7 +229,7 @@ class AURAMainSystem:
         
         # LNN Council (if enabled)
         if self.config.enable_lnn_council:
-            self.lnn_council = LNNCouncilOrchestrator(num_agents=5)
+            self.lnn_council = LNNCouncilOrchestrator(min_agents=3, max_agents=5)
             self.registry.register("lnn_council", self.lnn_council, {"type": "decision", "priority": "medium"})
         else:
             self.lnn_council = None

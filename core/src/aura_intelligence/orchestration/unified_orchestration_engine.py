@@ -147,7 +147,13 @@ class UnifiedOrchestrationEngine:
         self.signal_router: Optional[SignalFirstOrchestrator] = None
         self.checkpoint_coalescer: Optional[AdaptiveCheckpointCoalescer] = None
         self.saga_orchestrator: Optional[SagaOrchestrator] = None
-        self.circuit_breaker = AdaptiveCircuitBreaker()
+        from .operational.circuit_breaker import BreakerId
+        self.circuit_breaker = AdaptiveCircuitBreaker(
+            breaker_id=BreakerId(
+                component="orchestration",
+                service="unified_engine"
+            )
+        )
         self.pipeline_registry = PipelineRegistry()
         self.hierarchical_coordinator = HierarchicalOrchestrator()
         

@@ -150,7 +150,16 @@ class UnifiedMemoryInterface:
         self.redis_store = RedisVectorStore() if RedisVectorStore else None
         
         # L2 Warm tier - Qdrant with quantization
-        self.qdrant_store = QdrantVectorStore() if QdrantVectorStore else None
+        if QdrantVectorStore:
+            from ..persistence.core.connection_pool import ConnectionConfig
+            qdrant_config = ConnectionConfig()  # Use defaults
+            # Pass config with connection params directly
+            self.qdrant_store = QdrantVectorStore(
+                config=qdrant_config,
+                index_config=None
+            )
+        else:
+            self.qdrant_store = None
         
         # L3 Semantic tier - Neo4j GraphRAG
         self.neo4j_store = Neo4jGraphStore() if Neo4jGraphStore else None
