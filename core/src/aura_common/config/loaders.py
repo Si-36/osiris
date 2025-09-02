@@ -82,13 +82,10 @@ class EnvConfigLoader:
         
         # JSON
         if value.startswith('{') or value.startswith('['):
-            pass
-        try:
-            pass
-        return json.loads(value)
-        except json.JSONDecodeError:
-            pass
-        pass
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                pass
         
         # String
         return value
