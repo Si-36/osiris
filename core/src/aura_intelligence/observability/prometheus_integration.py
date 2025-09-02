@@ -135,72 +135,70 @@ registry=aura_registry
 )
 
 class AURAMetricsCollector:
-"""Collects and updates AURA system metrics"""
+    """Collects and updates AURA system metrics"""
 
-def __init__(self):
-self.start_time = time.time()
-self.last_update = time.time()
+    def __init__(self):
+        self.start_time = time.time()
+        self.last_update = time.time()
 
-def record_liquid_adaptation(self, component_id: str, complexity: float, active_neurons: int, layer: str = "main"):
-"""Record liquid neural network adaptation"""
-liquid_adaptations.labels(component_id=component_id).inc()
-liquid_complexity.labels(component_id=component_id).set(complexity)
-liquid_neurons.labels(component_id=component_id, layer=layer).set(active_neurons)
+    def record_liquid_adaptation(self, component_id: str, complexity: float, active_neurons: int, layer: str = "main"):
+        """Record liquid neural network adaptation"""
+        liquid_adaptations.labels(component_id=component_id).inc()
+        liquid_complexity.labels(component_id=component_id).set(complexity)
+        liquid_neurons.labels(component_id=component_id, layer=layer).set(active_neurons)
 
-def record_mamba_processing(self, context_length: int, processing_time: float, throughput: float):
-"""Record Mamba-2 processing metrics"""
-mamba_context_length.set(context_length)
-mamba_processing_time.observe(processing_time)
-mamba_throughput.set(throughput)
+    def record_mamba_processing(self, context_length: int, processing_time: float, throughput: float):
+        """Record Mamba-2 processing metrics"""
+        mamba_context_length.set(context_length)
+        mamba_processing_time.observe(processing_time)
+        mamba_throughput.set(throughput)
 
-def record_constitutional_evaluation(self, rule_id: str, outcome: str, compliance_score: float,
-safety_score_val: float, corrections: Dict[str, int] = None):
-"""Record Constitutional AI 3.0 evaluation"""
-constitutional_evaluations.labels(rule_id=rule_id, outcome=outcome).inc()
-constitutional_compliance.observe(compliance_score)
-safety_score.set(safety_score_val)
+    def record_constitutional_evaluation(self, rule_id: str, outcome: str, compliance_score: float,
+                                        safety_score_val: float, corrections: Dict[str, int] = None):
+        """Record Constitutional AI 3.0 evaluation"""
+        constitutional_evaluations.labels(rule_id=rule_id, outcome=outcome).inc()
+        constitutional_compliance.observe(compliance_score)
+        safety_score.set(safety_score_val)
 
-if corrections:
-for correction_type, count in corrections.items():
-constitutional_corrections.labels(correction_type=correction_type).inc(count)
+        if corrections:
+            for correction_type, count in corrections.items():
+                constitutional_corrections.labels(correction_type=correction_type).inc(count)
 
-def record_system_request(self, system_type: str, status: str, latency: float):
-"""Record system request metrics"""
-system_requests.labels(system_type=system_type, status=status).inc()
-system_latency.labels(system_type=system_type).observe(latency)
+    def record_system_request(self, system_type: str, status: str, latency: float):
+        """Record system request metrics"""
+        system_requests.labels(system_type=system_type, status=status).inc()
+        system_latency.labels(system_type=system_type).observe(latency)
 
-def update_enhancement_status(self, enhancements: Dict[str, bool]):
-"""Update enhancement status metrics"""
-for enhancement_name, is_active in enhancements.items():
-enhancement_status.labels(enhancement_name=enhancement_name).set(1 if is_active else 0)
+    def update_enhancement_status(self, enhancements: Dict[str, bool]):
+        """Update enhancement status metrics"""
+        for enhancement_name, is_active in enhancements.items():
+            enhancement_status.labels(enhancement_name=enhancement_name).set(1 if is_active else 0)
 
-def record_component_health(self, component_id: str, component_type: str, 
-health_score: float, processing_time: float):
-"""Record component health metrics"""
-component_health.labels(component_id=component_id, component_type=component_type).set(health_score)
-component_processing_time.labels(component_id=component_id, component_type=component_type).observe(processing_time)
+    def record_component_health(self, component_id: str, component_type: str, 
+                               health_score: float, processing_time: float):
+        """Record component health metrics"""
+        component_health.labels(component_id=component_id, component_type=component_type).set(health_score)
+        component_processing_time.labels(component_id=component_id, component_type=component_type).observe(processing_time)
 
-def record_memory_operation(self, operation_type: str, status: str, accuracy: Optional[float] = None):
-"""Record memory operation metrics"""
-memory_operations.labels(operation_type=operation_type, status=status).inc()
-if accuracy is not None:
-memory_retrieval_accuracy.observe(accuracy)
+    def record_memory_operation(self, operation_type: str, status: str, accuracy: Optional[float] = None):
+        """Record memory operation metrics"""
+        memory_operations.labels(operation_type=operation_type, status=status).inc()
+        if accuracy is not None:
+            memory_retrieval_accuracy.observe(accuracy)
 
-def get_metrics(self) -> str:
-"""Get all metrics in Prometheus format"""
-pass
-return generate_latest(aura_registry).decode('utf-8')
+    def get_metrics(self) -> str:
+        """Get all metrics in Prometheus format"""
+        return generate_latest(aura_registry).decode('utf-8')
 
-def get_summary_stats(self) -> Dict[str, Any]:
-"""Get summary statistics"""
-pass
-uptime = time.time() - self.start_time
-return {
-'uptime_seconds': uptime,
-'metrics_collected': len(aura_registry._collector_to_names),
-'last_update': self.last_update,
-'registry_name': 'aura_enhanced_systems'
-}
+    def get_summary_stats(self) -> Dict[str, Any]:
+        """Get summary statistics"""
+        uptime = time.time() - self.start_time
+        return {
+            'uptime_seconds': uptime,
+            'metrics_collected': len(aura_registry._collector_to_names),
+            'last_update': self.last_update,
+            'registry_name': 'aura_enhanced_systems'
+        }
 
 # Decorator for automatic metrics collection
 def track_system_metrics(system_type: str):

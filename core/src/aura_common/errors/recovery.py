@@ -106,12 +106,10 @@ def with_retry(
             ```
             """
             if strategy is None:
-                pass
-            strategy = ExponentialBackoff()
+                strategy = ExponentialBackoff()
     
             def decorator(func: Callable[..., T]) -> Callable[..., T]:
-                pass
-            @wraps(func)
+                @wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any) -> T:
                 pass
         attempt = 0

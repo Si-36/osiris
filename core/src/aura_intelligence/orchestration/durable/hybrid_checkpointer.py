@@ -144,8 +144,7 @@ class HybridCheckpointManager:
             return MemorySaver() if MemorySaver else None
     
     async def initialize_temporal_client(self):
-            """Initialize Temporal.io client"""
-        pass
+        """Initialize Temporal.io client"""
         if TEMPORAL_AVAILABLE and temporalio:
             try:
                 self.temporal_client = await temporalio.client.Client.connect(
