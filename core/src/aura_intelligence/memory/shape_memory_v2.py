@@ -174,12 +174,10 @@ class ShapeAwareMemoryV2:
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
         ) -> ShapeMemory:
-            pass
         """
         Store a memory with ultra-fast indexing.
         
         Process:
-            pass
         1. Create topological signature
         2. Generate FastRP embedding
         3. Add to k-NN index
@@ -255,12 +253,10 @@ class ShapeAwareMemoryV2:
         context_filter: Optional[str] = None,
         time_filter: Optional[timedelta] = None
         ) -> List[ShapeMemory]:
-            pass
         """
         Ultra-fast memory retrieval using k-NN search.
         
         Process:
-            pass
         1. Generate query embedding
         2. k-NN search for similar embeddings
         3. Fetch memories from appropriate tiers
