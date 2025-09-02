@@ -18,7 +18,7 @@ from enum import Enum
 
 # Fixed AURA imports - using actual existing modules
 from ..components.registry import get_registry
-from ..memory.shape_memory_v2 import ShapeMemoryV2 as HierarchicalMemoryManager
+from ..memory.shape_memory_v2 import ShapeAwareMemoryV2 as HierarchicalMemoryManager
 from ..coral.best_coral import BestCoRaLSystem as CoRaL2025System
 from ..events.producers import EventProducer
 from ..observability import create_tracer
