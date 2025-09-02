@@ -541,6 +541,73 @@ class MetricsCollector:
             registry=metrics_registry
         )
         
+        # ShapeMemoryV2 metrics
+        self.shape_memory_v2_initialized = Counter(
+            'aura_shape_memory_v2_initialized_total',
+            'Number of ShapeMemoryV2 instances initialized',
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_store_time = Histogram(
+            'aura_shape_memory_v2_store_duration_ms',
+            'Time to store memory in milliseconds',
+            buckets=[1, 5, 10, 25, 50, 100, 250, 500, 1000],
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_retrieval_time = Histogram(
+            'aura_shape_memory_v2_retrieval_duration_ms',
+            'Time to retrieve memories in milliseconds',
+            buckets=[1, 5, 10, 25, 50, 100, 250, 500],
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_total = Gauge(
+            'aura_shape_memory_v2_total_memories',
+            'Total number of memories stored',
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_retrievals = Counter(
+            'aura_shape_memory_v2_retrievals_total',
+            'Total number of retrieval operations',
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_persisted = Counter(
+            'aura_shape_memory_v2_persisted_total',
+            'Memories persisted to storage tiers',
+            ['tier'],
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_errors = Counter(
+            'aura_shape_memory_v2_errors_total',
+            'Errors in memory operations',
+            ['operation'],
+            registry=metrics_registry
+        )
+        
+        self.shape_memory_v2_tiering = Counter(
+            'aura_shape_memory_v2_tiering_total',
+            'Memory tier transitions',
+            registry=metrics_registry
+        )
+        
+        # FastRP metrics
+        self.fastrp_initialized = Counter(
+            'aura_fastrp_initialized_total',
+            'FastRP embedders initialized',
+            registry=metrics_registry
+        )
+        
+        self.fastrp_embedding_time = Histogram(
+            'aura_fastrp_embedding_duration_ms',
+            'Time to generate FastRP embedding in milliseconds',
+            buckets=[0.1, 0.5, 1, 2, 5, 10, 25, 50],
+            registry=metrics_registry
+        )
+        
         self.agent_creation_errors = Counter(
             'aura_agent_creation_errors_total',
             'Total number of agent creation errors',

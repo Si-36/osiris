@@ -78,7 +78,7 @@ class FastRPEmbedder:
         self._projection_matrix = self._projection_matrix / np.sqrt(n_features * density)
         
         self._initialized = True
-        # metrics_collector.fastrp_initialized.inc()  # TODO: Add metric
+        metrics_collector.fastrp_initialized.inc()
     
     def embed_persistence_diagram(
         self,
@@ -135,7 +135,7 @@ class FastRPEmbedder:
         
         # Record metrics
         embedding_time = (time.time() - start_time) * 1000
-        # metrics_collector.fastrp_embedding_time.observe(embedding_time)  # TODO: Add metric
+        metrics_collector.fastrp_embedding_time.observe(embedding_time)
         
         return embedding
     

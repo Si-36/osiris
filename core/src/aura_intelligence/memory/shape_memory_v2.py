@@ -174,7 +174,7 @@ class ShapeAwareMemoryV2:
         await self._rebuild_index()
         
         self._initialized = True
-        # metrics_collector.shape_memory_v2_initialized.inc()  # TODO: Add metric
+        metrics_collector.shape_memory_v2_initialized.inc()
     
     async def store(
         self,
@@ -250,8 +250,8 @@ class ShapeAwareMemoryV2:
         # Update metrics
         self._total_memories += 1
         store_time = (time.time() - start_time) * 1000
-        # metrics_collector.shape_memory_v2_store_time.observe(store_time)  # TODO: Add metric
-        # metrics_collector.shape_memory_v2_total.set(self._total_memories)  # TODO: Add metric
+        metrics_collector.shape_memory_v2_store_time.observe(store_time)
+        metrics_collector.shape_memory_v2_total.set(self._total_memories)
         
         return memory
     
@@ -339,8 +339,8 @@ class ShapeAwareMemoryV2:
         
         # Update metrics
         retrieval_time = (time.time() - start_time) * 1000
-        # metrics_collector.shape_memory_v2_retrieval_time.observe(retrieval_time)  # TODO: Add metric
-        # metrics_collector.shape_memory_v2_retrievals.inc()  # TODO: Add metric
+        metrics_collector.shape_memory_v2_retrieval_time.observe(retrieval_time)
+        metrics_collector.shape_memory_v2_retrievals.inc()
         
         return result
     
@@ -446,11 +446,11 @@ class ShapeAwareMemoryV2:
                     "created_at": memory.created_at.isoformat()
                 })
                 
-                # metrics_collector.shape_memory_v2_persisted.labels(tier="warm").inc()  # TODO: Add metric
+                metrics_collector.shape_memory_v2_persisted.labels(tier="warm").inc()
                 
         except Exception as e:
             print(f"Error persisting to Neo4j: {e}")
-            # metrics_collector.shape_memory_v2_errors.labels(operation="persist").inc()  # TODO: Add metric
+            metrics_collector.shape_memory_v2_errors.labels(operation="persist").inc()
     
     async def _fetch_memories(self, memory_ids: List[str]) -> List[Optional[ShapeMemory]]:
         """Fetch memories from appropriate tiers."""
@@ -700,7 +700,7 @@ class ShapeAwareMemoryV2:
                     # Then delete from Redis
                     await self._redis.delete(key)
         
-        # metrics_collector.shape_memory_v2_tiering.inc()  # TODO: Add metric
+        metrics_collector.shape_memory_v2_tiering.inc()
     
     async def cleanup(self) -> None:
         """Clean up resources."""
