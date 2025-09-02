@@ -100,7 +100,6 @@ class SemanticRouter:
     
     def _initialize_default_agents(self):
         """Initialize default agent profiles"""
-        pass
         default_agents = [
             AgentProfile(
                 agent_id="supervisor_agent",
@@ -151,13 +150,12 @@ class SemanticRouter:
         for agent in default_agents:
             self.agent_profiles[agent.agent_id] = agent
     
-        async def route_to_optimal_agents(
+    async def route_to_optimal_agents(
         self,
         analysis: SemanticAnalysis,
         available_agents: Optional[List[str]] = None,
         max_agents: int = 5
         ) -> RoutingDecision:
-            pass
         """
         Route to optimal agents based on semantic analysis and TDA context
         """
@@ -243,12 +241,11 @@ class SemanticRouter:
                 if profile.availability
             ]
     
-        async def _score_agents_for_task(
+    async def _score_agents_for_task(
         self,
         analysis: SemanticAnalysis,
         candidate_agents: List[str]
         ) -> Dict[str, float]:
-            pass
         """Score agents based on their suitability for the task"""
         agent_scores = {}
         
@@ -285,7 +282,6 @@ class SemanticRouter:
         profile: AgentProfile,
         analysis: SemanticAnalysis
         ) -> float:
-            pass
         """Calculate how well agent capabilities match task requirements"""
         required_capabilities = self._infer_required_capabilities(analysis)
         
@@ -336,12 +332,11 @@ class SemanticRouter:
         
         return capabilities
     
-        async def _apply_tda_adjustments(
+    async def _apply_tda_adjustments(
         self,
         agent_scores: Dict[str, float],
         tda_context: TDAContext
         ) -> Dict[str, float]:
-            pass
         """Apply TDA-based adjustments to agent scores"""
         adjusted_scores = agent_scores.copy()
         
@@ -358,13 +353,11 @@ class SemanticRouter:
             # Additional boost for anomaly detection capability during anomalies
             if (tda_context.anomaly_severity > 0.6 and 
                 AgentCapability.ANOMALY_DETECTION in profile.capabilities):
-                    pass
                 adjusted_scores[agent_id] += 0.15
             
             # Boost pattern recognition agents when patterns are strong
             if (tda_context.pattern_confidence > 0.8 and
                 AgentCapability.PATTERN_RECOGNITION in profile.capabilities):
-                    pass
                 adjusted_scores[agent_id] += 0.1
             
             # Normalize to [0, 1]
@@ -378,7 +371,6 @@ class SemanticRouter:
         strategy: OrchestrationStrategy,
         max_agents: int
         ) -> List[str]:
-            pass
         """Select agents based on orchestration strategy"""
         sorted_agents = sorted(
             agent_scores.items(),
@@ -408,7 +400,6 @@ class SemanticRouter:
                     # Prioritize coordinator if not found yet
                     if (not coordinator_found and 
                         AgentCapability.COORDINATION in profile.capabilities):
-                            pass
                         selected.insert(0, agent_id)  # Put coordinator first
                         coordinator_found = True
                     else:
@@ -463,7 +454,6 @@ class SemanticRouter:
         selected_agents: List[str],
         max_fallbacks: int
         ) -> List[str]:
-            pass
         """Generate fallback agent options"""
         # Get agents not already selected, sorted by score
         fallback_candidates = [
@@ -481,7 +471,6 @@ class SemanticRouter:
         agent_scores: Dict[str, float],
         analysis: SemanticAnalysis
         ) -> float:
-            pass
         """Calculate confidence in the routing decision"""
         if not selected_agents:
             return 0.0
@@ -512,7 +501,6 @@ class SemanticRouter:
         analysis: SemanticAnalysis,
         agent_scores: Dict[str, float]
         ) -> str:
-            pass
         """Generate human-readable reasoning for routing decision"""
         reasoning_parts = []
         
@@ -552,7 +540,6 @@ class SemanticRouter:
         selected_agents: List[str],
         analysis: SemanticAnalysis
         ) -> float:
-            pass
         """Estimate expected performance of the routing decision"""
         if not selected_agents:
             return 0.0
@@ -581,12 +568,11 @@ class SemanticRouter:
         base_performance = sum(agent_performances) / len(agent_performances)
         return min(base_performance * strategy_multiplier, 1.0)
     
-        async def _record_routing_decision(
+    async def _record_routing_decision(
         self,
         decision: RoutingDecision,
         analysis: SemanticAnalysis
         ):
-            pass
         """Record routing decision for learning and improvement"""
         record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -605,12 +591,11 @@ class SemanticRouter:
         if len(self.routing_history) > 1000:
             self.routing_history = self.routing_history[-1000:]
     
-        async def update_agent_performance(
+    async def update_agent_performance(
         self,
         agent_id: str,
         performance_metrics: Dict[str, float]
         ):
-            pass
         """Update agent performance based on execution results"""
         if agent_id not in self.agent_profiles:
             return
@@ -638,7 +623,6 @@ class SemanticRouter:
     
     def get_routing_analytics(self) -> Dict[str, Any]:
         """Get analytics about routing decisions"""
-        pass
         if not self.routing_history:
             return {"message": "No routing history available"}
         
