@@ -49,15 +49,7 @@ from .adaptive_checkpoint import AdaptiveCheckpointCoalescer
 from .durable.saga_patterns import SagaOrchestrator, SagaStep
 from .operational.circuit_breaker import AdaptiveCircuitBreaker
 from .tactical.pipeline_registry import PipelineRegistry
-# from .hierarchical_orchestrator import HierarchicalOrchestrator, OrchestrationLayer
-# TODO: Implement HierarchicalOrchestrator
-class HierarchicalOrchestrator:
-    """Placeholder for hierarchical orchestration"""
-    pass
-
-class OrchestrationLayer:
-    """Placeholder for orchestration layers"""
-    pass
+from .hierarchical_orchestrator import HierarchicalOrchestrator, OrchestrationLayer
 from ..tda import AgentTopologyAnalyzer
 from ..memory.core.memory_api import AURAMemorySystem
 
