@@ -317,18 +317,17 @@ class RemoteConfigLoader:
             response.raise_for_status()
             
             # Parse response
-        config = response.json()
+            config = response.json()
             
-        # Update cache
-        self._cache = config
-        self._cache_time = time.time()
+            # Update cache
+            self._cache = config
+            self._cache_time = time.time()
             
-        return config
+            return config
             
         except Exception as e:
-            pass
-        raise ConfigurationError(
-        f"Failed to load remote configuration: {self.url}",
-        endpoint=self.url,
-        cause=e
+            raise ConfigurationError(
+                f"Failed to load remote configuration: {self.url}",
+                endpoint=self.url,
+                cause=e
         )

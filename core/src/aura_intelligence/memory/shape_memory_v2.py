@@ -399,7 +399,7 @@ class ShapeAwareMemoryV2:
                     content_data = content_str
                     compressed = False
                 
-        await session.run("""
+                await session.run("""
                     CREATE (m:ShapeMemoryV2 {
                         memory_id: $memory_id,
                         content: $content,
