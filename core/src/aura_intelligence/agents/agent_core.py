@@ -16,12 +16,16 @@ Every AURA agent inherits from this to get automatic:
 """
 
 import asyncio
-from typing import Dict, Any, List, Optional, Type, Callable, Union
+from typing import Dict, Any, List, Optional, Type, Callable, Union, TYPE_CHECKING
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from abc import ABC, abstractmethod
 import uuid
 import structlog
+
+# Import memory system types for proper integration
+if TYPE_CHECKING:
+    from ..memory.unified_cognitive_memory import UnifiedCognitiveMemory, MemoryContext
 
 # LangGraph imports
 try:
@@ -86,6 +90,9 @@ class AURAAgentState:
     """
     Unified agent state that all AURA agents use.
     Includes integration points for all 4 core components.
+    
+    CRITICAL UPDATE: Now properly integrated with UnifiedCognitiveMemory
+    instead of using simple dict placeholders.
     """
     # Core state
     agent_id: str
@@ -95,8 +102,17 @@ class AURAAgentState:
     # Messages (for LangGraph)
     messages: List[BaseMessage] = field(default_factory=list)
     
+    # ENHANCED MEMORY INTEGRATION
+    # Direct reference to the cognitive memory system (shared across agents)
+    memory_system: Optional['UnifiedCognitiveMemory'] = None
+    
+    # Last retrieved memory context for this specific agent
+    last_memory_context: Optional['MemoryContext'] = None
+    
+    # Legacy memory_context kept for backward compatibility
+    memory_context: Dict[str, Any] = field(default_factory=dict)  # Deprecated, use memory_system
+    
     # Component states
-    memory_context: Dict[str, Any] = field(default_factory=dict)
     topology_context: Dict[str, Any] = field(default_factory=dict)
     routing_context: Dict[str, Any] = field(default_factory=dict)
     workflow_context: Dict[str, Any] = field(default_factory=dict)

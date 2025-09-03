@@ -52,6 +52,16 @@ with comprehensive observability and resilience patterns.
 from .simple_agent import SimpleAgent, create_simple_agent, get_simple_registry
 from .consolidated_agents import ConsolidatedAgent, ConsolidatedAgentFactory, get_agent_registry
 
+# CRITICAL NEW ADDITION: Memory-aware cognitive agents
+from .cognitive_agent import (
+    CognitiveAgent,
+    CognitivePlannerAgent,
+    CognitiveExecutorAgent,
+    CognitiveAnalystAgent,
+    AgentExperience,
+    AgentDecision
+)
+
 # Production LangGraph agents (2025 patterns)
 try:
     from .production_langgraph_agent import (
@@ -88,6 +98,14 @@ __all__ = [
     "ConsolidatedAgent",
     "ConsolidatedAgentFactory",
     "get_agent_registry",
+    
+    # Cognitive agents with full memory integration
+    "CognitiveAgent",
+    "CognitivePlannerAgent",
+    "CognitiveExecutorAgent",
+    "CognitiveAnalystAgent",
+    "AgentExperience",
+    "AgentDecision",
     
     # Production LangGraph agents
     "AURAProductionAgent",

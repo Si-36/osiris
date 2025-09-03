@@ -159,7 +159,40 @@ class UnifiedOrchestrationEngine:
         
         # Integrations
         self.tda_analyzer: Optional[AgentTopologyAnalyzer] = None
-        self.memory_system: Optional[AURAMemorySystem] = None
+        
+        # CRITICAL INTEGRATION: Connect the complete cognitive memory system
+        # This replaces the placeholder AURAMemorySystem with our production implementation
+        from ..memory.unified_cognitive_memory import UnifiedCognitiveMemory
+        
+        # Extract memory configuration from the main config
+        memory_config = self.config.__dict__.get('memory_config', {
+            'working': {'capacity': 7},
+            'episodic': {
+                'redis_host': 'localhost',
+                'redis_port': 6379,
+                'lmdb_path': '/var/lib/aura/episodic_lmdb',
+                'duckdb_path': '/var/lib/aura/episodic.duckdb'
+            },
+            'semantic': {
+                'neo4j_uri': 'bolt://localhost:7687',
+                'neo4j_user': 'neo4j',
+                'neo4j_password': 'aura_secure_2025'
+            },
+            'router': {},
+            'shape': {},
+            'consolidation': {},
+            'use_cuda': False,
+            'cache_size': 100,
+            'sleep_interval_hours': 8,
+            'default_query_timeout': 5.0
+        })
+        
+        logger.info("Initializing UnifiedCognitiveMemory with production configuration...")
+        self.memory_system: UnifiedCognitiveMemory = UnifiedCognitiveMemory(memory_config)
+        logger.info("UnifiedCognitiveMemory successfully integrated into orchestration engine")
+        
+        # Also keep reference to old AURAMemorySystem for backward compatibility if needed
+        self.legacy_memory_system: Optional[AURAMemorySystem] = None
         
         # Distributed orchestration
         self.distributed_manager: Optional[DistributedOrchestrationManager] = None
@@ -223,8 +256,16 @@ class UnifiedOrchestrationEngine:
         if self.config.enable_topology_routing:
             self.tda_analyzer = AgentTopologyAnalyzer()
         
-        # Always initialize memory for pattern learning
-        self.memory_system = AURAMemorySystem()
+        # Initialize the cognitive memory system
+        # The memory system is already created in __init__, now we start its background processes
+        logger.info("Starting UnifiedCognitiveMemory background processes...")
+        await self.memory_system.start()
+        logger.info("Memory system fully operational")
+        
+        # For backward compatibility, also initialize legacy memory if needed
+        if hasattr(self.config, 'use_legacy_memory') and self.config.use_legacy_memory:
+            self.legacy_memory_system = AURAMemorySystem()
+            logger.info("Legacy AURAMemorySystem also initialized for compatibility")
         
         # 6. Start background tasks
         asyncio.create_task(self._metrics_reporter())
@@ -672,6 +713,12 @@ class UnifiedOrchestrationEngine:
     async def shutdown(self):
         """Graceful shutdown"""
         logger.info("Shutting down orchestration engine")
+        
+        # Shutdown memory system first (save any pending consolidations)
+        if self.memory_system:
+            logger.info("Shutting down UnifiedCognitiveMemory...")
+            await self.memory_system.stop()
+            logger.info("Memory system shutdown complete")
         
         # Shutdown distributed manager
         if self.distributed_manager:
