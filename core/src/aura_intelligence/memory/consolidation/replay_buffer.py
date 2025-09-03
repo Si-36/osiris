@@ -250,12 +250,12 @@ class PriorityReplayBuffer:
         # Pack into bytes (8 bits per byte)
         packed_bytes = np.packbits(binary_array)
         
-        # Add metadata header
+        # Add metadata header (ensure positive values for uint32)
         header = np.array([
             len(embedding),  # Original dimension
-            int(threshold * 1000),  # Threshold (scaled)
-            int(memory.surprise_score * 1000),  # Surprise (scaled)
-            int(memory.importance * 1000)  # Importance (scaled)
+            max(0, int(abs(threshold) * 1000)),  # Threshold (scaled, positive)
+            max(0, int(abs(memory.surprise_score) * 1000)),  # Surprise (scaled, positive)
+            max(0, int(abs(memory.importance) * 1000))  # Importance (scaled, positive)
         ], dtype=np.uint32)
         
         # Combine header and packed data
