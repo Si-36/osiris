@@ -71,6 +71,12 @@ from .core.memory_api import AURAMemorySystem
 # Import ShapeAwareMemory
 from .shape_aware_memory import ShapeMemory as ShapeAwareMemory
 
+# Import new cognitive memory systems
+from .working_memory import WorkingMemory
+from .episodic_memory import EpisodicMemory
+from .semantic_memory import SemanticMemory
+from .unified_cognitive_memory import UnifiedCognitiveMemory
+
 # Define aliases for compatibility
 HybridMemoryManager = UnifiedMemoryInterface
 CollectiveMemory = UnifiedMemoryInterface
@@ -113,6 +119,11 @@ __all__ = [
     'AURAMemorySystem',
     # Shape Aware Memory
     'ShapeAwareMemory',
+    # Cognitive Memory Systems
+    'WorkingMemory',
+    'EpisodicMemory',
+    'SemanticMemory',
+    'UnifiedCognitiveMemory',
     # Aliases
     'HybridMemoryManager',
     'CollectiveMemory',
