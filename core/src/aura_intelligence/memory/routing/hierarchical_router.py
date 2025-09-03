@@ -7,6 +7,10 @@ Abstract summaries → Semantic episodes → Detailed experiences → Raw data
 
 This enables sub-millisecond retrieval from millions of memories by 
 intelligently routing queries through the hierarchy.
+
+NOTE: This file contains the legacy implementation.
+For the state-of-the-art 2025 version with H-MEM, ARMS, LinUCB, and Titans, use:
+    from .hierarchical_router_2025 import HierarchicalMemoryRouter2025
 """
 
 import asyncio

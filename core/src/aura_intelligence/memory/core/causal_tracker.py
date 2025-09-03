@@ -514,7 +514,7 @@ class CausalPatternTracker:
                              topology: MemoryTopologySignature,
                              k: int = 5) -> List[Tuple[str, float]]:
         """Find similar patterns using embeddings"""
-        if not topology.fastrp_embedding:
+        if topology.fastrp_embedding is None or len(topology.fastrp_embedding) == 0:
             return []
         
         similarities = []
