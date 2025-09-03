@@ -28,10 +28,10 @@ from ..memory.episodic_memory import Episode
 from ..memory.semantic_memory import Concept
 
 # Import agent components
-from .agent_core import AURAAgentState, BaseAURAAgent
+from .agent_core import AURAAgentState, AURAAgentCore as BaseAURAAgent
 
 # Import supporting systems
-from ..memory.core.causal_tracker import CausalPatternTracker, CausalEvent, OutcomeType
+from ..memory.core.causal_tracker import CausalPatternTracker, CausalPattern, OutcomeType
 
 logger = structlog.get_logger(__name__)
 

@@ -22,6 +22,7 @@ import hashlib
 import time
 import struct
 import mmap
+import os
 import lmdb
 import duckdb
 import redis.asyncio as redis
@@ -210,29 +211,29 @@ class MultiResolutionTemporalIndex:
                 id VARCHAR PRIMARY KEY,
                 timestamp BIGINT NOT NULL,
                 
-                -- Computed columns for each resolution
-                year INTEGER GENERATED ALWAYS AS (timestamp / 31536000000000) STORED,
-                month INTEGER GENERATED ALWAYS AS (timestamp / 2592000000000) STORED,
-                day INTEGER GENERATED ALWAYS AS (timestamp / 86400000000) STORED,
-                hour INTEGER GENERATED ALWAYS AS (timestamp / 3600000000) STORED,
-                minute INTEGER GENERATED ALWAYS AS (timestamp / 60000000) STORED,
-                second INTEGER GENERATED ALWAYS AS (timestamp / 1000000) STORED,
+                -- Regular columns for resolution (will be computed on insert)
+                year INTEGER,
+                month INTEGER,
+                day INTEGER,
+                hour INTEGER,
+                minute INTEGER,
+                second INTEGER,
                 
                 -- Episode data
                 importance REAL,
                 emotional_intensity REAL,
                 tier VARCHAR,
                 embedding BLOB,
-                compressed_data BLOB,
-                
-                -- Indexes for efficient queries
-                INDEX idx_timestamp (timestamp),
-                INDEX idx_importance (importance),
-                INDEX idx_emotional (emotional_intensity),
-                INDEX idx_year_month (year, month),
-                INDEX idx_day_hour (day, hour)
+                compressed_data BLOB
             )
         """)
+        
+        # Create indexes separately
+        self.conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON episodes(timestamp)")
+        self.conn.execute("CREATE INDEX IF NOT EXISTS idx_importance ON episodes(importance)")
+        self.conn.execute("CREATE INDEX IF NOT EXISTS idx_emotional ON episodes(emotional_intensity)")
+        self.conn.execute("CREATE INDEX IF NOT EXISTS idx_year_month ON episodes(year, month)")
+        self.conn.execute("CREATE INDEX IF NOT EXISTS idx_day_hour ON episodes(day, hour)")
     
     def _init_bloom_filter(self, size_mb: int = 256) -> mmap.mmap:
         """Initialize memory-mapped bloom filter for fast existence checks"""
@@ -240,13 +241,18 @@ class MultiResolutionTemporalIndex:
         bloom_size = size_mb * 1024 * 1024
         
         # Create or open memory-mapped file
-        with open(bloom_path, "ab") as f:
-            f.truncate(bloom_size)
+        if not os.path.exists(bloom_path):
+            with open(bloom_path, "wb") as f:
+                f.write(b"\x00" * bloom_size)
         
+        # Open file with proper handle
+        f = open(bloom_path, "r+b")
         bloom_mmap = mmap.mmap(
-            open(bloom_path, "r+b").fileno(),
+            f.fileno(),
             bloom_size
         )
+        # Store file handle to prevent closing
+        self._bloom_file = f
         return bloom_mmap
     
     async def add_episode(self, episode: Episode):
@@ -620,12 +626,19 @@ class EpisodicMemory:
         self.config = config or {}
         
         # Use EXISTING infrastructure
-        from ..storage.tier_manager import TierManager
-        from ..shape_memory_v2 import ShapeMemoryV2
-        from ..routing.hierarchical_router_2025 import HierarchicalMemoryRouter2025
+        from .storage.tier_manager import TierManager
+        from .shape_memory_v2 import ShapeAwareMemoryV2 as ShapeMemoryV2, ShapeMemoryV2Config
+        from .routing.hierarchical_router_2025 import HierarchicalMemoryRouter2025
         
         self.tier_manager = TierManager(config.get('tiers', {}))
-        self.shape_memory = ShapeMemoryV2(config.get('shape', {}))
+        
+        # Create ShapeMemoryV2Config from dict
+        shape_config_dict = config.get('shape', {})
+        shape_config = ShapeMemoryV2Config()
+        for key, value in shape_config_dict.items():
+            if hasattr(shape_config, key):
+                setattr(shape_config, key, value)
+        self.shape_memory = ShapeMemoryV2(shape_config)
         self.router = HierarchicalMemoryRouter2025(config.get('router', {}))
         
         # Initialize components

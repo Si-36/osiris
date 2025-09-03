@@ -75,7 +75,7 @@ class Concept:
     
     # Statistics
     activation_count: int = 0
-    last_activated: datetime = field(default_factory=datetime.now)
+    last_activated: datetime = field(default_factory=lambda: datetime.utcnow())
     confidence: float = 0.5
     frequency: float = 0.0  # How often seen in episodes
     
@@ -115,8 +115,8 @@ class Relationship:
     evidence_count: int = 0
     
     # Temporal aspects
-    created_at: datetime = field(default_factory=datetime.now)
-    last_seen: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.utcnow())
+    last_seen: datetime = field(default_factory=lambda: datetime.utcnow())
     
     # Properties
     properties: Dict[str, Any] = field(default_factory=dict)
@@ -510,7 +510,7 @@ class SemanticMemory:
         self.config = config or {}
         
         # Use EXISTING Neo4j from tier manager
-        from ..storage.tier_manager import TierManager
+        from .storage.tier_manager import TierManager
         self.tier_manager = TierManager(config.get('tiers', {}))
         
         # Initialize Neo4j driver
