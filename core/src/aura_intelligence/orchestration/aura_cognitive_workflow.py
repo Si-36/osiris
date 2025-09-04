@@ -632,7 +632,8 @@ def _create_fallback_plan(objective: str, executor: 'UnifiedWorkflowExecutor') -
     steps = []
     
     # Always start with observation if available
-    if executor.tools and "SystemObservationTool" in executor.tools.list_tools():
+    tools_obj = getattr(executor, 'tools', None)
+    if tools_obj and hasattr(tools_obj, 'list_tools') and "SystemObservationTool" in tools_obj.list_tools():
         steps.append(ExecutionStep(
             tool="SystemObservationTool",
             params={
@@ -785,9 +786,12 @@ def create_aura_workflow(executor: 'UnifiedWorkflowExecutor') -> StateGraph:
     
     # Add checkpointing for persistence and recovery
     checkpointer = None
-    if executor.memory:
-        # Use memory system's checkpointer if available
-        checkpointer = MemorySaver()
+    try:
+        if getattr(executor, 'memory', None):
+            # Use memory system's checkpointer if available
+            checkpointer = MemorySaver()
+    except Exception:
+        checkpointer = None
     
     # Compile the workflow
     compiled = workflow.compile(checkpointer=checkpointer)
