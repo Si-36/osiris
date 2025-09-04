@@ -124,6 +124,12 @@ class UnifiedWorkflowExecutor:
             self._tda_events_queue = asyncio.Queue(maxsize=queue_maxsize)
             # Start pump loop in background
             self._tda_pump_task = asyncio.create_task(self._tda_pump_loop())
+            # Initialize prefixed metrics if requested
+            prefix = self.config.get('tda_metrics_prefix')
+            if prefix:
+                self.metrics[f"{prefix}_events_emitted_total"] = 0
+                self.metrics[f"{prefix}_events_dropped_total"] = 0
+                self.metrics[f"{prefix}_errors_total"] = 0
         
         # Create the LangGraph workflow
         self.workflow = self._create_workflow()
@@ -264,8 +270,14 @@ class UnifiedWorkflowExecutor:
         try:
             self._tda_events_queue.put_nowait(event)
             self.metrics["tda_events_emitted"] += 1
+            prefix = self.config.get('tda_metrics_prefix')
+            if prefix:
+                self.metrics[f"{prefix}_events_emitted_total"] += 1
         except asyncio.QueueFull:
             self.metrics["tda_events_dropped"] += 1
+            prefix = self.config.get('tda_metrics_prefix')
+            if prefix:
+                self.metrics[f"{prefix}_events_dropped_total"] += 1
 
     async def _tda_pump_loop(self) -> None:
         """Pump events from executor queue into the TDA monitor."""
@@ -278,10 +290,16 @@ class UnifiedWorkflowExecutor:
                         await self._tda_monitor.process_event(event)
                     except Exception:
                         self.metrics["tda_errors"] += 1
+                        prefix = self.config.get('tda_metrics_prefix')
+                        if prefix:
+                            self.metrics[f"{prefix}_errors_total"] += 1
             except asyncio.CancelledError:
                 break
             except Exception:
                 self.metrics["tda_errors"] += 1
+                prefix = self.config.get('tda_metrics_prefix')
+                if prefix:
+                    self.metrics[f"{prefix}_errors_total"] += 1
     
     async def execute_task(
         self,
