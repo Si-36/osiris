@@ -137,21 +137,10 @@ class UnifiedWorkflowExecutor:
         logger.info("✅ UnifiedWorkflowExecutor initialized with real components")
     
     def _create_memory_system(self) -> UnifiedCognitiveMemory:
-        """Create a fully configured memory system"""
-        logger.info("Creating UnifiedCognitiveMemory with all subsystems...")
-        
-        # Create memory services
-        services = {
-            'working_memory': WorkingMemory(),
-            'episodic_memory': EpisodicMemory(config=self.config.get('episodic', {})),
-            'semantic_memory': SemanticMemory(config=self.config.get('semantic', {})),
-            'memory_consolidation': MemoryConsolidation(config=self.config.get('consolidation', {})),
-            'hierarchical_router': HierarchicalMemoryRouter2025(config=self.config.get('router', {})),
-            'shape_memory': ShapeAwareMemoryV2(config=self.config.get('shape', {})),
-            'causal_tracker': CausalPatternTracker(config=self.config.get('causal', {}))
-        }
-        
-        return UnifiedCognitiveMemory(services)
+        """Create the unified memory system using its own configuration."""
+        logger.info("Creating UnifiedCognitiveMemory via internal configuration...")
+        memory_config = self.config.get('memory', {})
+        return UnifiedCognitiveMemory(memory_config)
     
     def _create_tool_registry(self) -> ToolRegistry:
         """Create and populate the tool registry"""
@@ -162,9 +151,9 @@ class UnifiedWorkflowExecutor:
         
         # Register the observation tool
         obs_tool = SystemObservationTool(
-            topology_adapter=self.memory.shape_mem if hasattr(self.memory, 'shape_mem') else None,
+            topology_adapter=getattr(self.memory, 'shape_memory', None),
             memory_system=self.memory,
-            causal_tracker=self.memory.causal_tracker if hasattr(self.memory, 'causal_tracker') else None
+            causal_tracker=getattr(self.memory, 'causal_tracker', None)
         )
         
         registry.register(
