@@ -377,6 +377,132 @@ async def execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Parallel execution using SwarmCoordinator for coordination and
+    bounded-concurrency tool execution for robustness.
+    """
+    logger.info("⚡ SWARM EXECUTION: Coordinated parallel execution")
+    current_state = AuraWorkflowState.model_validate(state)
+    executor: 'UnifiedWorkflowExecutor' = state['executor_instance']
+    
+    # Update status
+    current_state.task.status = TaskStatus.EXECUTING
+    current_state.add_trace("Starting swarm execution phase")
+    
+    if not current_state.plan or not current_state.plan.steps:
+        logger.warning("No steps in plan, skipping execution")
+        return {"execution_trace": current_state.execution_trace, "observations": []}
+    
+    # Ensure plan approved
+    if not current_state.consensus or not current_state.consensus.approved:
+        logger.warning("Plan not approved, skipping execution")
+        current_state.add_trace("Execution skipped: plan not approved")
+        return {"execution_trace": current_state.execution_trace}
+    
+    try:
+        swarm = await executor.get_swarm_coordinator()
+        agent_pool = [f"exec_agent_{i}" for i in range(int(getattr(executor, 'config', {}).get('swarm_agent_pool', 20)))]
+        
+        # Use exploration objective as generic coordination step
+        swarm_objective = {
+            'type': 'exploration',
+            'tasks': [step.model_dump() for step in current_state.plan.steps]
+        }
+        coordination = await swarm.coordinate_agents(agents=agent_pool, objective=swarm_objective)
+        
+        # Execute tools in parallel with retry and bounded concurrency
+        tasks = []
+        for step in current_state.plan.steps:
+            tasks.append(executor.execute_tool_with_retry(step.tool, step.params))
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        observations: List[ObservationResult] = []
+        for idx, result in enumerate(results):
+            step = current_state.plan.steps[idx]
+            if isinstance(result, Exception):
+                logger.error(f"Tool failed: {step.tool}: {result}")
+                observations.append(ObservationResult(
+                    source=step.tool,
+                    data={"error": str(result)},
+                    topology=TopologicalSignature(
+                        betti_numbers=[0,0,0],
+                        persistence_entropy=0.0,
+                        wasserstein_distance_from_norm=1.0
+                    ),
+                    anomalies=[{"type": "execution_error", "description": str(result)}]
+                ))
+            elif isinstance(result, dict):
+                try:
+                    observations.append(ObservationResult.model_validate(result))
+                except Exception:
+                    observations.append(ObservationResult(
+                        source=step.tool,
+                        data=result,
+                        topology=TopologicalSignature(
+                            betti_numbers=[1,0,0],
+                            persistence_entropy=0.0,
+                            wasserstein_distance_from_norm=0.0
+                        ),
+                        anomalies=[]
+                    ))
+            else:
+                observations.append(ObservationResult(
+                    source=step.tool,
+                    data={"result": str(result)},
+                    topology=TopologicalSignature(
+                        betti_numbers=[1,0,0],
+                        persistence_entropy=0.0,
+                        wasserstein_distance_from_norm=0.0
+                    ),
+                    anomalies=[]
+                ))
+        
+        current_state.observations = observations
+        current_state.add_trace(f"Swarm executed {len(observations)} steps")
+        
+        return {
+            "observations": [obs.model_dump() for obs in observations],
+            "execution_trace": current_state.execution_trace,
+            "coordination": coordination
+        }
+    except Exception as e:
+        logger.error(f"Swarm execution failed: {e}", exc_info=True)
+        # Fallback to sequential execution
+        observations = []
+        for step in current_state.plan.steps:
+            try:
+                result = await executor.tools.execute(tool_name=step.tool, params=step.params)
+                if isinstance(result, dict):
+                    observations.append(ObservationResult.model_validate(result))
+                else:
+                    observations.append(ObservationResult(
+                        source=step.tool,
+                        data={"result": str(result)},
+                        topology=TopologicalSignature(
+                            betti_numbers=[1,0,0],
+                            persistence_entropy=0.0,
+                            wasserstein_distance_from_norm=0.0
+                        ),
+                        anomalies=[]
+                    ))
+            except Exception as tool_error:
+                observations.append(ObservationResult(
+                    source=step.tool,
+                    data={"error": str(tool_error)},
+                    topology=TopologicalSignature(
+                        betti_numbers=[0,0,0],
+                        persistence_entropy=0.0,
+                        wasserstein_distance_from_norm=1.0
+                    ),
+                    anomalies=[{"type": "execution_error", "description": str(tool_error)}]
+                ))
+        return {
+            "observations": [obs.model_dump() for obs in observations],
+            "execution_trace": current_state.execution_trace
+        }
+
+
 async def analysis_consolidation_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node for Step 5: ANALYSIS & CONSOLIDATION
@@ -635,7 +761,14 @@ def create_aura_workflow(executor: 'UnifiedWorkflowExecutor') -> StateGraph:
     
     workflow.add_node("PLAN", osiris_planning_node if use_osiris else planning_node)
     workflow.add_node("CONSENSUS", consensus_node)
-    workflow.add_node("EXECUTE", execution_node)
+    # Allow switching to Swarm execution via config toggle
+    use_swarm = False
+    try:
+        use_swarm = bool(getattr(executor, 'config', {}).get('use_swarm_execution', True))
+    except Exception:
+        use_swarm = True
+    
+    workflow.add_node("EXECUTE", swarm_execution_node if use_swarm else execution_node)
     workflow.add_node("ANALYZE", analysis_consolidation_node)
     
     # Define the execution flow

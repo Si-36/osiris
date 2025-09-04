@@ -32,6 +32,7 @@ from ..memory.routing.hierarchical_router_2025 import HierarchicalMemoryRouter20
 from ..memory.shape_memory_v2 import ShapeAwareMemoryV2
 from ..memory.core.causal_tracker import CausalPatternTracker
 from ..tools.tool_registry import ToolRegistry, ToolExecutor
+from ..swarm_intelligence.swarm_coordinator import SwarmCoordinator
 
 logger = structlog.get_logger(__name__)
 
@@ -99,6 +100,14 @@ class UnifiedWorkflowExecutor:
         # Lazy-initialized Osiris unified intelligence (singleton within executor)
         self._osiris_instance = None
         self._osiris_lock = asyncio.Lock()
+
+        # Lazy-initialized Swarm Coordinator (singleton within executor)
+        self._swarm_instance: Optional[SwarmCoordinator] = None
+        self._swarm_lock = asyncio.Lock()
+
+        # Concurrency control for parallel tool execution
+        max_concurrent = int(self.config.get('max_concurrent_tasks', 20))
+        self.execution_semaphore = asyncio.Semaphore(max_concurrent)
         
         # Create the LangGraph workflow
         self.workflow = self._create_workflow()
@@ -176,6 +185,45 @@ class UnifiedWorkflowExecutor:
                         max_context=100_000,
                     )
         return self._osiris_instance
+
+    async def get_swarm_coordinator(self) -> SwarmCoordinator:
+        """Lazily create and return the SwarmCoordinator instance.
+        Uses an async lock for concurrency safety.
+        """
+        if self._swarm_instance is None:
+            async with self._swarm_lock:
+                if self._swarm_instance is None:
+                    self._swarm_instance = SwarmCoordinator({
+                        'num_particles': 50,
+                        'num_ants': 30,
+                        'num_bees': 40,
+                        'pheromone_decay': 0.97,
+                    })
+        return self._swarm_instance
+
+    async def execute_tool_with_retry(self, tool_name: str, params: Dict[str, Any],
+                                      max_attempts: int = 3,
+                                      base_delay_seconds: float = 1.0) -> Any:
+        """Execute a tool with bounded concurrency and exponential backoff retry.
+        Avoids external dependencies; uses asyncio sleep for backoff.
+        """
+        attempt = 0
+        last_error: Optional[Exception] = None
+        while attempt < max_attempts:
+            attempt += 1
+            try:
+                async with self.execution_semaphore:
+                    return await self.tools.execute(tool_name=tool_name, params=params)
+            except Exception as e:
+                last_error = e
+                if attempt >= max_attempts:
+                    break
+                # Exponential backoff with light jitter
+                delay = base_delay_seconds * (2 ** (attempt - 1))
+                jitter = 0.1 * delay
+                await asyncio.sleep(delay + (jitter))
+        # Exhausted retries
+        raise last_error if last_error else RuntimeError("Unknown execution failure")
     
     async def execute_task(
         self,
