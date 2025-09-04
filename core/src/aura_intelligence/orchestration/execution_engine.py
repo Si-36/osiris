@@ -28,9 +28,9 @@ from ..memory.unified_cognitive_memory import UnifiedCognitiveMemory
 from ..memory.working_memory import WorkingMemory
 from ..memory.episodic_memory import EpisodicMemory
 from ..memory.semantic_memory import SemanticMemory
-from ..memory.consolidation import SleepConsolidation as MemoryConsolidation
+from ..memory.consolidation import SleepConsolidation as MemoryConsolidation, ConsolidationConfig
 from ..memory.routing.hierarchical_router_2025 import HierarchicalMemoryRouter2025
-from ..memory.shape_memory_v2 import ShapeAwareMemoryV2
+from ..memory.shape_memory_v2 import ShapeAwareMemoryV2, ShapeMemoryV2Config
 from ..memory.core.causal_tracker import CausalPatternTracker
 from ..tools.tool_registry import ToolRegistry, ToolExecutor
 from ..tda.realtime_monitor import RealtimeTopologyMonitor, SystemEvent, EventType

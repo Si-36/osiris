@@ -403,10 +403,7 @@ class HierarchicalVectorIndex:
         # Regular memories: IVF-PQ for scale
         quantizer = faiss.IndexFlatL2(dim)
         self.regular_index = faiss.IndexIVFPQ(
-            quantizer, dim,
-            nlist=1024,  # Number of clusters
-            m=64,  # Number of subquantizers
-            nbits=8  # Bits per subquantizer
+            quantizer, dim, 1024, 64, 8
         )
         
         # ID mappings
@@ -668,7 +665,7 @@ class EpisodicMemory:
         
         logger.info(
             "EpisodicMemory initialized",
-            tiers=self.tier_manager.get_tier_names(),
+            tiers=self.tier_manager.available_tiers(),
             rapid_threshold=self.rapid_consolidation_threshold
         )
     
