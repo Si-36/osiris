@@ -204,11 +204,11 @@ class LiquidNeuron(nn.Module):
     def _get_activation(self, activation_type: ActivationType) -> Callable:
         """Get activation function."""
         activations = {
-            ActivationType.SIGMOID: torch.sigmoid,
-            ActivationType.TANH: torch.tanh,
-            ActivationType.RELU: F.relu,
-            ActivationType.GELU: F.gelu,
-            ActivationType.SILU: F.silu
+        ActivationType.SIGMOID: torch.sigmoid,
+        ActivationType.TANH: torch.tanh,
+        ActivationType.RELU: F.relu,
+        ActivationType.GELU: F.gelu,
+        ActivationType.SILU: F.silu
         }
         return activations[activation_type]
     
@@ -285,8 +285,12 @@ class LiquidNeuron(nn.Module):
                 
             dynamics = decay + recurrent + projected_input
         
-        # Update state using ODE solver
-        if self.config.solver_type == "euler":
+        # Update state using ODE solver or CfC
+        if self.config.solver_type == "cfc":
+            # Closed-form Continuous update (10-100x faster!)
+            alpha = torch.exp(-dt / self.tau)
+            new_state = alpha * state + (1 - alpha) * dynamics
+        elif self.config.solver_type == "euler":
             new_state = state + dt * dynamics
         elif self.config.solver_type == "rk4":
             new_state = self._rk4_step(state, input_current, dt)
@@ -303,9 +307,9 @@ class LiquidNeuron(nn.Module):
         state: torch.Tensor,
         input_current: torch.Tensor,
         dt: float
-    ) -> torch.Tensor:
+        ) -> torch.Tensor:
         """Runge-Kutta 4th order integration step."""
-        def dynamics(s, i):
+    def dynamics(s, i):
             decay = -s / self.tau
             masked_weight = self.weight * self.mask
             recurrent = F.linear(self.activation(s), masked_weight.t())
@@ -321,19 +325,19 @@ class LiquidNeuron(nn.Module):
             if i.shape[-1] != decay.shape[-1]:
                 if not hasattr(self, 'input_projection'):
                     self.input_projection = nn.Linear(
-                        i.shape[-1], 
-                        decay.shape[-1],
-                        bias=False
-                    ).to(i.device)
-                i = self.input_projection(i)
+            i.shape[-1],
+            decay.shape[-1],
+            bias=False
+            ).to(i.device)
+            i = self.input_projection(i)
             return decay + recurrent + i
         
-        k1 = dynamics(state, input_current)
-        k2 = dynamics(state + 0.5 * dt * k1, input_current)
-        k3 = dynamics(state + 0.5 * dt * k2, input_current)
-        k4 = dynamics(state + dt * k3, input_current)
+            k1 = dynamics(state, input_current)
+            k2 = dynamics(state + 0.5 * dt * k1, input_current)
+            k3 = dynamics(state + 0.5 * dt * k2, input_current)
+            k4 = dynamics(state + dt * k3, input_current)
         
-        return state + (dt / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
+            return state + (dt / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
     
     def reset_state(self, batch_size: Optional[int] = None):
         """Reset neuron state."""
@@ -506,7 +510,7 @@ class LiquidNeuralNetwork(nn.Module):
         self,
         inputs: torch.Tensor,
         return_dynamics: bool = False
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]]:
+        ) -> Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]]:
         """
         Forward pass through liquid network.
         
@@ -553,6 +557,7 @@ class LiquidNeuralNetwork(nn.Module):
     
     def get_sparsity(self) -> Dict[str, float]:
         """Get sparsity statistics of the network."""
+        pass
         sparsity_stats = {}
         
         for i, layer in enumerate(self.layers):
@@ -593,15 +598,15 @@ class LiquidNeuralNetwork(nn.Module):
             _, dynamics = self.forward(inputs, return_dynamics=True)
         
         analysis = {
-            "layer_dynamics": [],
-            "stability_metrics": {},
-            "information_flow": {}
+        "layer_dynamics": [],
+        "stability_metrics": {},
+        "information_flow": {}
         }
         
         for i, layer_data in enumerate(dynamics["layers"]):
             states = layer_data["states"]
             tau = layer_data["tau"]
-            
+                
             # Compute statistics
             layer_analysis = {
                 "mean_activation": states.mean().item(),
@@ -610,19 +615,19 @@ class LiquidNeuralNetwork(nn.Module):
                 "tau_range": (tau.min().item(), tau.max().item()),
                 "state_norm": states.norm(dim=-1).mean().item()
             }
-            
+                
             # Check for stability
             if states.max().item() > 100 or torch.isnan(states).any():
                 layer_analysis["stability"] = "unstable"
             else:
                 layer_analysis["stability"] = "stable"
-            
+                
             analysis["layer_dynamics"].append(layer_analysis)
         
         # Overall stability
         all_stable = all(
-            l["stability"] == "stable" 
-            for l in analysis["layer_dynamics"]
+        l["stability"] == "stable"
+        for l in analysis["layer_dynamics"]
         )
         analysis["stability_metrics"]["overall"] = "stable" if all_stable else "unstable"
         
@@ -636,23 +641,23 @@ class LiquidNeuralNetwork(nn.Module):
     def to_onnx(self, dummy_input: torch.Tensor, path: str):
         """Export network to ONNX format."""
         torch.onnx.export(
-            self,
-            dummy_input,
-            path,
-            export_params=True,
-            opset_version=11,
-            do_constant_folding=True,
-            input_names=['input'],
-            output_names=['output'],
-            dynamic_axes={
-                'input': {0: 'batch_size', 1: 'sequence_length'},
-                'output': {0: 'batch_size', 1: 'sequence_length'}
-            }
+        self,
+        dummy_input,
+        path,
+        export_params=True,
+        opset_version=11,
+        do_constant_folding=True,
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={
+        'input': {0: 'batch_size', 1: 'sequence_length'},
+        'output': {0: 'batch_size', 1: 'sequence_length'}
+        }
         )
         logger.info(f"Exported model to {path}")
-# ============================================================================
-# MAIN LNN CORE CLASS (Compatibility alias)
-# ============================================================================
+    # ============================================================================
+    # MAIN LNN CORE CLASS (Compatibility alias)
+    # ============================================================================
 
 class LNNCore(LiquidNeuralNetwork):
     """
@@ -662,10 +667,11 @@ class LNNCore(LiquidNeuralNetwork):
     """
     
     def __init__(self, 
-                 input_size: int = 10, 
+        input_size: int = 10,
                  output_size: int = 10, 
                  config: Optional[LiquidConfig] = None):
         """Initialize LNN Core with default configuration."""
+        pass
         if config is None:
             config = LiquidConfig()
         
@@ -678,6 +684,7 @@ class LNNCore(LiquidNeuralNetwork):
     
     def get_info(self) -> Dict[str, Any]:
         """Get LNN Core information."""
+        pass
         return {
             "type": "LNNCore",
             "layers": len(self.config.hidden_sizes),
@@ -690,12 +697,12 @@ class LNNCore(LiquidNeuralNetwork):
 
 # Export the main class
 __all__ = [
-    'LNNCore',
-    'LiquidNeuralNetwork', 
-    'LiquidLayer',
-    'LiquidNeuron',
-    'LiquidConfig',
-    'TimeConstants',
-    'WiringConfig',
-    'ActivationType'
+        'LNNCore',
+        'LiquidNeuralNetwork',
+        'LiquidLayer',
+        'LiquidNeuron',
+        'LiquidConfig',
+        'TimeConstants',
+        'WiringConfig',
+        'ActivationType'
 ]

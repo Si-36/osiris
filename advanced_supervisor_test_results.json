@@ -1,0 +1,52 @@
+{
+  "test_summary": {
+    "total_execution_time": 0.8911526203155518,
+    "total_tests": 13,
+    "successful_tests": 0,
+    "success_rate": 0.0,
+    "overall_status": "FAIL"
+  },
+  "test_results": {
+    "component_imports": {
+      "advanced_supervisor_2025": "FAILED: expected an indented block after class definition on line 51 (opentelemetry_integration.py, line 52)",
+      "tda_integration": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)",
+      "lnn_integration": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)",
+      "aura_tda": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)",
+      "aura_lnn": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    },
+    "configuration_systems": {
+      "advanced_supervisor_config": {
+        "status": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+      },
+      "tda_supervisor_config": {
+        "status": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+      },
+      "lnn_supervisor_config": {
+        "status": "FAILED: expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+      }
+    },
+    "tda_integration": {
+      "error": "expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    },
+    "lnn_integration": {
+      "error": "expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    },
+    "advanced_supervisor_core": {
+      "error": "expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    },
+    "end_to_end_integration": {
+      "error": "expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    },
+    "performance_scalability": {
+      "error": "expected an indented block after function definition on line 49 (supervisor.py, line 50)"
+    }
+  },
+  "recommendations": [
+    "Install missing dependencies for: advanced_supervisor_2025, tda_integration, lnn_integration, aura_tda, aura_lnn"
+  ],
+  "report_timestamp": "2025-08-26 05:05:57",
+  "test_environment": {
+    "python_version": "3.13.3 (main, Aug 14 2025, 11:53:40) [GCC 14.2.0]",
+    "platform": "linux"
+  }
+}

@@ -6,6 +6,7 @@ context enrichment. Provides real-time access to TDA patterns, anomalies,
 and correlation data for semantic orchestration decisions.
 
 Key Features:
+    pass
 - Real-time TDA pattern correlation
 - Anomaly severity integration
 - Correlation ID tracking across systems
@@ -13,6 +14,7 @@ Key Features:
 - Fallback mechanisms for TDA unavailability
 
 TDA Integration:
+    pass
 - Uses existing TDA Kafka event mesh
 - Leverages TDA streaming pattern analysis
 - Integrates with TDA correlation system
@@ -164,7 +166,7 @@ class TDAContextIntegration(TDAIntegration):
         self, 
         result: Dict[str, Any],
         correlation_id: str
-    ) -> bool:
+        ) -> bool:
         """
         Send orchestration result to TDA for pattern analysis
         """
@@ -245,7 +247,7 @@ class TDAContextIntegration(TDAIntegration):
     async def correlate_with_anomalies(
         self, 
         orchestration_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Correlate orchestration data with current TDA anomalies
         """

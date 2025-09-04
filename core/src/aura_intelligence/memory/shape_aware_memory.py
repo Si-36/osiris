@@ -39,9 +39,9 @@ class TopologicalSignature:
         """Calculate topological distance to another signature."""
         # Betti number distance
         betti_dist = np.sqrt(
-            (self.betti_numbers.b0 - other.betti_numbers.b0) ** 2 +
-            (self.betti_numbers.b1 - other.betti_numbers.b1) ** 2 +
-            (self.betti_numbers.b2 - other.betti_numbers.b2) ** 2
+        (self.betti_numbers.b0 - other.betti_numbers.b0) ** 2 +
+        (self.betti_numbers.b1 - other.betti_numbers.b1) ** 2 +
+        (self.betti_numbers.b2 - other.betti_numbers.b2) ** 2
         )
         
         # Wasserstein distance for persistence diagrams
@@ -69,6 +69,7 @@ class TopologicalSignature:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
+        pass
         return {
             "betti_0": float(self.betti_numbers.b0),
             "betti_1": float(self.betti_numbers.b1),
@@ -108,6 +109,7 @@ class ShapeMemory:
     
     def update_access(self) -> None:
         """Update access statistics."""
+        pass
         self.access_count += 1
         self.last_accessed = datetime.now(timezone.utc)
         # Boost relevance based on access patterns
@@ -140,13 +142,14 @@ class ShapeAwareMemorySystem:
     
     async def initialize(self) -> None:
         """Initialize database connections."""
+        pass
         if self._initialized:
             return
         
         # Neo4j for persistent storage
         self._driver = AsyncGraphDatabase.driver(
-            self.neo4j_uri,
-            auth=(self.neo4j_user, self.neo4j_password)
+        self.neo4j_uri,
+        auth=(self.neo4j_user, self.neo4j_password)
         )
         
         # Redis for fast cache
@@ -187,7 +190,8 @@ class ShapeAwareMemorySystem:
         
         # Store in Neo4j
         async with self._driver.session() as session:
-            await session.run("""
+            pass
+        await session.run("""
                 CREATE (m:ShapeMemory {
                     memory_id: $memory_id,
                     content: $content,
@@ -199,7 +203,7 @@ class ShapeAwareMemorySystem:
                     relevance_score: $relevance_score,
                     created_at: $created_at
                 })
-            """, {
+        """, {
                 "memory_id": memory.memory_id,
                 "content": json.dumps(content),
                 "betti_0": float(signature.betti_numbers.b0),
@@ -277,33 +281,33 @@ class ShapeAwareMemorySystem:
             result = await session.run(query, params)
             records = await result.data()
         
-        # Convert to ShapeMemory objects and calculate exact distances
-        memories_with_distances = []
-        
-        for record in records:
-            # Reconstruct signature
-            signature = TopologicalSignature(
-                betti_numbers=BettiNumbers(
-                    b0=record["b0"],
-                    b1=record["b1"],
-                    b2=record["b2"]
-                ),
-                persistence_diagram=np.array(json.loads(record["pd"]))
-            )
+            # Convert to ShapeMemory objects and calculate exact distances
+            memories_with_distances = []
             
-            # Calculate exact topological distance
-            distance = query_signature.distance_to(signature)
-            
-            if distance <= self.similarity_threshold:
-                memory = ShapeMemory(
-                    memory_id=record["memory_id"],
-                    content=json.loads(record["content"]),
-                    signature=signature,
-                    context_type=record["context_type"],
-                    relevance_score=record["relevance_score"],
-                    created_at=datetime.fromisoformat(record["created_at"])
+            for record in records:
+                # Reconstruct signature
+                signature = TopologicalSignature(
+                    betti_numbers=BettiNumbers(
+                        b0=record["b0"],
+                        b1=record["b1"],
+                        b2=record["b2"]
+                    ),
+                    persistence_diagram=np.array(json.loads(record["pd"]))
                 )
-                memories_with_distances.append((distance, memory))
+                
+                # Calculate exact topological distance
+                distance = query_signature.distance_to(signature)
+                
+                if distance <= self.similarity_threshold:
+                    memory = ShapeMemory(
+                        memory_id=record["memory_id"],
+                        content=json.loads(record["content"]),
+                        signature=signature,
+                        context_type=record["context_type"],
+                        relevance_score=record["relevance_score"],
+                        created_at=datetime.fromisoformat(record["created_at"])
+                    )
+                    memories_with_distances.append((distance, memory))
         
         # Sort by distance and relevance
         memories_with_distances.sort(key=lambda x: (x[0], -x[1].relevance_score))
@@ -352,32 +356,32 @@ class ShapeAwareMemorySystem:
             """, {"cutoff_date": cutoff_date})
             
             records = await result.data()
-        
-        # Calculate similarity scores
-        similar_patterns = []
-        
-        for record in records:
-            signature = TopologicalSignature(
-                betti_numbers=BettiNumbers(
-                    b0=record["b0"],
-                    b1=record["b1"],
-                    b2=record["b2"]
-                ),
-                persistence_diagram=np.array(json.loads(record["pd"]))
-            )
             
-            similarity = 1.0 - min(anomaly_signature.distance_to(signature), 1.0)
+            # Calculate similarity scores
+            similar_patterns = []
             
-            if similarity > 0.7:  # High similarity threshold for anomalies
-                memory = ShapeMemory(
-                    memory_id=record["memory_id"],
-                    content=json.loads(record["content"]),
-                    signature=signature,
-                    context_type="anomaly",
-                    relevance_score=record["relevance_score"],
-                    created_at=datetime.fromisoformat(record["created_at"])
+            for record in records:
+                signature = TopologicalSignature(
+                    betti_numbers=BettiNumbers(
+                        b0=record["b0"],
+                        b1=record["b1"],
+                        b2=record["b2"]
+                    ),
+                    persistence_diagram=np.array(json.loads(record["pd"]))
                 )
-                similar_patterns.append((memory, similarity))
+                
+                similarity = 1.0 - min(anomaly_signature.distance_to(signature), 1.0)
+                
+                if similarity > 0.7:  # High similarity threshold for anomalies
+                    memory = ShapeMemory(
+                        memory_id=record["memory_id"],
+                        content=json.loads(record["content"]),
+                        signature=signature,
+                        context_type="anomaly",
+                        relevance_score=record["relevance_score"],
+                        created_at=datetime.fromisoformat(record["created_at"])
+                    )
+                    similar_patterns.append((memory, similarity))
         
         # Sort by similarity
         similar_patterns.sort(key=lambda x: x[1], reverse=True)
@@ -388,10 +392,10 @@ class ShapeAwareMemorySystem:
         """Cache memory in Redis for fast access."""
         key = f"shape_memory:{memory.memory_id}"
         value = {
-            "content": json.dumps(memory.content),
-            "signature": memory.signature.to_dict(),
-            "context_type": memory.context_type,
-            "relevance_score": memory.relevance_score
+        "content": json.dumps(memory.content),
+        "signature": memory.signature.to_dict(),
+        "context_type": memory.context_type,
+        "relevance_score": memory.relevance_score
         }
         
         # Store with TTL based on relevance
@@ -435,16 +439,17 @@ class ShapeAwareMemorySystem:
         memory.update_access()
         
         async with self._driver.session() as session:
-            await session.run("""
-                MATCH (m:ShapeMemory {memory_id: $memory_id})
-                SET m.access_count = m.access_count + 1,
-                    m.last_accessed = $now,
-                    m.relevance_score = $relevance_score
-            """, {
-                "memory_id": memory.memory_id,
-                "now": memory.last_accessed.isoformat(),
-                "relevance_score": memory.relevance_score
-            })
+            pass
+        await session.run("""
+        MATCH (m:ShapeMemory {memory_id: $memory_id})
+        SET m.access_count = m.access_count + 1,
+        m.last_accessed = $now,
+        m.relevance_score = $relevance_score
+        """, {
+        "memory_id": memory.memory_id,
+        "now": memory.last_accessed.isoformat(),
+        "relevance_score": memory.relevance_score
+        })
     
     async def cleanup(self) -> None:
         """Clean up connections."""
@@ -460,51 +465,52 @@ async def demo_shape_aware_memory():
     
     # Initialize system
     memory_system = ShapeAwareMemorySystem(
-        neo4j_uri="bolt://localhost:7687",
-        neo4j_user="neo4j",
-        neo4j_password="password",
-        redis_url="redis://localhost:6379"
+    neo4j_uri="bolt://localhost:7687",
+    neo4j_user="neo4j",
+    neo4j_password="password",
+    redis_url="redis://localhost:6379"
     )
     
     await memory_system.initialize()
     
     # Store a memory with topological signature
     tda_result = TDAResult(
-        betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
-        persistence_diagram=np.array([[0.1, 0.5], [0.2, 0.8], [0.3, 0.7]]),
-        topological_features={"holes": 2, "components": 1}
+    betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
+    persistence_diagram=np.array([[0.1, 0.5], [0.2, 0.8], [0.3, 0.7]]),
+    topological_features={"holes": 2, "components": 1}
     )
     
     memory = await memory_system.store_memory(
-        content={
-            "event": "Network anomaly detected",
-            "severity": "high",
-            "pattern": "Unusual topology in traffic flow"
-        },
-        tda_result=tda_result,
-        context_type="anomaly"
+    content={
+    "event": "Network anomaly detected",
+    "severity": "high",
+    "pattern": "Unusual topology in traffic flow"
+    },
+    tda_result=tda_result,
+    context_type="anomaly"
     )
     
     print(f"Stored memory: {memory.memory_id}")
     
     # Retrieve similar memories by shape
     query_signature = TopologicalSignature(
-        betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
-        persistence_diagram=np.array([[0.1, 0.6], [0.2, 0.7], [0.3, 0.8]])
+    betti_numbers=BettiNumbers(b0=1, b1=2, b2=0),
+    persistence_diagram=np.array([[0.1, 0.6], [0.2, 0.7], [0.3, 0.8]])
     )
     
     similar_memories = await memory_system.retrieve_by_shape(
-        query_signature=query_signature,
-        limit=5,
-        context_filter="anomaly"
+    query_signature=query_signature,
+    limit=5,
+    context_filter="anomaly"
     )
     
     print(f"\nFound {len(similar_memories)} similar memories by shape:")
     for mem in similar_memories:
-        print(f"  - {mem.memory_id}: {mem.content}")
+        pass
+    print(f"  - {mem.memory_id}: {mem.content}")
     
     await memory_system.cleanup()
 
 
-if __name__ == "__main__":
-    asyncio.run(demo_shape_aware_memory())
+    if __name__ == "__main__":
+        asyncio.run(demo_shape_aware_memory())

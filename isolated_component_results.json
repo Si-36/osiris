@@ -1,0 +1,336 @@
+{
+  "total_tested": 14,
+  "working": 9,
+  "success_rate": 0.6428571428571429,
+  "working_files": [
+    "Config Base",
+    "Utils Logging",
+    "Resilience Metrics",
+    "TDA Models",
+    "Memory Interface",
+    "Event Schemas",
+    "Core Interfaces",
+    "Agent Base Schema",
+    "Agent Enums"
+  ],
+  "detailed_results": [
+    {
+      "name": "Config Base",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/config/base.py",
+      "classes": [
+        "AURAConfig",
+        "Any",
+        "BaseSettings",
+        "DatabaseConfig",
+        "Dict",
+        "EnhancementLevel",
+        "EnvironmentType",
+        "List",
+        "MessagingConfig",
+        "ObservabilityConfig",
+        "Optional",
+        "Path",
+        "SecurityConfig",
+        "ServicesConfig"
+      ],
+      "functions": [
+        "dataclass",
+        "field",
+        "get_config",
+        "json",
+        "lru_cache",
+        "os",
+        "reset_config",
+        "set_config",
+        "yaml"
+      ]
+    },
+    {
+      "name": "API Config",
+      "status": "IMPORT_ERROR",
+      "error": "attempted relative import with no known parent package",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/config/api.py"
+    },
+    {
+      "name": "Memory Config",
+      "status": "IMPORT_ERROR",
+      "error": "attempted relative import with no known parent package",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/config/memory.py"
+    },
+    {
+      "name": "Utils Decorators",
+      "status": "SYNTAX_ERROR",
+      "error": "expected an indented block after function definition on line 64 (decorators.py, line 65)",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/utils/decorators.py"
+    },
+    {
+      "name": "Utils Logging",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/utils/logging.py",
+      "classes": [
+        "Any",
+        "BaseModel",
+        "JsonFormatter",
+        "LogConfig",
+        "LogContext",
+        "Optional",
+        "Path",
+        "Union"
+      ],
+      "functions": [
+        "datetime",
+        "get_logger",
+        "json",
+        "log_with_context",
+        "logging",
+        "setup_logging",
+        "structlog",
+        "sys",
+        "timezone"
+      ]
+    },
+    {
+      "name": "Resilience Metrics",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/resilience/metrics.py",
+      "classes": [
+        "Any",
+        "Dict",
+        "List",
+        "MetricWindow",
+        "MetricsCollector",
+        "Observation",
+        "Optional",
+        "ResilienceMetrics"
+      ],
+      "functions": [
+        "asyncio",
+        "dataclass",
+        "datetime",
+        "defaultdict",
+        "deque",
+        "field",
+        "logger",
+        "meter",
+        "metrics",
+        "metrics_collector",
+        "resilience_metrics",
+        "structlog",
+        "timedelta",
+        "timezone",
+        "trace",
+        "tracer"
+      ]
+    },
+    {
+      "name": "Resilience Timeout",
+      "status": "SYNTAX_ERROR",
+      "error": "expected an indented block after function definition on line 110 (timeout.py, line 111)",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/resilience/timeout.py"
+    },
+    {
+      "name": "TDA Models",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/tda/models.py",
+      "classes": [
+        "Any",
+        "BaseModel",
+        "BettiNumbers",
+        "DataFormat",
+        "Dict",
+        "Enum",
+        "Field",
+        "List",
+        "Literal",
+        "Optional",
+        "PersistenceDiagram",
+        "PersistenceFeature",
+        "TDAAlgorithm",
+        "TDABenchmarkResult",
+        "TDAConfiguration",
+        "TDAMetrics",
+        "TDARequest",
+        "TDAResponse",
+        "TDAResult",
+        "Union"
+      ],
+      "functions": [
+        "datetime",
+        "model_validator",
+        "np",
+        "validator"
+      ]
+    },
+    {
+      "name": "Memory Interface",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/memory/storage_interface.py",
+      "classes": [
+        "ABC",
+        "Any",
+        "Dict",
+        "InMemoryStorage",
+        "List",
+        "MemoryStorage",
+        "Optional",
+        "Tuple"
+      ],
+      "functions": [
+        "abstractmethod",
+        "np"
+      ]
+    },
+    {
+      "name": "Event Schemas",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/events/schemas.py",
+      "classes": [
+        "AgentEvent",
+        "Any",
+        "BaseModel",
+        "ConsensusDecisionEvent",
+        "Dict",
+        "Enum",
+        "EventPriority",
+        "EventSchema",
+        "EventType",
+        "Field",
+        "List",
+        "Optional",
+        "SCHEMA_REGISTRY",
+        "SystemEvent",
+        "Union",
+        "WorkflowEvent"
+      ],
+      "functions": [
+        "dataclass",
+        "datetime",
+        "field",
+        "get_event_schema",
+        "json",
+        "logger",
+        "structlog",
+        "timezone",
+        "uuid",
+        "validate_event",
+        "validator"
+      ]
+    },
+    {
+      "name": "Core Types",
+      "status": "IMPORT_ERROR",
+      "error": "'NoneType' object has no attribute '__dict__'",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/core/types.py"
+    },
+    {
+      "name": "Core Interfaces",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/core/interfaces.py",
+      "classes": [
+        "ABC",
+        "Any",
+        "CognitiveComponent",
+        "ComponentStatus",
+        "Configurable",
+        "Dict",
+        "Enum",
+        "Generic",
+        "HealthStatus",
+        "List",
+        "Observable",
+        "Optional",
+        "QuantumComponent",
+        "R",
+        "Recoverable",
+        "SystemComponent",
+        "T",
+        "TopologicalComponent",
+        "TypeVar"
+      ],
+      "functions": [
+        "abstractmethod",
+        "asyncio",
+        "dataclass"
+      ]
+    },
+    {
+      "name": "Agent Base Schema",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/agents/schemas/base.py",
+      "classes": [
+        "Any",
+        "BaseModel",
+        "DateTimeField",
+        "Dict",
+        "Field",
+        "GloballyIdentifiable",
+        "ImmutableBaseModel",
+        "MetadataSupport",
+        "MigrationProtocol",
+        "MutableBaseModel",
+        "Optional",
+        "Protocol",
+        "QualityMetrics",
+        "SchemaValidationError",
+        "SchemaVersionError",
+        "TemporalSupport",
+        "VersionedSchema"
+      ],
+      "functions": [
+        "calculate_age_seconds",
+        "create_migration_registry",
+        "datetime",
+        "datetime_to_iso",
+        "generate_correlation_id",
+        "generate_entity_id",
+        "generate_task_id",
+        "generate_workflow_id",
+        "is_recent",
+        "iso_to_datetime",
+        "timedelta",
+        "timezone",
+        "truncate_string",
+        "utc_now",
+        "uuid",
+        "validate_confidence_score",
+        "validate_non_empty_string",
+        "validate_signature_format",
+        "validate_uuid_format",
+        "validator"
+      ]
+    },
+    {
+      "name": "Agent Enums",
+      "status": "SUCCESS",
+      "path": "/home/sina/projects/osiris-2/core/src/aura_intelligence/agents/schemas/enums.py",
+      "classes": [
+        "ACTION_CATEGORIES",
+        "ActionCategory",
+        "ActionResult",
+        "ActionType",
+        "AgentCapability",
+        "AgentRole",
+        "ConfidenceLevel",
+        "DecisionMethod",
+        "DecisionType",
+        "Dict",
+        "Enum",
+        "EvidenceQuality",
+        "EvidenceType",
+        "HashAlgorithm",
+        "List",
+        "Priority",
+        "RetentionPolicy",
+        "RiskLevel",
+        "SecurityClassification",
+        "SignatureAlgorithm",
+        "TaskStatus",
+        "Urgency"
+      ],
+      "functions": [
+        "get_action_category"
+      ]
+    }
+  ]
+}

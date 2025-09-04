@@ -6,12 +6,14 @@ Provides compensation logic, rollback mechanisms, and TDA-aware error handling
 for maintaining consistency across agent operations.
 
 Key Features:
+    pass
 - Saga orchestration with compensation actions
 - Forward and backward recovery strategies
 - TDA context integration for intelligent compensation
 - Automatic rollback on failure scenarios
 
 TDA Integration:
+    pass
 - Uses TDA context for compensation decision making
 - Correlates saga failures with TDA anomaly patterns
 - Implements TDA-aware rollback strategies
@@ -96,7 +98,7 @@ class SagaOrchestrator:
         saga_id: str,
         steps: List[SagaStep],
         tda_correlation_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute a saga transaction with automatic compensation on failure
         """
@@ -202,7 +204,7 @@ class SagaOrchestrator:
         self,
         step: SagaStep,
         step_input: Dict[str, Any]
-    ) -> Any:
+        ) -> Any:
         """
         Execute a saga step with retry logic
         """
@@ -232,7 +234,7 @@ class SagaOrchestrator:
         executed_steps: List[SagaStep],
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ):
+        ):
         """
         Enhanced compensation with TDA-aware error correlation and intelligent recovery
         """
@@ -342,7 +344,7 @@ class SagaOrchestrator:
         self,
         step_name: str,
         handler: CompensationHandler
-    ):
+        ):
         """
         Register a compensation handler for a specific step type
         """
@@ -361,7 +363,7 @@ class SagaOrchestrator:
         compensation_type: CompensationType,
         parameters: Dict[str, Any],
         tda_correlation_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute custom compensation logic for specific scenarios
         """
@@ -443,7 +445,7 @@ class SagaOrchestrator:
         executed_steps: List[SagaStep],
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Analyze failure patterns using TDA correlation for intelligent compensation
         """
@@ -489,7 +491,7 @@ class SagaOrchestrator:
         self,
         failure_analysis: Dict[str, Any],
         tda_context: Optional[TDAContext]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Determine optimal compensation strategy based on failure analysis and TDA context
         """
@@ -545,7 +547,7 @@ class SagaOrchestrator:
         step: SagaStep,
         compensation_input: Dict[str, Any],
         strategy: Dict[str, Any]
-    ) -> Any:
+        ) -> Any:
         """
         Execute compensation with circuit breaker and timeout safeguards
         """
@@ -581,7 +583,7 @@ class SagaOrchestrator:
         step: SagaStep,
         tda_context: Optional[TDAContext],
         tda_correlation_id: Optional[str]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Correlate compensation errors with TDA patterns for intelligent error handling
         """

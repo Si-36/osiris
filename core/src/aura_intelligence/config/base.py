@@ -33,6 +33,7 @@ class DatabaseConfig:
     
     def __post_init__(self):
         """Validate configuration after initialization."""
+        pass
         if not self.neo4j_password:
             raise ValueError("NEO4J_PASSWORD environment variable must be set")
             
@@ -185,6 +186,7 @@ class AURAConfig:
     
     def validate(self) -> List[str]:
         """Validate configuration and return list of issues."""
+        pass
         issues = []
         
         # Check required passwords and secrets
@@ -207,6 +209,7 @@ class AURAConfig:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""
+        pass
         return {
             "environment": self.environment,
             "debug": self.debug,
@@ -257,6 +260,7 @@ class BaseSettings:
     
     def __init__(self, **kwargs):
         """Initialize with keyword arguments."""
+        pass
         for key, value in kwargs.items():
             setattr(self, key, value)
     
@@ -267,10 +271,12 @@ class BaseSettings:
     
     def model_dump(self) -> Dict[str, Any]:
         """Mimics Pydantic's model_dump."""
+        pass
         return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
     
     def dict(self) -> Dict[str, Any]:
         """Backward compatibility for dict() method."""
+        pass
         return self.model_dump()
 
 
@@ -294,17 +300,17 @@ class EnhancementLevel:
 
 @lru_cache(maxsize=1)
 def get_config() -> AURAConfig:
-    """Get the global configuration instance."""
-    global _config
+        """Get the global configuration instance."""
+        global _config
     
-    if _config is None:
-        # Try to load from file
-        config_path = os.getenv("AURA_CONFIG_PATH")
-        if config_path and Path(config_path).exists():
-            _config = AURAConfig.from_file(config_path)
-        else:
-            # Use environment variables
-            _config = AURAConfig()
+        if _config is None:
+            # Try to load from file
+            config_path = os.getenv("AURA_CONFIG_PATH")
+            if config_path and Path(config_path).exists():
+                _config = AURAConfig.from_file(config_path)
+            else:
+                # Use environment variables
+                _config = AURAConfig()
             
         # Validate in production
         if _config.environment == "production":
@@ -312,7 +318,7 @@ def get_config() -> AURAConfig:
             if issues:
                 raise ValueError(f"Configuration validation failed: {', '.join(issues)}")
     
-    return _config
+        return _config
 
 
 def set_config(config: AURAConfig) -> None:

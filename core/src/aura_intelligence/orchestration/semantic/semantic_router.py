@@ -6,6 +6,7 @@ Implements 2025 patterns for capability-based routing, TDA-aware decisions,
 and dynamic agent selection with performance optimization.
 
 Key Features:
+    pass
 - Capability-based agent matching
 - TDA-aware routing decisions with anomaly consideration
 - Dynamic load balancing and performance optimization
@@ -13,6 +14,7 @@ Key Features:
 - Fallback mechanisms for agent unavailability
 
 TDA Integration:
+    pass
 - Uses TDA patterns for routing optimization
 - Considers TDA anomaly data for agent selection
 - Integrates with TDA performance metrics
@@ -153,7 +155,7 @@ class SemanticRouter:
         analysis: SemanticAnalysis,
         available_agents: Optional[List[str]] = None,
         max_agents: int = 5
-    ) -> RoutingDecision:
+        ) -> RoutingDecision:
         """
         Route to optimal agents based on semantic analysis and TDA context
         """
@@ -243,7 +245,7 @@ class SemanticRouter:
         self,
         analysis: SemanticAnalysis,
         candidate_agents: List[str]
-    ) -> Dict[str, float]:
+        ) -> Dict[str, float]:
         """Score agents based on their suitability for the task"""
         agent_scores = {}
         
@@ -279,7 +281,7 @@ class SemanticRouter:
         self,
         profile: AgentProfile,
         analysis: SemanticAnalysis
-    ) -> float:
+        ) -> float:
         """Calculate how well agent capabilities match task requirements"""
         required_capabilities = self._infer_required_capabilities(analysis)
         
@@ -334,7 +336,7 @@ class SemanticRouter:
         self,
         agent_scores: Dict[str, float],
         tda_context: TDAContext
-    ) -> Dict[str, float]:
+        ) -> Dict[str, float]:
         """Apply TDA-based adjustments to agent scores"""
         adjusted_scores = agent_scores.copy()
         
@@ -368,7 +370,7 @@ class SemanticRouter:
         agent_scores: Dict[str, float],
         strategy: OrchestrationStrategy,
         max_agents: int
-    ) -> List[str]:
+        ) -> List[str]:
         """Select agents based on orchestration strategy"""
         sorted_agents = sorted(
             agent_scores.items(),
@@ -451,7 +453,7 @@ class SemanticRouter:
         agent_scores: Dict[str, float],
         selected_agents: List[str],
         max_fallbacks: int
-    ) -> List[str]:
+        ) -> List[str]:
         """Generate fallback agent options"""
         # Get agents not already selected, sorted by score
         fallback_candidates = [
@@ -468,7 +470,7 @@ class SemanticRouter:
         selected_agents: List[str],
         agent_scores: Dict[str, float],
         analysis: SemanticAnalysis
-    ) -> float:
+        ) -> float:
         """Calculate confidence in the routing decision"""
         if not selected_agents:
             return 0.0
@@ -498,7 +500,7 @@ class SemanticRouter:
         selected_agents: List[str],
         analysis: SemanticAnalysis,
         agent_scores: Dict[str, float]
-    ) -> str:
+        ) -> str:
         """Generate human-readable reasoning for routing decision"""
         reasoning_parts = []
         
@@ -537,7 +539,7 @@ class SemanticRouter:
         self,
         selected_agents: List[str],
         analysis: SemanticAnalysis
-    ) -> float:
+        ) -> float:
         """Estimate expected performance of the routing decision"""
         if not selected_agents:
             return 0.0
@@ -570,7 +572,7 @@ class SemanticRouter:
         self,
         decision: RoutingDecision,
         analysis: SemanticAnalysis
-    ):
+        ):
         """Record routing decision for learning and improvement"""
         record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -593,7 +595,7 @@ class SemanticRouter:
         self,
         agent_id: str,
         performance_metrics: Dict[str, float]
-    ):
+        ):
         """Update agent performance based on execution results"""
         if agent_id not in self.agent_profiles:
             return

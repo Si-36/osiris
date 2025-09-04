@@ -86,7 +86,7 @@ class Mamba2Block(nn.Module):
         return output
     
     def selective_scan(self, u: torch.Tensor, delta: torch.Tensor, A: torch.Tensor, 
-                      B: torch.Tensor, C: torch.Tensor, D: torch.Tensor) -> torch.Tensor:
+        B: torch.Tensor, C: torch.Tensor, D: torch.Tensor) -> torch.Tensor:
         """Selective scan operation - the heart of Mamba"""
         batch, seqlen, d_inner = u.shape
         d_state = A.shape[1]
@@ -220,7 +220,7 @@ class Mamba2MemorySystem(ShapeMemoryV2):
         self.sequence_buffer = []
         
     def store_with_sequence(self, content: Dict[str, Any], tda_result, 
-                          context_type: str = "general", sequence_id: Optional[str] = None) -> str:
+        context_type: str = "general", sequence_id: Optional[str] = None) -> str:
         """Store with sequence awareness"""
         # Regular storage
         memory_id = self.store(content, tda_result, context_type)
@@ -243,7 +243,7 @@ class Mamba2MemorySystem(ShapeMemoryV2):
         return memory_id
     
     def retrieve_with_sequence(self, query_tda, sequence_id: Optional[str] = None, 
-                             k: int = 10) -> list:
+        k: int = 10) -> list:
         """Retrieve with sequence pattern matching"""
         # Regular retrieval
         base_results = self.retrieve(query_tda, k=k*2)  # Get more candidates
@@ -301,10 +301,10 @@ class Mamba2MemorySystem(ShapeMemoryV2):
         return enhanced_results[:k]
 
 # Factory functions
-def create_mamba2_coral() -> Mamba2CoRaLSystem:
-    """Create Mamba-2 enhanced CoRaL system"""
-    return Mamba2CoRaLSystem()
+    def create_mamba2_coral() -> Mamba2CoRaLSystem:
+        """Create Mamba-2 enhanced CoRaL system"""
+        return Mamba2CoRaLSystem()
 
-def create_mamba2_memory(config) -> Mamba2MemorySystem:
-    """Create Mamba-2 enhanced memory system"""
-    return Mamba2MemorySystem(config)
+    def create_mamba2_memory(config) -> Mamba2MemorySystem:
+        """Create Mamba-2 enhanced memory system"""
+        return Mamba2MemorySystem(config)

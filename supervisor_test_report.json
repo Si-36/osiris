@@ -1,0 +1,198 @@
+{
+  "timestamp": "2025-08-26T16:48:13.337085",
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "success_rate": 1.0
+  },
+  "results": [
+    {
+      "test": "API Health",
+      "status": "PASSED",
+      "data": null
+    },
+    {
+      "test": "Simple Workflow",
+      "status": "PASSED",
+      "data": {
+        "decision": "escalate",
+        "confidence": 0.4345322251319885,
+        "reasoning": "Based on topology analysis (complexity: 0.20, anomaly: 0.00) and neural decision confidence (0.43), assessed risk level: 0.30. Workflow appears stable.",
+        "risk_score": 0.30468048659960434,
+        "topology_analysis": {
+          "graph_properties": {
+            "num_nodes": 4,
+            "num_edges": 5,
+            "density": 0.8333333333333334,
+            "is_connected": true,
+            "connected_components": 1,
+            "clustering_coefficient": 0.8333333333333333
+          },
+          "complexity_score": 0.19833333333333336,
+          "anomaly_score": 0.0,
+          "insights": [
+            "\u2705 High clustering - good modular structure"
+          ],
+          "processing_time_ms": 0.2789497375488281
+        },
+        "lnn_output": {
+          "decision": "escalate",
+          "confidence": 0.4345322251319885,
+          "risk_score": 0.5064008831977844,
+          "routing_probabilities": [
+            0.21063865721225739,
+            0.2350209355354309,
+            0.20130734145641327,
+            0.19668734073638916,
+            0.1563456803560257
+          ]
+        },
+        "recommendations": [
+          "\u2705 High clustering - good modular structure",
+          "\ud83d\udce2 Escalate to senior team member"
+        ]
+      }
+    },
+    {
+      "test": "Complex Workflow with Errors",
+      "status": "PASSED",
+      "data": {
+        "decision": "escalate",
+        "confidence": 0.4353923201560974,
+        "reasoning": "Based on topology analysis (complexity: 0.31, anomaly: 0.20) and neural decision confidence (0.44), assessed risk level: 0.59. Workflow appears stable.",
+        "risk_score": 0.5867517081896464,
+        "topology_analysis": {
+          "graph_properties": {
+            "num_nodes": 8,
+            "num_edges": 9,
+            "density": 0.32142857142857145,
+            "is_connected": true,
+            "connected_components": 1,
+            "clustering_coefficient": 0.5833333333333334
+          },
+          "complexity_score": 0.30833333333333335,
+          "anomaly_score": 0.2,
+          "insights": [],
+          "processing_time_ms": 0.22912025451660156
+        },
+        "lnn_output": {
+          "decision": "escalate",
+          "confidence": 0.4353923201560974,
+          "risk_score": 0.5072116851806641,
+          "routing_probabilities": [
+            0.21024909615516663,
+            0.23499464988708496,
+            0.20102271437644958,
+            0.19766636192798615,
+            0.1560671180486679
+          ]
+        },
+        "recommendations": [
+          "\u26a0\ufe0f Moderate risk - monitor closely",
+          "\ud83d\udce2 Escalate to senior team member"
+        ]
+      }
+    },
+    {
+      "test": "High-Risk Scenario",
+      "status": "PASSED",
+      "data": {
+        "decision": "escalate",
+        "confidence": 0.4352697730064392,
+        "reasoning": "Based on topology analysis (complexity: 0.46, anomaly: 0.52) and neural decision confidence (0.44), assessed risk level: 0.81. High risk requires careful handling.",
+        "risk_score": 0.8129104952812196,
+        "topology_analysis": {
+          "graph_properties": {
+            "num_nodes": 5,
+            "num_edges": 2,
+            "density": 0.2,
+            "is_connected": false,
+            "connected_components": 3,
+            "clustering_coefficient": 0.0
+          },
+          "complexity_score": 0.46,
+          "anomaly_score": 0.52,
+          "insights": [
+            "\u26a0\ufe0f Workflow has disconnected components - check dependencies",
+            "\ud83d\udea8 Anomalies detected - review error patterns"
+          ],
+          "processing_time_ms": 0.179290771484375
+        },
+        "lnn_output": {
+          "decision": "escalate",
+          "confidence": 0.4352697730064392,
+          "risk_score": 0.5065481662750244,
+          "routing_probabilities": [
+            0.21049852669239044,
+            0.23512940108776093,
+            0.20166152715682983,
+            0.19696742296218872,
+            0.15574318170547485
+          ]
+        },
+        "recommendations": [
+          "\u26a0\ufe0f Workflow has disconnected components - check dependencies",
+          "\ud83d\udea8 Anomalies detected - review error patterns",
+          "\ud83d\udea8 High risk - consider manual review",
+          "\ud83d\udce2 Escalate to senior team member"
+        ]
+      }
+    },
+    {
+      "test": "Disconnected Workflow",
+      "status": "PASSED",
+      "data": {
+        "decision": "escalate",
+        "confidence": 0.4347778856754303,
+        "reasoning": "Based on topology analysis (complexity: 0.48, anomaly: 0.05) and neural decision confidence (0.43), assessed risk level: 0.38. Workflow appears stable.",
+        "risk_score": 0.37600256061553955,
+        "topology_analysis": {
+          "graph_properties": {
+            "num_nodes": 6,
+            "num_edges": 4,
+            "density": 0.26666666666666666,
+            "is_connected": false,
+            "connected_components": 2,
+            "clustering_coefficient": 0.0
+          },
+          "complexity_score": 0.48000000000000004,
+          "anomaly_score": 0.049999999999999996,
+          "insights": [
+            "\u26a0\ufe0f Workflow has disconnected components - check dependencies"
+          ],
+          "processing_time_ms": 0.17142295837402344
+        },
+        "lnn_output": {
+          "decision": "escalate",
+          "confidence": 0.4347778856754303,
+          "risk_score": 0.5065271258354187,
+          "routing_probabilities": [
+            0.2104993611574173,
+            0.23489274084568024,
+            0.2018878012895584,
+            0.19690991938114166,
+            0.15581010282039642
+          ]
+        },
+        "recommendations": [
+          "\u26a0\ufe0f Workflow has disconnected components - check dependencies",
+          "\ud83d\udce2 Escalate to senior team member"
+        ]
+      }
+    },
+    {
+      "test": "Performance Test",
+      "status": "PASSED",
+      "data": {
+        "avg_ms": 2.4072885513305664,
+        "throughput": 415.405124345096
+      }
+    },
+    {
+      "test": "Edge Cases",
+      "status": "PASSED",
+      "data": null
+    }
+  ]
+}

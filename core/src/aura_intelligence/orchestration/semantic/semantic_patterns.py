@@ -6,12 +6,14 @@ orchestration decisions. Implements 2025 patterns for complexity analysis,
 urgency scoring, and coordination pattern selection.
 
 Key Features:
+    pass
 - TDA pattern correlation and amplification
 - ML-ready complexity calculation algorithms
 - Dynamic urgency scoring with anomaly awareness
 - Coordination pattern recommendation engine
 
 TDA Integration:
+    pass
 - Correlates semantic patterns with TDA anomaly data
 - Uses TDA confidence scores for pattern amplification
 - Integrates with TDA temporal windows for context
@@ -43,18 +45,18 @@ class SemanticPatternMatcher:
         self.tda_integration = tda_integration
         self.pattern_cache: Dict[str, Any] = {}
         self.complexity_weights = {
-            "data_size": 0.3,
-            "requirements_count": 0.25,
-            "agent_dependencies": 0.2,
-            "temporal_constraints": 0.15,
-            "consensus_required": 0.1
+        "data_size": 0.3,
+        "requirements_count": 0.25,
+        "agent_dependencies": 0.2,
+        "temporal_constraints": 0.15,
+        "consensus_required": 0.1
         }
     
     async def analyze_semantic_patterns(
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext] = None
-    ) -> SemanticAnalysis:
+        ) -> SemanticAnalysis:
         """
         Comprehensive semantic pattern analysis with TDA correlation
         """
@@ -121,8 +123,8 @@ class SemanticPatternMatcher:
         
         # Weighted sum
         complexity_score = sum(
-            factors[factor] * self.complexity_weights[factor]
-            for factor in factors
+        factors[factor] * self.complexity_weights[factor]
+        for factor in factors
         )
         
         return complexity_score
@@ -131,7 +133,7 @@ class SemanticPatternMatcher:
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
-    ) -> UrgencyLevel:
+        ) -> UrgencyLevel:
         """
         Determine urgency level with TDA anomaly amplification
         """
@@ -173,7 +175,7 @@ class SemanticPatternMatcher:
         complexity_score: float,
         urgency_level: UrgencyLevel,
         tda_context: Optional[TDAContext]
-    ) -> OrchestrationStrategy:
+        ) -> OrchestrationStrategy:
         """
         Select optimal coordination pattern based on analysis
         """
@@ -202,7 +204,7 @@ class SemanticPatternMatcher:
         self,
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext]
-    ) -> List[str]:
+        ) -> List[str]:
         """
         Suggest optimal agents based on semantic analysis and TDA context
         """
@@ -247,7 +249,7 @@ class SemanticPatternMatcher:
         self, 
         urgency_level: UrgencyLevel, 
         tda_context: TDAContext
-    ) -> UrgencyLevel:
+        ) -> UrgencyLevel:
         """
         Escalate urgency based on TDA anomaly severity
         """
@@ -270,7 +272,7 @@ class SemanticPatternMatcher:
         complexity_score: float,
         urgency_level: UrgencyLevel,
         tda_context: Optional[TDAContext]
-    ) -> float:
+        ) -> float:
         """
         Calculate confidence in the semantic analysis
         """
@@ -294,7 +296,7 @@ class SemanticPatternMatcher:
     async def get_pattern_insights(
         self, 
         analysis: SemanticAnalysis
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Get detailed insights about the semantic patterns
         """

@@ -1,4 +1,4 @@
-"""Swarm Intelligence - Collective error detection using 209 components"""
-from .ant_colony_detection import AntColonyDetection
+"""Swarm Intelligence module for AURA."""
+from .swarm_coordinator import SwarmCoordinator, SwarmAlgorithm, PheromoneType
 
-__all__ = ['AntColonyDetection']
+__all__ = ['SwarmCoordinator', 'SwarmAlgorithm', 'PheromoneType']

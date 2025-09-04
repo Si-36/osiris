@@ -118,6 +118,7 @@ class WorkflowHandle(Generic[T]):
     
     async def cancel(self) -> None:
         """Cancel workflow execution."""
+        pass
         await self.handle.cancel()
     
     async def terminate(self, reason: str) -> None:
@@ -126,6 +127,7 @@ class WorkflowHandle(Generic[T]):
     
     async def describe(self) -> Dict[str, Any]:
         """Get workflow description."""
+        pass
         description = await self.handle.describe()
         return {
             "workflow_id": self.workflow_id,
@@ -162,6 +164,7 @@ class TemporalClient:
         
     async def connect(self) -> None:
         """Connect to Temporal server."""
+        pass
         if self._connected:
             return
             
@@ -181,6 +184,7 @@ class TemporalClient:
     
     async def disconnect(self) -> None:
         """Disconnect from Temporal server."""
+        pass
         if self.client and self._connected:
             await self.client.close()
             self._connected = False

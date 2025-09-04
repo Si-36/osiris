@@ -1,0 +1,2986 @@
+{
+  "syntax_errors": [
+    {
+      "file": "main.py",
+      "line": 59,
+      "error": "expected an indented block after 'try' statement on line 57"
+    },
+    {
+      "file": "core/src/aura_common/error_utils.py",
+      "line": 37,
+      "error": "expected an indented block after function definition on line 36"
+    },
+    {
+      "file": "core/src/aura_common/logging.py",
+      "line": 30,
+      "error": "expected an indented block after 'if' statement on line 29"
+    },
+    {
+      "file": "core/src/aura_intelligence/cloud_integration.py",
+      "line": 21,
+      "error": "expected an indented block after function definition on line 20"
+    },
+    {
+      "file": "core/src/aura_intelligence/unified_brain.py",
+      "line": 106,
+      "error": "expected an indented block after function definition on line 105"
+    },
+    {
+      "file": "core/src/aura_intelligence/production_wiring.py",
+      "line": 32,
+      "error": "expected an indented block after function definition on line 31"
+    },
+    {
+      "file": "core/src/aura_intelligence/enhanced_integration.py",
+      "line": 49,
+      "error": "expected an indented block after function definition on line 48"
+    },
+    {
+      "file": "core/src/aura_intelligence/feature_flags.py",
+      "line": 139,
+      "error": "expected an indented block after function definition on line 138"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_enhanced_production_system.py",
+      "line": 54,
+      "error": "expected an indented block after function definition on line 53"
+    },
+    {
+      "file": "core/src/aura_intelligence/production_integration_2025.py",
+      "line": 69,
+      "error": "expected an indented block after function definition on line 68"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_enhanced_system.py",
+      "line": 23,
+      "error": "expected an indented block after function definition on line 22"
+    },
+    {
+      "file": "core/src/aura_intelligence/production_system_2025.py",
+      "line": 50,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/vector_search.py",
+      "line": 143,
+      "error": "expected an indented block after function definition on line 136"
+    },
+    {
+      "file": "core/src/aura_intelligence/ultra_deep_2025.py",
+      "line": 213,
+      "error": "expected an indented block after function definition on line 212"
+    },
+    {
+      "file": "core/src/aura_intelligence/enhanced_system_2025.py",
+      "line": 96,
+      "error": "expected an indented block after function definition on line 95"
+    },
+    {
+      "file": "core/src/aura_intelligence/distributed/ray_serve_deployment.py",
+      "line": 45,
+      "error": "expected an indented block after function definition on line 44"
+    },
+    {
+      "file": "core/src/aura_intelligence/distributed/real_ray_system.py",
+      "line": 136,
+      "error": "expected an indented block after function definition on line 135"
+    },
+    {
+      "file": "core/src/aura_intelligence/distributed/actor_system.py",
+      "line": 247,
+      "error": "expected an indented block after function definition on line 246"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/constitutional_ai_3.py",
+      "line": 174,
+      "error": "expected an indented block after function definition on line 172"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/constitutional_ai.py",
+      "line": 71,
+      "error": "expected an indented block after function definition on line 68"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/database.py",
+      "line": 36,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/executor.py",
+      "line": 34,
+      "error": "expected an indented block after function definition on line 33"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/autonomous_governance.py",
+      "line": 53,
+      "error": "expected an indented block after function definition on line 52"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/real_policy_engine.py",
+      "line": 17,
+      "error": "expected an indented block after function definition on line 16"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/risk_engine.py",
+      "line": 36,
+      "error": "expected an indented block after function definition on line 34"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/adaptive_checkpoint.py",
+      "line": 205,
+      "error": "expected an indented block after function definition on line 204"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/tda_coordinator.py",
+      "line": 152,
+      "error": "expected an indented block after function definition on line 149"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/working_orchestrator.py",
+      "line": 60,
+      "error": "expected an indented block after function definition on line 59"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/feature_flags.py",
+      "line": 314,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/bus_metrics.py",
+      "line": 69,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/temporal_signalfirst.py",
+      "line": 101,
+      "error": "expected an indented block after function definition on line 100"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/langgraph_workflows.py",
+      "line": 147,
+      "error": "expected an indented block after function definition on line 146"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/real_agent_workflows.py",
+      "line": 147,
+      "error": "expected an indented block after function definition on line 146"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/langgraph_adapter.py",
+      "line": 143,
+      "error": "expected an indented block after function definition on line 138"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows.py",
+      "line": 87,
+      "error": "expected an indented block after 'if' statement on line 86"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/dlq_handler.py",
+      "line": 251,
+      "error": "expected an indented block after 'try' statement on line 250"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/pro_orchestration_system.py",
+      "line": 270,
+      "error": "expected an indented block after function definition on line 269"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/event_driven_triggers.py",
+      "line": 110,
+      "error": "expected an indented block after function definition on line 109"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/checkpoints.py",
+      "line": 50,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/langgraph_collective.py",
+      "line": 181,
+      "error": "expected an indented block after function definition on line 180"
+    },
+    {
+      "file": "core/src/aura_intelligence/research_2025/mixture_of_agents.py",
+      "line": 26,
+      "error": "expected an indented block after function definition on line 25"
+    },
+    {
+      "file": "core/src/aura_intelligence/research_2025/graph_of_thoughts.py",
+      "line": 29,
+      "error": "expected an indented block after function definition on line 28"
+    },
+    {
+      "file": "core/src/aura_intelligence/research_2025/constitutional_ai_v2.py",
+      "line": 76,
+      "error": "expected an indented block after function definition on line 75"
+    },
+    {
+      "file": "core/src/aura_intelligence/monitoring/production_monitor.py",
+      "line": 103,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/monitoring/business_metrics.py",
+      "line": 80,
+      "error": "expected an indented block after function definition on line 79"
+    },
+    {
+      "file": "core/src/aura_intelligence/monitoring/real_time_dashboard.py",
+      "line": 50,
+      "error": "expected an indented block after function definition on line 49"
+    },
+    {
+      "file": "core/src/aura_intelligence/chaos/experiments.py",
+      "line": 41,
+      "error": "expected an indented block after function definition on line 40"
+    },
+    {
+      "file": "core/src/aura_intelligence/inference/pearl_engine.py",
+      "line": 38,
+      "error": "expected an indented block after function definition on line 37"
+    },
+    {
+      "file": "core/src/aura_intelligence/persistence/state_manager.py",
+      "line": 44,
+      "error": "expected an indented block after function definition on line 43"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/working_registry.py",
+      "line": 193,
+      "error": "expected an indented block after function definition on line 192"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/real_components.py",
+      "line": 46,
+      "error": "expected an indented block after function definition on line 45"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/async_batch_processor.py",
+      "line": 125,
+      "error": "expected an indented block after function definition on line 124"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/registry.py",
+      "line": 182,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/production_registry.py",
+      "line": 63,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/components/real_registry.py",
+      "line": 52,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/models/phformer_tiny.py",
+      "line": 71,
+      "error": "expected an indented block after function definition on line 65"
+    },
+    {
+      "file": "core/src/aura_intelligence/moe/real_switch_moe.py",
+      "line": 30,
+      "error": "expected an indented block after 'if' statement on line 28"
+    },
+    {
+      "file": "core/src/aura_intelligence/moe/switch_transformer.py",
+      "line": 85,
+      "error": "expected an indented block after function definition on line 84"
+    },
+    {
+      "file": "core/src/aura_intelligence/moe/google_switch_transformer.py",
+      "line": 201,
+      "error": "expected an indented block after function definition on line 200"
+    },
+    {
+      "file": "core/src/aura_intelligence/moe/mixture_of_experts.py",
+      "line": 36,
+      "error": "expected an indented block after function definition on line 35"
+    },
+    {
+      "file": "core/src/aura_intelligence/infrastructure/gemini_client.py",
+      "line": 69,
+      "error": "expected an indented block after function definition on line 68"
+    },
+    {
+      "file": "core/src/aura_intelligence/infrastructure/kafka_event_mesh.py",
+      "line": 49,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/infrastructure/guardrails.py",
+      "line": 78,
+      "error": "expected an indented block after function definition on line 77"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/examples.py",
+      "line": 58,
+      "error": "expected an indented block after 'else' statement on line 57"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/byzantine.py",
+      "line": 312,
+      "error": "expected an indented block after function definition on line 311"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/raft.py",
+      "line": 61,
+      "error": "expected an indented block after function definition on line 60"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/simple.py",
+      "line": 45,
+      "error": "expected an indented block after function definition on line 44"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/manager.py",
+      "line": 114,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/consensus/__init__.py",
+      "line": 100,
+      "error": "expected an indented block after function definition on line 99"
+    },
+    {
+      "file": "core/src/aura_intelligence/graph/neo4j_integration.py",
+      "line": 111,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/benchmarks/workflow_benchmarks.py",
+      "line": 63,
+      "error": "expected an indented block after function definition on line 62"
+    },
+    {
+      "file": "core/src/aura_intelligence/routing/real_load_balancer.py",
+      "line": 13,
+      "error": "expected an indented block after function definition on line 12"
+    },
+    {
+      "file": "core/src/aura_intelligence/routing/mixture_of_experts.py",
+      "line": 286,
+      "error": "expected an indented block after function definition on line 285"
+    },
+    {
+      "file": "core/src/aura_intelligence/network/websub_protocol.py",
+      "line": 129,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/network/real_protocols.py",
+      "line": 11,
+      "error": "expected an indented block after function definition on line 10"
+    },
+    {
+      "file": "core/src/aura_intelligence/network/diff_comm_v2b.py",
+      "line": 212,
+      "error": "expected an indented block after function definition on line 211"
+    },
+    {
+      "file": "core/src/aura_intelligence/api/neural_mesh_dashboard.py",
+      "line": 62,
+      "error": "expected an indented block after function definition on line 61"
+    },
+    {
+      "file": "core/src/aura_intelligence/api/search.py",
+      "line": 414,
+      "error": "expected an indented block after 'if' statement on line 413"
+    },
+    {
+      "file": "core/src/aura_intelligence/api/streaming.py",
+      "line": 30,
+      "error": "expected an indented block after function definition on line 29"
+    },
+    {
+      "file": "core/src/aura_intelligence/api/streaming_pro.py",
+      "line": 84,
+      "error": "expected an indented block after function definition on line 83"
+    },
+    {
+      "file": "core/src/aura_intelligence/swarm_intelligence/ant_colony_detection.py",
+      "line": 32,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/observability.py",
+      "line": 109,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/cxl_memory_pool.py",
+      "line": 98,
+      "error": "expected an indented block after function definition on line 96"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/hybrid_manager.py",
+      "line": 70,
+      "error": "expected an indented block after function definition on line 68"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/async_shape_memory.py",
+      "line": 144,
+      "error": "expected an indented block after function definition on line 143"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/config.py",
+      "line": 327,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/test_critical_fixes.py",
+      "line": 35,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/shadow_deployment.py",
+      "line": 87,
+      "error": "expected an indented block after function definition on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/fastrp_embeddings.py",
+      "line": 364,
+      "error": "expected an indented block after 'for' statement on line 362"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/hyperoak_adapter.py",
+      "line": 92,
+      "error": "expected an indented block after function definition on line 88"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/test_decorator_ordering.py",
+      "line": 31,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/shape_memory_v2.py",
+      "line": 120,
+      "error": "expected an indented block after function definition on line 119"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/causal_pattern_store.py",
+      "line": 64,
+      "error": "expected an indented block after 'with' statement on line 62"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/test_metrics_updater.py",
+      "line": 48,
+      "error": "expected an indented block after 'for' statement on line 47"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/neo4j_etl.py",
+      "line": 72,
+      "error": "expected an indented block after 'with' statement on line 70"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/mem0_integration.py",
+      "line": 34,
+      "error": "expected an indented block after function definition on line 33"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/smoke_test.py",
+      "line": 321,
+      "error": "expected an indented block after 'try' statement on line 320"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/neo4j_motifcost.py",
+      "line": 113,
+      "error": "expected an indented block after 'with' statement on line 111"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/knn_index_real.py",
+      "line": 329,
+      "error": "expected an indented block after 'if' statement on line 328"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/test_knn_index.py",
+      "line": 140,
+      "error": "expected an indented block after 'if' statement on line 139"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/shape_aware_memory.py",
+      "line": 50,
+      "error": "expected an indented block after 'if' statement on line 48"
+    },
+    {
+      "file": "core/src/aura_intelligence/coral/advanced_coral.py",
+      "line": 85,
+      "error": "expected an indented block after function definition on line 84"
+    },
+    {
+      "file": "core/src/aura_intelligence/coral/communication.py",
+      "line": 130,
+      "error": "expected an indented block after function definition on line 128"
+    },
+    {
+      "file": "core/src/aura_intelligence/coral/best_coral.py",
+      "line": 240,
+      "error": "expected an indented block after function definition on line 239"
+    },
+    {
+      "file": "core/src/aura_intelligence/coral/production_coral.py",
+      "line": 228,
+      "error": "expected an indented block after function definition on line 227"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/enhanced_knowledge_graph.py",
+      "line": 64,
+      "error": "expected an indented block after function definition on line 63"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/data_structures.py",
+      "line": 241,
+      "error": "expected an indented block after 'if' statement on line 240"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/search_api.py",
+      "line": 105,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/vector_database.py",
+      "line": 418,
+      "error": "expected an indented block after 'if' statement on line 417"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/knowledge_graph.py",
+      "line": 81,
+      "error": "expected an indented block after 'try' statement on line 79"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/lnn_consensus.py",
+      "line": 580,
+      "error": "expected an indented block after function definition on line 579"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/lnn_workflows.py",
+      "line": 84,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/liquid_real.py",
+      "line": 171,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/liquid_2025.py",
+      "line": 228,
+      "error": "expected an indented block after function definition on line 227"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/context_integration.py",
+      "line": 42,
+      "error": "expected an indented block after 'for' statement on line 41"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/memory_hooks.py",
+      "line": 81,
+      "error": "expected an indented block after 'except' statement on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/lnn.py",
+      "line": 227,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/neural/mamba2_integration.py",
+      "line": 162,
+      "error": "expected an indented block after function definition on line 161"
+    },
+    {
+      "file": "core/src/aura_intelligence/streaming/kafka_integration.py",
+      "line": 75,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/streaming/pro_streaming_system.py",
+      "line": 258,
+      "error": "expected an indented block after function definition on line 257"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/real_api_connectors.py",
+      "line": 11,
+      "error": "expected an indented block after function definition on line 10"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/enhanced_workflow_orchestrator.py",
+      "line": 162,
+      "error": "expected an indented block after function definition on line 161"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/enhanced_workflow_integration.py",
+      "line": 157,
+      "error": "expected an indented block after function definition on line 156"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/mojo_tda_bridge.py",
+      "line": 90,
+      "error": "expected an indented block after function definition on line 87"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/workflow_orchestrator.py",
+      "line": 91,
+      "error": "expected an indented block after function definition on line 90"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/__init__.py",
+      "line": 15,
+      "error": "expected an indented block after function definition on line 14"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/mcp_communication_hub.py",
+      "line": 53,
+      "error": "expected an indented block after function definition on line 52"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/tda_neo4j_bridge.py",
+      "line": 48,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/lnn_council_system.py",
+      "line": 50,
+      "error": "expected an indented block after function definition on line 49"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/mem0_neo4j_bridge.py",
+      "line": 49,
+      "error": "expected an indented block after function definition on line 43"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/advanced_workflow_integration.py",
+      "line": 137,
+      "error": "expected an indented block after function definition on line 136"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/real_system_2025.py",
+      "line": 46,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/integration/complete_system_2025.py",
+      "line": 66,
+      "error": "expected an indented block after function definition on line 65"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory_tiers/cxl_memory.py",
+      "line": 115,
+      "error": "expected an indented block after function definition on line 114"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory_tiers/real_hybrid_memory.py",
+      "line": 104,
+      "error": "expected an indented block after 'elif' statement on line 103"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_homeostatic/homeostatic_coordinator.py",
+      "line": 14,
+      "error": "expected an indented block after function definition on line 13"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_homeostatic/production_metabolic_manager.py",
+      "line": 31,
+      "error": "expected an indented block after function definition on line 30"
+    },
+    {
+      "file": "core/src/aura_intelligence/bio_homeostatic/metabolic_manager.py",
+      "line": 81,
+      "error": "expected an indented block after function definition on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/workflows/data_processing.py",
+      "line": 66,
+      "error": "expected an indented block after function definition on line 65"
+    },
+    {
+      "file": "core/src/aura_intelligence/workflows/real_temporal_workflows.py",
+      "line": 18,
+      "error": "expected an indented block after function definition on line 17"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/benchmarks.py",
+      "line": 186,
+      "error": "expected an indented block after function definition on line 180"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/algorithms.py",
+      "line": 72,
+      "error": "expected an indented block after 'for' statement on line 71"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/unified_engine_2025.py",
+      "line": 218,
+      "error": "expected an indented block after function definition on line 217"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/core.py",
+      "line": 130,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/real_tda.py",
+      "line": 123,
+      "error": "expected an indented block after 'for' statement on line 122"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/matrix_ph_gpu.py",
+      "line": 87,
+      "error": "expected an indented block after function definition on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/production_fallbacks.py",
+      "line": 226,
+      "error": "expected an indented block after function definition on line 225"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/service.py",
+      "line": 65,
+      "error": "expected an indented block after function definition on line 64"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/topo_fuzzer_pro.py",
+      "line": 52,
+      "error": "expected an indented block after function definition on line 51"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/real_algorithms_fixed.py",
+      "line": 638,
+      "error": "expected an indented block after 'if' statement on line 637"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/cuda_kernels.py",
+      "line": 60,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/lazy_witness.py",
+      "line": 427,
+      "error": "expected an indented block after 'if' statement on line 426"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/unified_engine.py",
+      "line": 97,
+      "error": "expected an indented block after function definition on line 96"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/consolidated_agents.py",
+      "line": 52,
+      "error": "expected an indented block after function definition on line 51"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/observability.py",
+      "line": 104,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/base.py",
+      "line": 172,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/enhanced_council.py",
+      "line": 42,
+      "error": "expected an indented block after function definition on line 41"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/working_council_agent.py",
+      "line": 51,
+      "error": "expected an indented block after function definition on line 50"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/tda_analyzer.py",
+      "line": 48,
+      "error": "expected an indented block after function definition on line 46"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/working_agents.py",
+      "line": 82,
+      "error": "expected an indented block after function definition on line 81"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/graph_enhanced_rl.py",
+      "line": 80,
+      "error": "expected an indented block after function definition on line 79"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/real_agent_system.py",
+      "line": 76,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/unified_agent_system.py",
+      "line": 190,
+      "error": "expected an indented block after function definition on line 189"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/agent_consolidation.py",
+      "line": 91,
+      "error": "expected an indented block after function definition on line 90"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/simple_agent.py",
+      "line": 32,
+      "error": "expected an indented block after function definition on line 31"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/clean_agents.py",
+      "line": 46,
+      "error": "expected an indented block after function definition on line 45"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/supervisor.py",
+      "line": 100,
+      "error": "expected an indented block after function definition on line 99"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/validator.py",
+      "line": 21,
+      "error": "expected an indented block after function definition on line 20"
+    },
+    {
+      "file": "core/src/aura_intelligence/examples/real_demo_system.py",
+      "line": 15,
+      "error": "expected an indented block after function definition on line 14"
+    },
+    {
+      "file": "core/src/aura_intelligence/examples/gpu_allocation_scenario.py",
+      "line": 171,
+      "error": "expected an indented block after function definition on line 170"
+    },
+    {
+      "file": "core/src/aura_intelligence/innovations/spiking_gnn_2025.py",
+      "line": 335,
+      "error": "expected an indented block after 'for' statement on line 334"
+    },
+    {
+      "file": "core/src/aura_intelligence/innovations/hybrid_memory_2025.py",
+      "line": 72,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/spiking_gnn/neuromorphic_council.py",
+      "line": 253,
+      "error": "expected an indented block after function definition on line 252"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/tda_mem0_adapter.py",
+      "line": 55,
+      "error": "expected an indented block after function definition on line 54"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/redis_high_performance.py",
+      "line": 97,
+      "error": "expected an indented block after function definition on line 96"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/mem0_adapter.py",
+      "line": 105,
+      "error": "expected an indented block after function definition on line 104"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/redis_adapter.py",
+      "line": 114,
+      "error": "expected an indented block after function definition on line 113"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/neo4j_adapter.py",
+      "line": 62,
+      "error": "expected an indented block after function definition on line 61"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/tda_neo4j_adapter.py",
+      "line": 212,
+      "error": "expected an indented block after function definition on line 209"
+    },
+    {
+      "file": "core/src/aura_intelligence/adapters/tda_agent_context.py",
+      "line": 83,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/collective/context_engine.py",
+      "line": 49,
+      "error": "expected an indented block after class definition on line 48"
+    },
+    {
+      "file": "core/src/aura_intelligence/collective/memory_manager.py",
+      "line": 45,
+      "error": "expected an indented block after 'try' statement on line 44"
+    },
+    {
+      "file": "core/src/aura_intelligence/collective/graph_builder.py",
+      "line": 35,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/collective/orchestrator.py",
+      "line": 33,
+      "error": "expected an indented block after function definition on line 32"
+    },
+    {
+      "file": "core/src/aura_intelligence/collective/supervisor.py",
+      "line": 50,
+      "error": "expected an indented block after function definition on line 49"
+    },
+    {
+      "file": "core/src/aura_intelligence/lnn/real_mit_lnn.py",
+      "line": 31,
+      "error": "expected an indented block after 'if' statement on line 29"
+    },
+    {
+      "file": "core/src/aura_intelligence/lnn/core.py",
+      "line": 53,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/lnn/dynamics.py",
+      "line": 209,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/neural_mesh.py",
+      "line": 180,
+      "error": "expected an indented block after function definition on line 172"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/nats_a2a.py",
+      "line": 519,
+      "error": "expected an indented block after function definition on line 518"
+    },
+    {
+      "file": "core/src/aura_intelligence/dpo/preference_optimizer.py",
+      "line": 208,
+      "error": "expected an indented block after function definition on line 207"
+    },
+    {
+      "file": "core/src/aura_intelligence/dpo/production_dpo.py",
+      "line": 366,
+      "error": "expected an indented block after function definition on line 365"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/streams.py",
+      "line": 97,
+      "error": "expected an indented block after function definition on line 96"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/event_bus.py",
+      "line": 31,
+      "error": "expected an indented block after function definition on line 30"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/consumers.py",
+      "line": 115,
+      "error": "expected an indented block after 'else' statement on line 114"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/connectors.py",
+      "line": 86,
+      "error": "expected an indented block after 'with' statement on line 79"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/bus.py",
+      "line": 34,
+      "error": "expected an indented block after function definition on line 33"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/real_event_sourcing.py",
+      "line": 24,
+      "error": "expected an indented block after function definition on line 23"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/producers.py",
+      "line": 166,
+      "error": "expected an indented block after function definition on line 165"
+    },
+    {
+      "file": "core/src/aura_intelligence/events/schemas.py",
+      "line": 99,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consciousness.py",
+      "line": 145,
+      "error": "expected an indented block after function definition on line 144"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/system.py",
+      "line": 166,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/testing.py",
+      "line": 119,
+      "error": "expected an indented block after 'try' statement on line 117"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/unified_system.py",
+      "line": 116,
+      "error": "expected an indented block after function definition on line 115"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/topology.py",
+      "line": 167,
+      "error": "expected an indented block after function definition on line 166"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/config.py",
+      "line": 79,
+      "error": "expected an indented block after 'for' statement on line 78"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/memory.py",
+      "line": 55,
+      "error": "expected an indented block after 'else' statement on line 54"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/unified_interfaces.py",
+      "line": 148,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/agents.py",
+      "line": 64,
+      "error": "expected an indented block after function definition on line 63"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/self_healing.py",
+      "line": 162,
+      "error": "expected an indented block after function definition on line 155"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/unified_config.py",
+      "line": 461,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/error_topology.py",
+      "line": 825,
+      "error": "expected an indented block after 'for' statement on line 824"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/knowledge.py",
+      "line": 43,
+      "error": "expected an indented block after function definition on line 42"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/exceptions.py",
+      "line": 665,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/multimodal/advanced_processing.py",
+      "line": 518,
+      "error": "expected an indented block after function definition on line 517"
+    },
+    {
+      "file": "core/src/aura_intelligence/real_components/real_moe_router.py",
+      "line": 80,
+      "error": "expected an indented block after function definition on line 79"
+    },
+    {
+      "file": "core/src/aura_intelligence/real_components/real_spiking_gnn.py",
+      "line": 178,
+      "error": "expected an indented block after function definition on line 177"
+    },
+    {
+      "file": "core/src/aura_intelligence/real_components/real_multimodal.py",
+      "line": 155,
+      "error": "expected an indented block after function definition on line 154"
+    },
+    {
+      "file": "core/src/aura_intelligence/neuromorphic/spiking_gnn.py",
+      "line": 168,
+      "error": "expected an indented block after function definition on line 167"
+    },
+    {
+      "file": "core/src/aura_intelligence/security/hash_with_carry.py",
+      "line": 96,
+      "error": "expected an indented block after 'elif' statement on line 95"
+    },
+    {
+      "file": "core/src/aura_intelligence/security/kmux_ebpf.py",
+      "line": 71,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/metrics.py",
+      "line": 425,
+      "error": "expected an indented block after function definition on line 424"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/retry.py",
+      "line": 127,
+      "error": "expected an indented block after function definition on line 126"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/circuit_breaker.py",
+      "line": 348,
+      "error": "expected an indented block after function definition on line 347"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/timeout.py",
+      "line": 120,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/bulkhead.py",
+      "line": 149,
+      "error": "expected an indented block after function definition on line 148"
+    },
+    {
+      "file": "core/src/aura_intelligence/resilience/__init__.py",
+      "line": 127,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/config/base.py",
+      "line": 302,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/spiking/council_sgnn.py",
+      "line": 120,
+      "error": "expected an indented block after function definition on line 119"
+    },
+    {
+      "file": "core/src/aura_intelligence/spiking/advanced_spiking_gnn.py",
+      "line": 470,
+      "error": "expected an indented block after function definition on line 469"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/health_monitor.py",
+      "line": 167,
+      "error": "expected an indented block after 'try' statement on line 165"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/langsmith_integration.py",
+      "line": 30,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/structured_logging.py",
+      "line": 58,
+      "error": "expected an indented block after function definition on line 57"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/core.py",
+      "line": 99,
+      "error": "expected an indented block after function definition on line 98"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/tracing.py",
+      "line": 123,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/config.py",
+      "line": 190,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/pro_observability_system.py",
+      "line": 211,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/anomaly_detection.py",
+      "line": 150,
+      "error": "expected an indented block after function definition on line 149"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/telemetry.py",
+      "line": 256,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/opentelemetry_integration.py",
+      "line": 124,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/shadow_mode_logger.py",
+      "line": 84,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/prometheus_integration.py",
+      "line": 146,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/dashboard.py",
+      "line": 310,
+      "error": "expected an indented block after function definition on line 309"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/prometheus_metrics.py",
+      "line": 184,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/observability/knowledge_graph.py",
+      "line": 65,
+      "error": "expected an indented block after function definition on line 64"
+    },
+    {
+      "file": "core/src/aura_intelligence/consciousness/global_workspace.py",
+      "line": 101,
+      "error": "expected an indented block after function definition on line 100"
+    },
+    {
+      "file": "core/src/aura_intelligence/consciousness/executive_functions.py",
+      "line": 157,
+      "error": "expected an indented block after function definition on line 156"
+    },
+    {
+      "file": "core/src/aura_intelligence/utils/decorators.py",
+      "line": 107,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/advanced_processing/mixture_of_depths.py",
+      "line": 58,
+      "error": "expected an indented block after function definition on line 57"
+    },
+    {
+      "file": "core/src/aura_intelligence/advanced_processing/real_pearl_inference.py",
+      "line": 145,
+      "error": "expected an indented block after function definition on line 144"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/advanced_chaos.py",
+      "line": 81,
+      "error": "expected an indented block after function definition on line 74"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/real_test_framework.py",
+      "line": 11,
+      "error": "expected an indented block after function definition on line 10"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/cicd_automation.py",
+      "line": 83,
+      "error": "expected an indented block after function definition on line 76"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/chaos_engineering.py",
+      "line": 92,
+      "error": "expected an indented block after function definition on line 86"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/streaming_tda_tests.py",
+      "line": 54,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/load_framework.py",
+      "line": 104,
+      "error": "expected an indented block after function definition on line 103"
+    },
+    {
+      "file": "core/src/aura_intelligence/testing/benchmark_framework.py",
+      "line": 111,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/examples.py",
+      "line": 58,
+      "error": "expected an indented block after 'else' statement on line 57"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/byzantine.py",
+      "line": 312,
+      "error": "expected an indented block after function definition on line 311"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/raft.py",
+      "line": 61,
+      "error": "expected an indented block after function definition on line 60"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/simple.py",
+      "line": 45,
+      "error": "expected an indented block after function definition on line 44"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/manager.py",
+      "line": 116,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/core/consensus/__init__.py",
+      "line": 90,
+      "error": "expected an indented block after function definition on line 89"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/collective/context_engine.py",
+      "line": 65,
+      "error": "expected an indented block after function definition on line 64"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/collective/memory_manager.py",
+      "line": 29,
+      "error": "expected an indented block after 'for' statement on line 28"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/collective/graph_builder.py",
+      "line": 28,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/collective/orchestrator.py",
+      "line": 33,
+      "error": "expected an indented block after function definition on line 32"
+    },
+    {
+      "file": "core/src/aura_intelligence/communication/collective/supervisor.py",
+      "line": 51,
+      "error": "expected an indented block after function definition on line 50"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/steps.py",
+      "line": 25,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/decision_pipeline.py",
+      "line": 79,
+      "error": "expected an indented block after function definition on line 78"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_observability_standalone.py",
+      "line": 116,
+      "error": "expected an indented block after function definition on line 114"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_models_standalone.py",
+      "line": 136,
+      "error": "expected an indented block after 'if' statement on line 135"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_real_integration_simple.py",
+      "line": 34,
+      "error": "expected an indented block after function definition on line 33"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/context_aware_lnn.py",
+      "line": 72,
+      "error": "expected an indented block after function definition on line 67"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_kg_simple.py",
+      "line": 52,
+      "error": "expected an indented block after function definition on line 51"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/standalone_test.py",
+      "line": 248,
+      "error": "expected an indented block after function definition on line 247"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn_council_agent.py",
+      "line": 459,
+      "error": "expected an indented block after function definition on line 458"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_context_simple.py",
+      "line": 63,
+      "error": "expected an indented block after function definition on line 62"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/production_lnn_council.py",
+      "line": 116,
+      "error": "expected an indented block after 'if' statement on line 114"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_components_direct.py",
+      "line": 25,
+      "error": "expected an indented block after 'try' statement on line 23"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_modular_simple.py",
+      "line": 27,
+      "error": "expected an indented block after function definition on line 26"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_memory_integration.py",
+      "line": 53,
+      "error": "expected an indented block after 'try' statement on line 51"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_context_aware.py",
+      "line": 49,
+      "error": "expected an indented block after 'try' statement on line 47"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_end_to_end_integration.py",
+      "line": 150,
+      "error": "expected an indented block after function definition on line 149"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_simple_components.py",
+      "line": 20,
+      "error": "expected an indented block after 'try' statement on line 18"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/agent_council.py",
+      "line": 33,
+      "error": "expected an indented block after function definition on line 32"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/workflow.py",
+      "line": 55,
+      "error": "expected an indented block after function definition on line 54"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_integration_standalone.py",
+      "line": 55,
+      "error": "expected an indented block after function definition on line 54"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_gradual_integration.py",
+      "line": 30,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_knowledge_integration.py",
+      "line": 35,
+      "error": "expected an indented block after function definition on line 34"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_confidence_standalone.py",
+      "line": 529,
+      "error": "expected an indented block after 'try' statement on line 528"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/neural_engine.py",
+      "line": 83,
+      "error": "expected an indented block after function definition on line 82"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_confidence_scoring_simple.py",
+      "line": 66,
+      "error": "expected an indented block after 'if' statement on line 65"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_observability_comprehensive.py",
+      "line": 37,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_pipeline_integration.py",
+      "line": 114,
+      "error": "expected an indented block after function definition on line 113"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_memory_simple.py",
+      "line": 28,
+      "error": "expected an indented block after function definition on line 27"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_fallback_comprehensive.py",
+      "line": 113,
+      "error": "expected an indented block after function definition on line 112"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_final_working.py",
+      "line": 83,
+      "error": "expected an indented block after function definition on line 82"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_kg_final.py",
+      "line": 70,
+      "error": "expected an indented block after function definition on line 69"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_confidence_scoring.py",
+      "line": 972,
+      "error": "expected an indented block after 'if' statement on line 971"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/fallback.py",
+      "line": 75,
+      "error": "expected an indented block after function definition on line 74"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn_council.py",
+      "line": 131,
+      "error": "expected an indented block after function definition on line 130"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_decision_pipeline.py",
+      "line": 92,
+      "error": "expected an indented block after function definition on line 91"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_knowledge_graph.py",
+      "line": 53,
+      "error": "expected an indented block after function definition on line 52"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_fallback_standalone.py",
+      "line": 124,
+      "error": "expected an indented block after 'else' statement on line 123"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/memory_learning.py",
+      "line": 53,
+      "error": "expected an indented block after function definition on line 47"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/knowledge_context.py",
+      "line": 59,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/test_lnn_council_agent.py",
+      "line": 328,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/memory_context.py",
+      "line": 56,
+      "error": "expected an indented block after function definition on line 55"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/executor/agent.py",
+      "line": 73,
+      "error": "expected an indented block after function definition on line 72"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/memory/unified.py",
+      "line": 227,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/real_agents/optimizer_agent.py",
+      "line": 75,
+      "error": "expected an indented block after function definition on line 73"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/real_agents/guardian_agent.py",
+      "line": 81,
+      "error": "expected an indented block after function definition on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/real_agents/researcher_agent.py",
+      "line": 71,
+      "error": "expected an indented block after function definition on line 70"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/observer/observer_agent.py",
+      "line": 54,
+      "error": "expected an indented block after function definition on line 53"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/observer/agent.py",
+      "line": 458,
+      "error": "expected an indented block after function definition on line 457"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/schemas/enums.py",
+      "line": 512,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/schemas/base.py",
+      "line": 222,
+      "error": "expected an indented block after 'if' statement on line 221"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/schemas/crypto.py",
+      "line": 404,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/factories/agent_factory.py",
+      "line": 61,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/factories/unified_factory.py",
+      "line": 161,
+      "error": "expected an indented block after function definition on line 160"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/workflows/simple_chain.py",
+      "line": 70,
+      "error": "expected an indented block after function definition on line 69"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/temporal/gpu_allocation_activities.py",
+      "line": 92,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/temporal/worker.py",
+      "line": 108,
+      "error": "expected an indented block after function definition on line 107"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/temporal/workflows.py",
+      "line": 67,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/base_classes/instrumentation.py",
+      "line": 52,
+      "error": "expected an indented block after function definition on line 51"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/base_classes/agent.py",
+      "line": 74,
+      "error": "expected an indented block after function definition on line 73"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/communication/protocol.py",
+      "line": 178,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/evolver/agent.py",
+      "line": 47,
+      "error": "expected an indented block after function definition on line 46"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/resilience/circuit_breaker.py",
+      "line": 144,
+      "error": "expected an indented block after function definition on line 143"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/resilience/fallback_agent.py",
+      "line": 123,
+      "error": "expected an indented block after function definition on line 122"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/resilience/bulkhead.py",
+      "line": 156,
+      "error": "expected an indented block after function definition on line 150"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/resilience/retry_policy.py",
+      "line": 59,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/v2/observer.py",
+      "line": 81,
+      "error": "expected an indented block after function definition on line 80"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/analyst/agent.py",
+      "line": 68,
+      "error": "expected an indented block after function definition on line 67"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/observer/tests/test_agent.py",
+      "line": 34,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn/agent.py",
+      "line": 234,
+      "error": "expected an indented block after function definition on line 233"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn/implementations.py",
+      "line": 768,
+      "error": "expected an indented block after function definition on line 767"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn/contracts.py",
+      "line": 123,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn/registry.py",
+      "line": 25,
+      "error": "expected an indented block after function definition on line 24"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/lnn/neural/engine.py",
+      "line": 38,
+      "error": "expected an indented block after function definition on line 37"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/streaming/incremental_persistence.py",
+      "line": 63,
+      "error": "expected an indented block after function definition on line 62"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/streaming/parallel_processor.py",
+      "line": 128,
+      "error": "expected an indented block after function definition on line 127"
+    },
+    {
+      "file": "core/src/aura_intelligence/tda/streaming/event_adapters.py",
+      "line": 96,
+      "error": "expected an indented block after function definition on line 95"
+    },
+    {
+      "file": "core/src/aura_intelligence/integrations/integration/advanced_workflow_integration.py",
+      "line": 137,
+      "error": "expected an indented block after function definition on line 136"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/vectorize.py",
+      "line": 63,
+      "error": "expected an indented block after function definition on line 62"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/scheduler.py",
+      "line": 94,
+      "error": "expected an indented block after 'try' statement on line 92"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/archive.py",
+      "line": 84,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/resilience.py",
+      "line": 71,
+      "error": "expected an indented block after function definition on line 66"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/ingest.py",
+      "line": 145,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_hot/resilient_ops.py",
+      "line": 72,
+      "error": "expected an indented block after 'else' statement on line 71"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_semantic/sync.py",
+      "line": 112,
+      "error": "expected an indented block after 'try' statement on line 110"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_semantic/consolidation.py",
+      "line": 389,
+      "error": "expected an indented block after function definition on line 388"
+    },
+    {
+      "file": "core/src/aura_intelligence/enterprise/mem0_semantic/rank.py",
+      "line": 125,
+      "error": "expected an indented block after function definition on line 124"
+    },
+    {
+      "file": "core/src/aura_intelligence/memory/benchmarks/run_production_benchmark.py",
+      "line": 150,
+      "error": "expected an indented block after function definition on line 144"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/production/alerting.py",
+      "line": 100,
+      "error": "expected an indented block after function definition on line 99"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/production/scaling.py",
+      "line": 149,
+      "error": "expected an indented block after function definition on line 148"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/production/monitoring.py",
+      "line": 105,
+      "error": "expected an indented block after function definition on line 104"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/consensus.py",
+      "line": 92,
+      "error": "expected an indented block after 'for' statement on line 91"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/ray_orchestrator.py",
+      "line": 123,
+      "error": "expected an indented block after function definition on line 122"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/load_balancing.py",
+      "line": 82,
+      "error": "expected an indented block after 'for' statement on line 81"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/coordination_manager.py",
+      "line": 96,
+      "error": "expected an indented block after function definition on line 95"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/distributed_coordinator.py",
+      "line": 677,
+      "error": "expected an indented block after function definition on line 672"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/hierarchical_orchestrator.py",
+      "line": 109,
+      "error": "expected an indented block after function definition on line 108"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/test_distributed_coordination.py",
+      "line": 35,
+      "error": "expected an indented block after function definition on line 34"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/test_hierarchical_orchestrator.py",
+      "line": 48,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/semantic/langgraph_orchestrator.py",
+      "line": 156,
+      "error": "expected an indented block after function definition on line 152"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/semantic/semantic_router.py",
+      "line": 158,
+      "error": "expected an indented block after function definition on line 152"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/semantic/semantic_patterns.py",
+      "line": 58,
+      "error": "expected an indented block after function definition on line 53"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/semantic/tda_integration.py",
+      "line": 74,
+      "error": "expected an indented block after function definition on line 73"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/test_workflow_observability.py",
+      "line": 1,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/test_saga_compensation.py",
+      "line": 39,
+      "error": "unexpected unindent"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/checkpoint_manager.py",
+      "line": 431,
+      "error": "expected an indented block after function definition on line 430"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/workflow_observability.py",
+      "line": 143,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/saga_compensation_example.py",
+      "line": 39,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/saga_patterns.py",
+      "line": 100,
+      "error": "expected an indented block after function definition on line 94"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/temporal_orchestrator.py",
+      "line": 138,
+      "error": "expected an indented block after function definition on line 133"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/durable/hybrid_checkpointer.py",
+      "line": 140,
+      "error": "expected 'except' or 'finally' block"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/tools.py",
+      "line": 52,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/events/event_router.py",
+      "line": 79,
+      "error": "expected an indented block after function definition on line 77"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/events/consensus_orchestrator.py",
+      "line": 98,
+      "error": "expected an indented block after function definition on line 97"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/events/semantic_orchestrator.py",
+      "line": 66,
+      "error": "expected an indented block after function definition on line 65"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/events/advanced_patterns.py",
+      "line": 80,
+      "error": "expected an indented block after 'for' statement on line 78"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/events/test_semantic_orchestrator.py",
+      "line": 101,
+      "error": "expected an indented block after function definition on line 100"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/core.py",
+      "line": 39,
+      "error": "expected an indented block after function definition on line 38"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/hybrid.py",
+      "line": 198,
+      "error": "expected an indented block after 'if' statement on line 197"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/test_hybrid_observability.py",
+      "line": 38,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/integration.py",
+      "line": 29,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/tracers.py",
+      "line": 55,
+      "error": "unindent does not match any outer indentation level"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/observability/collectors.py",
+      "line": 122,
+      "error": "expected an indented block after class definition on line 121"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/nodes/tda_supervisor_integration.py",
+      "line": 164,
+      "error": "expected an indented block after function definition on line 163"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/nodes/advanced_supervisor_2025.py",
+      "line": 184,
+      "error": "expected an indented block after function definition on line 183"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/nodes/observer.py",
+      "line": 14,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/nodes/lnn_supervisor_integration.py",
+      "line": 251,
+      "error": "expected an indented block after function definition on line 246"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/workflows/nodes/analyst.py",
+      "line": 15,
+      "error": "invalid syntax"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/crewai/geometric_space.py",
+      "line": 99,
+      "error": "expected an indented block after function definition on line 98"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/crewai/flow_engine.py",
+      "line": 57,
+      "error": "expected an indented block after function definition on line 56"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/crewai/orchestrator.py",
+      "line": 34,
+      "error": "expected an indented block after function definition on line 33"
+    },
+    {
+      "file": "core/src/aura_intelligence/orchestration/distributed/crewai/test_orchestrator.py",
+      "line": 30,
+      "error": "unexpected indent"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/active_mode/human_approval.py",
+      "line": 35,
+      "error": "expected an indented block after function definition on line 34"
+    },
+    {
+      "file": "core/src/aura_intelligence/governance/active_mode/deployment.py",
+      "line": 232,
+      "error": "expected an indented block after function definition on line 231"
+    },
+    {
+      "file": "core/src/aura_common/errors/exceptions.py",
+      "line": 60,
+      "error": "expected an indented block after 'except' statement on line 59"
+    },
+    {
+      "file": "core/src/aura_common/errors/recovery.py",
+      "line": 26,
+      "error": "expected an indented block after function definition on line 25"
+    },
+    {
+      "file": "core/src/aura_common/feature_flags/manager.py",
+      "line": 51,
+      "error": "expected an indented block after 'if' statement on line 50"
+    },
+    {
+      "file": "core/src/aura_common/config/loaders.py",
+      "line": 44,
+      "error": "expected an indented block after function definition on line 43"
+    },
+    {
+      "file": "core/src/aura_common/atomic/connectors/kafka_connector.py",
+      "line": 37,
+      "error": "expected an indented block after 'if' statement on line 36"
+    },
+    {
+      "file": "core/src/aura_common/atomic/connectors/temporal_connector.py",
+      "line": 47,
+      "error": "expected an indented block after 'if' statement on line 46"
+    },
+    {
+      "file": "src/aura/core/fixed_components.py",
+      "line": 1598,
+      "error": "unexpected indent"
+    }
+  ],
+  "empty_functions": [
+    {
+      "file": "test_unified_aura_supervisor.py",
+      "function": "info",
+      "line": 337
+    },
+    {
+      "file": "test_unified_aura_supervisor.py",
+      "function": "warning",
+      "line": 339
+    },
+    {
+      "file": "test_unified_aura_supervisor.py",
+      "function": "error",
+      "line": 341
+    },
+    {
+      "file": "test_unified_supervisor_direct.py",
+      "function": "info",
+      "line": 46
+    },
+    {
+      "file": "test_unified_supervisor_direct.py",
+      "function": "warning",
+      "line": 47
+    },
+    {
+      "file": "test_unified_supervisor_direct.py",
+      "function": "error",
+      "line": 48
+    },
+    {
+      "file": "src/aura/communication/__init__.py",
+      "function": "__init__",
+      "line": 15
+    },
+    {
+      "file": "src/aura/communication/__init__.py",
+      "function": "__init__",
+      "line": 19
+    },
+    {
+      "file": "src/aura/communication/__init__.py",
+      "function": "__init__",
+      "line": 23
+    }
+  ],
+  "todo_functions": [
+    {
+      "file": "comprehensive_project_indexer.py",
+      "function": "analyze_file",
+      "line": 68,
+      "comment": "if any(pattern in content for pattern in ['# TODO', 'pass  # TODO', 'raise NotImplementedError', 'return {}', 'return []', 'return None  # TODO']):"
+    },
+    {
+      "file": "comprehensive_project_indexer.py",
+      "function": "generate_report",
+      "line": 143,
+      "comment": "print(f\"Mock/TODO implementations: {len(self.mock_implementations)}\")"
+    },
+    {
+      "file": "detailed_issues_analysis.py",
+      "function": "analyze_issues",
+      "line": 133,
+      "comment": "if 'TODO' in str(stmt.value.value):"
+    },
+    {
+      "file": "detailed_issues_analysis.py",
+      "function": "analyze_issues",
+      "line": 134,
+      "comment": "print(f\"   \u274c {node.name}(): # TODO\")"
+    },
+    {
+      "file": "detailed_issues_analysis.py",
+      "function": "analyze_issues",
+      "line": 178,
+      "comment": "print(\"   3. Complete TODO items with proper functionality\")"
+    },
+    {
+      "file": "comprehensive_index_v2.py",
+      "function": "check_implementation",
+      "line": 119,
+      "comment": "# Check for pass/NotImplementedError/TODO"
+    },
+    {
+      "file": "comprehensive_index_v2.py",
+      "function": "check_implementation",
+      "line": 133,
+      "comment": "if 'TODO' in str(stmt.value.value) or 'FIXME' in str(stmt.value.value):"
+    },
+    {
+      "file": "comprehensive_index_v2.py",
+      "function": "check_implementation",
+      "line": 137,
+      "comment": "'type': 'TODO'"
+    },
+    {
+      "file": "analyze_entire_project_2025.py",
+      "function": "__init__",
+      "line": 36,
+      "comment": "r'TODO|FIXME|XXX',"
+    },
+    {
+      "file": "fix_all_syntax_errors.py",
+      "function": "fix_try_blocks",
+      "line": 137,
+      "comment": "fixed.append(' ' * content_indent + 'pass  # TODO: Add implementation\\n')"
+    },
+    {
+      "file": "fix_all_dummies.py",
+      "function": "main",
+      "line": 536,
+      "comment": "print(f\"  - TODO/FIXME comments: Resolved\")"
+    },
+    {
+      "file": "fix_all_dummies.py",
+      "function": "apply_fixes",
+      "line": 467,
+      "comment": "# Remove TODO/FIXME comments"
+    },
+    {
+      "file": "fix_all_dummies.py",
+      "function": "apply_fixes",
+      "line": 468,
+      "comment": "content = re.sub(r'#\\s*(TODO|FIXME).*$', '', content, flags=re.MULTILINE)"
+    },
+    {
+      "file": "fix_remaining_syntax_errors.py",
+      "function": "fix_file_comprehensively",
+      "line": 61,
+      "comment": "fixed_lines.append(' ' * (indent + 4) + 'pass  # TODO: Implement')"
+    },
+    {
+      "file": "fix_remaining_syntax_errors.py",
+      "function": "main",
+      "line": 136,
+      "comment": "\"pass\": \"raise NotImplementedError('TODO: Implement this method')\","
+    },
+    {
+      "file": "fix_remaining_syntax_errors.py",
+      "function": "main",
+      "line": 137,
+      "comment": "\"...\": \"raise NotImplementedError('TODO: Implement this method')\","
+    },
+    {
+      "file": "fix_remaining_syntax_errors.py",
+      "function": "main",
+      "line": 154,
+      "comment": "r'\\1\\n        \"\"\"TODO: Implement this method\"\"\"\\n        raise NotImplementedError(\"This method needs implementation\")',"
+    },
+    {
+      "file": "fix_syntax_errors.py",
+      "function": "fix_indentation_errors",
+      "line": 40,
+      "comment": "r'(\\n\\s*def [^:]+:)\\s*\\n\\s*\"\"\"TODO: Implement this method\"\"\"',"
+    },
+    {
+      "file": "fix_syntax_errors.py",
+      "function": "fix_indentation_errors",
+      "line": 41,
+      "comment": "r'\\1\\n            \"\"\"TODO: Implement this method\"\"\"\\n            pass',"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "analyze_ast",
+      "line": 114,
+      "comment": "# Check for TODO comments"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "analyze_ast",
+      "line": 116,
+      "comment": "if 'TODO' in line and lineno >= node.lineno and lineno <= node.end_lineno:"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "check_real_vs_fake",
+      "line": 177,
+      "comment": "if 'return {\"mock\":' in content or 'return {\"TODO\"' in content:"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "check_real_vs_fake",
+      "line": 187,
+      "comment": "'mock': ['return {}', 'return []', 'pass  # TODO', 'raise NotImplementedError']"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "generate_honest_report",
+      "line": 235,
+      "comment": "print(f\"\\n\u274c TODO FUNCTIONS: {len(self.todo_functions)}\")"
+    },
+    {
+      "file": "deep_honest_project_analysis.py",
+      "function": "generate_honest_report",
+      "line": 301,
+      "comment": "print(\"   2. Implement the ~500+ empty/TODO functions\")"
+    },
+    {
+      "file": "final_syntax_fix.py",
+      "function": "fix_all_syntax_errors_in_file",
+      "line": 43,
+      "comment": "fixed_lines.append(' ' * (current_indent + 4) + '\"\"\"TODO: Implement this method\"\"\"')"
+    },
+    {
+      "file": "final_syntax_fix.py",
+      "function": "fix_all_syntax_errors_in_file",
+      "line": 60,
+      "comment": "fixed_lines.append(' ' * (current_indent + 4) + '\"\"\"TODO: Implement this async method\"\"\"')"
+    },
+    {
+      "file": "final_syntax_fix.py",
+      "function": "fix_all_syntax_errors_in_file",
+      "line": 76,
+      "comment": "fixed_lines.append(' ' * (current_indent + 4) + '\"\"\"TODO: Implement this class\"\"\"')"
+    },
+    {
+      "file": "core/src/aura_intelligence/agents/council/models.py",
+      "function": "__init__",
+      "line": 18,
+      "comment": "\"\"\"TODO: Implement this method\"\"\""
+    }
+  ],
+  "mock_implementations": [],
+  "duplicate_files": [
+    {
+      "name": "test_unified_aura_supervisor",
+      "count": 2,
+      "files": [
+        "test_unified_aura_supervisor.py",
+        "test_unified_aura_supervisor_clean.py"
+      ]
+    },
+    {
+      "name": "ultimate_demo",
+      "count": 2,
+      "files": [
+        "ultimate_working_demo.py",
+        "ultimate_demo_v2.py"
+      ]
+    },
+    {
+      "name": "minimal_api",
+      "count": 3,
+      "files": [
+        "minimal_working_api.py",
+        "src/aura/api/minimal_working_api.py",
+        "src/aura/api/minimal_api.py"
+      ]
+    },
+    {
+      "name": "final_demo",
+      "count": 2,
+      "files": [
+        "final_demo_test.py",
+        "final_working_demo.py"
+      ]
+    },
+    {
+      "name": "comprehensive_integration",
+      "count": 2,
+      "files": [
+        "comprehensive_integration_test.py",
+        "tests/comprehensive_integration_test.py"
+      ]
+    },
+    {
+      "name": "start_monitoring",
+      "count": 2,
+      "files": [
+        "start_monitoring_v2.py",
+        "start_monitoring.py"
+      ]
+    },
+    {
+      "name": "test_demo",
+      "count": 3,
+      "files": [
+        "test_demo.py",
+        "benchmarks/test_working_demo.py",
+        "benchmarks/test_clean_demo.py"
+      ]
+    },
+    {
+      "name": "test_everything",
+      "count": 2,
+      "files": [
+        "test_everything_v2.py",
+        "test_everything.py"
+      ]
+    },
+    {
+      "name": "main",
+      "count": 3,
+      "files": [
+        "main.py",
+        "real_aura/api/main.py",
+        "core/src/main.py"
+      ]
+    },
+    {
+      "name": "test_all_components",
+      "count": 3,
+      "files": [
+        "test_all_real_components.py",
+        "benchmarks/test_all_components.py",
+        "benchmarks/test_all_real_components.py"
+      ]
+    },
+    {
+      "name": "simple_demo",
+      "count": 2,
+      "files": [
+        "simple_demo_test.py",
+        "demos/simple_demo.py"
+      ]
+    },
+    {
+      "name": "real_time_dashboard",
+      "count": 2,
+      "files": [
+        "monitoring/real_time_dashboard.py",
+        "core/src/aura_intelligence/monitoring/real_time_dashboard.py"
+      ]
+    },
+    {
+      "name": "test_integration",
+      "count": 2,
+      "files": [
+        "tests/test_integration.py",
+        "core/src/aura_intelligence/agents/council/test_real_integration.py"
+      ]
+    },
+    {
+      "name": "integration",
+      "count": 5,
+      "files": [
+        "tests/integration_test.py",
+        "core/src/aura_intelligence/config/integration.py",
+        "core/src/aura_intelligence/consciousness/integration.py",
+        "core/src/aura_intelligence/agents/council/integration_test.py",
+        "core/src/aura_intelligence/orchestration/observability/integration.py"
+      ]
+    },
+    {
+      "name": "aura_demo",
+      "count": 3,
+      "files": [
+        "demos/aura_working_demo_2025.py",
+        "demos/aura_working_demo.py",
+        "demos/aura_real_demo.py"
+      ]
+    },
+    {
+      "name": "__init__",
+      "count": 87,
+      "files": [
+        "core/src/__init__.py",
+        "core/src/aura_common/__init__.py",
+        "core/src/aura_intelligence/__init__.py",
+        "core/src/aura_intelligence/distributed/__init__.py",
+        "core/src/aura_intelligence/governance/__init__.py",
+        "core/src/aura_intelligence/orchestration/__init__.py",
+        "core/src/aura_intelligence/monitoring/__init__.py",
+        "core/src/aura_intelligence/inference/__init__.py",
+        "core/src/aura_intelligence/persistence/__init__.py",
+        "core/src/aura_intelligence/components/__init__.py",
+        "core/src/aura_intelligence/models/__init__.py",
+        "core/src/aura_intelligence/moe/__init__.py",
+        "core/src/aura_intelligence/infrastructure/__init__.py",
+        "core/src/aura_intelligence/consensus/__init__.py",
+        "core/src/aura_intelligence/graph/__init__.py",
+        "core/src/aura_intelligence/routing/__init__.py",
+        "core/src/aura_intelligence/network/__init__.py",
+        "core/src/aura_intelligence/api/__init__.py",
+        "core/src/aura_intelligence/swarm_intelligence/__init__.py",
+        "core/src/aura_intelligence/memory/__init__.py",
+        "core/src/aura_intelligence/enterprise/__init__.py",
+        "core/src/aura_intelligence/neural/__init__.py",
+        "core/src/aura_intelligence/integrations/__init__.py",
+        "core/src/aura_intelligence/bio_homeostatic/__init__.py",
+        "core/src/aura_intelligence/workflows/__init__.py",
+        "core/src/aura_intelligence/tda/__init__.py",
+        "core/src/aura_intelligence/agents/__init__.py",
+        "core/src/aura_intelligence/adapters/__init__.py",
+        "core/src/aura_intelligence/collective/__init__.py",
+        "core/src/aura_intelligence/lnn/__init__.py",
+        "core/src/aura_intelligence/events/__init__.py",
+        "core/src/aura_intelligence/core/__init__.py",
+        "core/src/aura_intelligence/resilience/__init__.py",
+        "core/src/aura_intelligence/config/__init__.py",
+        "core/src/aura_intelligence/observability/__init__.py",
+        "core/src/aura_intelligence/consciousness/__init__.py",
+        "core/src/aura_intelligence/utils/__init__.py",
+        "core/src/aura_intelligence/advanced_processing/__init__.py",
+        "core/src/aura_intelligence/core/consensus/__init__.py",
+        "core/src/aura_intelligence/communication/collective/__init__.py",
+        "core/src/aura_intelligence/agents/council/__init__.py",
+        "core/src/aura_intelligence/agents/executor/__init__.py",
+        "core/src/aura_intelligence/agents/real_agents/__init__.py",
+        "core/src/aura_intelligence/agents/observer/__init__.py",
+        "core/src/aura_intelligence/agents/workflows/__init__.py",
+        "core/src/aura_intelligence/agents/temporal/__init__.py",
+        "core/src/aura_intelligence/agents/base_classes/__init__.py",
+        "core/src/aura_intelligence/agents/resilience/__init__.py",
+        "core/src/aura_intelligence/agents/v2/__init__.py",
+        "core/src/aura_intelligence/agents/analyst/__init__.py",
+        "core/src/aura_intelligence/agents/observer/tests/__init__.py",
+        "core/src/aura_intelligence/agents/council/lnn/__init__.py",
+        "core/src/aura_intelligence/agents/council/lnn/context/__init__.py",
+        "core/src/aura_intelligence/agents/council/lnn/neural/__init__.py",
+        "core/src/aura_intelligence/tda/streaming/__init__.py",
+        "core/src/aura_intelligence/enterprise/mem0_search/__init__.py",
+        "core/src/aura_intelligence/enterprise/mem0_hot/__init__.py",
+        "core/src/aura_intelligence/enterprise/mem0_semantic/__init__.py",
+        "core/src/aura_intelligence/orchestration/production/__init__.py",
+        "core/src/aura_intelligence/orchestration/distributed/__init__.py",
+        "core/src/aura_intelligence/orchestration/semantic/__init__.py",
+        "core/src/aura_intelligence/orchestration/durable/__init__.py",
+        "core/src/aura_intelligence/orchestration/workflows/__init__.py",
+        "core/src/aura_intelligence/orchestration/events/__init__.py",
+        "core/src/aura_intelligence/orchestration/observability/__init__.py",
+        "core/src/aura_intelligence/orchestration/workflows/nodes/__init__.py",
+        "core/src/aura_intelligence/orchestration/distributed/crewai/__init__.py",
+        "core/src/aura_intelligence/governance/active_mode/__init__.py",
+        "core/src/aura_common/errors/__init__.py",
+        "core/src/aura_common/logging/__init__.py",
+        "core/src/aura_common/config/__init__.py",
+        "core/src/aura_common/atomic/__init__.py",
+        "core/src/aura_common/atomic/processors/__init__.py",
+        "core/src/aura_common/atomic/connectors/__init__.py",
+        "core/src/aura_common/atomic/handlers/__init__.py",
+        "core/src/aura_common/atomic/base/__init__.py",
+        "src/aura/__init__.py",
+        "src/aura/monitoring/__init__.py",
+        "src/aura/ray/__init__.py",
+        "src/aura/consensus/__init__.py",
+        "src/aura/memory/__init__.py",
+        "src/aura/a2a/__init__.py",
+        "src/aura/tda/__init__.py",
+        "src/aura/agents/__init__.py",
+        "src/aura/lnn/__init__.py",
+        "src/aura/communication/__init__.py",
+        "src/aura/neuromorphic/__init__.py"
+      ]
+    },
+    {
+      "name": "config",
+      "count": 9,
+      "files": [
+        "core/src/aura_common/config.py",
+        "core/src/aura_intelligence/config.py",
+        "core/src/aura_intelligence/memory/config.py",
+        "core/src/aura_intelligence/core/config.py",
+        "core/src/aura_intelligence/observability/config.py",
+        "core/src/aura_intelligence/agents/council/config.py",
+        "core/src/aura_intelligence/agents/council/lnn/neural/config.py",
+        "core/src/aura_intelligence/orchestration/workflows/config.py",
+        "src/aura/core/config.py"
+      ]
+    },
+    {
+      "name": "logging",
+      "count": 2,
+      "files": [
+        "core/src/aura_common/logging.py",
+        "core/src/aura_intelligence/utils/logging.py"
+      ]
+    },
+    {
+      "name": "feature_flags",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/feature_flags.py",
+        "core/src/aura_intelligence/orchestration/feature_flags.py",
+        "core/src/aura_common/config/feature_flags.py"
+      ]
+    },
+    {
+      "name": "metrics",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/governance/metrics.py",
+        "core/src/aura_intelligence/resilience/metrics.py",
+        "core/src/aura_intelligence/observability/metrics.py"
+      ]
+    },
+    {
+      "name": "constitutional_ai",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/governance/constitutional_ai.py",
+        "core/src/aura_intelligence/research_2025/constitutional_ai_v2.py"
+      ]
+    },
+    {
+      "name": "executor",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/governance/executor.py",
+        "core/src/aura_intelligence/agents/v2/executor.py"
+      ]
+    },
+    {
+      "name": "schemas",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/governance/schemas.py",
+        "core/src/aura_intelligence/events/schemas.py",
+        "core/src/aura_intelligence/enterprise/mem0_search/schemas.py"
+      ]
+    },
+    {
+      "name": "workflows",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/orchestration/workflows.py",
+        "core/src/aura_intelligence/consensus/workflows.py",
+        "core/src/aura_intelligence/core/consensus/workflows.py",
+        "core/src/aura_intelligence/agents/temporal/workflows.py"
+      ]
+    },
+    {
+      "name": "registry",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/components/registry.py",
+        "core/src/aura_intelligence/agents/council/lnn/registry.py"
+      ]
+    },
+    {
+      "name": "mixture_of_experts",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/moe/mixture_of_experts.py",
+        "core/src/aura_intelligence/routing/mixture_of_experts.py"
+      ]
+    },
+    {
+      "name": "types",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/consensus/types.py",
+        "core/src/aura_intelligence/core/types.py",
+        "core/src/aura_intelligence/core/consensus/types.py"
+      ]
+    },
+    {
+      "name": "examples",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/consensus/examples.py",
+        "core/src/aura_intelligence/core/consensus/examples.py"
+      ]
+    },
+    {
+      "name": "byzantine",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/consensus/byzantine.py",
+        "core/src/aura_intelligence/core/consensus/byzantine.py"
+      ]
+    },
+    {
+      "name": "raft",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/consensus/raft.py",
+        "core/src/aura_intelligence/core/consensus/raft.py"
+      ]
+    },
+    {
+      "name": "simple",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/consensus/simple.py",
+        "core/src/aura_intelligence/core/consensus/simple.py"
+      ]
+    },
+    {
+      "name": "manager",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/consensus/manager.py",
+        "core/src/aura_intelligence/core/consensus/manager.py",
+        "core/src/aura_common/feature_flags/manager.py",
+        "core/src/aura_common/config/manager.py"
+      ]
+    },
+    {
+      "name": "search",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/api/search.py",
+        "core/src/aura_intelligence/agents/v2/search.py"
+      ]
+    },
+    {
+      "name": "observability",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/memory/observability.py",
+        "core/src/aura_intelligence/agents/observability.py",
+        "core/src/aura_intelligence/config/observability.py",
+        "core/src/aura_intelligence/agents/council/observability.py"
+      ]
+    },
+    {
+      "name": "knn_index",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/memory/knn_index.py",
+        "core/src/aura_intelligence/memory/knn_index_real.py"
+      ]
+    },
+    {
+      "name": "shape_memory",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/memory/shape_memory_v2_clean.py",
+        "core/src/aura_intelligence/memory/shape_memory_v2_prod.py",
+        "core/src/aura_intelligence/memory/shape_memory_v2.py"
+      ]
+    },
+    {
+      "name": "memory_bus_adapter",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/memory/memory_bus_adapter_clean.py",
+        "core/src/aura_intelligence/memory/memory_bus_adapter.py"
+      ]
+    },
+    {
+      "name": "knowledge_graph",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/enterprise/knowledge_graph.py",
+        "core/src/aura_intelligence/observability/knowledge_graph.py"
+      ]
+    },
+    {
+      "name": "liquid",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/neural/liquid_real.py",
+        "core/src/aura_intelligence/neural/liquid_2025.py"
+      ]
+    },
+    {
+      "name": "advanced_workflow_integration",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/integration/advanced_workflow_integration.py",
+        "core/src/aura_intelligence/integrations/integration/advanced_workflow_integration.py"
+      ]
+    },
+    {
+      "name": "algorithms",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/tda/algorithms.py",
+        "src/aura/tda/algorithms.py"
+      ]
+    },
+    {
+      "name": "unified_engine",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/tda/unified_engine_2025.py",
+        "core/src/aura_intelligence/tda/unified_engine.py"
+      ]
+    },
+    {
+      "name": "core",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/tda/core.py",
+        "core/src/aura_intelligence/lnn/core.py",
+        "core/src/aura_intelligence/observability/core.py",
+        "core/src/aura_intelligence/orchestration/observability/core.py"
+      ]
+    },
+    {
+      "name": "models",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/tda/models.py",
+        "core/src/aura_intelligence/agents/council/models.py"
+      ]
+    },
+    {
+      "name": "base",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/agents/base.py",
+        "core/src/aura_intelligence/config/base.py",
+        "core/src/aura_intelligence/agents/schemas/base.py",
+        "core/src/aura_common/config/base.py"
+      ]
+    },
+    {
+      "name": "supervisor",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/agents/supervisor.py",
+        "core/src/aura_intelligence/collective/supervisor.py",
+        "core/src/aura_intelligence/communication/collective/supervisor.py",
+        "core/src/aura_intelligence/orchestration/workflows/nodes/supervisor.py"
+      ]
+    },
+    {
+      "name": "validator",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/validator.py",
+        "core/src/aura_common/atomic/processors/validator.py"
+      ]
+    },
+    {
+      "name": "spiking_gnn",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/innovations/spiking_gnn_2025.py",
+        "core/src/aura_intelligence/neuromorphic/spiking_gnn.py"
+      ]
+    },
+    {
+      "name": "real_spiking_gnn",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/spiking_gnn/real_spiking_gnn.py",
+        "core/src/aura_intelligence/real_components/real_spiking_gnn.py"
+      ]
+    },
+    {
+      "name": "context_engine",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/collective/context_engine.py",
+        "core/src/aura_intelligence/communication/collective/context_engine.py"
+      ]
+    },
+    {
+      "name": "memory_manager",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/collective/memory_manager.py",
+        "core/src/aura_intelligence/communication/collective/memory_manager.py"
+      ]
+    },
+    {
+      "name": "graph_builder",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/collective/graph_builder.py",
+        "core/src/aura_intelligence/communication/collective/graph_builder.py"
+      ]
+    },
+    {
+      "name": "orchestrator",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/collective/orchestrator.py",
+        "core/src/aura_intelligence/communication/collective/orchestrator.py",
+        "core/src/aura_intelligence/agents/council/lnn/orchestrator.py",
+        "core/src/aura_intelligence/orchestration/distributed/crewai/orchestrator.py"
+      ]
+    },
+    {
+      "name": "system",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/core/system.py",
+        "src/aura/core/system.py"
+      ]
+    },
+    {
+      "name": "memory",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/core/memory.py",
+        "core/src/aura_intelligence/config/memory.py"
+      ]
+    },
+    {
+      "name": "interfaces",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/core/interfaces.py",
+        "core/src/aura_intelligence/agents/council/lnn/interfaces.py"
+      ]
+    },
+    {
+      "name": "exceptions",
+      "count": 3,
+      "files": [
+        "core/src/aura_intelligence/core/exceptions.py",
+        "core/src/aura_common/errors/exceptions.py",
+        "core/src/aura_common/atomic/base/exceptions.py"
+      ]
+    },
+    {
+      "name": "circuit_breaker",
+      "count": 4,
+      "files": [
+        "core/src/aura_intelligence/resilience/circuit_breaker.py",
+        "core/src/aura_intelligence/agents/resilience/circuit_breaker.py",
+        "core/src/aura_common/errors/circuit_breaker.py",
+        "core/src/aura_common/atomic/handlers/circuit_breaker.py"
+      ]
+    },
+    {
+      "name": "bulkhead",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/resilience/bulkhead.py",
+        "core/src/aura_intelligence/agents/resilience/bulkhead.py"
+      ]
+    },
+    {
+      "name": "agent",
+      "count": 7,
+      "files": [
+        "core/src/aura_intelligence/config/agent.py",
+        "core/src/aura_intelligence/agents/executor/agent.py",
+        "core/src/aura_intelligence/agents/observer/agent.py",
+        "core/src/aura_intelligence/agents/base_classes/agent.py",
+        "core/src/aura_intelligence/agents/evolver/agent.py",
+        "core/src/aura_intelligence/agents/analyst/agent.py",
+        "core/src/aura_intelligence/agents/council/lnn/agent.py"
+      ]
+    },
+    {
+      "name": "deployment",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/config/deployment.py",
+        "core/src/aura_intelligence/governance/active_mode/deployment.py"
+      ]
+    },
+    {
+      "name": "state",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/schemas/state.py",
+        "core/src/aura_intelligence/orchestration/workflows/state.py"
+      ]
+    },
+    {
+      "name": "protocol",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/communication/protocol.py",
+        "src/aura/a2a/protocol.py"
+      ]
+    },
+    {
+      "name": "observer",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/v2/observer.py",
+        "core/src/aura_intelligence/orchestration/workflows/nodes/observer.py"
+      ]
+    },
+    {
+      "name": "analyst",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/v2/analyst.py",
+        "core/src/aura_intelligence/orchestration/workflows/nodes/analyst.py"
+      ]
+    },
+    {
+      "name": "engine",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/agents/council/lnn/neural/engine.py",
+        "src/aura/tda/engine.py"
+      ]
+    },
+    {
+      "name": "monitoring",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/enterprise/mem0_hot/monitoring.py",
+        "core/src/aura_intelligence/orchestration/production/monitoring.py"
+      ]
+    },
+    {
+      "name": "shadow_mode",
+      "count": 2,
+      "files": [
+        "core/src/aura_intelligence/orchestration/workflows/shadow_mode.py",
+        "core/src/aura_common/logging/shadow_mode.py"
+      ]
+    },
+    {
+      "name": "protocols",
+      "count": 2,
+      "files": [
+        "core/src/aura_common/atomic/base/protocols.py",
+        "src/aura/consensus/protocols.py"
+      ]
+    }
+  ],
+  "import_errors": [
+    {
+      "import": "from aura_intelligence import UnifiedSystem",
+      "error": "unexpected indent (exceptions.py, line 665)"
+    },
+    {
+      "import": "from aura_intelligence.orchestration.workflows.nodes.supervisor import UnifiedAuraSupervisor",
+      "error": "unexpected indent (exceptions.py, line 665)"
+    },
+    {
+      "import": "from aura_intelligence.tda import TDAEngine",
+      "error": "unexpected indent (exceptions.py, line 665)"
+    },
+    {
+      "import": "from aura_intelligence.lnn import LiquidNeuralNetwork",
+      "error": "unexpected indent (exceptions.py, line 665)"
+    },
+    {
+      "import": "from aura_intelligence.api import neural_brain_api",
+      "error": "unexpected indent (exceptions.py, line 665)"
+    }
+  ],
+  "working_apis": [
+    "neural_mesh_dashboard.py",
+    "search.py",
+    "neural_brain_api.py",
+    "governance_dashboard.py"
+  ],
+  "broken_apis": [],
+  "summary": {
+    "total_syntax_errors": 408,
+    "total_empty_functions": 9,
+    "total_todo_functions": 29,
+    "total_mock_implementations": 0,
+    "total_duplicates": 69,
+    "total_import_errors": 5
+  }
+}

@@ -21,8 +21,9 @@ class RecoveryStrategy(ABC):
         """Get delay before next retry attempt."""
         pass
     
-    @abstractmethod
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        @abstractmethod
+        def should_retry(self, attempt: int, error: Exception) -> bool:
+            pass
         """Determine if we should retry."""
         pass
 
@@ -47,12 +48,14 @@ class ExponentialBackoff(RecoveryStrategy):
         delay = min(self.base_delay * (2 ** attempt), self.max_delay)
         
         if self.jitter:
-            # Add random jitter to prevent thundering herd
-            delay = delay * (0.5 + random.random() * 0.5)
+            pass
+        # Add random jitter to prevent thundering herd
+        delay = delay * (0.5 + random.random() * 0.5)
         
         return delay
     
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        def should_retry(self, attempt: int, error: Exception) -> bool:
+            pass
         """Check if we should retry."""
         return attempt < self.max_attempts
 
@@ -72,7 +75,8 @@ class LinearBackoff(RecoveryStrategy):
         """Get constant delay."""
         return self.delay
     
-    def should_retry(self, attempt: int, error: Exception) -> bool:
+        def should_retry(self, attempt: int, error: Exception) -> bool:
+            pass
         """Check if we should retry."""
         return attempt < self.max_attempts
 

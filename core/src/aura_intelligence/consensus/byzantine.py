@@ -2,6 +2,7 @@
 Byzantine Fault Tolerant Consensus for AURA Intelligence.
 
 HotStuff-inspired implementation for critical strategic decisions:
+    pass
 - Model updates affecting all agents
 - Safety-critical operations
 - Financial transactions
@@ -19,12 +20,23 @@ import structlog
 
 from opentelemetry import trace, metrics
 
-from .types import (
+from .consensus_types import (
     ConsensusRequest, ConsensusResult, ConsensusState, ConsensusProof,
     Vote, VoteType, BFTPhase, BFTMessage, BFTVote, BFTProof
 )
-from ..events import EventProducer
-from ..agents.temporal import execute_workflow
+# Optional event producer
+try:
+    from aura_intelligence.events import EventProducer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EventProducer = None
+    EVENTS_AVAILABLE = False
+try:
+    from ..agents.temporal import execute_workflow
+    TEMPORAL_AVAILABLE = True
+except ImportError:
+    execute_workflow = None
+    TEMPORAL_AVAILABLE = False
 
 logger = structlog.get_logger()
 tracer = trace.get_tracer(__name__)
@@ -100,6 +112,7 @@ class BFTViewManager:
     
     def advance_view(self):
         """Move to next view."""
+        pass
         self.view += 1
         self.phase = BFTPhase.VIEW_CHANGE
         self.metrics.view_changes.add(1)
@@ -162,6 +175,7 @@ class BFTVoteCollector:
     
     def reset(self):
         """Reset for new consensus round."""
+        pass
         self.phase_votes = {phase: [] for phase in BFTPhase}
 
 
@@ -179,7 +193,7 @@ class BFTMessageHandler:
         view: int,
         proposal: Dict[str, Any],
         request_id: str
-    ) -> BFTMessage:
+        ) -> BFTMessage:
         """Create and sign BFT message."""
         self.sequence += 1
         
@@ -250,11 +264,13 @@ class BFTCore:
     
     async def start(self):
         """Start BFT node."""
+        pass
         await self.event_producer.start()
         self.view_change_timer = asyncio.create_task(self._view_change_monitor())
     
     async def stop(self):
         """Stop BFT node."""
+        pass
         if self.view_change_timer:
             self.view_change_timer.cancel()
         await self.event_producer.stop()
@@ -299,6 +315,7 @@ class BFTCore:
     
     def _is_leader(self) -> bool:
         """Check if this node is current leader."""
+        pass
         current_leader = self.view_manager.get_leader(self.view_manager.view)
         return self.node_id == current_leader
     
@@ -396,6 +413,7 @@ class BFTCore:
     
     async def _start_precommit(self):
         """Start pre-commit phase."""
+        pass
         # Find the proposal
         request = next(iter(self.pending_proposals.values()), None)
         if not request:
@@ -412,6 +430,7 @@ class BFTCore:
     
     async def _start_commit(self):
         """Start commit phase."""
+        pass
         request = next(iter(self.pending_proposals.values()), None)
         if not request:
             return
@@ -427,6 +446,7 @@ class BFTCore:
     
     async def _finalize_consensus(self):
         """Finalize consensus after commit phase."""
+        pass
         # Find request
         request_id = None
         request = None
@@ -467,6 +487,7 @@ class BFTCore:
     
     def _create_proof(self) -> ConsensusProof:
         """Create consensus proof from votes."""
+        pass
         return ConsensusProof(
             request_id="",
             consensus_type="bft",
@@ -485,6 +506,7 @@ class BFTCore:
     
     async def _view_change_monitor(self):
         """Monitor for view timeouts."""
+        pass
         while True:
             try:
                 await asyncio.sleep(self.config.view_timeout_ms / 1000.0)
@@ -510,6 +532,7 @@ class BFTCore:
     
     def _has_progress(self) -> bool:
         """Check if consensus is making progress."""
+        pass
         # Simple check: any votes in current phase
         return any(
             len(votes) > 0 
@@ -585,6 +608,7 @@ class BFTCore:
     
     async def get_status(self) -> Dict[str, Any]:
         """Get BFT node status."""
+        pass
         byzantine_nodes = self.vote_collector.get_byzantine_nodes()
         return {
             "node_id": self.node_id,
@@ -623,10 +647,12 @@ class ByzantineConsensus:
     
     async def start(self):
         """Start Byzantine consensus."""
+        pass
         await self.core.start()
     
     async def stop(self):
         """Stop Byzantine consensus."""
+        pass
         await self.core.stop()
     
     async def propose(self, request: ConsensusRequest) -> ConsensusResult:
@@ -635,4 +661,74 @@ class ByzantineConsensus:
     
     async def get_status(self) -> Dict[str, Any]:
         """Get consensus status."""
+        pass
         return await self.core.get_status()
+
+
+class TopologicalByzantineConsensus:
+    """Topological Byzantine consensus for gossip routing."""
+    
+    def __init__(self):
+        """Initialize without config for gossip router compatibility."""
+        self.last_consensus = None
+    
+    async def reach_consensus(self, votes: List[Dict[str, Any]], min_participation: float = 0.67) -> Dict[str, Any]:
+        """
+        Reach consensus on votes from multiple agents.
+        
+        Args:
+            votes: List of vote dictionaries with 'agent_id', 'value', and 'weight'
+            min_participation: Minimum participation ratio required
+        
+        Returns:
+            Consensus result with 'consensus_value' and 'confidence'
+        """
+        if not votes:
+            return {
+                'consensus_value': None,
+                'confidence': 0.0
+            }
+        
+        # Count votes by value
+        vote_counts = {}
+        total_weight = 0.0
+        
+        for vote in votes:
+            value = vote.get('value')
+            weight = vote.get('weight', 1.0)
+            
+            if value not in vote_counts:
+                vote_counts[value] = 0.0
+            vote_counts[value] += weight
+            total_weight += weight
+        
+        # Find majority value
+        if total_weight == 0:
+            return {
+                'consensus_value': None,
+                'confidence': 0.0
+            }
+        
+        # Check participation
+        participation = len(votes) / max(len(votes), 3)  # Assume at least 3 agents expected
+        if participation < min_participation:
+            return {
+                'consensus_value': None,
+                'confidence': participation
+            }
+        
+        # Get value with most votes
+        consensus_value = max(vote_counts.items(), key=lambda x: x[1])[0]
+        confidence = vote_counts[consensus_value] / total_weight
+        
+        self.last_consensus = {
+            'consensus_value': consensus_value,
+            'confidence': confidence,
+            'participation': participation,
+            'vote_counts': vote_counts
+        }
+        
+        return {
+            'consensus_value': consensus_value,
+            'confidence': confidence
+        }

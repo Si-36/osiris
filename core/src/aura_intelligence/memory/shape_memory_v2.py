@@ -7,6 +7,7 @@ combining FastRP embeddings with k-NN indices for sub-millisecond retrieval
 from millions of memories.
 
 Key Improvements:
+    pass
 - 100x faster retrieval using FastRP + k-NN
 - GPU acceleration with Faiss
 - Event Bus integration for real-time updates
@@ -30,7 +31,7 @@ from ..tda.models import TDAResult, BettiNumbers
 from ..observability.metrics import metrics_collector
 from ..orchestration.bus_protocol import EventBus, Event
 from .fastrp_embeddings import FastRPEmbedder, FastRPConfig
-from .knn_index import HybridKNNIndex, KNNConfig
+from .knn_index import KNNIndex as HybridKNNIndex, KNNConfig
 from .shape_aware_memory import TopologicalSignature, ShapeMemory
 
 
@@ -56,6 +57,7 @@ class ShapeMemoryV2Config:
     knn_backend: str = "auto"  # auto, faiss_gpu, faiss_cpu, annoy
     
     # Storage settings
+    storage_mode: str = "full"  # "full", "memory_only"
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_user: str = "neo4j"
     neo4j_password: str = "password"
@@ -81,6 +83,7 @@ class ShapeAwareMemoryV2:
     Next-generation shape-aware memory system with ultra-fast retrieval.
     
     Architecture:
+        pass
     - FastRP converts topological signatures to dense embeddings
     - k-NN index enables sub-millisecond similarity search
     - Multi-tier storage optimizes cost and performance
@@ -103,9 +106,9 @@ class ShapeAwareMemoryV2:
         
         # Memory tiers
         self._tiers = [
-            MemoryTier("hot", self.config.hot_tier_hours, "redis", compression=False),
-            MemoryTier("warm", self.config.warm_tier_days * 24, "neo4j", compression=True),
-            MemoryTier("cold", self.config.cold_tier_days * 24, "s3", compression=True)
+        MemoryTier("hot", self.config.hot_tier_hours, "redis", compression=False),
+        MemoryTier("warm", self.config.warm_tier_days * 24, "neo4j", compression=True),
+        MemoryTier("cold", self.config.cold_tier_days * 24, "s3", compression=True)
         ]
         
         # Cache
@@ -131,19 +134,27 @@ class ShapeAwareMemoryV2:
         
         # Initialize k-NN index
         knn_config = KNNConfig(
-            index_type=self.config.knn_backend,
-            embedding_dim=self.config.embedding_dim,
-            metric=self.config.knn_metric
+            backend=self.config.knn_backend,
+            metric=self.config.knn_metric,
+            initial_capacity=self.config.cache_size
         )
-        self._knn_index = HybridKNNIndex(knn_config)
+        self._knn_index = HybridKNNIndex(self.config.embedding_dim, knn_config)
         
-        # Initialize storage backends
-        self._driver = AsyncGraphDatabase.driver(
-            self.config.neo4j_uri,
-            auth=(self.config.neo4j_user, self.config.neo4j_password)
-        )
-        
-        self._redis = await redis.from_url(self.config.redis_url)
+        # Initialize storage backends based on mode
+        if self.config.storage_mode == "memory_only":
+            # Use in-memory storage for testing/development
+            self._driver = None
+            self._redis = None
+            self._memory_store = {}  # In-memory storage
+            print("📝 ShapeMemoryV2: Running in memory-only mode (no Redis/Neo4j)")
+        else:
+            # Full mode with real databases
+            self._driver = AsyncGraphDatabase.driver(
+                self.config.neo4j_uri,
+                auth=(self.config.neo4j_user, self.config.neo4j_password)
+            )
+            self._redis = await redis.from_url(self.config.redis_url)
+            self._memory_store = None
         
         # Initialize Event Bus
         if self.config.event_bus_enabled:
@@ -206,8 +217,8 @@ class ShapeAwareMemoryV2:
             metadata=metadata or {}
         )
         
-        # Add to k-NN index
-        await self._knn_index.add(
+        # Add to k-NN index (not async)
+        self._knn_index.add(
             embedding.reshape(1, -1),
             [memory.memory_id]
         )
@@ -269,8 +280,13 @@ class ShapeAwareMemoryV2:
             query_signature.betti_numbers
         )
         
-        # k-NN search
-        memory_ids, similarities = await self._knn_index.search(query_embedding, k * 2)
+        # k-NN search (not async)
+        results = self._knn_index.search(query_embedding, k * 2)
+        if not results:
+            return []
+        
+        memory_ids = [r[0] for r in results]
+        similarities = [r[1] for r in results]
         
         if not memory_ids:
             return []
@@ -333,7 +349,7 @@ class ShapeAwareMemoryV2:
         anomaly_signature: TopologicalSignature,
         similarity_threshold: float = 0.8,
         time_window: timedelta = timedelta(days=7)
-    ) -> List[Tuple[ShapeMemory, float]]:
+        ) -> List[Tuple[ShapeMemory, float]]:
         """Find similar anomaly patterns in recent history."""
         # Retrieve similar memories filtered by anomaly context
         try:
@@ -357,25 +373,38 @@ class ShapeAwareMemoryV2:
         return anomaly_patterns
     
     async def _store_hot_tier(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
-        """Store memory in hot tier (Redis)."""
-        key = f"shape_v2:hot:{memory.memory_id}"
-        
-        # Prepare data
-        data = {
+        """Store memory in hot tier (Redis or memory)."""
+        if self.config.storage_mode == "memory_only":
+            # Store in memory
+            self._memory_store[memory.memory_id] = {
+                "memory": memory,
+                "embedding": embedding,
+                "created_at": time.time()
+            }
+        else:
+            # Store in Redis
+            key = f"shape_v2:hot:{memory.memory_id}"
+            
+            # Prepare data
+            data = {
             "content": json.dumps(memory.content),
             "signature": json.dumps(memory.signature.to_dict()),
             "embedding": embedding.tobytes(),
             "context_type": memory.context_type,
             "metadata": json.dumps(memory.metadata),
             "created_at": memory.created_at.isoformat()
-        }
-        
-        # Store with TTL
-        await self._redis.hset(key, mapping=data)
-        await self._redis.expire(key, self._tiers[0].ttl_hours * 3600)
+            }
+            
+            # Store with TTL
+            await self._redis.hset(key, mapping=data)
+            await self._redis.expire(key, self._tiers[0].ttl_hours * 3600)
     
     async def _persist_to_neo4j(self, memory: ShapeMemory, embedding: np.ndarray) -> None:
         """Persist memory to Neo4j (warm tier)."""
+        if self.config.storage_mode == "memory_only":
+            # Skip Neo4j in memory-only mode
+            return
+        
         try:
             async with self._driver.session() as session:
                 # Compress content if large
@@ -403,7 +432,7 @@ class ShapeAwareMemoryV2:
                         created_at: $created_at,
                         tier: 'warm'
                     })
-                """, {
+        """, {
                     "memory_id": memory.memory_id,
                     "content": content_data,
                     "compressed": compressed,
@@ -474,7 +503,8 @@ class ShapeAwareMemoryV2:
         # Use pipeline for efficiency
         pipe = self._redis.pipeline()
         for mid in memory_ids:
-            pipe.hgetall(f"shape_v2:hot:{mid}")
+            pass
+        pipe.hgetall(f"shape_v2:hot:{mid}")
         
         responses = await pipe.execute()
         
@@ -511,7 +541,7 @@ class ShapeAwareMemoryV2:
                 MATCH (m:ShapeMemoryV2)
                 WHERE m.memory_id IN $memory_ids
                 RETURN m
-            """, {"memory_ids": memory_ids})
+        """, {"memory_ids": memory_ids})
             
             records = await query_result.data()
             
@@ -566,7 +596,7 @@ class ShapeAwareMemoryV2:
         key = f"shape_v2:hot:{memory.memory_id}"
         if await self._redis.exists(key):
             await self._redis.hincrby(key, "access_count", 1)
-            await self._redis.hset(key, "last_accessed", memory.last_accessed.isoformat())
+        await self._redis.hset(key, "last_accessed", memory.last_accessed.isoformat())
     
     def _update_cache(self, memory: ShapeMemory) -> None:
         """Update LRU cache."""
@@ -636,19 +666,19 @@ class ShapeAwareMemoryV2:
             
             records = await result.data()
             
-            if records:
-                # Batch add to index
-                batch_size = 10000
-                for i in range(0, len(records), batch_size):
-                    batch = records[i:i + batch_size]
+        if records:
+            # Batch add to index
+            batch_size = 10000
+            for i in range(0, len(records), batch_size):
+                batch = records[i:i + batch_size]
                     
-                    memory_ids = [r["memory_id"] for r in batch]
-                    embeddings = np.array([r["embedding"] for r in batch])
+                memory_ids = [r["memory_id"] for r in batch]
+                embeddings = np.array([r["embedding"] for r in batch])
                     
-                    await self._knn_index.add(embeddings, memory_ids)
+                await self._knn_index.add(embeddings, memory_ids)
                 
-                print(f"Rebuilt index with {len(records)} memories")
-                self._total_memories = len(records)
+            print(f"Rebuilt index with {len(records)} memories")
+            self._total_memories = len(records)
     
     async def tier_memories(self) -> None:
         """Move memories between tiers based on age."""
@@ -686,100 +716,104 @@ class ShapeAwareMemoryV2:
             await self._knn_index.save("/tmp/shape_memory_v2_index")
 
 
-# Demo
+    # Demo
 async def demo_shape_memory_v2():
-    """Demonstrate Shape-Aware Memory V2 performance."""
+        """Demonstrate Shape-Aware Memory V2 performance."""
     
-    config = ShapeMemoryV2Config(
+        config = ShapeMemoryV2Config(
         embedding_dim=128,
         knn_backend="auto",
         event_bus_enabled=False  # Disable for demo
-    )
+        )
     
-    memory_system = ShapeAwareMemoryV2(config)
-    await memory_system.initialize()
+        memory_system = ShapeAwareMemoryV2(config)
+        await memory_system.initialize()
     
-    print("Shape-Aware Memory V2 Demo")
-    print("=" * 50)
+        print("Shape-Aware Memory V2 Demo")
+        print("=" * 50)
     
     # Generate test memories
-    n_memories = 10000
-    print(f"\nStoring {n_memories} memories...")
+        n_memories = 10000
+        print(f"\nStoring {n_memories} memories...")
     
-    start_time = time.time()
+        start_time = time.time()
     
-    for i in range(n_memories):
-        # Random TDA result
+        for i in range(n_memories):
+            pass
+    # Random TDA result
         tda_result = TDAResult(
-            betti_numbers=BettiNumbers(
-                b0=np.random.randint(1, 5),
-                b1=np.random.randint(0, 3),
-                b2=np.random.randint(0, 2)
-            ),
-            persistence_diagram=np.random.rand(10, 2),
-            topological_features={}
+        betti_numbers=BettiNumbers(
+        b0=np.random.randint(1, 5),
+        b1=np.random.randint(0, 3),
+        b2=np.random.randint(0, 2)
+        ),
+        persistence_diagram=np.random.rand(10, 2),
+        topological_features={}
         )
         
         await memory_system.store(
-            content={
-                "id": i,
-                "data": f"Memory {i}",
-                "type": np.random.choice(["normal", "anomaly", "pattern"])
-            },
-            tda_result=tda_result,
-            context_type=np.random.choice(["general", "anomaly", "system"])
+        content={
+        "id": i,
+        "data": f"Memory {i}",
+        "type": np.random.choice(["normal", "anomaly", "pattern"])
+        },
+        tda_result=tda_result,
+        context_type=np.random.choice(["general", "anomaly", "system"])
         )
         
         if (i + 1) % 1000 == 0:
-            print(f"  Stored {i + 1} memories...")
+            pass
+        print(f"  Stored {i + 1} memories...")
     
-    store_time = time.time() - start_time
-    print(f"\nTotal store time: {store_time:.2f}s")
-    print(f"Average: {store_time/n_memories*1000:.2f}ms per memory")
+        store_time = time.time() - start_time
+        print(f"\nTotal store time: {store_time:.2f}s")
+        print(f"Average: {store_time/n_memories*1000:.2f}ms per memory")
     
     # Test retrieval
-    print("\nTesting retrieval performance...")
+        print("\nTesting retrieval performance...")
     
     # Create query signature
-    query_tda = TDAResult(
+        query_tda = TDAResult(
         betti_numbers=BettiNumbers(b0=2, b1=1, b2=0),
         persistence_diagram=np.random.rand(8, 2),
         topological_features={}
-    )
-    
-    query_signature = TopologicalSignature(
-        betti_numbers=query_tda.betti_numbers,
-        persistence_diagram=query_tda.persistence_diagram
-    )
-    
-    # Warm up
-    await memory_system.retrieve(query_signature, k=10)
-    
-    # Benchmark
-    n_queries = 100
-    start_time = time.time()
-    
-    for _ in range(n_queries):
-        results = await memory_system.retrieve(
-            query_signature=query_signature,
-            k=10,
-            context_filter=None
         )
     
-    query_time = time.time() - start_time
+        query_signature = TopologicalSignature(
+        betti_numbers=query_tda.betti_numbers,
+        persistence_diagram=query_tda.persistence_diagram
+        )
     
-    print(f"\nRetrieval benchmark:")
-    print(f"  Total time for {n_queries} queries: {query_time:.2f}s")
-    print(f"  Average query time: {query_time/n_queries*1000:.2f}ms")
-    print(f"  QPS: {n_queries/query_time:.0f}")
+    # Warm up
+        await memory_system.retrieve(query_signature, k=10)
+    
+    # Benchmark
+        n_queries = 100
+        start_time = time.time()
+    
+        for _ in range(n_queries):
+            pass
+        results = await memory_system.retrieve(
+        query_signature=query_signature,
+        k=10,
+        context_filter=None
+        )
+    
+        query_time = time.time() - start_time
+    
+        print(f"\nRetrieval benchmark:")
+        print(f"  Total time for {n_queries} queries: {query_time:.2f}s")
+        print(f"  Average query time: {query_time/n_queries*1000:.2f}ms")
+        print(f"  QPS: {n_queries/query_time:.0f}")
     
     # Show sample results
-    print(f"\nSample retrieval results (k=10):")
-    results = await memory_system.retrieve(query_signature, k=10)
-    for i, memory in enumerate(results[:5]):
+        print(f"\nSample retrieval results (k=10):")
+        results = await memory_system.retrieve(query_signature, k=10)
+        for i, memory in enumerate(results[:5]):
+            pass
         print(f"  {i+1}. {memory.memory_id}: {memory.content} (similarity: {memory.similarity_score:.3f})")
     
-    await memory_system.cleanup()
+        await memory_system.cleanup()
 
 
 if __name__ == "__main__":

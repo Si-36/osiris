@@ -293,6 +293,7 @@ class DossierEntry(
     
     def _get_canonical_content(self) -> str:
         """Get canonical string representation of content for signing."""
+        pass
         try:
             from .base import datetime_to_iso
         except ImportError:
@@ -305,6 +306,7 @@ class DossierEntry(
     # ========================================================================
     def get_weighted_score(self) -> float:
         """Get a weighted quality score combining all quality metrics."""
+        pass
         return (
             (self.confidence * 0.4) +
             (self.source_reliability * 0.3) +
@@ -314,12 +316,14 @@ class DossierEntry(
     
     def is_expired(self) -> bool:
         """Check if the evidence has expired."""
+        pass
         if not self.expiry_timestamp:
             return False
         return utc_now() > self.expiry_timestamp
     
     def get_reference(self) -> EvidenceReference:
         """Get a reference to this evidence entry."""
+        pass
         try:
             from .base import datetime_to_iso
         except ImportError:

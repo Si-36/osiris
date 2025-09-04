@@ -2,6 +2,7 @@
 Kafka Event Producers for AURA Intelligence
 
 Implements various producer patterns:
+    pass
 - Standard async producer
 - Transactional producer (exactly-once)
 - Batch producer for high throughput
@@ -15,20 +16,27 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 
-from aiokafka import AIOKafkaProducer
-from aiokafka.errors import KafkaError, KafkaTimeoutError
+try:
+    from aiokafka import AIOKafkaProducer
+    from aiokafka.errors import KafkaError, KafkaTimeoutError
+    AIOKAFKA_AVAILABLE = True
+except ImportError:
+    AIOKAFKA_AVAILABLE = False
+    AIOKafkaProducer = None
+    KafkaError = Exception
+    KafkaTimeoutError = Exception
+
 try:
     from confluent_kafka import SerializingProducer
-except ImportError:
-    SerializingProducer = None
-from confluent_kafka.serialization import StringSerializer
-try:
+    from confluent_kafka.serialization import StringSerializer
     from confluent_kafka.schema_registry import SchemaRegistryClient
-except ImportError:
-    SchemaRegistryClient = None
-try:
     from confluent_kafka.schema_registry.avro import AvroSerializer
+    CONFLUENT_KAFKA_AVAILABLE = True
 except ImportError:
+    CONFLUENT_KAFKA_AVAILABLE = False
+    SerializingProducer = None
+    StringSerializer = None
+    SchemaRegistryClient = None
     AvroSerializer = None
 import structlog
 from opentelemetry import trace, metrics
@@ -98,15 +106,16 @@ class ProducerConfig:
     
     def to_kafka_config(self) -> Dict[str, Any]:
         """Convert to Kafka configuration dict."""
+        pass
         config = {
-            "bootstrap_servers": self.bootstrap_servers,
-            "client_id": self.client_id,
-            "acks": self.acks,
-            # "retries": self.retries,  # Not supported in AIOKafkaProducer - handled by resilience layer
-            # "max_in_flight_requests_per_connection": self.max_in_flight_requests,  # Not supported in current AIOKafka version
-            "compression_type": self.compression_type,
-            "enable_idempotence": self.enable_idempotence,
-            "security_protocol": self.security_protocol
+        "bootstrap_servers": self.bootstrap_servers,
+        "client_id": self.client_id,
+        "acks": self.acks,
+        # "retries": self.retries,  # Not supported in AIOKafkaProducer - handled by resilience layer
+        # "max_in_flight_requests_per_connection": self.max_in_flight_requests,  # Not supported in current AIOKafka version
+        "compression_type": self.compression_type,
+        "enable_idempotence": self.enable_idempotence,
+        "security_protocol": self.security_protocol
         }
         
         if self.transactional_id:
@@ -114,8 +123,8 @@ class ProducerConfig:
             
         if self.sasl_mechanism:
             config["sasl_mechanism"] = self.sasl_mechanism
-            config["sasl_plain_username"] = self.sasl_username
-            config["sasl_plain_password"] = self.sasl_password
+        config["sasl_plain_username"] = self.sasl_username
+        config["sasl_plain_password"] = self.sasl_password
             
         config.update(self.additional_config)
         return config
@@ -126,6 +135,7 @@ class EventProducer:
     Standard async event producer with observability.
     
     Features:
+        pass
     - Async/await interface
     - Automatic retries
     - Circuit breaker integration
@@ -138,9 +148,20 @@ class EventProducer:
         self.producer: Optional[AIOKafkaProducer] = None
         self._started = False
         
+        if not AIOKAFKA_AVAILABLE:
+            logger.warning("AIOKafka not available. EventProducer will run in mock mode.")
+            self._mock_mode = True
+        else:
+            self._mock_mode = False
+        
     async def start(self):
         """Start the producer."""
         if self._started:
+            return
+            
+        if self._mock_mode:
+            logger.info(f"Starting event producer in MOCK mode: {self.config.client_id}")
+            self._started = True
             return
             
         logger.info(f"Starting event producer: {self.config.client_id}")
@@ -164,8 +185,8 @@ class EventProducer:
         """Stop the producer."""
         if self.producer and self._started:
             await self.producer.stop()
-            self._started = False
-            logger.info("Event producer stopped")
+        self._started = False
+        logger.info("Event producer stopped")
     
     async def send_event(
         self,
@@ -263,6 +284,7 @@ class TransactionalProducer(EventProducer):
     Transactional producer for exactly-once semantics.
     
     Features:
+        pass
     - Exactly-once delivery (EOS)
     - Atomic multi-topic writes
     - Transaction coordination
@@ -347,6 +369,7 @@ class BatchProducer:
     High-throughput batch producer with buffering.
     
     Features:
+        pass
     - Automatic batching by size/time
     - Memory-efficient buffering
     - Parallel partition writes
@@ -371,6 +394,7 @@ class BatchProducer:
     
     async def start(self):
         """Start the batch producer."""
+        pass
         await self.producer.start()
         self._running = True
         
@@ -378,8 +402,9 @@ class BatchProducer:
         self._flush_task = asyncio.create_task(self._flush_periodically())
         logger.info("Batch producer started")
     
-    async def stop(self):
-        """Stop the batch producer."""
+        async def stop(self):
+            """Stop the batch producer."""
+        pass
         self._running = False
         
         # Flush remaining events
@@ -392,6 +417,7 @@ class BatchProducer:
                 await self._flush_task
             except asyncio.CancelledError:
                 pass
+        pass
         
         await self.producer.stop()
         logger.info("Batch producer stopped")
@@ -399,16 +425,18 @@ class BatchProducer:
     async def add_event(self, topic: str, event: EventSchema) -> None:
         """Add event to batch buffer."""
         async with self._buffer_lock:
-            if topic not in self._buffer:
-                self._buffer[topic] = []
+            pass
+        if topic not in self._buffer:
+            self._buffer[topic] = []
             
-            self._buffer[topic].append(event)
+        self._buffer[topic].append(event)
             
-            # Flush if batch size reached
-            if len(self._buffer[topic]) >= self.batch_size:
-                await self._flush_topic(topic)
+        # Flush if batch size reached
+        if len(self._buffer[topic]) >= self.batch_size:
+            await self._flush_topic(topic)
     
-    async def _flush_topic(self, topic: str) -> None:
+        async def _flush_topic(self, topic: str) -> None:
+            pass
         """Flush events for a specific topic."""
         events = self._buffer.pop(topic, [])
         
@@ -445,14 +473,19 @@ class BatchProducer:
     
     async def flush_all(self) -> None:
         """Flush all buffered events."""
+        pass
         async with self._buffer_lock:
-            topics = list(self._buffer.keys())
+            pass
+        topics = list(self._buffer.keys())
         
         for topic in topics:
-            await self._flush_topic(topic)
+            pass
+        await self._flush_topic(topic)
     
-    async def _flush_periodically(self) -> None:
+        async def _flush_periodically(self) -> None:
+            pass
         """Background task to flush events periodically."""
+        pass
         while self._running:
             try:
                 await asyncio.sleep(self.batch_timeout.total_seconds())

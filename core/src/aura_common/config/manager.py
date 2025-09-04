@@ -235,7 +235,7 @@ def get_config() -> AuraConfig:
         config = get_config()
         if config.is_production():
             # Production-specific logic
-            pass
+        pass
         ```
     """
     return _config_manager.get()

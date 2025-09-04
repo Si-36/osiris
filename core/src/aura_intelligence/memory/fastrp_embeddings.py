@@ -46,6 +46,7 @@ class FastRPEmbedder:
         
     def initialize(self) -> None:
         """Initialize the random projection matrix."""
+        pass
         if self._initialized:
             return
             
@@ -83,7 +84,7 @@ class FastRPEmbedder:
         self,
         persistence_diagram: np.ndarray,
         betti_numbers: BettiNumbers
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """
         Convert persistence diagram to embedding vector.
         
@@ -120,10 +121,17 @@ class FastRPEmbedder:
                     embedding = embedding / norm
         
         # Final normalization
+        # Replace any NaN or Inf values with 0
+        embedding = np.nan_to_num(embedding, nan=0.0, posinf=1.0, neginf=-1.0)
+        
         if self.config.normalization == "l2":
-            embedding = normalize(embedding.reshape(1, -1), norm='l2')[0]
+            norm = np.linalg.norm(embedding)
+            if norm > 0:
+                embedding = embedding / norm
         elif self.config.normalization == "l1":
-            embedding = normalize(embedding.reshape(1, -1), norm='l1')[0]
+            norm = np.sum(np.abs(embedding))
+            if norm > 0:
+                embedding = embedding / norm
         
         # Record metrics
         embedding_time = (time.time() - start_time) * 1000
@@ -135,7 +143,7 @@ class FastRPEmbedder:
         self,
         persistence_diagrams: List[np.ndarray],
         betti_numbers_list: List[BettiNumbers]
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """
         Embed multiple persistence diagrams efficiently.
         
@@ -170,7 +178,7 @@ class FastRPEmbedder:
         self,
         persistence_diagram: np.ndarray,
         betti_numbers: BettiNumbers
-    ) -> np.ndarray:
+        ) -> np.ndarray:
         """
         Extract feature vector from persistence diagram.
         
@@ -213,7 +221,12 @@ class FastRPEmbedder:
         # 3. Persistence entropy (1 feature)
         if len(persistences) > 0 and np.sum(persistences) > 0:
             probs = persistences / np.sum(persistences)
-            entropy = -np.sum(probs * np.log(probs + 1e-10))
+            # Avoid log(0) by filtering out zero probabilities
+            probs = probs[probs > 0]
+            if len(probs) > 0:
+                entropy = -np.sum(probs * np.log(probs))
+            else:
+                entropy = 0.0
             features.append(entropy)
         else:
             features.append(0.0)
@@ -322,6 +335,7 @@ class FastRPEmbedder:
     
     def _estimate_feature_dim(self) -> int:
         """Estimate the dimension of feature vectors."""
+        pass
         # Fixed dimension based on feature extraction
         return 64  # Adjust based on _extract_features implementation
     
@@ -348,16 +362,17 @@ class FastRPEmbedder:
 
 # Benchmark utilities
 async def benchmark_fastrp():
-    """Benchmark FastRP against Wasserstein distance."""
-    import time
-    from scipy.stats import wasserstein_distance
+        """Benchmark FastRP against Wasserstein distance."""
+        import time
+        from scipy.stats import wasserstein_distance
     
     # Generate test data
-    n_samples = 1000
-    persistence_diagrams = []
-    betti_numbers_list = []
+        n_samples = 1000
+        persistence_diagrams = []
+        betti_numbers_list = []
     
-    for _ in range(n_samples):
+        for _ in range(n_samples):
+            pass
         # Random persistence diagram
         n_points = np.random.randint(5, 20)
         births = np.sort(np.random.rand(n_points))
@@ -374,48 +389,50 @@ async def benchmark_fastrp():
         betti_numbers_list.append(bn)
     
     # Initialize FastRP
-    config = FastRPConfig(embedding_dim=128, iterations=3)
-    embedder = FastRPEmbedder(config)
-    embedder.initialize()
+        config = FastRPConfig(embedding_dim=128, iterations=3)
+        embedder = FastRPEmbedder(config)
+        embedder.initialize()
     
     # Benchmark embedding time
-    start_time = time.time()
-    embeddings = embedder.embed_batch(persistence_diagrams, betti_numbers_list)
-    fastrp_time = time.time() - start_time
+        start_time = time.time()
+        embeddings = embedder.embed_batch(persistence_diagrams, betti_numbers_list)
+        fastrp_time = time.time() - start_time
     
-    print(f"FastRP embedding time for {n_samples} samples: {fastrp_time:.3f}s")
-    print(f"Average time per sample: {fastrp_time/n_samples*1000:.2f}ms")
+        print(f"FastRP embedding time for {n_samples} samples: {fastrp_time:.3f}s")
+        print(f"Average time per sample: {fastrp_time/n_samples*1000:.2f}ms")
     
     # Benchmark similarity computation
-    n_queries = 100
+        n_queries = 100
     
     # FastRP similarity
-    start_time = time.time()
-    for i in range(n_queries):
+        start_time = time.time()
+        for i in range(n_queries):
+            pass
         query_idx = np.random.randint(n_samples)
         similarities = np.dot(embeddings, embeddings[query_idx])
-    fastrp_sim_time = time.time() - start_time
+        fastrp_sim_time = time.time() - start_time
     
-    print(f"\nFastRP similarity search time for {n_queries} queries: {fastrp_sim_time:.3f}s")
-    print(f"Average time per query: {fastrp_sim_time/n_queries*1000:.2f}ms")
+        print(f"\nFastRP similarity search time for {n_queries} queries: {fastrp_sim_time:.3f}s")
+        print(f"Average time per query: {fastrp_sim_time/n_queries*1000:.2f}ms")
     
     # Compare with Wasserstein distance (sample)
-    start_time = time.time()
-    for i in range(min(10, n_queries)):  # Only 10 samples due to slow computation
-        idx1, idx2 = np.random.randint(n_samples, size=2)
-        pd1, pd2 = persistence_diagrams[idx1], persistence_diagrams[idx2]
-        
-        if pd1.size > 0 and pd2.size > 0:
-            pers1 = pd1[:, 1] - pd1[:, 0]
-            pers2 = pd2[:, 1] - pd2[:, 0]
-            dist = wasserstein_distance(pers1, pers2)
-    wass_time = time.time() - start_time
+        start_time = time.time()
+        for i in range(min(10, n_queries)):  # Only 10 samples due to slow computation
+            idx1, idx2 = np.random.randint(n_samples, size=2)
+            pd1, pd2 = persistence_diagrams[idx1], persistence_diagrams[idx2]
+            
+            if pd1.size > 0 and pd2.size > 0:
+                pers1 = pd1[:, 1] - pd1[:, 0]
+                pers2 = pd2[:, 1] - pd2[:, 0]
+                dist = wasserstein_distance(pers1, pers2)
+        wass_time = time.time() - start_time
     
-    print(f"\nWasserstein distance time for 10 comparisons: {wass_time:.3f}s")
-    print(f"Average time per comparison: {wass_time/10*1000:.2f}ms")
-    print(f"\nSpeedup factor: {(wass_time/10) / (fastrp_sim_time/n_queries):.1f}x")
+        print(f"\nWasserstein distance time for 10 comparisons: {wass_time:.3f}s")
+        print(f"Average time per comparison: {wass_time/10*1000:.2f}ms")
+        print(f"\nSpeedup factor: {(wass_time/10) / (fastrp_sim_time/n_queries):.1f}x")
 
 
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(benchmark_fastrp())
+        if __name__ == "__main__":
+            pass
+        import asyncio
+        asyncio.run(benchmark_fastrp())

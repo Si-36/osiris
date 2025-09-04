@@ -11,15 +11,17 @@ from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.runnables import RunnableConfig
 
 import structlog
-from ....resilience import resilient, ResilienceLevel
+from aura_intelligence..resilience import resilient, ResilienceLevel
 
 # Simple replacements for missing aura_common functions
 def get_logger(name):
     return structlog.get_logger(name)
 
 def with_correlation_id():
+    pass
+    pass
     def decorator(func):
-        return func
+    return func
     return decorator
 
 def is_feature_enabled(feature):
@@ -27,15 +29,17 @@ def is_feature_enabled(feature):
 
 def resilient_operation(**kwargs):
     def decorator(func):
-        return func
+    return func
     return decorator
 
-from ..state import CollectiveState, NodeResult, update_state_safely
+    from ..state import CollectiveState, NodeResult, update_state_safely
 
-logger = get_logger(__name__)
+    logger = get_logger(__name__)
 
 
 class ObserverNode:
+    pass
+    pass
     """
     Observer node for evidence collection.
     
@@ -51,22 +55,23 @@ class ObserverNode:
         Initialize observer node.
         
         Args:
-            llm: Optional LLM for advanced analysis
+        llm: Optional LLM for advanced analysis
         """
+        pass
         self.llm = llm
         self.name = "observer"
     
-    @with_correlation_id()
-    @resilient_operation(
+        @with_correlation_id()
+        @resilient_operation(
         max_retries=3,
         delay=1.0,
         backoff_factor=2.0
-    )
-    async def __call__(
+        )
+        async def __call__(
         self,
         state: CollectiveState,
         config: Optional[RunnableConfig] = None
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """
         Execute observer node logic.
         
@@ -93,6 +98,8 @@ class ObserverNode:
             # Analyze if LLM available
             analysis = None
             if self.llm and is_feature_enabled("llm_analysis"):
+    pass
+    pass
                 analysis = await self._analyze_with_llm(evidence, state)
             
             # Build observation
@@ -116,6 +123,8 @@ class ObserverNode:
             
             # Add message if we have analysis
             if analysis:
+    pass
+    pass
                 message = AIMessage(
                     content=f"Observation: {analysis['summary']}",
                     additional_kwargs={"node": self.name}
@@ -153,10 +162,10 @@ class ObserverNode:
                 "current_step": "observer_error"
             }
     
-    async def _collect_evidence(
+        async def _collect_evidence(
         self,
         state: CollectiveState
-    ) -> List[Dict[str, Any]]:
+        ) -> List[Dict[str, Any]]:
         """Collect evidence from various sources."""
         evidence = []
         
@@ -169,6 +178,8 @@ class ObserverNode:
         
         # Message history analysis
         if state["messages"]:
+    pass
+    pass
             evidence.append({
                 "type": "message_analysis",
                 "data": {
@@ -180,6 +191,8 @@ class ObserverNode:
         
         # Previous decisions
         if state["supervisor_decisions"]:
+    pass
+    pass
             evidence.append({
                 "type": "decision_history",
                 "data": {
@@ -191,6 +204,8 @@ class ObserverNode:
         
         # Error patterns
         if state["error_log"]:
+    pass
+    pass
             evidence.append({
                 "type": "error_patterns",
                 "data": {
@@ -202,13 +217,15 @@ class ObserverNode:
         
         return evidence
     
-    async def _analyze_with_llm(
+        async def _analyze_with_llm(
         self,
         evidence: List[Dict[str, Any]],
         state: CollectiveState
-    ) -> Optional[Dict[str, Any]]:
+        ) -> Optional[Dict[str, Any]]:
         """Use LLM to analyze evidence."""
         if not self.llm:
+    pass
+    pass
             return None
         
         try:
@@ -218,7 +235,7 @@ class ObserverNode:
                 for e in evidence
             ])
             
-            prompt = f"""
+        prompt = f"""
             Analyze the following system evidence and provide insights:
             
             {evidence_summary}
@@ -227,7 +244,7 @@ class ObserverNode:
             1. Key observations
             2. Potential risks
             3. Recommended actions
-            """
+        """
             
             # Get LLM response
             response = await self.llm.ainvoke(prompt)
@@ -248,7 +265,7 @@ class ObserverNode:
         self,
         evidence: List[Dict[str, Any]],
         analysis: Optional[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Build observation from evidence and analysis."""
         observation = {
             "node": self.name,
@@ -258,48 +275,61 @@ class ObserverNode:
         }
         
         if analysis:
+    pass
+    pass
             observation["analysis"] = analysis
         
         # Add risk indicators
         risk_indicators = []
         for e in evidence:
             if e["type"] == "error_patterns" and e["data"]["error_count"] > 5:
+    pass
+    pass
                 risk_indicators.append("high_error_rate")
             if e["type"] == "system_metrics":
+    pass
+    pass
                 metrics = e["data"]
                 if metrics.get("cpu_usage", 0) > 0.8:
+    pass
+    pass
                     risk_indicators.append("high_cpu_usage")
                 if metrics.get("memory_usage", 0) > 0.8:
+    pass
+    pass
                     risk_indicators.append("high_memory_usage")
         
         if risk_indicators:
+    pass
+    pass
             observation["risk_indicators"] = risk_indicators
         
         return observation
     
     def _get_system_health(self) -> Dict[str, Any]:
         """Get current system health metrics."""
+        pass
         # This would integrate with real monitoring
         # For now, return mock data
         return {
-            "cpu_usage": 0.45,
-            "memory_usage": 0.62,
-            "active_connections": 42,
-            "error_rate": 0.02,
-            "status": "healthy",
-            "timestamp": datetime.now(timezone.utc).isoformat()
+        "cpu_usage": 0.45,
+        "memory_usage": 0.62,
+        "active_connections": 42,
+        "error_rate": 0.02,
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
 
-# Factory function for node creation
-def create_observer_node(llm=None) -> ObserverNode:
-    """
-    Create an observer node instance.
+    # Factory function for node creation
+    def create_observer_node(llm=None) -> ObserverNode:
+        """
+        Create an observer node instance.
     
-    Args:
+        Args:
         llm: Optional LLM for analysis
         
-    Returns:
+        Returns:
         Configured observer node
-    """
-    return ObserverNode(llm=llm)
+        """
+        return ObserverNode(llm=llm)

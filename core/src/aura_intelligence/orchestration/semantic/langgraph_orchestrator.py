@@ -5,12 +5,14 @@
 Implements orchestrator-worker patterns with checkpointing and fault tolerance.
 
 Key Features:
+    pass
 - StateGraph with MemorySaver checkpointing
 - Semantic task decomposition with TDA context
 - Dynamic agent selection based on capabilities
 - Fault-tolerant execution with automatic recovery
 
 TDA Integration:
+    pass
 - Uses TDA patterns for semantic routing decisions
 - Correlates orchestration with TDA anomaly data
 - Sends results to TDA for pattern analysis
@@ -152,7 +154,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
     async def create_orchestrator_worker_graph(
         self, 
         config: SemanticWorkflowConfig
-    ) -> Optional[Any]:
+        ) -> Optional[Any]:
         """
         Create LangGraph StateGraph with enhanced persistence and memory
         """
@@ -252,7 +254,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
     async def _create_worker_node(self, agent_name: str) -> Callable:
         """Create worker node for specific agent"""
         async def worker_node(state: AgentState) -> AgentState:
-            # Execute agent with TDA context
+        # Execute agent with TDA context
             result = await self._execute_agent_with_context(
                 agent_name, 
                 state["context"],
@@ -296,7 +298,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         self, 
         input_data: Dict[str, Any],
         tda_context: Optional[TDAContext] = None
-    ) -> SemanticAnalysis:
+        ) -> SemanticAnalysis:
         """Perform semantic analysis with TDA correlation"""
         
         # Basic semantic analysis (can be enhanced with ML models)
@@ -332,7 +334,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         self, 
         input_data: Dict[str, Any], 
         tda_context: Optional[TDAContext]
-    ) -> UrgencyLevel:
+        ) -> UrgencyLevel:
         """Determine urgency level with TDA amplification"""
         base_urgency = input_data.get("urgency", "medium")
         
@@ -429,7 +431,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
     async def _create_enhanced_worker_node(self, agent_name: str) -> Callable:
         """Create enhanced worker node with memory access"""
         async def enhanced_worker_node(state: AgentState, *, store=None) -> AgentState:
-            # Get relevant memory for this agent
+        # Get relevant memory for this agent
             agent_memory = None
             if store:
                 agent_memory = await self._get_agent_memory(store, agent_name, state)
@@ -561,7 +563,7 @@ class LangGraphSemanticOrchestrator(SemanticOrchestrator):
         context: Dict[str, Any], 
         tda_context: Optional[TDAContext],
         agent_memory: Optional[List[Dict[str, Any]]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
         """Execute agent with enhanced context and memory"""
         # Enhanced execution with memory context
         execution_context = {

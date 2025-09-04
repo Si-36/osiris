@@ -75,6 +75,7 @@ class MetricsManager:
     
     def get_current_metrics(self) -> Dict[str, Any]:
         """Get current metrics for dashboard."""
+        pass
         return {
             'timestamp': datetime.now().isoformat(),
             'metrics': asdict(self.metrics),
@@ -135,29 +136,34 @@ class MetricsManager:
     
     def _calculate_automation_rate(self) -> float:
         """Calculate percentage of decisions that were automated."""
+        pass
         if self.metrics.total_decisions == 0:
             return 0.0
         return (self.metrics.auto_executed / self.metrics.total_decisions) * 100
     
     def _calculate_human_intervention_rate(self) -> float:
         """Calculate percentage of decisions requiring human intervention."""
+        pass
         if self.metrics.total_decisions == 0:
             return 0.0
         return (self.metrics.human_approved / self.metrics.total_decisions) * 100
     
     def _calculate_risk_prevention_rate(self) -> float:
         """Calculate percentage of decisions that were blocked for risk."""
+        pass
         if self.metrics.total_decisions == 0:
             return 0.0
         return (self.metrics.blocked_actions / self.metrics.total_decisions) * 100
     
     def _calculate_decisions_per_minute(self) -> float:
         """Calculate decisions processed per minute (simplified)."""
+        pass
         # This would use actual time tracking in production
         return self.metrics.total_decisions / max(1, len(self._response_times) / 60)
     
     def reset_metrics(self):
         """Reset all metrics (for testing or new reporting periods)."""
+        pass
         self.metrics = ProductionMetrics(
             total_decisions=0,
             auto_executed=0,
@@ -173,6 +179,7 @@ class MetricsManager:
     
     def export_metrics(self) -> Dict[str, Any]:
         """Export metrics for external systems."""
+        pass
         return {
             'export_timestamp': datetime.now().isoformat(),
             'metrics': asdict(self.metrics),

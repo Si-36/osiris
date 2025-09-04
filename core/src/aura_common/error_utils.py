@@ -90,7 +90,7 @@ def resilient_operation(
         else:
             return sync_wrapper
     
-    return decorator
+        return decorator
 
 
 class AuraError(Exception):

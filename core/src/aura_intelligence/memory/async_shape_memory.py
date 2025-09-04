@@ -18,7 +18,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .topo_features import TopologicalFeatureExtractor
 from .fastrp import FastRP, FastRPConfig
 from .fusion_scorer import AdaptiveFusionScorer, FusionConfig
-from .observability import instrument, update_recall, update_false_positive_rate
+from aura_intelligence.observability import instrument, update_recall, update_false_positive_rate
 from ..tda.models import TDAResult, BettiNumbers
 
 logger = logging.getLogger(__name__)
@@ -53,10 +53,12 @@ class AsyncVectorStore(Protocol):
     
     async def health_check(self) -> Dict[str, Any]:
         """Check health asynchronously."""
+        pass
         ...
     
     async def close(self):
         """Close connections asynchronously."""
+        pass
         ...
 
 
@@ -79,6 +81,7 @@ class AsyncShapeMemoryV2:
     Asynchronous shape-aware memory system.
     
     Features:
+        pass
     - Concurrent feature extraction and embedding
     - Async storage operations
     - Batched processing support
@@ -138,7 +141,8 @@ class AsyncShapeMemoryV2:
         )
         return features.combined
     
-    async def _generate_embedding_async(self, features: np.ndarray) -> np.ndarray:
+        async def _generate_embedding_async(self, features: np.ndarray) -> np.ndarray:
+            pass
         """Generate embedding in a thread pool to avoid blocking."""
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
@@ -153,7 +157,8 @@ class AsyncShapeMemoryV2:
         tda_result: TDAResult,
         context_type: str = "general",
         metadata: Optional[Dict[str, Any]] = None
-    ) -> str:
+        ) -> str:
+            pass
         """
         Store a memory asynchronously with parallel processing.
         
@@ -206,11 +211,12 @@ class AsyncShapeMemoryV2:
                 logger.error(f"Error storing memory: {e}")
                 raise
     
-    async def _prepare_metadata(
+        async def _prepare_metadata(
         self,
         tda_result: TDAResult,
         metadata: Optional[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        ) -> Dict[str, Any]:
+            pass
         """Prepare metadata with topological information."""
         if metadata is None:
             metadata = {}
@@ -229,14 +235,15 @@ class AsyncShapeMemoryV2:
         return metadata
     
     @instrument("retrieve_async", "memory")
-    async def retrieve(
+        async def retrieve(
         self,
         query_tda: TDAResult,
         k: int = 10,
         context_filter: Optional[str] = None,
         score_threshold: float = 0.0,
         enable_fusion: Optional[bool] = None
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
+            pass
         """
         Retrieve memories asynchronously with parallel scoring.
         
@@ -295,13 +302,14 @@ class AsyncShapeMemoryV2:
                 logger.error(f"Error retrieving memories: {e}")
                 return []
     
-    async def _apply_fusion_scoring_async(
+        async def _apply_fusion_scoring_async(
         self,
         results: List[Tuple[Dict[str, Any], float]],
         query_tda: TDAResult,
         score_threshold: float,
         k: int
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        ) -> List[Tuple[Dict[str, Any], float]]:
+            pass
         """Apply fusion scoring to results in parallel."""
         # Create scoring tasks
         scoring_tasks = []
@@ -323,12 +331,13 @@ class AsyncShapeMemoryV2:
         
         return filtered_results[:k]
     
-    async def _score_single_result(
+        async def _score_single_result(
         self,
         memory_data: Dict[str, Any],
         cosine_similarity: float,
         query_tda: TDAResult
-    ) -> Tuple[Dict[str, Any], float]:
+        ) -> Tuple[Dict[str, Any], float]:
+            pass
         """Score a single result with fusion scoring."""
         # Get stored persistence diagram
         stored_diagram = self._reconstruct_diagram(memory_data.get("metadata", {}))
@@ -360,10 +369,11 @@ class AsyncShapeMemoryV2:
             return np.random.rand(betti["b0"] + betti["b1"] + betti["b2"], 2)
         return np.array([[0, 1]])
     
-    async def batch_store(
+        async def batch_store(
         self,
         items: List[Tuple[Dict[str, Any], TDAResult, str, Optional[Dict[str, Any]]]]
-    ) -> List[str]:
+        ) -> List[str]:
+            pass
         """
         Store multiple memories in parallel.
         
@@ -380,8 +390,10 @@ class AsyncShapeMemoryV2:
         
         return await asyncio.gather(*tasks)
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
+            pass
         """Check system health asynchronously."""
+        pass
         health = await self.vector_store.health_check()
         
         stats = {
@@ -399,8 +411,10 @@ class AsyncShapeMemoryV2:
         
         return stats
     
-    async def close(self):
+        async def close(self):
+            pass
         """Clean up resources."""
+        pass
         await self.vector_store.close()
         logger.info("AsyncShapeMemoryV2 closed")
 
@@ -413,27 +427,31 @@ class AsyncRedisAdapter(AsyncVectorStore):
         self.sync_store = sync_store
         self._executor = ThreadPoolExecutor(max_workers=10)
     
-    async def add(self, **kwargs) -> bool:
+        async def add(self, **kwargs) -> bool:
+            pass
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             self._executor,
             lambda: self.sync_store.add(**kwargs)
         )
     
-    async def search(self, **kwargs) -> List[Tuple[Dict[str, Any], float]]:
+        async def search(self, **kwargs) -> List[Tuple[Dict[str, Any], float]]:
+            pass
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             self._executor,
             lambda: self.sync_store.search(**kwargs)
         )
     
-    async def health_check(self) -> Dict[str, Any]:
+        async def health_check(self) -> Dict[str, Any]:
+            pass
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             self._executor,
             self.sync_store.health_check
         )
     
-    async def close(self):
+        async def close(self):
+            pass
         self.sync_store.close()
         self._executor.shutdown(wait=True)

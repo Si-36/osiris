@@ -76,7 +76,8 @@ class RealMoERouter:
         
         return torch.tensor(features[:512], dtype=torch.float32)
     
-    async def route(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def route(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+            pass
         start_time = time.time()
         self.stats['total_requests'] += 1
         
@@ -130,8 +131,9 @@ class RealMoERouter:
 
 _real_moe_router = None
 
-def get_real_moe_router():
-    global _real_moe_router
-    if _real_moe_router is None:
+    def get_real_moe_router():
+        global _real_moe_router
+        if _real_moe_router is None:
+            pass
         _real_moe_router = RealMoERouter()
-    return _real_moe_router
+        return _real_moe_router

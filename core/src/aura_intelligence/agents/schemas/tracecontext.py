@@ -76,6 +76,7 @@ class TraceContext(ImmutableBaseModel):
     @validator('traceparent')
     def validate_traceparent(cls, v):
         """Validate traceparent format according to W3C spec."""
+        pass
         if not v:
             raise ValueError("Traceparent cannot be empty")
         
@@ -109,6 +110,7 @@ class TraceContext(ImmutableBaseModel):
     @validator('tracestate')
     def validate_tracestate(cls, v):
         """Validate tracestate format according to W3C spec."""
+        pass
         if v is None:
             return v
         
@@ -124,6 +126,7 @@ class TraceContext(ImmutableBaseModel):
     @validator('span_id')
     def validate_span_id(cls, v):
         """Validate span ID format."""
+        pass
         if v is None:
             return v
         
@@ -137,22 +140,27 @@ class TraceContext(ImmutableBaseModel):
     
     def get_trace_id(self) -> str:
         """Extract trace ID from traceparent."""
+        pass
         return self.traceparent.split('-')[1]
     
     def get_parent_id(self) -> str:
         """Extract parent ID from traceparent."""
+        pass
         return self.traceparent.split('-')[2]
     
     def get_trace_flags(self) -> str:
         """Extract trace flags from traceparent."""
+        pass
         return self.traceparent.split('-')[3]
     
     def is_sampled(self) -> bool:
         """Check if trace is sampled."""
+        pass
         return self.get_trace_flags() == TRACE_FLAGS_SAMPLED
     
     def to_headers(self) -> Dict[str, str]:
         """Convert to HTTP headers for propagation."""
+        pass
         headers = {'traceparent': self.traceparent}
         if self.tracestate:
             headers['tracestate'] = self.tracestate
@@ -179,32 +187,32 @@ class TraceContext(ImmutableBaseModel):
 # TRACE CONTEXT UTILITIES
 # ============================================================================
 
-def generate_trace_id() -> str:
-    """Generate a new 32-character hex trace ID."""
-    return uuid.uuid4().hex + uuid.uuid4().hex[:16]
+    def generate_trace_id() -> str:
+        """Generate a new 32-character hex trace ID."""
+        return uuid.uuid4().hex + uuid.uuid4().hex[:16]
 
 
-def generate_span_id() -> str:
-    """Generate a new 16-character hex span ID."""
-    return uuid.uuid4().hex[:16]
+    def generate_span_id() -> str:
+        """Generate a new 16-character hex span ID."""
+        return uuid.uuid4().hex[:16]
 
 
-def generate_traceparent(sampled: bool = True) -> str:
-    """
-    Generate a new W3C traceparent header.
+    def generate_traceparent(sampled: bool = True) -> str:
+        """
+        Generate a new W3C traceparent header.
     
-    Args:
+        Args:
         sampled: Whether the trace should be sampled
         
-    Returns:
+        Returns:
         W3C traceparent string
-    """
-    version = '00'
-    trace_id = generate_trace_id()
-    span_id = generate_span_id()
-    trace_flags = TRACE_FLAGS_SAMPLED if sampled else TRACE_FLAGS_NOT_SAMPLED
+        """
+        version = '00'
+        trace_id = generate_trace_id()
+        span_id = generate_span_id()
+        trace_flags = TRACE_FLAGS_SAMPLED if sampled else TRACE_FLAGS_NOT_SAMPLED
     
-    return f"{version}-{trace_id}-{span_id}-{trace_flags}"
+        return f"{version}-{trace_id}-{span_id}-{trace_flags}"
 
 
 def create_trace_context(
@@ -421,6 +429,7 @@ class TraceContextMixin:
     
     def get_trace_context(self) -> TraceContext:
         """Get trace context from this model."""
+        pass
         return TraceContext(
             traceparent=self.traceparent,
             tracestate=self.tracestate,
@@ -430,6 +439,7 @@ class TraceContextMixin:
     
     def create_child_trace_context(self) -> TraceContext:
         """Create a child trace context."""
+        pass
         return self.get_trace_context().create_child_context()
 
 
@@ -437,14 +447,14 @@ class TraceContextMixin:
 # CORRELATION ID UTILITIES
 # ============================================================================
 
-def generate_correlation_id(prefix: str = "corr") -> str:
-    """Generate a correlation ID for request tracing."""
-    return f"{prefix}_{uuid.uuid4().hex}"
+    def generate_correlation_id(prefix: str = "corr") -> str:
+        """Generate a correlation ID for request tracing."""
+        return f"{prefix}_{uuid.uuid4().hex}"
 
 
-def extract_correlation_id_from_context(context: TraceContext) -> Optional[str]:
-    """Extract correlation ID from trace context."""
-    return context.correlation_id
+    def extract_correlation_id_from_context(context: TraceContext) -> Optional[str]:
+        """Extract correlation ID from trace context."""
+        return context.correlation_id
 
 
 def create_correlation_context(

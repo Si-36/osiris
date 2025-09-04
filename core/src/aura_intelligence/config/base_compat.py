@@ -17,6 +17,7 @@ class BaseSettings:
     
     def __init__(self, **kwargs):
         """Initialize with keyword arguments."""
+        pass
         for key, value in kwargs.items():
             setattr(self, key, value)
     
@@ -27,10 +28,12 @@ class BaseSettings:
     
     def model_dump(self) -> Dict[str, Any]:
         """Mimics Pydantic's model_dump."""
+        pass
         return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
     
     def dict(self) -> Dict[str, Any]:
         """Backward compatibility for dict() method."""
+        pass
         return self.model_dump()
 
 

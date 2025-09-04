@@ -1,0 +1,57 @@
+{
+  "timestamp": 1756064415.5746868,
+  "success_rate": 1.0,
+  "total_tests": 3,
+  "successful_tests": 3,
+  "integration_test": true,
+  "detailed_results": [
+    {
+      "test_name": "Simple Pattern Recognition",
+      "success": true,
+      "output_shape": [
+        5,
+        1,
+        1
+      ],
+      "processing_time_ms": 15.599966049194336,
+      "output_stats": {
+        "mean": 0.016127195209264755,
+        "std": 0.023841291666030884,
+        "min": -5.822628736495972e-05,
+        "max": 0.057363562285900116
+      }
+    },
+    {
+      "test_name": "Time Series Prediction",
+      "success": true,
+      "output_shape": [
+        20,
+        1,
+        1
+      ],
+      "processing_time_ms": 0.7152557373046875,
+      "output_stats": {
+        "mean": 0.07430297136306763,
+        "std": 6.620014758595971e-09,
+        "min": 0.07430297136306763,
+        "max": 0.07430297881364822
+      }
+    },
+    {
+      "test_name": "Batch Processing",
+      "success": true,
+      "output_shape": [
+        50,
+        1,
+        1
+      ],
+      "processing_time_ms": 0.640869140625,
+      "output_stats": {
+        "mean": 0.04884422942996025,
+        "std": 0.06841398030519485,
+        "min": -0.0976841002702713,
+        "max": 0.23389343917369843
+      }
+    }
+  ]
+}

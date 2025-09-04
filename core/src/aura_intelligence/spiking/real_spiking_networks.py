@@ -41,5 +41,5 @@ class RealSpikingNetwork(nn.Module):
         if self.spikingjelly_available:
             functional.reset_net(self)
 
-def get_real_spiking_network():
-    return RealSpikingNetwork()
+    def get_real_spiking_network():
+        return RealSpikingNetwork()

@@ -198,22 +198,22 @@ class FeatureFlagManager:
     def _load_default_flags(self) -> None:
         """Load default feature flags"""
         self.flags = {
-            "STREAMING_TDA": FeatureFlag(
-                name="STREAMING_TDA",
-                enabled=False,
-                strategy=RolloutStrategy.PERCENTAGE,
-                percentage=0.0
-            ),
-            "KAFKA_EVENT_MESH": FeatureFlag(
-                name="KAFKA_EVENT_MESH",
-                enabled=False,
-                strategy=RolloutStrategy.GRADUAL
-            ),
-            "DISTRIBUTED_TRACING": FeatureFlag(
-                name="DISTRIBUTED_TRACING",
-                enabled=True,
-                strategy=RolloutStrategy.ALL_USERS
-            )
+        "STREAMING_TDA": FeatureFlag(
+        name="STREAMING_TDA",
+        enabled=False,
+        strategy=RolloutStrategy.PERCENTAGE,
+        percentage=0.0
+        ),
+        "KAFKA_EVENT_MESH": FeatureFlag(
+        name="KAFKA_EVENT_MESH",
+        enabled=False,
+        strategy=RolloutStrategy.GRADUAL
+        ),
+        "DISTRIBUTED_TRACING": FeatureFlag(
+        name="DISTRIBUTED_TRACING",
+        enabled=True,
+        strategy=RolloutStrategy.ALL_USERS
+        )
         }
         
     async def _refresh_loop(self) -> None:

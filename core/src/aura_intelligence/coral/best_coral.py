@@ -16,7 +16,7 @@ from einops import rearrange
 
 class MinimalTransformer(nn.Module):
     """Minimal but effective transformer block"""
-    
+
     def __init__(self, dim=256, heads=8):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim)
@@ -27,7 +27,7 @@ class MinimalTransformer(nn.Module):
             nn.GELU(),
             nn.Linear(dim * 2, dim)
         )
-    
+
     def forward(self, x):
         x = x + self.attn(self.norm1(x), self.norm1(x), self.norm1(x))[0]
         x = x + self.mlp(self.norm2(x))
@@ -36,13 +36,13 @@ class MinimalTransformer(nn.Module):
 
 class GraphAttention(nn.Module):
     """Minimal graph attention for message routing"""
-    
+
     def __init__(self, dim=256, message_dim=32):
         super().__init__()
         self.q = nn.Linear(dim, message_dim)
         self.k = nn.Linear(dim, message_dim)
         self.v = nn.Linear(dim, message_dim)
-        
+
     def forward(self, nodes, adjacency):
         Q, K, V = self.q(nodes), self.k(nodes), self.v(nodes)
         
@@ -61,7 +61,7 @@ class GraphAttention(nn.Module):
 
 class Mamba2Block(nn.Module):
     """Mamba-2 state-space block for unlimited context."""
-    
+
     def __init__(self, d_model: int, d_state: int = 16, d_conv: int = 4):
         super().__init__()
         self.d_model = d_model
@@ -84,7 +84,7 @@ class Mamba2Block(nn.Module):
         self.D = nn.Parameter(torch.ones(d_model))
         
         self.out_proj = nn.Linear(d_model, d_model, bias=False)
-        
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward with O(n) complexity."""
         batch, seqlen, dim = x.shape
@@ -111,7 +111,7 @@ class Mamba2Block(nn.Module):
         # Gate and output
         y = y * F.silu(z)
         return self.out_proj(y)
-    
+
     def _selective_scan(self, u, delta, A, B, C, D):
         """Selective scan - O(n) complexity."""
         batch, seqlen, d_model = u.shape
@@ -133,9 +133,10 @@ class Mamba2Block(nn.Module):
         y = torch.stack(ys, dim=1)
         return y + u * D
 
+
 class BestCoRaLSystem:
     """Best CoRaL system enhanced with Mamba-2 unlimited context"""
-    
+
     def __init__(self):
         self.registry = get_real_registry()
         
@@ -171,7 +172,7 @@ class BestCoRaLSystem:
         # Metrics
         self.rounds = 0
         self.total_influence = 0.0
-        
+
     def _assign_roles(self) -> Tuple[List[str], List[str]]:
         """Smart role assignment"""
         components = list(self.registry.components.items())
@@ -184,7 +185,7 @@ class BestCoRaLSystem:
         ca_ids = [cid for cid, comp in components if cid not in ia_ids][:103]
         
         return ia_ids, ca_ids
-    
+
     def _build_adjacency(self) -> torch.Tensor:
         """Build adjacency matrix for message routing"""
         total = len(self.ia_ids) + len(self.ca_ids)
@@ -205,7 +206,7 @@ class BestCoRaLSystem:
                     adj[i, ca_idx] = 1.0
         
         return adj
-    
+
     def _encode_context(self, contexts: List[Dict[str, Any]]) -> torch.Tensor:
         """Encode contexts to embeddings"""
         batch_size = len(self.ia_ids) + len(self.ca_ids)
@@ -232,7 +233,7 @@ class BestCoRaLSystem:
             embeddings[i] = torch.tensor(features)
         
         return embeddings
-    
+
     async def communicate(self, contexts: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Execute communication round with unlimited context"""
         start_time = time.time()
@@ -290,7 +291,7 @@ class BestCoRaLSystem:
             'unlimited_context': True,
             'linear_complexity': True
         }
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get system statistics"""
         return {

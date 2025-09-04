@@ -14,8 +14,8 @@ from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from ..agent import ObserverAgent
-from ...schemas.enums import TaskStatus, EvidenceType, SignatureAlgorithm
-from ...schemas.crypto import get_crypto_provider
+from aura_intelligence.schemas.enums import TaskStatus, EvidenceType, SignatureAlgorithm
+from aura_intelligence.schemas.crypto import get_crypto_provider
 
 
 class TestObserverAgent:
@@ -29,9 +29,9 @@ class TestObserverAgent:
         public_key = "test_public_key_12345"
         return private_key, public_key
     
-    @pytest.fixture
+        @pytest.fixture
     def observer_agent(self, crypto_keys):
-        """Create test ObserverAgent instance."""
+            """Create test ObserverAgent instance."""
         private_key, public_key = crypto_keys
         
         agent = ObserverAgent(
@@ -47,22 +47,22 @@ class TestObserverAgent:
     def sample_event(self):
         """Create realistic test event."""
         return {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "level": "error",
-            "message": "Database connection timeout after 30s",
-            "source": "api-gateway",
-            "type": "database_error",
-            "fields": {
-                "database": "user_db",
-                "timeout_ms": 30000,
-                "connection_pool": "primary"
-            },
-            "correlation_id": "test_correlation_123"
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "level": "error",
+        "message": "Database connection timeout after 30s",
+        "source": "api-gateway",
+        "type": "database_error",
+        "fields": {
+        "database": "user_db",
+        "timeout_ms": 30000,
+        "connection_pool": "primary"
+        },
+        "correlation_id": "test_correlation_123"
         }
     
-    @pytest.mark.asyncio
-    async def test_process_event_creates_valid_state(self, observer_agent, sample_event):
-        """Test that process_event returns a valid AgentState."""
+        @pytest.mark.asyncio
+        async def test_process_event_creates_valid_state(self, observer_agent, sample_event):
+            """Test that process_event returns a valid AgentState."""
         # Act
         result_state = await observer_agent.process_event(sample_event)
         
@@ -88,7 +88,7 @@ class TestObserverAgent:
         assert decision.chosen_option_id in ["escalate", "auto_investigate"]
     
     @pytest.mark.asyncio
-    async def test_state_immutability(self, observer_agent, sample_event):
+        async def test_state_immutability(self, observer_agent, sample_event):
         """Test that state updates are truly immutable."""
         # Act
         state1 = await observer_agent.process_event(sample_event)
@@ -107,9 +107,9 @@ class TestObserverAgent:
         assert "Database connection timeout" in str(state1.context_dossier[0].content)
         assert "Different error message" in str(state2.context_dossier[0].content)
     
-    @pytest.mark.asyncio
-    async def test_evidence_signature_verification(self, observer_agent, sample_event):
-        """Test that evidence signatures are valid and verifiable."""
+        @pytest.mark.asyncio
+        async def test_evidence_signature_verification(self, observer_agent, sample_event):
+            """Test that evidence signatures are valid and verifiable."""
         # Act
         result_state = await observer_agent.process_event(sample_event)
         evidence = result_state.context_dossier[0]
@@ -126,7 +126,7 @@ class TestObserverAgent:
         assert is_valid, "Evidence signature should be valid"
     
     @pytest.mark.asyncio
-    async def test_state_signature_verification(self, observer_agent, sample_event):
+        async def test_state_signature_verification(self, observer_agent, sample_event):
         """Test that state signatures are valid and verifiable."""
         # Act
         result_state = await observer_agent.process_event(sample_event)
@@ -140,9 +140,9 @@ class TestObserverAgent:
         is_valid = result_state.verify_signature(observer_agent.private_key)
         assert is_valid, "State signature should be valid"
     
-    @pytest.mark.asyncio
-    async def test_decision_signature_verification(self, observer_agent, sample_event):
-        """Test that decision signatures are valid and verifiable."""
+        @pytest.mark.asyncio
+        async def test_decision_signature_verification(self, observer_agent, sample_event):
+            """Test that decision signatures are valid and verifiable."""
         # Act
         result_state = await observer_agent.process_event(sample_event)
         decision = result_state.decision_points[0]
@@ -159,47 +159,47 @@ class TestObserverAgent:
         assert is_valid, "Decision signature should be valid"
     
     @pytest.mark.asyncio
-    async def test_task_type_determination(self, observer_agent):
+        async def test_task_type_determination(self, observer_agent):
         """Test intelligent task type determination."""
         # Security event
         security_event = {
-            "message": "Unauthorized access attempt detected",
-            "level": "warning",
-            "source": "security_monitor"
+        "message": "Unauthorized access attempt detected",
+        "level": "warning",
+        "source": "security_monitor"
         }
         state = await observer_agent.process_event(security_event)
         assert state.task_type == "security_investigation"
         
         # Performance event
         perf_event = {
-            "message": "High CPU usage detected",
-            "level": "info",
-            "metrics": {"cpu": 95.5, "memory": 80.2}
+        "message": "High CPU usage detected",
+        "level": "info",
+        "metrics": {"cpu": 95.5, "memory": 80.2}
         }
         state = await observer_agent.process_event(perf_event)
         assert state.task_type == "performance_analysis"
         
         # Error event
         error_event = {
-            "message": "Application crashed",
-            "level": "critical",
-            "source": "app_server"
+        "message": "Application crashed",
+        "level": "critical",
+        "source": "app_server"
         }
         state = await observer_agent.process_event(error_event)
         assert state.task_type == "error_investigation"
         
         # General event
         general_event = {
-            "message": "User logged in",
-            "level": "info",
-            "source": "auth_service"
+        "message": "User logged in",
+        "level": "info",
+        "source": "auth_service"
         }
         state = await observer_agent.process_event(general_event)
         assert state.task_type == "general_observation"
     
-    @pytest.mark.asyncio
-    async def test_retry_mechanism(self, observer_agent, sample_event):
-        """Test retry mechanism with exponential backoff."""
+        @pytest.mark.asyncio
+        async def test_retry_mechanism(self, observer_agent, sample_event):
+            """Test retry mechanism with exponential backoff."""
         # Mock the evidence creation to fail twice, then succeed
         original_method = observer_agent._create_evidence_from_event
         call_count = 0
@@ -211,83 +211,83 @@ class TestObserverAgent:
                 raise Exception("Temporary failure")
             return await original_method(*args, **kwargs)
         
-        observer_agent._create_evidence_from_event = failing_evidence_creation
+            observer_agent._create_evidence_from_event = failing_evidence_creation
         
-        # Act - should succeed after retries
-        result_state = await observer_agent.process_event(sample_event)
+            # Act - should succeed after retries
+            result_state = await observer_agent.process_event(sample_event)
         
-        # Assert
-        assert result_state is not None
-        assert call_count == 3  # Failed twice, succeeded on third try
-        assert observer_agent.metrics["events_processed"] == 1
+            # Assert
+            assert result_state is not None
+            assert call_count == 3  # Failed twice, succeeded on third try
+            assert observer_agent.metrics["events_processed"] == 1
     
-    @pytest.mark.asyncio
-    async def test_metrics_tracking(self, observer_agent, sample_event):
-        """Test that performance metrics are tracked correctly."""
-        # Initial metrics
-        initial_processed = observer_agent.metrics["events_processed"]
-        initial_evidence = observer_agent.metrics["evidence_created"]
-        initial_workflows = observer_agent.metrics["workflows_initiated"]
+            @pytest.mark.asyncio
+            async def test_metrics_tracking(self, observer_agent, sample_event):
+                """Test that performance metrics are tracked correctly."""
+            # Initial metrics
+            initial_processed = observer_agent.metrics["events_processed"]
+            initial_evidence = observer_agent.metrics["evidence_created"]
+            initial_workflows = observer_agent.metrics["workflows_initiated"]
         
-        # Act
-        await observer_agent.process_event(sample_event)
+            # Act
+            await observer_agent.process_event(sample_event)
         
-        # Assert
-        assert observer_agent.metrics["events_processed"] == initial_processed + 1
-        assert observer_agent.metrics["evidence_created"] == initial_evidence + 1
-        assert observer_agent.metrics["workflows_initiated"] == initial_workflows + 1
-        assert observer_agent.metrics["avg_processing_time_ms"] > 0
+            # Assert
+            assert observer_agent.metrics["events_processed"] == initial_processed + 1
+            assert observer_agent.metrics["evidence_created"] == initial_evidence + 1
+            assert observer_agent.metrics["workflows_initiated"] == initial_workflows + 1
+            assert observer_agent.metrics["avg_processing_time_ms"] > 0
     
-    @pytest.mark.asyncio
-    async def test_health_status(self, observer_agent):
-        """Test health status reporting."""
-        # Act
-        health = await observer_agent.get_health_status()
+            @pytest.mark.asyncio
+            async def test_health_status(self, observer_agent):
+                """Test health status reporting."""
+            # Act
+            health = await observer_agent.get_health_status()
         
-        # Assert
-        assert health["agent_id"] == observer_agent.agent_id
-        assert health["status"] == "healthy"
-        assert "metrics" in health
-        assert "timestamp" in health
-        assert health["schema_version"] == "2.0"
+            # Assert
+            assert health["agent_id"] == observer_agent.agent_id
+            assert health["status"] == "healthy"
+            assert "metrics" in health
+            assert "timestamp" in health
+            assert health["schema_version"] == "2.0"
         
-        # Verify metrics structure
-        metrics = health["metrics"]
-        expected_metrics = [
+            # Verify metrics structure
+            metrics = health["metrics"]
+            expected_metrics = [
             "events_processed", "errors", "avg_processing_time_ms",
             "evidence_created", "workflows_initiated"
-        ]
-        for metric in expected_metrics:
+            ]
+            for metric in expected_metrics:
             assert metric in metrics
     
-    @pytest.mark.asyncio
-    async def test_trace_context_integration(self, observer_agent, sample_event):
-        """Test OpenTelemetry trace context integration."""
-        # Add trace context to event
-        sample_event["traceparent"] = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+            @pytest.mark.asyncio
+            async def test_trace_context_integration(self, observer_agent, sample_event):
+                """Test OpenTelemetry trace context integration."""
+            # Add trace context to event
+            sample_event["traceparent"] = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
         
-        # Act
-        with patch('opentelemetry.trace.get_tracer') as mock_tracer:
-            mock_span = Mock()
+            # Act
+            with patch('opentelemetry.trace.get_tracer') as mock_tracer:
+                mock_span = Mock()
             mock_span.get_span_context.return_value.trace_id = "test_trace_id"
             mock_tracer.return_value.start_as_current_span.return_value.__enter__.return_value = mock_span
             
             result_state = await observer_agent.process_event(sample_event)
         
-        # Assert
-        assert result_state is not None
-        # Verify that tracing methods were called
-        mock_tracer.assert_called()
+            # Assert
+            assert result_state is not None
+            # Verify that tracing methods were called
+            mock_tracer.assert_called()
     
     def test_agent_string_representation(self, observer_agent):
-        """Test agent string representation."""
-        agent_str = str(observer_agent)
-        assert "ObserverAgent[test_observer_001]" in agent_str
-        assert "Events:" in agent_str
-        assert "Errors:" in agent_str
+                """Test agent string representation."""
+            agent_str = str(observer_agent)
+            assert "ObserverAgent[test_observer_001]" in agent_str
+            assert "Events:" in agent_str
+            assert "Errors:" in agent_str
 
 
-# Integration Tests
+    # Integration Tests
 class TestObserverAgentIntegration:
     """Integration tests for end-to-end workflows."""
     
@@ -300,26 +300,26 @@ class TestObserverAgentIntegration:
         public_key = "integration_test_public"
         
         agent = ObserverAgent(
-            agent_id="integration_test_agent",
-            private_key=private_key,
-            public_key=public_key
+        agent_id="integration_test_agent",
+        private_key=private_key,
+        public_key=public_key
         )
         
         # Create realistic event
         event = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "level": "error",
-            "message": "Payment processing failed for user 12345",
-            "source": "payment_service",
-            "type": "payment_failure",
-            "fields": {
-                "user_id": "12345",
-                "amount": 99.99,
-                "currency": "USD",
-                "error_code": "CARD_DECLINED"
-            },
-            "environment": "production",
-            "priority": "high"
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "level": "error",
+        "message": "Payment processing failed for user 12345",
+        "source": "payment_service",
+        "type": "payment_failure",
+        "fields": {
+        "user_id": "12345",
+        "amount": 99.99,
+        "currency": "USD",
+        "error_code": "CARD_DECLINED"
+        },
+        "environment": "production",
+        "priority": "high"
         }
         
         # Act
@@ -349,11 +349,11 @@ class TestObserverAgentIntegration:
         print(f"✅ End-to-end test passed: {final_state}")
 
 
-if __name__ == "__main__":
-    # Run a quick test
-    import asyncio
+    if __name__ == "__main__":
+        # Run a quick test
+        import asyncio
     
-    async def quick_test():
+        async def quick_test():
         provider = get_crypto_provider(SignatureAlgorithm.HMAC_SHA256)
         agent = ObserverAgent(
             agent_id="quick_test_agent",

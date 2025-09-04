@@ -17,6 +17,7 @@ class TestCrewAIOrchestrator:
     
     def test_agent_registration(self, orchestrator):
         """Test agent registration"""
+        pass
         orchestrator.register_agent(
             'test_agent', 
             ['data_processing'], 
@@ -28,6 +29,7 @@ class TestCrewAIOrchestrator:
     @pytest.mark.asyncio
     async def test_flow_creation(self, orchestrator):
         """Test flow creation"""
+        pass
         config = {
             'tasks': [{'id': 'task_1', 'description': 'Test task'}],
             'dependencies': []
@@ -37,8 +39,9 @@ class TestCrewAIOrchestrator:
         assert flow_id.startswith('flow_')
     
     @pytest.mark.asyncio
-    async def test_flow_execution(self, orchestrator):
+        async def test_flow_execution(self, orchestrator):
         """Test complete flow execution"""
+        pass
         # Register agent
         orchestrator.register_agent('agent_1', ['general'], [0.1] * 64)
         
@@ -59,8 +62,9 @@ class TestCrewAIOrchestrator:
         assert len(result['results']) == 1
     
     @pytest.mark.asyncio
-    async def test_health_check(self, orchestrator):
+        async def test_health_check(self, orchestrator):
         """Test health monitoring"""
+        pass
         health = await orchestrator.health_check()
         
         assert health['status'] == 'healthy'
@@ -70,28 +74,28 @@ class TestCrewAIOrchestrator:
 
 @pytest.mark.asyncio
 async def test_concurrent_flows():
-    """Test concurrent flow execution"""
-    orchestrator = CrewAIOrchestrator()
+        """Test concurrent flow execution"""
+        orchestrator = CrewAIOrchestrator()
     
     # Register agents
-    for i in range(3):
+        for i in range(3):
         orchestrator.register_agent(f'agent_{i}', ['general'], [0.1 * i] * 64)
     
     # Create concurrent flows
-    configs = [
+        configs = [
         {'tasks': [{'id': f'task_{i}', 'description': f'Task {i}', 'required_capabilities': ['general']}]}
         for i in range(5)
-    ]
+        ]
     
     # Execute concurrently
-    flow_ids = await asyncio.gather(*[
+        flow_ids = await asyncio.gather(*[
         orchestrator.create_flow(config) for config in configs
-    ])
+        ])
     
-    results = await asyncio.gather(*[
+        results = await asyncio.gather(*[
         orchestrator.execute_flow(flow_id, config)
         for flow_id, config in zip(flow_ids, configs)
-    ])
+        ])
     
-    assert len(results) == 5
-    assert all(r['tasks_completed'] == 1 for r in results)
+        assert len(results) == 5
+        assert all(r['tasks_completed'] == 1 for r in results)

@@ -23,6 +23,7 @@ class TopologicalFeatures:
     @property
     def dimension(self) -> int:
         """Total feature dimension."""
+        pass
         return len(self.combined)
 
 
@@ -43,7 +44,7 @@ class TopologicalFeatureExtractor:
         self, 
         betti_numbers: BettiNumbers,
         persistence_diagram: np.ndarray
-    ) -> TopologicalFeatures:
+        ) -> TopologicalFeatures:
         """
         Extract features from topological data.
         
@@ -143,6 +144,7 @@ class TopologicalFeatureExtractor:
     @property
     def feature_dimension(self) -> int:
         """Get the total feature dimension."""
+        pass
         if self._feature_dim is None:
             # Calculate by extracting from dummy data
             dummy_betti = BettiNumbers(b0=1, b1=0, b2=0)

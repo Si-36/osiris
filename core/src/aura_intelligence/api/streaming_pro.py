@@ -52,6 +52,7 @@ class TopologySnapshot:
     
     def to_dict(self) -> Dict:
         """Serialize for WebSocket transmission."""
+        pass
         return {
             "timestamp": self.timestamp.isoformat(),
             "betti_numbers": self.betti_numbers,
@@ -69,6 +70,7 @@ class StreamSource(Protocol):
     
     async def stream(self) -> AsyncIterator[TopologySnapshot]:
         """Yield topology snapshots."""
+        pass
         ...
 
 
@@ -78,8 +80,10 @@ class LiveTDASource:
     def __init__(self, analysis_queue: asyncio.Queue):
         self.queue = analysis_queue
     
-    async def stream(self) -> AsyncIterator[TopologySnapshot]:
+        async def stream(self) -> AsyncIterator[TopologySnapshot]:
+            pass
         """Stream from analysis queue."""
+        pass
         while True:
             result = await self.queue.get()
             yield self._convert_to_snapshot(result)
@@ -121,6 +125,7 @@ class SimulatedSource:
     
     async def stream(self) -> AsyncIterator[TopologySnapshot]:
         """Generate simulated topology data."""
+        pass
         while True:
             await asyncio.sleep(1)
             
@@ -187,18 +192,21 @@ class ConnectionManager:
         self.max_queue_size = max_queue_size
         self._lock = asyncio.Lock()
     
-    async def connect(self, client_id: str, websocket: WebSocket):
+        async def connect(self, client_id: str, websocket: WebSocket):
+            pass
         """Accept new connection."""
         await websocket.accept()
         async with self._lock:
             self.connections[client_id] = websocket
     
-    async def disconnect(self, client_id: str):
+        async def disconnect(self, client_id: str):
+            pass
         """Remove connection."""
         async with self._lock:
             self.connections.pop(client_id, None)
     
-    async def broadcast(self, snapshot: TopologySnapshot):
+        async def broadcast(self, snapshot: TopologySnapshot):
+            pass
         """Broadcast to all connections with backpressure handling."""
         message = json.dumps(snapshot.to_dict())
         
@@ -225,7 +233,8 @@ class StreamProcessor:
         self.history: List[TopologySnapshot] = []
         self.max_history = 1000
     
-    async def process(self, source: StreamSource, manager: ConnectionManager):
+        async def process(self, source: StreamSource, manager: ConnectionManager):
+            pass
         """Process stream and broadcast."""
         async for snapshot in source.stream():
             # Store history
@@ -252,46 +261,49 @@ processor = StreamProcessor()
 
 
 async def shape_stream_endpoint(websocket: WebSocket, client_id: str):
-    """WebSocket endpoint for shape streaming."""
-    await manager.connect(client_id, websocket)
+        """WebSocket endpoint for shape streaming."""
+        await manager.connect(client_id, websocket)
     
-    try:
-        # Keep connection alive
-        while True:
-            data = await websocket.receive_text()
+        try:
+            # Keep connection alive
+            while True:
+                data = await websocket.receive_text()
+                
+                if data == "ping":
+                    await websocket.send_text(json.dumps({"type": "pong"}))
             
-            if data == "ping":
-                await websocket.send_text(json.dumps({"type": "pong"}))
-            
-    except WebSocketDisconnect:
+        except WebSocketDisconnect:
+            pass
         await manager.disconnect(client_id)
-    except Exception as e:
+        except Exception as e:
+            pass
         print(f"WebSocket error: {e}")
         await manager.disconnect(client_id)
 
 
 async def start_streaming(source: Optional[StreamSource] = None):
-    """Start the streaming processor."""
-    if source is None:
+        """Start the streaming processor."""
+        if source is None:
+            pass
         source = SimulatedSource()
     
-    await processor.process(source, manager)
+        await processor.process(source, manager)
 
 
 # --- React Component ---
 
-def get_shape_hud_react() -> str:
-    """Modern React-based HUD component."""
-    return """
+    def get_shape_hud_react() -> str:
+        """Modern React-based HUD component."""
+        return """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AURA Shape HUD Pro</title>
-    <meta charset="utf-8">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
+        <title>AURA Shape HUD Pro</title>
+        <meta charset="utf-8">
+        <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background: #0a0a0a; 
@@ -300,21 +312,21 @@ def get_shape_hud_react() -> str:
             overflow: hidden;
         }
         #root { width: 100vw; height: 100vh; }
-    </style>
+        </style>
 </head>
 <body>
-    <div id="root"></div>
+        <div id="root"></div>
     
-    <script type="importmap">
-    {
+        <script type="importmap">
+        {
         "imports": {
             "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
             "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
-    }
-    </script>
+        }
+        </script>
     
-    <script type="text/babel" data-type="module">
+        <script type="text/babel" data-type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -556,18 +568,18 @@ def get_shape_hud_react() -> str:
         
         // Render
         ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+        </script>
     
-    <style>
+        <style>
         .risk-low { color: #33ff66; }
         .risk-medium { color: #ffaa33; }
         .risk-critical { color: #ff3366; }
-    </style>
+        </style>
 </body>
 </html>
-    """
+        """
 
 
-def get_shape_hud_html() -> HTMLResponse:
-    """Return the React-based HUD."""
-    return HTMLResponse(content=get_shape_hud_react())
+    def get_shape_hud_html() -> HTMLResponse:
+        """Return the React-based HUD."""
+        return HTMLResponse(content=get_shape_hud_react())

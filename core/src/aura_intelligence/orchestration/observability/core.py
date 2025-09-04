@@ -2,6 +2,7 @@
 🎯 Observability Core - 2025 State-of-the-Art
 
 Ultra-minimal, functional-first observability core using latest patterns:
+    pass
 - Functional composition over inheritance
 - Immutable data structures with structural sharing
 - Effect systems for pure side-effect management
@@ -9,6 +10,7 @@ Ultra-minimal, functional-first observability core using latest patterns:
 - Zero-cost abstractions with compile-time optimization
 
 Research Sources:
+    pass
 - Effect-TS patterns for pure functional effects
 - Rust's type system influence on Python typing
 - OCaml's module system for composition
@@ -35,7 +37,8 @@ class Effect(Generic[T]):
     def __init__(self, computation: Callable[[], Awaitable[T]]):
         self._computation = computation
     
-    async def run(self) -> T:
+        async def run(self) -> T:
+            pass
         return await self._computation()
     
     def map(self, f: Callable[[T], A]) -> Effect[A]:
@@ -50,7 +53,7 @@ class Effect(Generic[T]):
             return await f(result).run()
         return Effect(flat_mapped)
 
-@dataclass(frozen=True, slots=True)
+    @dataclass(frozen=True, slots=True)
 class MetricPoint:
     """Immutable metric point with structural sharing"""
     name: str
@@ -83,25 +86,25 @@ class SpanContext:
     def with_attribute(self, key: str, value: str) -> Self:
         return replace(self, attributes=(*self.attributes, (key, value)))
 
-def pure_metric(name: str, value: float) -> MetricPoint:
-    """Pure function to create metric point"""
-    return MetricPoint(
+    def pure_metric(name: str, value: float) -> MetricPoint:
+        """Pure function to create metric point"""
+        return MetricPoint(
         name=name,
         value=value,
         timestamp=datetime.now(timezone.utc)
-    )
+        )
 
-def collect_metric(collector: MetricCollector, point: MetricPoint) -> Effect[None]:
-    """Pure effect for metric collection"""
-    return collector.collect(point)
+    def collect_metric(collector: MetricCollector, point: MetricPoint) -> Effect[None]:
+        """Pure effect for metric collection"""
+        return collector.collect(point)
 
-# Functional composition utilities
-def compose(*functions):
-    """Compose functions right-to-left"""
-    return lambda x: x if not functions else functions[0](compose(*functions[1:])(x))
+    # Functional composition utilities
+    def compose(*functions):
+        """Compose functions right-to-left"""
+        return lambda x: x if not functions else functions[0](compose(*functions[1:])(x))
 
-def pipe(value, *functions):
-    """Pipe value through functions left-to-right"""
-    for func in functions:
+    def pipe(value, *functions):
+        """Pipe value through functions left-to-right"""
+        for func in functions:
         value = func(value)
-    return value
+        return value
