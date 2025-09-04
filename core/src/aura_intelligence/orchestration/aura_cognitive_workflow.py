@@ -23,6 +23,8 @@ from ..schemas.aura_execution import (
     TopologicalSignature
 )
 
+from .resilience import with_advanced_self_healing
+
 if TYPE_CHECKING:
     from .execution_engine import UnifiedWorkflowExecutor
 
@@ -145,6 +147,7 @@ async def planning_node(state: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+@with_advanced_self_healing(max_retries=1, delegate_on_failure=True)
 async def osiris_planning_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Enhanced planning using Osiris Unified Intelligence.
@@ -377,6 +380,7 @@ async def execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+@with_advanced_self_healing(max_retries=1, delegate_on_failure=True)
 async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Parallel execution using SwarmCoordinator for coordination and
