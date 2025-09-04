@@ -430,6 +430,17 @@ async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
         # Execute tools in parallel with retry and bounded concurrency
         tasks = []
         for step in current_state.plan.steps:
+            # Emit TASK_ASSIGNED
+            try:
+                executor.emit_event(SystemEvent(
+                    event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                    event_type=EventType.TASK_ASSIGNED,
+                    timestamp=time.time(),
+                    workflow_id=current_state.task.task_id,
+                    metadata={"step_id": step.step_id, "tool": step.tool}
+                ))
+            except Exception:
+                pass
             tasks.append(executor.execute_tool_with_retry(step.tool, step.params))
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
@@ -438,6 +449,16 @@ async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
             step = current_state.plan.steps[idx]
             if isinstance(result, Exception):
                 logger.error(f"Tool failed: {step.tool}: {result}")
+                try:
+                    executor.emit_event(SystemEvent(
+                        event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                        event_type=EventType.TASK_FAILED,
+                        timestamp=time.time(),
+                        workflow_id=current_state.task.task_id,
+                        metadata={"step_id": step.step_id, "tool": step.tool, "error": str(result)}
+                    ))
+                except Exception:
+                    pass
                 observations.append(ObservationResult(
                     source=step.tool,
                     data={"error": str(result)},
@@ -451,6 +472,16 @@ async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
             elif isinstance(result, dict):
                 try:
                     observations.append(ObservationResult.model_validate(result))
+                    try:
+                        executor.emit_event(SystemEvent(
+                            event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                            event_type=EventType.TASK_COMPLETED,
+                            timestamp=time.time(),
+                            workflow_id=current_state.task.task_id,
+                            metadata={"step_id": step.step_id, "tool": step.tool, "anomalies": len(observations[-1].anomalies or [])}
+                        ))
+                    except Exception:
+                        pass
                 except Exception:
                     observations.append(ObservationResult(
                         source=step.tool,
@@ -462,6 +493,16 @@ async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
                         ),
                         anomalies=[]
                     ))
+                    try:
+                        executor.emit_event(SystemEvent(
+                            event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                            event_type=EventType.TASK_COMPLETED,
+                            timestamp=time.time(),
+                            workflow_id=current_state.task.task_id,
+                            metadata={"step_id": step.step_id, "tool": step.tool, "anomalies": 0}
+                        ))
+                    except Exception:
+                        pass
             else:
                 observations.append(ObservationResult(
                     source=step.tool,
@@ -473,6 +514,16 @@ async def swarm_execution_node(state: Dict[str, Any]) -> Dict[str, Any]:
                     ),
                     anomalies=[]
                 ))
+                try:
+                    executor.emit_event(SystemEvent(
+                        event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                        event_type=EventType.TASK_COMPLETED,
+                        timestamp=time.time(),
+                        workflow_id=current_state.task.task_id,
+                        metadata={"step_id": step.step_id, "tool": step.tool, "anomalies": 0}
+                    ))
+                except Exception:
+                    pass
         
         current_state.observations = observations
         current_state.add_trace(f"Swarm executed {len(observations)} steps")

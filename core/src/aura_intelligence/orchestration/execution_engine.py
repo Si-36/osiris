@@ -6,6 +6,7 @@ Professional implementation using LangGraph and 2025 best practices
 import asyncio
 from typing import Dict, Any, List, Optional
 from datetime import datetime
+import time
 import structlog
 import uuid
 
@@ -32,6 +33,7 @@ from ..memory.routing.hierarchical_router_2025 import HierarchicalMemoryRouter20
 from ..memory.shape_memory_v2 import ShapeAwareMemoryV2
 from ..memory.core.causal_tracker import CausalPatternTracker
 from ..tools.tool_registry import ToolRegistry, ToolExecutor
+from ..tda.realtime_monitor import RealtimeTopologyMonitor, SystemEvent, EventType
 from ..swarm_intelligence.swarm_coordinator import SwarmCoordinator
 
 logger = structlog.get_logger(__name__)
@@ -94,7 +96,11 @@ class UnifiedWorkflowExecutor:
             "tasks_succeeded": 0,
             "tasks_failed": 0,
             "total_execution_time": 0.0,
-            "average_execution_time": 0.0
+            "average_execution_time": 0.0,
+            # TDA backbone metrics
+            "tda_events_emitted": 0,
+            "tda_events_dropped": 0,
+            "tda_errors": 0
         }
         
         # Lazy-initialized Osiris unified intelligence (singleton within executor)
@@ -108,6 +114,16 @@ class UnifiedWorkflowExecutor:
         # Concurrency control for parallel tool execution
         max_concurrent = int(self.config.get('max_concurrent_tasks', 20))
         self.execution_semaphore = asyncio.Semaphore(max_concurrent)
+
+        # TDA realtime monitor integration (feature-flagged)
+        self._tda_monitor: Optional[RealtimeTopologyMonitor] = None
+        self._tda_events_queue: Optional[asyncio.Queue] = None
+        self._tda_pump_task: Optional[asyncio.Task] = None
+        if bool(self.config.get('use_tda_realtime_monitor', True)):
+            queue_maxsize = int(self.config.get('tda_queue_maxsize', 1000))
+            self._tda_events_queue = asyncio.Queue(maxsize=queue_maxsize)
+            # Start pump loop in background
+            self._tda_pump_task = asyncio.create_task(self._tda_pump_loop())
         
         # Create the LangGraph workflow
         self.workflow = self._create_workflow()
@@ -224,6 +240,48 @@ class UnifiedWorkflowExecutor:
                 await asyncio.sleep(delay + (jitter))
         # Exhausted retries
         raise last_error if last_error else RuntimeError("Unknown execution failure")
+
+    # ==================== TDA Real-time Backbone ====================
+    def _use_tda(self) -> bool:
+        return bool(self.config.get('use_tda_realtime_monitor', True)) and self._tda_events_queue is not None
+
+    async def _ensure_tda_started(self) -> None:
+        if not self._use_tda():
+            return
+        if self._tda_monitor is None:
+            self._tda_monitor = RealtimeTopologyMonitor()
+        # Ensure monitor processing loop is running
+        if not getattr(self._tda_monitor, 'is_running', False):
+            try:
+                await self._tda_monitor.start()
+            except Exception:
+                self.metrics["tda_errors"] += 1
+
+    def emit_event(self, event: SystemEvent) -> None:
+        """Non-blocking event emission with drop-on-full policy."""
+        if not self._use_tda():
+            return
+        try:
+            self._tda_events_queue.put_nowait(event)
+            self.metrics["tda_events_emitted"] += 1
+        except asyncio.QueueFull:
+            self.metrics["tda_events_dropped"] += 1
+
+    async def _tda_pump_loop(self) -> None:
+        """Pump events from executor queue into the TDA monitor."""
+        while self._use_tda():
+            try:
+                event = await self._tda_events_queue.get()
+                await self._ensure_tda_started()
+                if self._tda_monitor is not None:
+                    try:
+                        await self._tda_monitor.process_event(event)
+                    except Exception:
+                        self.metrics["tda_errors"] += 1
+            except asyncio.CancelledError:
+                break
+            except Exception:
+                self.metrics["tda_errors"] += 1
     
     async def execute_task(
         self,
@@ -257,6 +315,20 @@ class UnifiedWorkflowExecutor:
             environment=environment or {},
             status=TaskStatus.PENDING
         )
+        # Emit workflow started
+        try:
+            self.emit_event(SystemEvent(
+                event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                event_type=EventType.WORKFLOW_STARTED,
+                timestamp=time.time(),
+                workflow_id=task.task_id,
+                metadata={
+                    "objective": task_description,
+                    "environment": environment or {}
+                }
+            ))
+        except Exception:
+            pass
         
         # Create initial workflow state
         initial_state = AuraWorkflowState(
@@ -287,6 +359,22 @@ class UnifiedWorkflowExecutor:
             # Update metrics
             execution_time = asyncio.get_event_loop().time() - start_time
             self._update_metrics(success=True, duration=execution_time)
+            # Emit workflow completed success
+            try:
+                self.emit_event(SystemEvent(
+                    event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                    event_type=EventType.WORKFLOW_COMPLETED,
+                    timestamp=time.time(),
+                    workflow_id=task.task_id,
+                    metadata={
+                        "duration_s": execution_time,
+                        "observations": len(final_state.observations),
+                        "patterns": len(final_state.patterns) if hasattr(final_state, 'patterns') else 0,
+                        "status": "ok"
+                    }
+                ))
+            except Exception:
+                pass
             
             # Extract and return the result
             result = final_state.task.final_result or {
@@ -304,6 +392,17 @@ class UnifiedWorkflowExecutor:
         except ValidationError as e:
             logger.error(f"Validation error in workflow: {e}")
             self._update_metrics(success=False)
+            # Emit failure event
+            try:
+                self.emit_event(SystemEvent(
+                    event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                    event_type=EventType.WORKFLOW_COMPLETED,
+                    timestamp=time.time(),
+                    workflow_id=task.task_id,
+                    metadata={"error": "validation_error", "details": str(e), "status": "error"}
+                ))
+            except Exception:
+                pass
             return {
                 "status": "error",
                 "task_id": task.task_id,
@@ -314,6 +413,17 @@ class UnifiedWorkflowExecutor:
         except Exception as e:
             logger.error(f"Task execution failed: {e}", exc_info=True)
             self._update_metrics(success=False)
+            # Emit failure event
+            try:
+                self.emit_event(SystemEvent(
+                    event_id=f"evt_{uuid.uuid4().hex[:8]}",
+                    event_type=EventType.WORKFLOW_COMPLETED,
+                    timestamp=time.time(),
+                    workflow_id=task.task_id,
+                    metadata={"error": str(e), "type": type(e).__name__, "status": "error"}
+                ))
+            except Exception:
+                pass
             return {
                 "status": "error",
                 "task_id": task.task_id,
