@@ -20,8 +20,11 @@ class DummyOsiris:
 
 @pytest.mark.asyncio
 async def test_osiris_planning_healed_and_retried(monkeypatch):
+    # Create a single DummyOsiris instance that will be reused
+    dummy_osiris = DummyOsiris(fail_once=True)
+    
     async def get_osiris_brain():
-        return DummyOsiris(fail_once=True)
+        return dummy_osiris
 
     executor = types.SimpleNamespace(
         get_osiris_brain=get_osiris_brain,
