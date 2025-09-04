@@ -547,8 +547,16 @@ class SemanticMemory:
         self.graph_cache = nx.DiGraph()
         self.concept_cache = {}
         
-        # Initialize schema
-        asyncio.create_task(self._initialize_schema())
+        # Initialize schema later when event loop is available
+        self._schema_initialized = False
+        
+        # Try to initialize schema if event loop is running
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.create_task(self._initialize_schema())
+        except RuntimeError:
+            # No event loop running, will initialize later
+            pass
         
         logger.info(
             "SemanticMemory initialized",
@@ -558,42 +566,52 @@ class SemanticMemory:
     
     async def _initialize_schema(self):
         """Initialize Neo4j schema with constraints and indexes"""
-        async with self.driver.session() as session:
-            # Create constraints
-            await session.run("""
-                CREATE CONSTRAINT concept_id IF NOT EXISTS
-                FOR (c:Concept) REQUIRE c.id IS UNIQUE
-            """)
+        if self._schema_initialized:
+            return
             
-            # Create indexes
-            await session.run("""
-                CREATE INDEX concept_label IF NOT EXISTS
-                FOR (c:Concept) ON (c.label)
-            """)
-            
-            await session.run("""
-                CREATE INDEX concept_confidence IF NOT EXISTS
-                FOR (c:Concept) ON (c.confidence)
-            """)
-            
-            # Create full-text search index
-            await session.run("""
-                CREATE FULLTEXT INDEX concept_search IF NOT EXISTS
-                FOR (c:Concept) ON EACH [c.label, c.definition]
-            """)
-            
-            # Vector index for embeddings (Neo4j 5.0+)
-            try:
+        try:
+            async with self.driver.session() as session:
+                # Create constraints
                 await session.run("""
-                    CREATE VECTOR INDEX concept_embeddings IF NOT EXISTS
-                    FOR (c:Concept) ON c.embedding
-                    OPTIONS {
-                        dimensions: 768,
-                        similarity_function: 'cosine'
-                    }
+                    CREATE CONSTRAINT concept_id IF NOT EXISTS
+                    FOR (c:Concept) REQUIRE c.id IS UNIQUE
                 """)
-            except:
-                logger.warning("Vector index not supported in this Neo4j version")
+                
+                # Create indexes
+                await session.run("""
+                    CREATE INDEX concept_label IF NOT EXISTS
+                    FOR (c:Concept) ON (c.label)
+                """)
+                
+                await session.run("""
+                    CREATE INDEX concept_confidence IF NOT EXISTS
+                    FOR (c:Concept) ON (c.confidence)
+                """)
+                
+                # Create full-text search index
+                await session.run("""
+                    CREATE FULLTEXT INDEX concept_search IF NOT EXISTS
+                    FOR (c:Concept) ON EACH [c.label, c.definition]
+                """)
+                
+                # Vector index for embeddings (Neo4j 5.0+)
+                try:
+                    await session.run("""
+                        CREATE VECTOR INDEX concept_embeddings IF NOT EXISTS
+                        FOR (c:Concept) ON c.embedding
+                        OPTIONS {
+                            dimensions: 768,
+                            similarity_function: 'cosine'
+                        }
+                    """)
+                except:
+                    logger.warning("Vector index not supported in this Neo4j version")
+            
+            self._schema_initialized = True
+            logger.debug("Neo4j schema initialized")
+            
+        except Exception as e:
+            logger.warning(f"Schema initialization failed: {e}, will retry later")
     
     # ==================== Core Operations ====================
     

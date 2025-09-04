@@ -691,7 +691,7 @@ class UnifiedCognitiveMemory:
         from .semantic_memory import SemanticMemory
         from .consolidation.orchestrator import SleepConsolidation
         from .routing.hierarchical_router_2025 import HierarchicalMemoryRouter2025
-        from .shape_memory_v2 import ShapeMemoryV2
+        from .shape_memory_v2 import ShapeAwareMemoryV2
         from .core.causal_tracker import CausalPatternTracker
         from .core.topology_adapter import TopologyMemoryAdapter
         
@@ -708,7 +708,7 @@ class UnifiedCognitiveMemory:
         })
         
         self.router = HierarchicalMemoryRouter2025(config.get('router', {}))
-        self.shape_memory = ShapeMemoryV2(config.get('shape', {}))
+        self.shape_memory = ShapeAwareMemoryV2(config.get('shape', {}))
         self.causal_tracker = CausalPatternTracker()
         self.topology_adapter = TopologyMemoryAdapter()
         

@@ -28,9 +28,9 @@ from ..memory.unified_cognitive_memory import UnifiedCognitiveMemory
 from ..memory.working_memory import WorkingMemory
 from ..memory.episodic_memory import EpisodicMemory
 from ..memory.semantic_memory import SemanticMemory
-from ..memory.consolidation import SleepConsolidation as MemoryConsolidation
+from ..memory.consolidation import SleepConsolidation as MemoryConsolidation, ConsolidationConfig
 from ..memory.routing.hierarchical_router_2025 import HierarchicalMemoryRouter2025
-from ..memory.shape_memory_v2 import ShapeAwareMemoryV2
+from ..memory.shape_memory_v2 import ShapeAwareMemoryV2, ShapeMemoryV2Config
 from ..memory.core.causal_tracker import CausalPatternTracker
 from ..tools.tool_registry import ToolRegistry, ToolExecutor
 from ..tda.realtime_monitor import RealtimeTopologyMonitor, SystemEvent, EventType
@@ -140,18 +140,44 @@ class UnifiedWorkflowExecutor:
         """Create a fully configured memory system"""
         logger.info("Creating UnifiedCognitiveMemory with all subsystems...")
         
-        # Create memory services
-        services = {
+        # Create basic memory services first
+        # Handle ShapeAwareMemoryV2 config properly
+        shape_config = self.config.get('shape', {})
+        if isinstance(shape_config, dict):
+            shape_config = ShapeMemoryV2Config(**shape_config) if shape_config else ShapeMemoryV2Config()
+        
+        basic_services = {
             'working_memory': WorkingMemory(),
             'episodic_memory': EpisodicMemory(config=self.config.get('episodic', {})),
             'semantic_memory': SemanticMemory(config=self.config.get('semantic', {})),
-            'memory_consolidation': MemoryConsolidation(config=self.config.get('consolidation', {})),
             'hierarchical_router': HierarchicalMemoryRouter2025(config=self.config.get('router', {})),
-            'shape_memory': ShapeAwareMemoryV2(config=self.config.get('shape', {})),
+            'shape_memory': ShapeAwareMemoryV2(config=shape_config),
             'causal_tracker': CausalPatternTracker(config=self.config.get('causal', {}))
         }
         
-        return UnifiedCognitiveMemory(services)
+        # Add topology_adapter for SleepConsolidation if available
+        if hasattr(basic_services['shape_memory'], 'topology_adapter'):
+            basic_services['topology_adapter'] = basic_services['shape_memory'].topology_adapter
+        elif hasattr(basic_services['shape_memory'], 'tda_adapter'):
+            basic_services['topology_adapter'] = basic_services['shape_memory'].tda_adapter
+        else:
+            # Create a basic topology adapter if none available
+            basic_services['topology_adapter'] = None
+        
+        # Now create MemoryConsolidation with the services
+        consolidation_config = self.config.get('consolidation', {})
+        if isinstance(consolidation_config, dict) and consolidation_config:
+            # Create ConsolidationConfig from dict if needed
+            consolidation_config = ConsolidationConfig(**consolidation_config)
+        elif not consolidation_config:
+            consolidation_config = ConsolidationConfig()
+        
+        basic_services['memory_consolidation'] = MemoryConsolidation(
+            services=basic_services,
+            config=consolidation_config
+        )
+        
+        return UnifiedCognitiveMemory(basic_services)
     
     def _create_tool_registry(self) -> ToolRegistry:
         """Create and populate the tool registry"""
