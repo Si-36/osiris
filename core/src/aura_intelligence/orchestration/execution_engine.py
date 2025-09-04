@@ -96,6 +96,10 @@ class UnifiedWorkflowExecutor:
             "average_execution_time": 0.0
         }
         
+        # Lazy-initialized Osiris unified intelligence (singleton within executor)
+        self._osiris_instance = None
+        self._osiris_lock = asyncio.Lock()
+        
         # Create the LangGraph workflow
         self.workflow = self._create_workflow()
         
@@ -154,6 +158,24 @@ class UnifiedWorkflowExecutor:
         """
         from .aura_cognitive_workflow import create_aura_workflow
         return create_aura_workflow(self)
+
+    async def get_osiris_brain(self):
+        """Lazily create and return the Osiris unified intelligence instance.
+        Uses an async lock for concurrency safety.
+        """
+        if self._osiris_instance is None:
+            async with self._osiris_lock:
+                if self._osiris_instance is None:
+                    # Import locally to avoid any heavy imports at module load time
+                    from ..unified.osiris_unified_intelligence import (
+                        create_osiris_unified_intelligence,
+                    )
+                    self._osiris_instance = create_osiris_unified_intelligence(
+                        d_model=768,
+                        num_experts=64,
+                        max_context=100_000,
+                    )
+        return self._osiris_instance
     
     async def execute_task(
         self,

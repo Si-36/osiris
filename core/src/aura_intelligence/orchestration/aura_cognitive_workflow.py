@@ -145,6 +145,82 @@ async def planning_node(state: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+async def osiris_planning_node(state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Enhanced planning using Osiris Unified Intelligence.
+    Leverages executor.get_osiris_brain() and real memory context.
+    """
+    logger.info("🗺️ OSIRIS PLANNING: Creating execution strategy with Osiris")
+    current_state = AuraWorkflowState.model_validate(state)
+    executor: 'UnifiedWorkflowExecutor' = state['executor_instance']
+    
+    # Update status
+    current_state.task.status = TaskStatus.PLANNING
+    current_state.add_trace("Starting OSIRIS planning phase")
+    
+    try:
+        # Get Osiris brain (lazy-initialized)
+        osiris = await executor.get_osiris_brain()
+        
+        # Retrieve richer context from memory if available
+        memory_context = {}
+        if executor.memory:
+            try:
+                memory_context = await executor.memory.query(current_state.task.objective)
+            except Exception as e:
+                logger.warning(f"Memory query for Osiris planning failed: {e}")
+                memory_context = {}
+        
+        # Call Osiris for intelligent planning
+        osiris_result = await osiris.process(
+            prompt=current_state.task.objective,
+            context={
+                "retrieved_memory": memory_context,
+                "environment_state": current_state.task.environment,
+            }
+        )
+        
+        # Transform Osiris output into our ExecutionPlan schema
+        raw_steps = osiris_result.get("recommended_actions", [])
+        steps: List[ExecutionStep] = []
+        for s in raw_steps:
+            try:
+                steps.append(ExecutionStep(
+                    tool=s.get("tool"),
+                    params=s.get("params", {}),
+                    dependencies=s.get("dependencies", []),
+                    expected_output_type=s.get("expected_output_type")
+                ))
+            except Exception as e:
+                logger.warning(f"Invalid Osiris step skipped: {e}")
+        
+        # Build execution plan
+        current_state.plan = ExecutionPlan(
+            objective=current_state.task.objective,
+            steps=steps,
+            estimated_duration=osiris_result.get("estimated_duration"),
+            risk_assessment=osiris_result.get("risk_assessment", {}),
+            parallelization_possible=osiris_result.get("parallelization_possible", True)
+        )
+        
+        current_state.add_trace(f"Osiris plan created with {len(current_state.plan.steps)} steps")
+        logger.info(f"✅ Osiris plan created: {current_state.plan.plan_id}")
+        
+        return {
+            "plan": current_state.plan.model_dump(),
+            "execution_trace": current_state.execution_trace
+        }
+    except Exception as e:
+        logger.error(f"Osiris planning failed: {e}", exc_info=True)
+        # Fallback to basic plan to keep workflow alive
+        current_state.plan = _create_fallback_plan(current_state.task.objective, executor)
+        current_state.add_trace("Osiris planning failed, used fallback plan")
+        return {
+            "plan": current_state.plan.model_dump(),
+            "execution_trace": current_state.execution_trace
+        }
+
+
 async def consensus_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node for Step 3: CONSENSUS
@@ -550,7 +626,14 @@ def create_aura_workflow(executor: 'UnifiedWorkflowExecutor') -> StateGraph:
     
     # Add all nodes for the 5-step process
     workflow.add_node("PERCEIVE", perception_node)
-    workflow.add_node("PLAN", planning_node)
+    # Allow switching to Osiris planning via config toggle
+    use_osiris = False
+    try:
+        use_osiris = bool(getattr(executor, 'config', {}).get('use_osiris_planning', True))
+    except Exception:
+        use_osiris = True
+    
+    workflow.add_node("PLAN", osiris_planning_node if use_osiris else planning_node)
     workflow.add_node("CONSENSUS", consensus_node)
     workflow.add_node("EXECUTE", execution_node)
     workflow.add_node("ANALYZE", analysis_consolidation_node)
